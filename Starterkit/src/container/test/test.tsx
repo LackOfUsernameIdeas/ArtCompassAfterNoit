@@ -41,7 +41,7 @@ const Test: FC<Test> = () => {
               },
               {
                 role: "user",
-                content: `Препоръчай ми 10 филма за гледане, които да са съобразени с моите вкусове и предпочитания, а именно:
+                content: `Препоръчай ми 5 филма за гледане, които да са съобразени с моите вкусове и предпочитания, а именно:
               Любими жанрове: ${genres}.
               Емоционално състояние в този момент: ${mood}.
               Разполагаемо свободно време за гледане: ${timeAvailable}.
@@ -160,17 +160,19 @@ const Test: FC<Test> = () => {
         <div className="grid grid-cols-12 gap-6">
           <div className="xl:col-span-6 col-span-12">
             <div className="mb-4">
-              <label htmlFor="formGroupExampleInput" className="form-label">
-                На кои жанрове най-много се наслаждавате?
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="formGroupExampleInput"
-                placeholder="Пример: хорър, екшън, криминален"
-                value={genres}
-                onChange={(e) => setGenres(e.target.value)}
-              />
+              <h6 className="questionTxt bubble left">
+                Кои жанрове Ви се гледат в момента?
+              </h6>
+              <div className="bubble right">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="formGroupExampleInput"
+                  placeholder="Пример: хорър, екшън, криминален"
+                  value={genres}
+                  onChange={(e) => setGenres(e.target.value)}
+                />
+              </div>
             </div>
             <div className="mb-4">
               <label htmlFor="formGroupExampleInput2" className="form-label">

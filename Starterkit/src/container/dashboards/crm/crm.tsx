@@ -85,7 +85,7 @@ const Crm: FC<CrmProps> = () => {
       <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">
         <div>
           <p className="font-semibold text-[1.125rem] text-defaulttextcolor dark:text-defaulttextcolor/70 !mb-0 ">
-            Добре дошъл, {userData.first_name} {userData.last_name}!
+            Здравейте, {userData.first_name} {userData.last_name}!
           </p>
           <p className="font-normal text-[#8c9097] dark:text-white/50 text-[0.813rem]">
             Track your sales activity, leads and deals here.
