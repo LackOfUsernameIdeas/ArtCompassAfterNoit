@@ -46,7 +46,15 @@ const Test: FC<Test> = () => {
     "Уестърн"
   ];
 
+  const timeAvailableOptions = [
+    "1 час",
+    "2 часа",
+    "3 часа",
+    "нямам предпочитания"
+  ];
+
   const openAIKey = import.meta.env.VITE_OPENAI_API_KEY;
+  console.log("timeAvailable: ", timeAvailable);
   const generateMovieRecommendations = async () => {
     try {
       const response = await fetch(
@@ -186,7 +194,6 @@ const Test: FC<Test> = () => {
         : [...prevGenres, genre]
     );
   };
-  console.log("selectedGenres: ", genres);
 
   return (
     <Fragment>
@@ -232,14 +239,19 @@ const Test: FC<Test> = () => {
               <label htmlFor="formGroupExampleInput2" className="form-label">
                 С какво време разполагате?
               </label>
-              <input
-                type="text"
-                className="form-control"
-                id="formGroupExampleInput2"
-                placeholder="Пример: 2 часа, 3 часа, цяла вечер"
-                value={timeAvailable}
-                onChange={(e) => setTimeAvailable(e.target.value)}
-              />
+              {timeAvailableOptions.map((option) => (
+                <div key={option}>
+                  <label>
+                    <input
+                      type="radio"
+                      value={option}
+                      checked={timeAvailable === option}
+                      onChange={() => setTimeAvailable(option)}
+                    />
+                    {option}
+                  </label>
+                </div>
+              ))}
             </div>
             <div className="mb-4">
               <label htmlFor="formGroupExampleInput2" className="form-label">
