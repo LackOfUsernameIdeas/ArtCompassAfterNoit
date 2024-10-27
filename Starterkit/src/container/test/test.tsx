@@ -5,7 +5,7 @@ interface Test {}
 const Test: FC<Test> = () => {
   const [genres, setGenres] = useState<string[]>([]);
   const [mood, setMood] = useState("");
-  const [timeAvailable, setTimeAvailable] = useState("");
+  const [timeAvailability, setTimeAvailability] = useState("");
   const [actors, setActors] = useState("");
   const [directors, setDirectors] = useState("");
   const [interests, setInterests] = useState("");
@@ -13,13 +13,6 @@ const Test: FC<Test> = () => {
   const [pacing, setPacing] = useState("");
   const [depth, setDepth] = useState("");
   const [targetGroup, setTargetGroup] = useState("");
-
-  const depthPreference =
-    depth === "simple"
-      ? "Предпочитам филмите да са лесни за проследяване, релаксиращи."
-      : depth === "complex"
-      ? "Предпочитам филмите да се задълбочават и да имат специфични истории и/или терминологии, специфично съществуващи във филма."
-      : "Нямам предпочитания за дълбочината на филма.";
 
   const genreOptions = [
     "Екшън",
@@ -46,15 +39,35 @@ const Test: FC<Test> = () => {
     "Уестърн"
   ];
 
-  const timeAvailableOptions = [
+  const timeAvailabilityOptions = [
     "1 час",
     "2 часа",
     "3 часа",
-    "нямам предпочитания"
+    "Нямам предпочитания"
+  ];
+
+  const pacingOptions = [
+    "бавни, концентриращи се върху разкази на героите",
+    "бързи с много напрежение",
+    "Нямам предпочитания"
+  ];
+  const depthOptions = [
+    "Лесни за проследяване - релаксиращи",
+    "Средни - с ясни сюжетни линии",
+    "Трудни - с много истории и терминологии, характерни за филма",
+    "Нямам предпочитания"
+  ];
+
+  const targetGroupOptions = [
+    "Деца",
+    "Тийнейджъри",
+    "Възрастни",
+    "Семейни",
+    "Семейство и деца",
+    "Възрастни над 65"
   ];
 
   const openAIKey = import.meta.env.VITE_OPENAI_API_KEY;
-  console.log("timeAvailable: ", timeAvailable);
   const generateMovieRecommendations = async () => {
     try {
       const response = await fetch(
@@ -77,13 +90,13 @@ const Test: FC<Test> = () => {
                 content: `Препоръчай ми 5 филма за гледане, които да са съобразени с моите вкусове и предпочитания, а именно:
               Любими жанрове: ${genres}.
               Емоционално състояние в този момент: ${mood}.
-              Разполагаемо свободно време за гледане: ${timeAvailable}.
+              Разполагаемо свободно време за гледане: ${timeAvailability}.
               Любими актьори: ${actors}.
               Любими филмови режисьори: ${directors}.
               Теми, които ме интересуват: ${interests}.
               Филмите могат да бъдат от следните страни: ${countries}.
               Темпото (бързината) на филмите предпочитам да бъде: ${pacing}.
-              ${depthPreference}
+              Предпочитам филмите да са: ${depth}.
               Целевата група е: ${targetGroup}.
               Дай информация за всеки отделен филм по отделно защо той е подходящ за мен. Форматирай своя response в JSON формат по този начин:
               {
@@ -106,10 +119,10 @@ const Test: FC<Test> = () => {
       // Емоционално състояние в този момент: нормално.
       // Разполагаемо свободно време за гледане: цяла вечер.
       // Любими актьори: Мили Боби Браун.
-      // Любими филмови режисьори: нямам предпочитания.
-      // Теми, които ме интересуват: нямам предпочитания.
+      // Любими филмови режисьори: Нямам предпочитания.
+      // Теми, които ме интересуват: Нямам предпочитания.
       // Филмите могат да бъдат от следните страни: САЩ.
-      // Темпото (бързината) на филмите предпочитам да бъде: нямам предпочитания.
+      // Темпото (бързината) на филмите предпочитам да бъде: Нямам предпочитания.
       // Предпочитам филмите да се задълбочават и да имат специфични истории и/или терминологии, специфично съществуващи във филма.
       // Целевата група е: Без възрастови ограничения.
       // Дай информация за всеки отделен филм по отделно защо той е подходящ за мен. Форматирай своя response в JSON формат по този начин:
@@ -236,22 +249,24 @@ const Test: FC<Test> = () => {
               </div>
             </div>
             <div className="mb-4">
-              <label htmlFor="formGroupExampleInput2" className="form-label">
+              <label htmlFor="timeAvailability" className="form-label">
                 С какво време разполагате?
               </label>
-              {timeAvailableOptions.map((option) => (
-                <div key={option}>
-                  <label>
-                    <input
-                      type="radio"
-                      value={option}
-                      checked={timeAvailable === option}
-                      onChange={() => setTimeAvailable(option)}
-                    />
+              <select
+                id="timeAvailability"
+                className="form-control"
+                value={timeAvailability}
+                onChange={(e) => setTimeAvailability(e.target.value)}
+              >
+                <option value="" disabled>
+                  Изберете време
+                </option>
+                {timeAvailabilityOptions.map((option) => (
+                  <option key={option} value={option}>
                     {option}
-                  </label>
-                </div>
-              ))}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="mb-4">
               <label htmlFor="formGroupExampleInput2" className="form-label">
@@ -260,11 +275,24 @@ const Test: FC<Test> = () => {
               <input
                 type="text"
                 className="form-control"
-                id="formGroupExampleInput2"
                 placeholder="Пример: Брад Пит, Леонардо ди Каприо, Ема Уотсън"
                 value={actors}
                 onChange={(e) => setActors(e.target.value)}
               />
+              <label>
+                <input
+                  type="checkbox"
+                  checked={actors === "Нямам предпочитания"}
+                  onChange={() => {
+                    setActors(
+                      actors === "Нямам предпочитания"
+                        ? ""
+                        : "Нямам предпочитания"
+                    );
+                  }}
+                />
+                Нямам предпочитания
+              </label>
             </div>
             <div className="mb-4">
               <label htmlFor="formGroupExampleInput2" className="form-label">
@@ -278,24 +306,20 @@ const Test: FC<Test> = () => {
                 value={directors}
                 onChange={(e) => setDirectors(e.target.value)}
               />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="formGroupExampleInput2" className="form-label">
-                Какви теми ви интересуват?
+              <label>
+                <input
+                  type="checkbox"
+                  checked={directors === "Нямам предпочитания"}
+                  onChange={() => {
+                    setDirectors(
+                      directors === "Нямам предпочитания"
+                        ? ""
+                        : "Нямам предпочитания"
+                    );
+                  }}
+                />
+                Нямам предпочитания
               </label>
-              <div className="form-text">
-                Предпочитате филм, който засяга определена ера, държава или пък
-                такъв, в който се изследва, разгадава мистерия или социален
-                проблем? Дайте описание.
-              </div>
-              <input
-                type="text"
-                className="form-control"
-                id="formGroupExampleInput2"
-                placeholder=""
-                value={interests}
-                onChange={(e) => setInterests(e.target.value)}
-              />
             </div>
             <div className="mb-4">
               <label htmlFor="formGroupExampleInput2" className="form-label">
@@ -309,45 +333,99 @@ const Test: FC<Test> = () => {
                 value={countries}
                 onChange={(e) => setCountries(e.target.value)}
               />
+              <label>
+                <input
+                  type="checkbox"
+                  checked={countries === "Нямам предпочитания"}
+                  onChange={() => {
+                    setCountries(
+                      countries === "Нямам предпочитания"
+                        ? ""
+                        : "Нямам предпочитания"
+                    );
+                  }}
+                />
+                Нямам предпочитания
+              </label>
             </div>
             <div className="mb-4">
-              <label htmlFor="formGroupExampleInput2" className="form-label">
+              <label htmlFor="pacing" className="form-label">
                 Филми с каква бързина на развитие на сюжетното действие
                 предпочитате?
               </label>
-              <input
-                type="text"
+              <select
+                id="pacing"
                 className="form-control"
-                id="formGroupExampleInput2"
-                placeholder="Пример: бавни, концентриращи се върху разкази на героите; бързи с много напрежение"
                 value={pacing}
                 onChange={(e) => setPacing(e.target.value)}
-              />
+              >
+                <option value="" disabled>
+                  Изберете бързина на развитие
+                </option>
+                {pacingOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="mb-4">
-              <label htmlFor="formGroupExampleInput2" className="form-label">
+              <label htmlFor="depth" className="form-label">
                 Филми с какво ниво на задълбочаване харесвате?
               </label>
-              <input
-                type="text"
+              <select
+                id="depth"
                 className="form-control"
-                id="formGroupExampleInput2"
-                placeholder="Пример: лесни за проследяване - релаксиращи, трудни - с много истории и терминологии, характерни за филма"
                 value={depth}
                 onChange={(e) => setDepth(e.target.value)}
-              />
+              >
+                <option value="" disabled>
+                  Изберете ниво на задълбочаване
+                </option>
+                {depthOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label htmlFor="targetGroup" className="form-label">
+                Каква е вашата целева група?
+              </label>
+              <select
+                id="targetGroup"
+                className="form-control"
+                value={targetGroup}
+                onChange={(e) => setTargetGroup(e.target.value)}
+              >
+                <option value="" disabled>
+                  Изберете целева група
+                </option>
+                {targetGroupOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="mb-4">
               <label htmlFor="formGroupExampleInput2" className="form-label">
-                Каква е вашата целева група?
+                Какви теми ви интересуват?
               </label>
-              <input
-                type="text"
+              <div className="form-text">
+                Предпочитате филм, който засяга определена историческа ера,
+                държава или пък такъв, в който се изследва, разгадава мистерия
+                или социален проблем? Дайте описание. Можете също така да
+                споделите примери за филми, които предпочитате.
+              </div>
+              <textarea
                 className="form-control"
                 id="formGroupExampleInput2"
-                placeholder="Пример: за деца, за възрастни, семейни филми"
-                value={targetGroup}
-                onChange={(e) => setTargetGroup(e.target.value)}
+                placeholder="Опишете темите, които ви интересуват"
+                value={interests}
+                onChange={(e) => setInterests(e.target.value)}
+                rows={4}
               />
             </div>
 
