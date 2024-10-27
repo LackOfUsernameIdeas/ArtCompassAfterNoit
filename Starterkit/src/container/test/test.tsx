@@ -3,7 +3,7 @@ import { FC, Fragment, useState } from "react";
 interface Test {}
 
 const Test: FC<Test> = () => {
-  const [genres, setGenres] = useState("");
+  const [genres, setGenres] = useState<string[]>([]);
   const [mood, setMood] = useState("");
   const [timeAvailable, setTimeAvailable] = useState("");
   const [actors, setActors] = useState("");
@@ -20,6 +20,31 @@ const Test: FC<Test> = () => {
       : depth === "complex"
       ? "Предпочитам филмите да се задълбочават и да имат специфични истории и/или терминологии, специфично съществуващи във филма."
       : "Нямам предпочитания за дълбочината на филма.";
+
+  const genreOptions = [
+    "Екшън",
+    "Приключенски",
+    "Анимация",
+    "Биография",
+    "Комедия",
+    "Криминален",
+    "Документален",
+    "Драма",
+    "Семейни",
+    "Фентъзи",
+    "Филм-ноар",
+    "Исторически",
+    "Ужаси",
+    "Музика",
+    "Мюзикъл",
+    "Мистерия",
+    "Романтичен",
+    "Научна фантастика",
+    "Спортен",
+    "Трилър",
+    "Военен",
+    "Уестърн"
+  ];
 
   const openAIKey = import.meta.env.VITE_OPENAI_API_KEY;
   const generateMovieRecommendations = async () => {
@@ -154,6 +179,15 @@ const Test: FC<Test> = () => {
     }
   };
 
+  const toggleGenre = (genre: string) => {
+    setGenres((prevGenres) =>
+      prevGenres.includes(genre)
+        ? prevGenres.filter((g) => g !== genre)
+        : [...prevGenres, genre]
+    );
+  };
+  console.log("selectedGenres: ", genres);
+
   return (
     <Fragment>
       <div className="flex flex-col items-center justify-start min-h-screen pt-80 page-header-breadcrumb">
@@ -164,28 +198,35 @@ const Test: FC<Test> = () => {
                 Кои жанрове Ви се гледат в момента?
               </h6>
               <div className="bubble right">
-                <input
-                  type="text"
-                  className="form-control"
-                  id="formGroupExampleInput"
-                  placeholder="Пример: хорър, екшън, криминален"
-                  value={genres}
-                  onChange={(e) => setGenres(e.target.value)}
-                />
+                {genreOptions.map((genre) => (
+                  <div key={genre}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        value={genre}
+                        checked={genres.includes(genre)}
+                        onChange={() => toggleGenre(genre)}
+                      />
+                      {genre}
+                    </label>
+                  </div>
+                ))}
               </div>
             </div>
             <div className="mb-4">
-              <label htmlFor="formGroupExampleInput2" className="form-label">
+              <h6 className="questionTxt bubble left">
                 Как се чувствате в момента?
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="formGroupExampleInput2"
-                placeholder="Пример: развълнуван/на, любопитен/на, тъжен/на, изплашен/на"
-                value={mood}
-                onChange={(e) => setMood(e.target.value)}
-              />
+              </h6>
+              <div className="bubble right">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="formGroupExampleInput2"
+                  placeholder="Пример: развълнуван/на, любопитен/на, тъжен/на, изплашен/на"
+                  value={mood}
+                  onChange={(e) => setMood(e.target.value)}
+                />
+              </div>
             </div>
             <div className="mb-4">
               <label htmlFor="formGroupExampleInput2" className="form-label">
