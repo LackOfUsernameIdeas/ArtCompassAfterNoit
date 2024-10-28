@@ -67,13 +67,55 @@ const Test: FC<Test> = () => {
     "Възрастни над 65"
   ];
 
-  const saveRecommendationToDatabase = async (recommendation: any) => {
+  const saveUserPreferences = async (date: string) => {
     try {
       const token =
         localStorage.getItem("authToken") ||
         sessionStorage.getItem("authToken");
 
-      // Assuming recommendations is a single recommendation object
+      const response = await fetch(
+        "http://localhost:5000/save-user-preferences",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            token: token,
+            preferred_genres: Array.isArray(genres) ? genres.join(", ") : null,
+            mood,
+            timeAvailability,
+            preferred_actors: actors,
+            preferred_directors: directors,
+            preferred_countries: countries,
+            preferred_pacing: pacing,
+            preferred_depth: depth,
+            preferred_target_group: targetGroup,
+            interests: interests || null,
+            date: date
+          })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to save recommendation");
+      }
+
+      const result = await response.json();
+      console.log("Recommendation saved successfully:", result);
+    } catch (error) {
+      console.error("Error saving recommendation:", error);
+    }
+  };
+
+  const saveRecommendationToDatabase = async (
+    recommendation: any,
+    date: string
+  ) => {
+    try {
+      const token =
+        localStorage.getItem("authToken") ||
+        sessionStorage.getItem("authToken");
 
       // Check if the recommendation object is valid
       if (!recommendation || typeof recommendation !== "object") {
@@ -110,7 +152,8 @@ const Test: FC<Test> = () => {
         boxOffice: recommendation.boxOffice || null,
         production: recommendation.production || null,
         website: recommendation.website || null,
-        totalSeasons: recommendation.totalSeasons || null
+        totalSeasons: recommendation.totalSeasons || null,
+        date: date
       };
 
       // Log the formatted recommendation for debugging
@@ -139,7 +182,7 @@ const Test: FC<Test> = () => {
   };
 
   const openAIKey = import.meta.env.VITE_OPENAI_API_KEY;
-  const generateMovieRecommendations = async () => {
+  const generateMovieRecommendations = async (date: string) => {
     try {
       const response = await fetch(
         "https://api.openai.com/v1/chat/completions",
@@ -212,6 +255,34 @@ const Test: FC<Test> = () => {
       // }
       //--EXAMPLE--
 
+      console.log(
+        "prompt: ",
+        `Препоръчай ми 5 филма за гледане, които да са съобразени с моите вкусове и предпочитания, а именно:
+              Любими жанрове: ${genres}.
+              Емоционално състояние в този момент: ${mood}.
+              Разполагаемо свободно време за гледане: ${timeAvailability}.
+              Любими актьори: ${actors}.
+              Любими филмови режисьори: ${directors}.
+              Теми, които ме интересуват: ${interests}.
+              Филмите могат да бъдат от следните страни: ${countries}.
+              Темпото (бързината) на филмите предпочитам да бъде: ${pacing}.
+              Предпочитам филмите да са: ${depth}.
+              Целевата група е: ${targetGroup}.
+              Дай информация за всеки отделен филм по отделно защо той е подходящ за мен. Форматирай своя response във валиден JSON формат по този начин:
+              {
+                "Официално име на филма на английски": {
+                  "bgName": "Официално име на филма на български",
+                  "description": "Описание на филма",
+                  "reason": "Защо този филм е подходящ за мен?"
+                },
+                "Официално име на филма на английски": {
+                  "bgName": "Официално име на филма на български",
+                  "description": "Описание на филма",
+                  "reason": "Защо този филм е подходящ за мен?"
+                },
+                // ...additional movies
+              }. Не добавяй излишни кавички, думи или скоби, JSON формата трябва да е валиден за JavaScript JSON.parse() функцията.`
+      );
       const responseData = await response.json(); // Get the JSON response
       const responseJson = responseData.choices[0].message.content;
       const unescapedData = responseJson
@@ -296,7 +367,7 @@ const Test: FC<Test> = () => {
               };
 
               console.log("movieData: ", movieData);
-              await saveRecommendationToDatabase(movieData);
+              await saveRecommendationToDatabase(movieData, date);
             } else {
               console.log(`IMDb ID not found for ${movieName}`);
             }
@@ -309,6 +380,14 @@ const Test: FC<Test> = () => {
     } catch (error) {
       console.error("Error generating recommendations:", error);
     }
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    const date = new Date().toISOString();
+
+    event.preventDefault();
+    generateMovieRecommendations(date);
+    saveUserPreferences(date);
   };
 
   const toggleGenre = (genre: string) => {
@@ -544,7 +623,7 @@ const Test: FC<Test> = () => {
               <button
                 type="button"
                 className={`ti-btn ti-btn-primary-gradient ti-btn-wave`}
-                onClick={generateMovieRecommendations}
+                onClick={handleSubmit}
               >
                 Submit
               </button>

@@ -290,6 +290,70 @@ app.get("/user-data", (req, res) => {
   });
 });
 
+// Save User Preferences Route
+app.post("/save-user-preferences", (req, res) => {
+  const {
+    token,
+    preferred_genres,
+    mood,
+    timeAvailability,
+    preferred_actors,
+    preferred_directors,
+    preferred_countries,
+    preferred_pacing,
+    preferred_depth,
+    preferred_target_group,
+    interests,
+    date
+  } = req.body;
+
+  // Verify the token to get the user ID
+  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+
+    const userId = decoded.id;
+
+    console.log(
+      "data: ",
+      userId,
+      preferred_genres,
+      mood,
+      timeAvailability,
+      preferred_actors,
+      preferred_directors,
+      preferred_countries,
+      preferred_pacing,
+      preferred_depth,
+      preferred_target_group,
+      interests,
+      date
+    );
+    // Save user preferences to the database
+    db.saveUserPreferences(
+      userId,
+      preferred_genres,
+      mood,
+      timeAvailability,
+      preferred_actors,
+      preferred_directors,
+      preferred_countries,
+      preferred_pacing,
+      preferred_depth,
+      preferred_target_group,
+      interests,
+      date,
+      (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        res
+          .status(201)
+          .json({ message: "User preferences saved successfully!" });
+      }
+    );
+  });
+});
+
 // Save Recommendation
 app.post("/save-recommendation", (req, res) => {
   const {
@@ -321,7 +385,8 @@ app.post("/save-recommendation", (req, res) => {
     boxOffice,
     production,
     website,
-    totalSeasons
+    totalSeasons,
+    date
   } = req.body;
 
   jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
@@ -357,6 +422,7 @@ app.post("/save-recommendation", (req, res) => {
       production,
       website,
       totalSeasons,
+      date,
       (err, result) => {
         if (err) {
           return res.status(500).json({ error: err.message });

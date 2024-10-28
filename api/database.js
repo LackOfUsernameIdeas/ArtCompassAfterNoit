@@ -76,14 +76,15 @@ const saveRecommendation = (
   production,
   website,
   totalSeasons,
+  date,
   callback
 ) => {
   const query = `INSERT INTO recommendations (
   user_id, imdbID, title_en, title_bg, genre, reason, description, year,
   rated, released, runtime, director, writer, actors, plot, language, 
   country, awards, poster, ratings, metascore, imdbRating, imdbVotes, 
-  type, DVD, boxOffice, production, website, totalSeasons
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+  type, DVD, boxOffice, production, website, totalSeasons, date
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
 
   const values = [
     userId,
@@ -114,10 +115,49 @@ const saveRecommendation = (
     boxOffice,
     production,
     website,
-    totalSeasons
+    totalSeasons,
+    date
   ];
 
   db.query(query, values, callback);
+};
+
+const saveUserPreferences = (
+  userId,
+  preferred_genres,
+  mood,
+  timeAvailability,
+  preferred_actors,
+  preferred_directors,
+  preferred_countries,
+  preferred_pacing,
+  preferred_depth,
+  preferred_target_group,
+  interests,
+  date,
+  callback
+) => {
+  const sql = `INSERT INTO user_preferences (user_id, preferred_genres, mood, timeAvailability, preferred_actors, preferred_directors, preferred_countries, preferred_pacing, preferred_depth, preferred_target_group, interests, date)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+  const values = [
+    userId,
+    preferred_genres,
+    mood,
+    timeAvailability,
+    preferred_actors,
+    preferred_directors,
+    preferred_countries,
+    preferred_pacing,
+    preferred_depth,
+    preferred_target_group,
+    interests,
+    date
+  ];
+
+  db.query(sql, values, (err, result) => {
+    callback(err, result);
+  });
 };
 
 module.exports = {
@@ -126,5 +166,6 @@ module.exports = {
   findUserByEmail,
   updateUserPassword,
   getUserById,
-  saveRecommendation
+  saveRecommendation,
+  saveUserPreferences
 };
