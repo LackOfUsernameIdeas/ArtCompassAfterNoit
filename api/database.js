@@ -46,10 +46,85 @@ const getUserById = (userId, callback) => {
   db.query(query, [userId], callback);
 };
 
+const createRecommendation = (
+  userId,
+  imdbID,
+  title_en,
+  title_bg,
+  genre,
+  reason,
+  description,
+  year,
+  rated,
+  released,
+  runtime,
+  director,
+  writer,
+  actors,
+  plot,
+  language,
+  country,
+  awards,
+  poster,
+  ratings,
+  metascore,
+  imdbRating,
+  imdbVotes,
+  type,
+  DVD,
+  boxOffice,
+  production,
+  website,
+  totalSeasons,
+  callback
+) => {
+  const query = `INSERT INTO recommendations (
+  user_id, imdbID, title_en, title_bg, genre, reason, description, year,
+  rated, released, runtime, director, writer, actors, plot, language, 
+  country, awards, poster, ratings, metascore, imdbRating, imdbVotes, 
+  type, DVD, boxOffice, production, website, totalSeasons
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+
+  const values = [
+    userId,
+    imdbID,
+    title_en,
+    title_bg,
+    genre,
+    reason,
+    description,
+    year,
+    rated,
+    released,
+    runtime,
+    director,
+    writer,
+    actors,
+    plot,
+    language,
+    country,
+    awards,
+    poster,
+    JSON.stringify(ratings),
+    metascore,
+    imdbRating,
+    imdbVotes,
+    type,
+    DVD,
+    boxOffice,
+    production,
+    website,
+    totalSeasons
+  ];
+
+  db.query(query, values, callback);
+};
+
 module.exports = {
   checkEmailExists,
   createUser,
   findUserByEmail,
   updateUserPassword,
-  getUserById
+  getUserById,
+  createRecommendation
 };

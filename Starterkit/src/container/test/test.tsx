@@ -67,6 +67,75 @@ const Test: FC<Test> = () => {
     "Възрастни над 65"
   ];
 
+  const saveRecommendationToDatabase = async (recommendation: any) => {
+    try {
+      const userId = 1; // Replace this with the actual user ID as needed
+
+      // Assuming recommendations is a single recommendation object
+
+      // Check if the recommendation object is valid
+      if (!recommendation || typeof recommendation !== "object") {
+        console.warn("No valid recommendation data found.");
+        return; // Exit if the recommendation object is invalid
+      }
+
+      const formattedRecommendation = {
+        userId,
+        imdbID: recommendation.imdbID || null, // Handle undefined imdbID
+        title_en: recommendation.title || null, // recommendation title in English
+        title_bg: recommendation.bgName || null, // recommendation title in Bulgarian
+        genre: recommendation.genre || null,
+        reason: recommendation.reason || null,
+        description: recommendation.description || null,
+        year: recommendation.year || null,
+        rated: recommendation.rated || null,
+        released: recommendation.released || null,
+        runtime: recommendation.runtime || null,
+        director: recommendation.director || null,
+        writer: recommendation.writer || null,
+        actors: recommendation.actors || null,
+        plot: recommendation.plot || null,
+        language: recommendation.language || null,
+        country: recommendation.country || null,
+        awards: recommendation.awards || null,
+        poster: recommendation.poster || null,
+        ratings: recommendation.ratings || [], // Default to an empty array if no ratings
+        metascore: recommendation.metascore || null,
+        imdbRating: recommendation.imdbRating || null,
+        imdbVotes: recommendation.imdbVotes || null,
+        type: recommendation.type || null,
+        DVD: recommendation.DVD || null,
+        boxOffice: recommendation.boxOffice || null,
+        production: recommendation.production || null,
+        website: recommendation.website || null,
+        totalSeasons: recommendation.totalSeasons || null
+      };
+
+      // Log the formatted recommendation for debugging
+      console.log("Formatted Recommendation:", formattedRecommendation);
+
+      const response = await fetch(
+        "http://localhost:5000/save-recommendation",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(formattedRecommendation) // Send the formatted recommendation directly
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to save recommendation");
+      }
+
+      const result = await response.json();
+      console.log("Recommendation saved successfully:", result);
+    } catch (error) {
+      console.error("Error saving recommendation:", error);
+    }
+  };
+
   const openAIKey = import.meta.env.VITE_OPENAI_API_KEY;
   const generateMovieRecommendations = async () => {
     try {
@@ -98,15 +167,20 @@ const Test: FC<Test> = () => {
               Темпото (бързината) на филмите предпочитам да бъде: ${pacing}.
               Предпочитам филмите да са: ${depth}.
               Целевата група е: ${targetGroup}.
-              Дай информация за всеки отделен филм по отделно защо той е подходящ за мен. Форматирай своя response в JSON формат по този начин:
+              Дай информация за всеки отделен филм по отделно защо той е подходящ за мен. Форматирай своя response във валиден JSON формат по този начин:
               {
                 "Официално име на филма на английски": {
                   "bgName": "Официално име на филма на български",
                   "description": "Описание на филма",
                   "reason": "Защо този филм е подходящ за мен?"
                 },
+                "Официално име на филма на английски": {
+                  "bgName": "Официално име на филма на български",
+                  "description": "Описание на филма",
+                  "reason": "Защо този филм е подходящ за мен?"
+                },
                 // ...additional movies
-              }`
+              }. Не добавяй излишни кавички, думи или скоби, JSON формата трябва да е валиден за JavaScript JSON.parse() функцията.`
               }
             ]
           })
@@ -158,7 +232,7 @@ const Test: FC<Test> = () => {
         // 27427e59e17b74763, AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA
         // e59ceff412ebc4313, AIzaSyDqUez1TEmLSgZAvIaMkWfsq9rSm0kDjIw
         const imdbResponse = await fetch(
-          `https://customsearch.googleapis.com/customsearch/v1?key=AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA&cx=27427e59e17b74763&q=${encodeURIComponent(
+          `https://customsearch.googleapis.com/customsearch/v1?key=AIzaSyDqUez1TEmLSgZAvIaMkWfsq9rSm0kDjIw&cx=e59ceff412ebc4313&q=${encodeURIComponent(
             movieName
           )}`
         );
@@ -186,6 +260,41 @@ const Test: FC<Test> = () => {
                   2
                 )}`
               );
+
+              // Combine OMDb data and OpenAI data into a single object
+              const movieData = {
+                title: movieName,
+                bgName: recommendations[movieTitle].bgName,
+                description: recommendations[movieTitle].description,
+                reason: recommendations[movieTitle].reason,
+                year: omdbData.Year,
+                rated: omdbData.Rated,
+                released: omdbData.Released,
+                runtime: omdbData.Runtime,
+                genre: omdbData.Genre,
+                director: omdbData.Director,
+                writer: omdbData.Writer,
+                actors: omdbData.Actors,
+                plot: omdbData.Plot,
+                language: omdbData.Language,
+                country: omdbData.Country,
+                awards: omdbData.Awards,
+                poster: omdbData.Poster,
+                ratings: omdbData.Ratings,
+                metascore: omdbData.Metascore,
+                imdbRating: omdbData.imdbRating,
+                imdbVotes: omdbData.imdbVotes,
+                imdbID: omdbData.imdbID,
+                type: omdbData.Type,
+                DVD: omdbData.DVD,
+                boxOffice: omdbData.BoxOffice,
+                production: omdbData.Production,
+                website: omdbData.Website,
+                totalSeasons: omdbData.totalSeasons
+              };
+
+              console.log("movieData: ", movieData);
+              await saveRecommendationToDatabase(movieData);
             } else {
               console.log(`IMDb ID not found for ${movieName}`);
             }

@@ -290,6 +290,79 @@ app.get("/user-data", (req, res) => {
   });
 });
 
+// Save Recommendation
+app.post("/save-recommendation", (req, res) => {
+  const {
+    userId,
+    imdbID,
+    title_en,
+    title_bg,
+    genre,
+    reason,
+    description,
+    year,
+    rated,
+    released,
+    runtime,
+    director,
+    writer,
+    actors,
+    plot,
+    language,
+    country,
+    awards,
+    poster,
+    ratings,
+    metascore,
+    imdbRating,
+    imdbVotes,
+    type,
+    DVD,
+    boxOffice,
+    production,
+    website,
+    totalSeasons
+  } = req.body;
+
+  db.createRecommendation(
+    userId,
+    imdbID,
+    title_en,
+    title_bg,
+    genre,
+    reason,
+    description,
+    year,
+    rated,
+    released,
+    runtime,
+    director,
+    writer,
+    actors,
+    plot,
+    language,
+    country,
+    awards,
+    poster,
+    ratings,
+    metascore,
+    imdbRating,
+    imdbVotes,
+    type,
+    DVD,
+    boxOffice,
+    production,
+    website,
+    totalSeasons,
+    (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.status(201).json({ message: "Recommendation added successfully!" });
+    }
+  );
+});
+
 // Start server
 app.listen(5000, () => {
   console.log("Server started on http://localhost:5000");
