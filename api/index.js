@@ -327,7 +327,7 @@ app.post("/save-recommendation", (req, res) => {
   jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
     const userId = decoded.id;
-    db.createRecommendation(
+    db.saveRecommendation(
       userId,
       imdbID,
       title_en,

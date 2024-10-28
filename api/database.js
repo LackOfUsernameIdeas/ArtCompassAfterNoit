@@ -46,7 +46,7 @@ const getUserById = (userId, callback) => {
   db.query(query, [userId], callback);
 };
 
-const createRecommendation = (
+const saveRecommendation = (
   userId,
   imdbID,
   title_en,
@@ -126,5 +126,5 @@ module.exports = {
   findUserByEmail,
   updateUserPassword,
   getUserById,
-  createRecommendation
+  saveRecommendation
 };
