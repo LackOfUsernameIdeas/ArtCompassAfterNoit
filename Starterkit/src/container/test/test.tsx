@@ -69,7 +69,9 @@ const Test: FC<Test> = () => {
 
   const saveRecommendationToDatabase = async (recommendation: any) => {
     try {
-      const userId = 1; // Replace this with the actual user ID as needed
+      const token =
+        localStorage.getItem("authToken") ||
+        sessionStorage.getItem("authToken");
 
       // Assuming recommendations is a single recommendation object
 
@@ -80,7 +82,7 @@ const Test: FC<Test> = () => {
       }
 
       const formattedRecommendation = {
-        userId,
+        token,
         imdbID: recommendation.imdbID || null, // Handle undefined imdbID
         title_en: recommendation.title || null, // recommendation title in English
         title_bg: recommendation.bgName || null, // recommendation title in Bulgarian

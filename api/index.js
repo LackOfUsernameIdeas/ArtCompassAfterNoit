@@ -293,7 +293,7 @@ app.get("/user-data", (req, res) => {
 // Save Recommendation
 app.post("/save-recommendation", (req, res) => {
   const {
-    userId,
+    token,
     imdbID,
     title_en,
     title_bg,
@@ -324,43 +324,47 @@ app.post("/save-recommendation", (req, res) => {
     totalSeasons
   } = req.body;
 
-  db.createRecommendation(
-    userId,
-    imdbID,
-    title_en,
-    title_bg,
-    genre,
-    reason,
-    description,
-    year,
-    rated,
-    released,
-    runtime,
-    director,
-    writer,
-    actors,
-    plot,
-    language,
-    country,
-    awards,
-    poster,
-    ratings,
-    metascore,
-    imdbRating,
-    imdbVotes,
-    type,
-    DVD,
-    boxOffice,
-    production,
-    website,
-    totalSeasons,
-    (err, result) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
+  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.createRecommendation(
+      userId,
+      imdbID,
+      title_en,
+      title_bg,
+      genre,
+      reason,
+      description,
+      year,
+      rated,
+      released,
+      runtime,
+      director,
+      writer,
+      actors,
+      plot,
+      language,
+      country,
+      awards,
+      poster,
+      ratings,
+      metascore,
+      imdbRating,
+      imdbVotes,
+      type,
+      DVD,
+      boxOffice,
+      production,
+      website,
+      totalSeasons,
+      (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        res.status(201).json({ message: "Recommendation added successfully!" });
       }
-      res.status(201).json({ message: "Recommendation added successfully!" });
-    }
-  );
+    );
+  });
 });
 
 // Start server
