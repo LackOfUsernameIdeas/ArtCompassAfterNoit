@@ -3,7 +3,7 @@ import { FC, Fragment, useState } from "react";
 interface Test {}
 
 const Test: FC<Test> = () => {
-  const [type, setType] = useState("");
+  const [type, setType] = useState("Филм");
   const [genres, setGenres] = useState<string[]>([]);
   const [moods, setMoods] = useState<string[]>([]);
   const [timeAvailability, setTimeAvailability] = useState("");
