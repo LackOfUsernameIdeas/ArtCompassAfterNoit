@@ -3,8 +3,9 @@ import { FC, Fragment, useState } from "react";
 interface Test {}
 
 const Test: FC<Test> = () => {
+  const [type, setType] = useState("");
   const [genres, setGenres] = useState<string[]>([]);
-  const [mood, setMood] = useState("");
+  const [moods, setMoods] = useState<string[]>([]);
   const [timeAvailability, setTimeAvailability] = useState("");
   const [actors, setActors] = useState("");
   const [directors, setDirectors] = useState("");
@@ -13,6 +14,8 @@ const Test: FC<Test> = () => {
   const [pacing, setPacing] = useState("");
   const [depth, setDepth] = useState("");
   const [targetGroup, setTargetGroup] = useState("");
+
+  const typeOptions = ["Филм", "Сериал"];
 
   const genreOptions = [
     "Екшън",
@@ -37,6 +40,34 @@ const Test: FC<Test> = () => {
     "Трилър",
     "Военен",
     "Уестърн"
+  ];
+
+  const moodOptions = [
+    "Развълнуван/-на",
+    "Любопитен/-на",
+    "Тъжен/-на",
+    "Изплашен/-на",
+    "Щастлив/-а",
+    "Спокоен/-йна",
+    "Разочарован/-на",
+    "Уморен/-на",
+    "Нервен/-на",
+    "Уверен/-на",
+    "Разгневен/-на",
+    "Стресиран/-на",
+    "Съсредоточен/-на",
+    "Благодарен/-на",
+    "Носталгичен/-на",
+    "Безразличен/-на",
+    "Оптимистичен/-на",
+    "Песимистичен/-на",
+    "Празен/-на",
+    "Забавен/-на",
+    "Смутен/-на",
+    "Озадачен/-на",
+    "Разревожен/-на",
+    "Вдъхновен/-на",
+    "Досаден/-на"
   ];
 
   const timeAvailabilityOptions = [
@@ -67,12 +98,12 @@ const Test: FC<Test> = () => {
     "Възрастни над 65"
   ];
 
+  const token =
+    localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+  const openAIKey = import.meta.env.VITE_OPENAI_API_KEY;
+
   const saveUserPreferences = async (date: string) => {
     try {
-      const token =
-        localStorage.getItem("authToken") ||
-        sessionStorage.getItem("authToken");
-
       const response = await fetch(
         "http://localhost:5000/save-user-preferences",
         {
@@ -83,8 +114,9 @@ const Test: FC<Test> = () => {
           body: JSON.stringify({
             token: token,
             preferred_genres: Array.isArray(genres) ? genres.join(", ") : null,
-            mood,
+            mood: Array.isArray(moods) ? moods.join(", ") : null,
             timeAvailability,
+            preferred_type: type,
             preferred_actors: actors,
             preferred_directors: directors,
             preferred_countries: countries,
@@ -113,10 +145,6 @@ const Test: FC<Test> = () => {
     date: string
   ) => {
     try {
-      const token =
-        localStorage.getItem("authToken") ||
-        sessionStorage.getItem("authToken");
-
       // Check if the recommendation object is valid
       if (!recommendation || typeof recommendation !== "object") {
         console.warn("No valid recommendation data found.");
@@ -181,9 +209,9 @@ const Test: FC<Test> = () => {
     }
   };
 
-  const openAIKey = import.meta.env.VITE_OPENAI_API_KEY;
   const generateMovieRecommendations = async (date: string) => {
     try {
+      const typeText = type === "Филм" ? "филма" : "сериала";
       const response = await fetch(
         "https://api.openai.com/v1/chat/completions",
         {
@@ -197,32 +225,32 @@ const Test: FC<Test> = () => {
             messages: [
               {
                 role: "system",
-                content: `You are an AI that recommends movies based on user preferences. Provide a list of 10 movies that match the user's taste and preferences, formatted in Bulgarian, with detailed justifications. Return the result in JSON format as instructed.`
+                content: `You are an AI that recommends movies and series based on user preferences. Provide a list of movies and series, based on what the user has chosen to watch (movie or series), that match the user's taste and preferences, formatted in Bulgarian, with detailed justifications. Return the result in JSON format as instructed.`
               },
               {
                 role: "user",
-                content: `Препоръчай ми 5 филма за гледане, които да са съобразени с моите вкусове и предпочитания, а именно:
+                content: `Препоръчай ми 5 ${typeText} за гледане, които да са съобразени с моите вкусове и предпочитания, а именно:
               Любими жанрове: ${genres}.
-              Емоционално състояние в този момент: ${mood}.
+              Емоционално състояние в този момент: ${moods}.
               Разполагаемо свободно време за гледане: ${timeAvailability}.
               Любими актьори: ${actors}.
               Любими филмови режисьори: ${directors}.
               Теми, които ме интересуват: ${interests}.
-              Филмите могат да бъдат от следните страни: ${countries}.
-              Темпото (бързината) на филмите предпочитам да бъде: ${pacing}.
-              Предпочитам филмите да са: ${depth}.
+              Филмите/сериалите могат да бъдат от следните страни: ${countries}.
+              Темпото (бързината) на филмите/сериалите предпочитам да бъде: ${pacing}.
+              Предпочитам филмите/сериалите да са: ${depth}.
               Целевата група е: ${targetGroup}.
-              Дай информация за всеки отделен филм по отделно защо той е подходящ за мен. Форматирай своя response във валиден JSON формат по този начин:
+              Дай информация за всеки отделен филм/сериал по отделно защо той е подходящ за мен. Форматирай своя response във валиден JSON формат по този начин:
               {
-                "Официално име на филма на английски": {
-                  "bgName": "Официално име на филма на български",
-                  "description": "Описание на филма",
-                  "reason": "Защо този филм е подходящ за мен?"
+                "Официално име на ${typeText} на английски": {
+                  "bgName": "Официално име на ${typeText} на български",
+                  "description": "Описание на ${typeText}",
+                  "reason": "Защо този филм/сериал е подходящ за мен?"
                 },
-                "Официално име на филма на английски": {
-                  "bgName": "Официално име на филма на български",
-                  "description": "Описание на филма",
-                  "reason": "Защо този филм е подходящ за мен?"
+                "Официално име на ${typeText} на английски": {
+                  "bgName": "Официално име на ${typeText} на български",
+                  "description": "Описание на ${typeText}",
+                  "reason": "Защо този филм/сериал е подходящ за мен?"
                 },
                 // ...additional movies
               }. Не добавяй излишни кавички, думи или скоби, JSON формата трябва да е валиден за JavaScript JSON.parse() функцията.`
@@ -232,53 +260,30 @@ const Test: FC<Test> = () => {
         }
       );
 
-      //--EXAMPLE--
-      // Препоръчай ми 10 филма за гледане, които да са съобразени с моите вкусове и предпочитания, а именно:
-      // Любими жанрове: трилър, хорър.
-      // Емоционално състояние в този момент: нормално.
-      // Разполагаемо свободно време за гледане: цяла вечер.
-      // Любими актьори: Мили Боби Браун.
-      // Любими филмови режисьори: Нямам предпочитания.
-      // Теми, които ме интересуват: Нямам предпочитания.
-      // Филмите могат да бъдат от следните страни: САЩ.
-      // Темпото (бързината) на филмите предпочитам да бъде: Нямам предпочитания.
-      // Предпочитам филмите да се задълбочават и да имат специфични истории и/или терминологии, специфично съществуващи във филма.
-      // Целевата група е: Без възрастови ограничения.
-      // Дай информация за всеки отделен филм по отделно защо той е подходящ за мен. Форматирай своя response в JSON формат по този начин:
-      // {
-      //   "Официално име на филма на английски": {
-      //     "bgName": "Официално име на филма на български",
-      //     "description": "Описание на филма",
-      //     "reason": "Защо този филм е подходящ за мен?"
-      //   },
-      //   // ...additional movies
-      // }
-      //--EXAMPLE--
-
       console.log(
         "prompt: ",
-        `Препоръчай ми 5 филма за гледане, които да са съобразени с моите вкусове и предпочитания, а именно:
+        `Препоръчай ми 5 ${typeText} за гледане, които да са съобразени с моите вкусове и предпочитания, а именно:
               Любими жанрове: ${genres}.
-              Емоционално състояние в този момент: ${mood}.
+              Емоционално състояние в този момент: ${moods}.
               Разполагаемо свободно време за гледане: ${timeAvailability}.
               Любими актьори: ${actors}.
               Любими филмови режисьори: ${directors}.
               Теми, които ме интересуват: ${interests}.
-              Филмите могат да бъдат от следните страни: ${countries}.
-              Темпото (бързината) на филмите предпочитам да бъде: ${pacing}.
-              Предпочитам филмите да са: ${depth}.
+              Филмите/сериалите могат да бъдат от следните страни: ${countries}.
+              Темпото (бързината) на филмите/сериалите предпочитам да бъде: ${pacing}.
+              Предпочитам филмите/сериалите да са: ${depth}.
               Целевата група е: ${targetGroup}.
-              Дай информация за всеки отделен филм по отделно защо той е подходящ за мен. Форматирай своя response във валиден JSON формат по този начин:
+              Дай информация за всеки отделен филм/сериал по отделно защо той е подходящ за мен. Форматирай своя response във валиден JSON формат по този начин:
               {
-                "Официално име на филма на английски": {
-                  "bgName": "Официално име на филма на български",
-                  "description": "Описание на филма",
-                  "reason": "Защо този филм е подходящ за мен?"
+                "Официално име на ${typeText} на английски": {
+                  "bgName": "Официално име на ${typeText} на български",
+                  "description": "Описание на ${typeText}",
+                  "reason": "Защо този филм/сериал е подходящ за мен?"
                 },
-                "Официално име на филма на английски": {
-                  "bgName": "Официално име на филма на български",
-                  "description": "Описание на филма",
-                  "reason": "Защо този филм е подходящ за мен?"
+                "Официално име на ${typeText} на английски": {
+                  "bgName": "Официално име на ${typeText} на български",
+                  "description": "Описание на ${typeText}",
+                  "reason": "Защо този филм/сериал е подходящ за мен?"
                 },
                 // ...additional movies
               }. Не добавяй излишни кавички, думи или скоби, JSON формата трябва да е валиден за JavaScript JSON.parse() функцията.`
@@ -398,11 +403,36 @@ const Test: FC<Test> = () => {
     );
   };
 
+  const toggleMood = (mood: string) => {
+    setMoods((prevMoods) =>
+      prevMoods.includes(mood)
+        ? prevMoods.filter((m) => m !== mood)
+        : [...prevMoods, mood]
+    );
+  };
+
   return (
     <Fragment>
       <div className="flex flex-col items-center justify-start min-h-screen pt-80 page-header-breadcrumb">
         <div className="grid grid-cols-12 gap-6">
           <div className="xl:col-span-6 col-span-12">
+            <div className="mb-4">
+              <label htmlFor="timeAvailability" className="form-label">
+                В момента ви се гледа:
+              </label>
+              <select
+                id="type"
+                className="form-control"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+              >
+                {typeOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="mb-4">
               <h6 className="questionTxt bubble left">
                 Кои жанрове Ви се гледат в момента?
@@ -428,19 +458,25 @@ const Test: FC<Test> = () => {
                 Как се чувствате в момента?
               </h6>
               <div className="bubble right">
-                <input
-                  type="text"
-                  className="form-control"
-                  id="formGroupExampleInput2"
-                  placeholder="Пример: развълнуван/на, любопитен/на, тъжен/на, изплашен/на"
-                  value={mood}
-                  onChange={(e) => setMood(e.target.value)}
-                />
+                {moodOptions.map((mood) => (
+                  <div key={mood}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        value={mood}
+                        checked={moods.includes(mood)} // Check if the mood is selected
+                        onChange={() => toggleMood(mood)} // Function to handle mood selection
+                      />
+                      {mood}
+                    </label>
+                  </div>
+                ))}
               </div>
             </div>
+
             <div className="mb-4">
               <label htmlFor="timeAvailability" className="form-label">
-                С какво време разполагате?
+                С какво време за гледане разполагате?
               </label>
               <select
                 id="timeAvailability"
@@ -513,7 +549,7 @@ const Test: FC<Test> = () => {
             </div>
             <div className="mb-4">
               <label htmlFor="formGroupExampleInput2" className="form-label">
-                От кои страни предпочитате да е филмът?
+                От кои страни предпочитате да е филмът/сериалът?
               </label>
               <input
                 type="text"
@@ -540,7 +576,7 @@ const Test: FC<Test> = () => {
             </div>
             <div className="mb-4">
               <label htmlFor="pacing" className="form-label">
-                Филми с каква бързина на развитие на сюжетното действие
+                Филми/Сериали с каква бързина на развитие на сюжетното действие
                 предпочитате?
               </label>
               <select
@@ -561,7 +597,7 @@ const Test: FC<Test> = () => {
             </div>
             <div className="mb-4">
               <label htmlFor="depth" className="form-label">
-                Филми с какво ниво на задълбочаване харесвате?
+                Филми/Сериали с какво ниво на задълбочаване харесвате?
               </label>
               <select
                 id="depth"
@@ -604,10 +640,10 @@ const Test: FC<Test> = () => {
                 Какви теми ви интересуват?
               </label>
               <div className="form-text">
-                Предпочитате филм, който засяга определена историческа ера,
-                държава или пък такъв, в който се изследва, разгадава мистерия
-                или социален проблем? Дайте описание. Можете също така да
-                споделите примери за филми, които предпочитате.
+                Предпочитате филм/сериал, който засяга определена историческа
+                ера, държава или пък такъв, в който се изследва, разгадава
+                мистерия или социален проблем? Дайте описание. Можете също така
+                да споделите примери за филми/сериали, които предпочитате.
               </div>
               <textarea
                 className="form-control"

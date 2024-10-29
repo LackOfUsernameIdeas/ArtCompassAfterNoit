@@ -127,6 +127,7 @@ const saveUserPreferences = (
   preferred_genres,
   mood,
   timeAvailability,
+  preferred_type,
   preferred_actors,
   preferred_directors,
   preferred_countries,
@@ -137,14 +138,15 @@ const saveUserPreferences = (
   date,
   callback
 ) => {
-  const sql = `INSERT INTO user_preferences (user_id, preferred_genres, mood, timeAvailability, preferred_actors, preferred_directors, preferred_countries, preferred_pacing, preferred_depth, preferred_target_group, interests, date)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  const sql = `INSERT INTO user_preferences (user_id, preferred_genres, mood, timeAvailability, preferred_type, preferred_actors, preferred_directors, preferred_countries, preferred_pacing, preferred_depth, preferred_target_group, interests, date)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   const values = [
     userId,
     preferred_genres,
     mood,
     timeAvailability,
+    preferred_type,
     preferred_actors,
     preferred_directors,
     preferred_countries,
