@@ -388,6 +388,20 @@ const Test: FC<Test> = () => {
   };
 
   const handleSubmit = (event: React.FormEvent) => {
+    if (
+      !moods ||
+      !timeAvailability ||
+      !actors ||
+      !directors ||
+      !countries ||
+      !pacing ||
+      !depth ||
+      !targetGroup
+    ) {
+      alert("Моля, попълнете всички задължителни полета.");
+      return;
+    }
+
     const date = new Date().toISOString();
 
     event.preventDefault();
@@ -425,6 +439,7 @@ const Test: FC<Test> = () => {
                 className="form-control"
                 value={type}
                 onChange={(e) => setType(e.target.value)}
+                required
               >
                 {typeOptions.map((option) => (
                   <option key={option} value={option}>
@@ -446,6 +461,7 @@ const Test: FC<Test> = () => {
                         value={genre}
                         checked={genres.includes(genre)}
                         onChange={() => toggleGenre(genre)}
+                        required
                       />
                       {genre}
                     </label>
@@ -464,8 +480,9 @@ const Test: FC<Test> = () => {
                       <input
                         type="checkbox"
                         value={mood}
-                        checked={moods.includes(mood)} // Check if the mood is selected
-                        onChange={() => toggleMood(mood)} // Function to handle mood selection
+                        checked={moods.includes(mood)}
+                        onChange={() => toggleMood(mood)}
+                        required
                       />
                       {mood}
                     </label>
@@ -483,6 +500,7 @@ const Test: FC<Test> = () => {
                 className="form-control"
                 value={timeAvailability}
                 onChange={(e) => setTimeAvailability(e.target.value)}
+                required
               >
                 <option value="" disabled>
                   Изберете време
@@ -504,6 +522,7 @@ const Test: FC<Test> = () => {
                 placeholder="Пример: Брад Пит, Леонардо ди Каприо, Ема Уотсън"
                 value={actors}
                 onChange={(e) => setActors(e.target.value)}
+                required
               />
               <label>
                 <input
@@ -516,6 +535,7 @@ const Test: FC<Test> = () => {
                         : "Нямам предпочитания"
                     );
                   }}
+                  required
                 />
                 Нямам предпочитания
               </label>
@@ -531,6 +551,7 @@ const Test: FC<Test> = () => {
                 placeholder="Пример: Дъфър брадърс, Стивън Спилбърг, Джеки Чан"
                 value={directors}
                 onChange={(e) => setDirectors(e.target.value)}
+                required
               />
               <label>
                 <input
@@ -543,6 +564,7 @@ const Test: FC<Test> = () => {
                         : "Нямам предпочитания"
                     );
                   }}
+                  required
                 />
                 Нямам предпочитания
               </label>
@@ -558,6 +580,7 @@ const Test: FC<Test> = () => {
                 placeholder="Пример: България, САЩ"
                 value={countries}
                 onChange={(e) => setCountries(e.target.value)}
+                required
               />
               <label>
                 <input
@@ -570,6 +593,7 @@ const Test: FC<Test> = () => {
                         : "Нямам предпочитания"
                     );
                   }}
+                  required
                 />
                 Нямам предпочитания
               </label>
@@ -584,6 +608,7 @@ const Test: FC<Test> = () => {
                 className="form-control"
                 value={pacing}
                 onChange={(e) => setPacing(e.target.value)}
+                required
               >
                 <option value="" disabled>
                   Изберете бързина на развитие
@@ -604,6 +629,7 @@ const Test: FC<Test> = () => {
                 className="form-control"
                 value={depth}
                 onChange={(e) => setDepth(e.target.value)}
+                required
               >
                 <option value="" disabled>
                   Изберете ниво на задълбочаване
@@ -624,6 +650,7 @@ const Test: FC<Test> = () => {
                 className="form-control"
                 value={targetGroup}
                 onChange={(e) => setTargetGroup(e.target.value)}
+                required
               >
                 <option value="" disabled>
                   Изберете целева група
@@ -652,7 +679,11 @@ const Test: FC<Test> = () => {
                 value={interests}
                 onChange={(e) => setInterests(e.target.value)}
                 rows={4}
+                maxLength={200}
               />
+              <div className="text-right mt-2">
+                <small>{`${interests.length} / 200`}</small>
+              </div>
             </div>
 
             <div className="ti-btn-list space-x-2 rtl:space-x-reverse mt-4">
