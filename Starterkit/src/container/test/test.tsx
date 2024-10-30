@@ -311,12 +311,34 @@ const Test: FC<Test> = () => {
 
         // 27427e59e17b74763, AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA
         // e59ceff412ebc4313, AIzaSyDqUez1TEmLSgZAvIaMkWfsq9rSm0kDjIw
-        const imdbResponse = await fetch(
-          `https://customsearch.googleapis.com/customsearch/v1?key=AIzaSyDqUez1TEmLSgZAvIaMkWfsq9rSm0kDjIw&cx=e59ceff412ebc4313&q=${encodeURIComponent(
-            movieName
-          )}`
-        );
-        const imdbData = await imdbResponse.json();
+        let imdbData;
+
+        try {
+          // First attempt with the primary key and cx
+          let imdbResponse = await fetch(
+            `https://customsearch.googleapis.com/customsearch/v1?key=AIzaSyDqUez1TEmLSgZAvIaMkWfsq9rSm0kDjIw&cx=e59ceff412ebc4313&q=${encodeURIComponent(
+              movieName
+            )}`
+          );
+          imdbData = await imdbResponse.json();
+
+          // Retry with secondary key and cx if the first response is invalid
+          if (
+            !imdbResponse.ok ||
+            imdbResponse.status === 429 ||
+            imdbData.error
+          ) {
+            imdbResponse = await fetch(
+              `https://customsearch.googleapis.com/customsearch/v1?key=AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA&cx=27427e59e17b74763&q=${encodeURIComponent(
+                movieName
+              )}`
+            );
+            imdbData = await imdbResponse.json();
+          }
+        } catch (error) {
+          console.error("Error fetching IMDb data:", error);
+          continue; // Skip this movie if both requests fail
+        }
 
         // Step 4: Extract the IMDb link from the search results
         if (Array.isArray(imdbData.items)) {
