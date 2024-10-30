@@ -190,7 +190,7 @@ app.post("/signin", (req, res) => {
         .json({ error: "Въведената парола е грешна или непълна!" });
 
     const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, {
-      expiresIn: rememberMe ? "7d" : "1h"
+      expiresIn: rememberMe ? "7d" : "2h"
     });
     res.json({ message: "Успешно влизане!", token });
   });
@@ -310,7 +310,10 @@ app.post("/save-user-preferences", (req, res) => {
 
   // Verify the token to get the user ID
   jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
-    if (err) return res.status(401).json({ error: "Invalid token" });
+    if (err) {
+      console.log(err);
+      return res.status(401).json({ error: "Invalid token" });
+    }
 
     const userId = decoded.id;
 

@@ -15,6 +15,8 @@ const Test: FC<Test> = () => {
   const [depth, setDepth] = useState("");
   const [targetGroup, setTargetGroup] = useState("");
 
+  const [submitCount, setSubmitCount] = useState(0);
+
   const typeOptions = ["Филм", "Сериал"];
 
   const genreOptions = [
@@ -386,8 +388,13 @@ const Test: FC<Test> = () => {
       console.error("Error generating recommendations:", error);
     }
   };
+  console.log(submitCount);
 
   const handleSubmit = (event: React.FormEvent) => {
+    if (submitCount >= 20) {
+      alert("You have reached the maximum number of recommendations.");
+      return;
+    }
     if (
       !moods ||
       !timeAvailability ||
@@ -407,6 +414,8 @@ const Test: FC<Test> = () => {
     event.preventDefault();
     generateMovieRecommendations(date);
     saveUserPreferences(date);
+
+    setSubmitCount((prevCount) => prevCount + 1);
   };
 
   const toggleGenre = (genre: string) => {
