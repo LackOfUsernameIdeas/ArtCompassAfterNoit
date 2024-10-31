@@ -371,7 +371,7 @@ const Test: FC<Test> = () => {
             const imdbId = imdbUrl.match(/title\/(tt\d+)\//)?.[1]; // Extract IMDb ID from the URL
             if (imdbId) {
               const omdbResponse = await fetch(
-                `http://www.omdbapi.com/?apikey=89cbf31c&i=${imdbId}`
+                `http://www.omdbapi.com/?apikey=89cbf31c&i=${imdbId}&plot=full`
               );
               const omdbData = await omdbResponse.json();
 

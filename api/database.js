@@ -199,6 +199,28 @@ const getTopGenres = (limit, callback) => {
   db.query(query, [limit], callback);
 };
 
+const getTopActors = (limit, callback) => {
+  const query = `
+  SELECT actor, COUNT(*) AS actor_count
+  FROM (
+    SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(actors, ',', n.n), ',', -1)) AS actor
+    FROM recommendations
+    CROSS JOIN (
+        SELECT a.N + b.N * 10 + 1 AS n
+        FROM (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+              UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a
+        , (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+           UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
+        ORDER BY n
+    ) n
+    WHERE n.n <= 1 + (LENGTH(actors) - LENGTH(REPLACE(actors, ',', '')))
+  ) AS actor_list
+  GROUP BY actor
+  ORDER BY actor_count DESC
+  LIMIT ?`;
+  db.query(query, [limit], callback);
+};
+
 module.exports = {
   checkEmailExists,
   createUser,
@@ -208,5 +230,6 @@ module.exports = {
   saveRecommendation,
   saveUserPreferences,
   getTopRecommendations,
-  getTopGenres
+  getTopGenres,
+  getTopActors
 };

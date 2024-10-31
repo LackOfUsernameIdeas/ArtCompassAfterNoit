@@ -16,13 +16,14 @@ require("dotenv").config();
 const whitelist = ["http://localhost:5174"];
 const corsOptions = {
   origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
+    // Allow local dev and hosted domain, deny others
+    if (!origin || whitelist.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true,
+  credentials: false, //true for hosting
   optionSuccessStatus: 200
 };
 
@@ -458,13 +459,25 @@ app.get("/stats/platform/top-recommendations", (req, res) => {
   });
 });
 
-// Вземане на данни за най-гледани жанрове в платформата
+// Вземане на данни за най-препоръчвани жанрове в платформата
 app.get("/stats/platform/top-genres", async (req, res) => {
   const limit = 10;
 
   db.getTopGenres(limit, (err, results) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top genres" });
+    }
+    res.json({ topRecs: results });
+  });
+});
+
+// Вземане на данни за най-препоръчвани актьори в платформата
+app.get("/stats/platform/top-actors", async (req, res) => {
+  const limit = 10;
+
+  db.getTopActors(limit, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Error fetching top actors" });
     }
     res.json({ topRecs: results });
   });
