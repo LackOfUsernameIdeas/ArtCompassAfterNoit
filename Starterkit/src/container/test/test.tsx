@@ -4,7 +4,7 @@ interface Test {}
 
 const Test: FC<Test> = () => {
   const [type, setType] = useState("Филм");
-  const [genres, setGenres] = useState<string[]>([]);
+  const [genres, setGenres] = useState<{ en: string; bg: string }[]>([]);
   const [moods, setMoods] = useState<string[]>([]);
   const [timeAvailability, setTimeAvailability] = useState("");
   const [actors, setActors] = useState("");
@@ -20,28 +20,28 @@ const Test: FC<Test> = () => {
   const typeOptions = ["Филм", "Сериал"];
 
   const genreOptions = [
-    "Екшън",
-    "Приключенски",
-    "Анимация",
-    "Биография",
-    "Комедия",
-    "Криминален",
-    "Документален",
-    "Драма",
-    "Семейни",
-    "Фентъзи",
-    "Филм-ноар",
-    "Исторически",
-    "Ужаси",
-    "Музика",
-    "Мюзикъл",
-    "Мистерия",
-    "Романтичен",
-    "Научна фантастика",
-    "Спортен",
-    "Трилър",
-    "Военен",
-    "Уестърн"
+    { en: "Action", bg: "Екшън" },
+    { en: "Adventure", bg: "Приключенски" },
+    { en: "Animation", bg: "Анимация" },
+    { en: "Biography", bg: "Биография" },
+    { en: "Comedy", bg: "Комедия" },
+    { en: "Crime", bg: "Криминален" },
+    { en: "Documentary", bg: "Документален" },
+    { en: "Drama", bg: "Драма" },
+    { en: "Family", bg: "Семейни" },
+    { en: "Fantasy", bg: "Фентъзи" },
+    { en: "Film-Noir", bg: "Филм-ноар" },
+    { en: "History", bg: "Исторически" },
+    { en: "Horror", bg: "Ужаси" },
+    { en: "Music", bg: "Музика" },
+    { en: "Musical", bg: "Мюзикъл" },
+    { en: "Mystery", bg: "Мистерия" },
+    { en: "Romance", bg: "Романтичен" },
+    { en: "Sci-Fi", bg: "Научна фантастика" },
+    { en: "Sport", bg: "Спортен" },
+    { en: "Thriller", bg: "Трилър" },
+    { en: "War", bg: "Военен" },
+    { en: "Western", bg: "Уестърн" }
   ];
 
   const moodOptions = [
@@ -106,6 +106,11 @@ const Test: FC<Test> = () => {
 
   const saveUserPreferences = async (date: string) => {
     try {
+      const preferredGenresEn =
+        genres.length > 0 ? genres.map((g) => g.en).join(", ") : null;
+      const preferredGenresBg =
+        genres.length > 0 ? genres.map((g) => g.bg).join(", ") : null;
+
       const response = await fetch(
         "http://localhost:5000/save-user-preferences",
         {
@@ -115,7 +120,8 @@ const Test: FC<Test> = () => {
           },
           body: JSON.stringify({
             token: token,
-            preferred_genres: Array.isArray(genres) ? genres.join(", ") : null,
+            preferred_genres_en: preferredGenresEn,
+            preferred_genres_bg: preferredGenresBg,
             mood: Array.isArray(moods) ? moods.join(", ") : null,
             timeAvailability,
             preferred_type: type,
@@ -153,12 +159,26 @@ const Test: FC<Test> = () => {
         return; // Exit if the recommendation object is invalid
       }
 
+      // Split the genre string into an array
+      const genresEn = recommendation.genre
+        ? recommendation.genre.split(", ")
+        : null;
+
+      // Translate genres from English to Bulgarian using the genreOptions array
+      const genresBg = genresEn.map((genre: string) => {
+        const matchedGenre = genreOptions.find(
+          (option) => option.en.trim() === genre.trim()
+        );
+        return matchedGenre ? matchedGenre.bg : null;
+      });
+
       const formattedRecommendation = {
         token,
-        imdbID: recommendation.imdbID || null, // Handle undefined imdbID
-        title_en: recommendation.title || null, // recommendation title in English
-        title_bg: recommendation.bgName || null, // recommendation title in Bulgarian
-        genre: recommendation.genre || null,
+        imdbID: recommendation.imdbID || null,
+        title_en: recommendation.title || null,
+        title_bg: recommendation.bgName || null,
+        genre_en: genresEn.join(", "),
+        genre_bg: genresBg.join(", "),
         reason: recommendation.reason || null,
         description: recommendation.description || null,
         year: recommendation.year || null,
@@ -173,7 +193,7 @@ const Test: FC<Test> = () => {
         country: recommendation.country || null,
         awards: recommendation.awards || null,
         poster: recommendation.poster || null,
-        ratings: recommendation.ratings || [], // Default to an empty array if no ratings
+        ratings: recommendation.ratings || [],
         metascore: recommendation.metascore || null,
         imdbRating: recommendation.imdbRating || null,
         imdbVotes: recommendation.imdbVotes || null,
@@ -232,7 +252,7 @@ const Test: FC<Test> = () => {
               {
                 role: "user",
                 content: `Препоръчай ми 5 ${typeText} за гледане, които да са съобразени с моите вкусове и предпочитания, а именно:
-              Любими жанрове: ${genres}.
+              Любими жанрове: ${genres.map((genre) => genre.bg)}.
               Емоционално състояние в този момент: ${moods}.
               Разполагаемо свободно време за гледане: ${timeAvailability}.
               Любими актьори: ${actors}.
@@ -265,7 +285,7 @@ const Test: FC<Test> = () => {
       console.log(
         "prompt: ",
         `Препоръчай ми 5 ${typeText} за гледане, които да са съобразени с моите вкусове и предпочитания, а именно:
-              Любими жанрове: ${genres}.
+              Любими жанрове: ${genres.map((genre) => genre.bg)}.
               Емоционално състояние в този момент: ${moods}.
               Разполагаемо свободно време за гледане: ${timeAvailability}.
               Любими актьори: ${actors}.
@@ -440,10 +460,10 @@ const Test: FC<Test> = () => {
     setSubmitCount((prevCount) => prevCount + 1);
   };
 
-  const toggleGenre = (genre: string) => {
+  const toggleGenre = (genre: { en: string; bg: string }) => {
     setGenres((prevGenres) =>
-      prevGenres.includes(genre)
-        ? prevGenres.filter((g) => g !== genre)
+      prevGenres.find((g) => g.en === genre.en)
+        ? prevGenres.filter((g) => g.en !== genre.en)
         : [...prevGenres, genre]
     );
   };
@@ -456,6 +476,10 @@ const Test: FC<Test> = () => {
     );
   };
 
+  console.log(
+    "selected genres: ",
+    genres.map((genre) => genre.bg)
+  );
   return (
     <Fragment>
       <div className="flex flex-col items-center justify-start min-h-screen pt-80 page-header-breadcrumb">
@@ -485,16 +509,18 @@ const Test: FC<Test> = () => {
               </h6>
               <div className="bubble right">
                 {genreOptions.map((genre) => (
-                  <div key={genre}>
+                  <div key={genre.en}>
                     <label>
                       <input
                         type="checkbox"
-                        value={genre}
-                        checked={genres.includes(genre)}
+                        value={genre.en}
+                        checked={
+                          genres.find((g) => g.en === genre.en) !== undefined
+                        }
                         onChange={() => toggleGenre(genre)}
                         required
                       />
-                      {genre}
+                      {genre.bg}
                     </label>
                   </div>
                 ))}

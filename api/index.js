@@ -13,20 +13,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 require("dotenv").config();
 
-const whitelist = ["http://localhost:5174"];
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-  optionSuccessStatus: 200
-};
+// const whitelist = ["http://localhost:5174"];
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     if (whitelist.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error("Not allowed by CORS"));
+//     }
+//   },
+//   credentials: true,
+//   optionSuccessStatus: 200
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 let verificationCodes = {};
 
@@ -264,7 +264,7 @@ app.post("/token-validation", (req, res) => {
   });
 });
 
-// Get user data route
+// Get User Data Route
 app.get("/user-data", (req, res) => {
   const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
 
@@ -294,7 +294,8 @@ app.get("/user-data", (req, res) => {
 app.post("/save-user-preferences", (req, res) => {
   const {
     token,
-    preferred_genres,
+    preferred_genres_en,
+    preferred_genres_bg,
     mood,
     timeAvailability,
     preferred_type,
@@ -320,7 +321,8 @@ app.post("/save-user-preferences", (req, res) => {
     console.log(
       "data: ",
       userId,
-      preferred_genres,
+      preferred_genres_en,
+      preferred_genres_bg,
       mood,
       timeAvailability,
       preferred_type,
@@ -336,7 +338,8 @@ app.post("/save-user-preferences", (req, res) => {
     // Save user preferences to the database
     db.saveUserPreferences(
       userId,
-      preferred_genres,
+      preferred_genres_en,
+      preferred_genres_bg,
       mood,
       timeAvailability,
       preferred_type,
@@ -367,7 +370,8 @@ app.post("/save-recommendation", (req, res) => {
     imdbID,
     title_en,
     title_bg,
-    genre,
+    genre_en,
+    genre_bg,
     reason,
     description,
     year,
@@ -403,7 +407,8 @@ app.post("/save-recommendation", (req, res) => {
       imdbID,
       title_en,
       title_bg,
-      genre,
+      genre_en,
+      genre_bg,
       reason,
       description,
       year,
@@ -436,6 +441,32 @@ app.post("/save-recommendation", (req, res) => {
         res.status(201).json({ message: "Recommendation added successfully!" });
       }
     );
+  });
+});
+
+// Get Most Recommended Movies/Series
+app.get("/stats/platform/top-recommendations", (req, res) => {
+  const limit = 10;
+
+  db.getTopRecommendations(limit, (err, results) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ error: "Error fetching top recommendations" });
+    }
+    res.json({ topRecs: results });
+  });
+});
+
+// Вземане на данни за най-гледани жанрове в платформата
+app.get("/stats/platform/top-genres", async (req, res) => {
+  const limit = 10;
+
+  db.getTopGenres(limit, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Error fetching top genres" });
+    }
+    res.json({ topRecs: results });
   });
 });
 
