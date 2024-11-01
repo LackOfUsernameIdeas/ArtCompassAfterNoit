@@ -16,6 +16,7 @@ const Test: FC<Test> = () => {
   const [targetGroup, setTargetGroup] = useState("");
 
   const [submitCount, setSubmitCount] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const typeOptions = ["Филм", "Сериал"];
 
@@ -434,7 +435,7 @@ const Test: FC<Test> = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     if (submitCount >= 20) {
-      alert("You have reached the maximum number of recommendations.");
+      alert("Достигнахте максималния брой предложения! :(");
       return;
     }
     if (
@@ -447,7 +448,7 @@ const Test: FC<Test> = () => {
       !depth ||
       !targetGroup
     ) {
-      alert("Моля, попълнете всички задължителни полета.");
+      alert("Моля, попълнете всички задължителни полета!");
       return;
     }
 
@@ -458,7 +459,14 @@ const Test: FC<Test> = () => {
     saveUserPreferences(date);
 
     setSubmitCount((prevCount) => prevCount + 1);
+    setIsModalOpen(true); 
   };
+
+  const closeModal = () => setIsModalOpen(false);
+
+  const handleSeeMore = (movie: any) => {
+  // Define what happens on "See More" click
+  alert(`More details for ${movie.title}`);
 
   const toggleGenre = (genre: { en: string; bg: string }) => {
     setGenres((prevGenres) =>
@@ -741,15 +749,35 @@ const Test: FC<Test> = () => {
                 <small>{`${interests.length} / 200`}</small>
               </div>
             </div>
-
-            <div className="ti-btn-list space-x-2 rtl:space-x-reverse mt-4">
-              <button
-                type="button"
-                className={`ti-btn ti-btn-primary-gradient ti-btn-wave`}
-                onClick={handleSubmit}
-              >
-                Submit
-              </button>
+              
+            <div>
+              <div className="ti-btn-list space-x-2 rtl:space-x-reverse mt-4">
+                <button
+                  type="button"
+                  className={`ti-btn ti-btn-primary-gradient ti-btn-wave`}
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </button>
+              </div>
+              {/* Modal */}
+              {isModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                  <div className="bg-red rounded-lg p-6 max-w-md w-full relative overflow-y-auto max-h-80">
+                    <button
+                      className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+                      onClick={closeModal}
+                    >
+                      ✕
+                    </button>
+                    <div className="text-center">
+                      <h2 className="text-xl font-semibold mb-4">Нашите предложения:</h2>
+                      {/* Content goes here; this will be scrollable if it exceeds max height */}
+                      <p>Your generated recommendations will be displayed here...</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
