@@ -18,7 +18,7 @@ const Test: FC<Test> = () => {
   const [submitCount, setSubmitCount] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recommendationList, setRecommendationList] = useState<any[]>([]);
-  
+
   const typeOptions = ["Филм", "Сериал"];
 
   const genreOptions = [
@@ -465,14 +465,15 @@ const Test: FC<Test> = () => {
     saveUserPreferences(date);
 
     setSubmitCount((prevCount) => prevCount + 1);
-    setIsModalOpen(true); 
+    setIsModalOpen(true);
   };
 
   const closeModal = () => setIsModalOpen(false);
 
   const handleSeeMore = (movie: any) => {
-  // Define what happens on "See More" click
-  alert(`More details for ${movie.title}`);
+    // Define what happens on "See More" click
+    alert(`More details for ${movie.title}`);
+  };
 
   const toggleGenre = (genre: { en: string; bg: string }) => {
     setGenres((prevGenres) =>
@@ -490,10 +491,7 @@ const Test: FC<Test> = () => {
     );
   };
 
-  console.log(
-    "selected genres: ",
-    genres.map((genre) => genre.bg)
-  );
+  console.log("recommendationList: ", recommendationList);
   return (
     <Fragment>
       <div className="flex flex-col items-center justify-start min-h-screen pt-20 page-header-breadcrumb">
@@ -757,7 +755,7 @@ const Test: FC<Test> = () => {
                 <small>{`${interests.length} / 200`}</small>
               </div>
             </div>
-              
+
             <div>
               <div className="ti-btn-list space-x-2 rtl:space-x-reverse mt-4">
                 <button
@@ -779,9 +777,13 @@ const Test: FC<Test> = () => {
                       ✕
                     </button>
                     <div className="text-center">
-                      <h2 className="text-xl font-semibold mb-4">Нашите предложения:</h2>
+                      <h2 className="text-xl font-semibold mb-4">
+                        Нашите предложения:
+                      </h2>
                       {/* Content goes here; this will be scrollable if it exceeds max height */}
-                      <p>Your generated recommendations will be displayed here...</p>
+                      <p>
+                        Your generated recommendations will be displayed here...
+                      </p>
                     </div>
                   </div>
                 </div>
