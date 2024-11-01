@@ -17,7 +17,8 @@ const Test: FC<Test> = () => {
 
   const [submitCount, setSubmitCount] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [recommendationList, setRecommendationList] = useState<any[]>([]);
+  
   const typeOptions = ["Филм", "Сериал"];
 
   const genreOptions = [
@@ -385,7 +386,7 @@ const Test: FC<Test> = () => {
               );
 
               // Combine OMDb data and OpenAI data into a single object
-              const movieData = {
+              const recommendationData = {
                 title: movieName,
                 bgName: recommendations[movieTitle].bgName,
                 description: recommendations[movieTitle].description,
@@ -416,8 +417,13 @@ const Test: FC<Test> = () => {
                 totalSeasons: omdbData.totalSeasons
               };
 
-              console.log("movieData: ", movieData);
-              await saveRecommendationToDatabase(movieData, date);
+              setRecommendationList((prevRecommendations) => [
+                ...prevRecommendations,
+                recommendationData
+              ]);
+
+              console.log("recommendationData: ", recommendationData);
+              await saveRecommendationToDatabase(recommendationData, date);
             } else {
               console.log(`IMDb ID not found for ${movieName}`);
             }
@@ -524,7 +530,9 @@ const Test: FC<Test> = () => {
                       <input
                         type="checkbox"
                         value={genre.en}
-                        checked={genres.find((g) => g.en === genre.en) !== undefined}
+                        checked={
+                          genres.find((g) => g.en === genre.en) !== undefined
+                        }
                         onChange={() => toggleGenre(genre)}
                         required
                       />
