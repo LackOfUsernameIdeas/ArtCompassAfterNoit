@@ -19510,9 +19510,19 @@ input[type="color" i]::-webkit-color-swatch {
 .right {
   color: #f09433;
   margin-left: 50%;
-  --_p: 100%;
   border-bottom-right-radius: 0 0;
   place-self: end;
+}
+
+.multiCh {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.5em;
+  margin-left: 40% !important;
+}
+
+.MChitem {
+  margin-bottom: 0.5em;
 }
 
 /*# sourceMappingURL=style.css.map */

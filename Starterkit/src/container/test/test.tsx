@@ -482,41 +482,41 @@ const Test: FC<Test> = () => {
   );
   return (
     <Fragment>
-      <div className="flex flex-col items-center justify-start min-h-screen pt-80 page-header-breadcrumb">
-        <div className="grid grid-cols-12 gap-6">
-          <div className="xl:col-span-6 col-span-12">
+      <div className="flex flex-col items-center justify-start min-h-screen pt-20 page-header-breadcrumb">
+        <div className="grid grid-cols-16 gap-1">
+          <div className="xl:col-span-6 col-span-16">
             <div className="mb-4">
-              <label htmlFor="timeAvailability" className="form-label">
-                В момента ви се гледа:
-              </label>
-              <select
-                id="type"
-                className="form-control"
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-                required
-              >
-                {typeOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
+              <h6 className="questionTxt bubble left">
+                Какво търсите - филм или сериал?
+              </h6>
+              <div className="bubble right">
+                <select
+                  id="type"
+                  className="form-control"
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                  required
+                >
+                  {typeOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
             <div className="mb-4">
               <h6 className="questionTxt bubble left">
                 Кои жанрове Ви се гледат в момента?
               </h6>
-              <div className="bubble right">
+              <div className="bubble right multiCh MChitem">
                 {genreOptions.map((genre) => (
                   <div key={genre.en}>
                     <label>
                       <input
                         type="checkbox"
                         value={genre.en}
-                        checked={
-                          genres.find((g) => g.en === genre.en) !== undefined
-                        }
+                        checked={genres.find((g) => g.en === genre.en) !== undefined}
                         onChange={() => toggleGenre(genre)}
                         required
                       />
@@ -530,7 +530,7 @@ const Test: FC<Test> = () => {
               <h6 className="questionTxt bubble left">
                 Как се чувствате в момента?
               </h6>
-              <div className="bubble right">
+              <div className="bubble right multiCh MChitem">
                 {moodOptions.map((mood) => (
                   <div key={mood}>
                     <label>
@@ -547,7 +547,6 @@ const Test: FC<Test> = () => {
                 ))}
               </div>
             </div>
-
             <div className="mb-4">
               <label htmlFor="timeAvailability" className="form-label">
                 С какво време за гледане разполагате?
