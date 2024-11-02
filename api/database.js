@@ -221,6 +221,50 @@ const getTopActors = (limit, callback) => {
   db.query(query, [limit], callback);
 };
 
+const getTopDirectors = (limit, callback) => {
+  const query = `
+  SELECT director, COUNT(*) AS director_count
+  FROM (
+    SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(director, ',', n.n), ',', -1)) AS director
+    FROM recommendations
+    CROSS JOIN (
+        SELECT a.N + b.N * 10 + 1 AS n
+        FROM (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+              UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a
+        , (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+           UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
+        ORDER BY n
+    ) n
+    WHERE n.n <= 1 + (LENGTH(director) - LENGTH(REPLACE(director, ',', '')))
+  ) AS director_list
+  GROUP BY director
+  ORDER BY director_count DESC
+  LIMIT ?`;
+  db.query(query, [limit], callback);
+};
+
+const getTopWriters = (limit, callback) => {
+  const query = `
+  SELECT writer, COUNT(*) AS writer_count
+  FROM (
+    SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(writer, ',', n.n), ',', -1)) AS writer
+    FROM recommendations
+    CROSS JOIN (
+        SELECT a.N + b.N * 10 + 1 AS n
+        FROM (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+              UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a
+        , (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+           UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
+        ORDER BY n
+    ) n
+    WHERE n.n <= 1 + (LENGTH(writer) - LENGTH(REPLACE(writer, ',', '')))
+  ) AS writer_list
+  GROUP BY writer
+  ORDER BY writer_count DESC
+  LIMIT ?`;
+  db.query(query, [limit], callback);
+};
+
 module.exports = {
   checkEmailExists,
   createUser,
@@ -231,5 +275,7 @@ module.exports = {
   saveUserPreferences,
   getTopRecommendations,
   getTopGenres,
-  getTopActors
+  getTopActors,
+  getTopDirectors,
+  getTopWriters
 };

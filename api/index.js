@@ -483,6 +483,30 @@ app.get("/stats/platform/top-actors", async (req, res) => {
   });
 });
 
+// Вземане на данни за най-препоръчвани филмови режисьори в платформата
+app.get("/stats/platform/top-directors", async (req, res) => {
+  const limit = 10;
+
+  db.getTopDirectors(limit, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Error fetching top directors" });
+    }
+    res.json({ topRecs: results });
+  });
+});
+
+// Вземане на данни за най-препоръчвани сценаристи в платформата
+app.get("/stats/platform/top-writers", async (req, res) => {
+  const limit = 10;
+
+  db.getTopWriters(limit, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Error fetching top writers" });
+    }
+    res.json({ topRecs: results });
+  });
+});
+
 // Start server
 app.listen(5000, () => {
   console.log("Server started on http://localhost:5000");
