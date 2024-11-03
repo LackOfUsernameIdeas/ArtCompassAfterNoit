@@ -199,6 +199,49 @@ const getTopGenres = (limit, callback) => {
   db.query(query, [limit], callback);
 };
 
+const getGenrePopularityOverTime = (callback) => {
+  const query = `
+    SELECT 
+        TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(genre_en, ',', numbers.n), ',', -1)) AS genre_en,
+        TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(genre_bg, ',', numbers.n), ',', -1)) AS genre_bg,
+        year,
+        COUNT(*) AS genre_count
+    FROM 
+        recommendations
+        JOIN (SELECT 1 n UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5) numbers 
+        ON CHAR_LENGTH(genre_en) - CHAR_LENGTH(REPLACE(genre_en, ',', '')) >= numbers.n - 1
+    GROUP BY 
+        genre_en, genre_bg, year
+    ORDER BY 
+        year, genre_en;
+  `;
+  db.query(query, (err, results) => {
+    if (err) {
+      return callback(err);
+    }
+
+    // Transform results into the desired structure
+    const formattedResults = results.reduce((acc, row) => {
+      const { year, genre_en, genre_bg, genre_count } = row;
+
+      if (!acc[year]) {
+        acc[year] = {};
+      }
+
+      // Structure the data as specified
+      acc[year][genre_en] = {
+        genre_en,
+        genre_bg,
+        genre_count
+      };
+
+      return acc;
+    }, {});
+
+    callback(null, formattedResults);
+  });
+};
+
 const getTopActors = (limit, callback) => {
   const query = `
   SELECT actor, COUNT(*) AS actor_count
@@ -265,6 +308,141 @@ const getTopWriters = (limit, callback) => {
   db.query(query, [limit], callback);
 };
 
+const getOscarsByMovie = (callback) => {
+  const query = `
+  SELECT 
+      r.id,
+      r.imdbID,           
+      r.title_en,
+      r.title_bg,
+      r.type,
+      r.awards,           
+
+      -- Extract Oscar wins as an integer
+      COALESCE(
+          CAST(NULLIF(SUBSTRING_INDEX(SUBSTRING_INDEX(r.awards, 'Won ', -1), ' Oscar', 1), '') AS UNSIGNED), 
+          0
+      ) AS oscar_wins,
+
+      -- Extract Oscar nominations as an integer
+      COALESCE(
+          CAST(NULLIF(SUBSTRING_INDEX(SUBSTRING_INDEX(r.awards, 'Nominated for ', -1), ' Oscar', 1), '') AS UNSIGNED), 
+          0
+      ) AS oscar_nominations
+
+  FROM 
+      recommendations r
+  WHERE 
+      r.awards IS NOT NULL
+      AND (
+          r.awards REGEXP 'Won [0-9]+ Oscar' OR 
+          r.awards REGEXP 'Won [0-9]+ Oscars' OR 
+          r.awards REGEXP 'Nominated for [0-9]+ Oscar' OR 
+          r.awards REGEXP 'Nominated for [0-9]+ Oscars'
+      );
+  `;
+  db.query(query, callback);
+};
+
+const getTotalAwardsByMovie = (callback) => {
+  const query = `
+  SELECT 
+      r.id,
+      r.imdbID,          
+      r.title_en,
+      r.title_bg,
+      r.type,
+      r.awards,           
+
+      -- Extract total wins as an integer
+      COALESCE(
+          CAST(NULLIF(REGEXP_SUBSTR(r.awards, '([0-9]+) win(s)?'), '') AS UNSIGNED), 
+          0
+      ) AS total_wins,
+
+      -- Extract total nominations as an integer
+      COALESCE(
+          CAST(NULLIF(REGEXP_SUBSTR(r.awards, '([0-9]+) nomination(s)?'), '') AS UNSIGNED), 
+          0
+      ) AS total_nominations
+
+  FROM 
+      recommendations r
+  WHERE 
+      r.awards IS NOT NULL;
+  `;
+  db.query(query, callback);
+};
+
+const getTotalAwardsCount = (callback) => {
+  const query = `
+SELECT 
+    -- Calculate total Oscar wins
+    (
+        SELECT 
+            SUM(
+                COALESCE(
+                    CAST(NULLIF(SUBSTRING_INDEX(SUBSTRING_INDEX(r2.awards, 'Won ', -1), ' Oscar', 1), '') AS UNSIGNED), 
+                    0
+                )
+            )
+        FROM 
+            recommendations r2
+        WHERE 
+            r2.awards IS NOT NULL
+            AND (r2.awards REGEXP 'Won [0-9]+ Oscar' OR r2.awards REGEXP 'Won [0-9]+ Oscars')
+    ) AS total_oscar_wins,
+
+    -- Calculate total Oscar nominations
+    (
+        SELECT 
+            SUM(
+                COALESCE(
+                    CAST(NULLIF(SUBSTRING_INDEX(SUBSTRING_INDEX(r2.awards, 'Nominated for ', -1), ' Oscar', 1), '') AS UNSIGNED), 
+                    0
+                )
+            )
+        FROM 
+            recommendations r2
+        WHERE 
+            r2.awards IS NOT NULL
+            AND (r2.awards REGEXP 'Nominated for [0-9]+ Oscar' OR r2.awards REGEXP 'Nominated for [0-9]+ Oscars')
+    ) AS total_oscar_nominations,
+
+    -- Calculate total wins from all awards
+    (
+        SELECT 
+            SUM(
+                COALESCE(
+                    CAST(NULLIF(REGEXP_SUBSTR(r2.awards, '([0-9]+) wins'), '') AS UNSIGNED), 
+                    0
+                )
+            )
+        FROM 
+            recommendations r2
+        WHERE 
+            r2.awards IS NOT NULL
+            AND (r2.awards REGEXP '([0-9]+) wins' OR r2.awards REGEXP '([0-9]+) win')
+    ) AS total_awards_wins,
+
+    -- Calculate total nominations from all awards
+    (
+        SELECT 
+            SUM(
+                COALESCE(
+                    CAST(NULLIF(REGEXP_SUBSTR(r2.awards, '([0-9]+) nominations'), '') AS UNSIGNED), 
+                    0
+                )
+            )
+        FROM 
+            recommendations r2
+        WHERE 
+            r2.awards IS NOT NULL
+            AND (r2.awards REGEXP '([0-9]+) nominations' OR r2.awards REGEXP '([0-9]+) nomination')
+    ) AS total_awards_nominations;`;
+  db.query(query, callback);
+};
+
 module.exports = {
   checkEmailExists,
   createUser,
@@ -275,7 +453,11 @@ module.exports = {
   saveUserPreferences,
   getTopRecommendations,
   getTopGenres,
+  getGenrePopularityOverTime,
   getTopActors,
   getTopDirectors,
-  getTopWriters
+  getTopWriters,
+  getOscarsByMovie,
+  getTotalAwardsByMovie,
+  getTotalAwardsCount
 };

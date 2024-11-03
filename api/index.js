@@ -471,6 +471,18 @@ app.get("/stats/platform/top-genres", async (req, res) => {
   });
 });
 
+// Вземане на данни за най-популярни жанрове във времето в платформата
+app.get("/stats/platform/genre-popularity-over-time", async (req, res) => {
+  db.getGenrePopularityOverTime((err, results) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ error: "Error fetching genre popularity over time" });
+    }
+    res.json(results);
+  });
+});
+
 // Вземане на данни за най-препоръчвани актьори в платформата
 app.get("/stats/platform/top-actors", async (req, res) => {
   const limit = 10;
@@ -504,6 +516,38 @@ app.get("/stats/platform/top-writers", async (req, res) => {
       return res.status(500).json({ error: "Error fetching top writers" });
     }
     res.json({ topRecs: results });
+  });
+});
+
+// Вземане на данни за награди оскар за всеки филм/сериал в платформата
+app.get("/stats/platform/oscars-by-movie", async (req, res) => {
+  db.getOscarsByMovie((err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Error fetching oscars" });
+    }
+    res.json({ oscars: results });
+  });
+});
+
+// Вземане на данни за всички награди за всеки филм/сериал в платформата
+app.get("/stats/platform/total-awards-by-movie", async (req, res) => {
+  db.getTotalAwardsByMovie((err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Error fetching total awards" });
+    }
+    res.json({ totalAwards: results });
+  });
+});
+
+// Вземане на данни за общ брой на награди в платформата
+app.get("/stats/platform/total-awards", async (req, res) => {
+  db.getTotalAwardsCount((err, results) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ error: "Error fetching total awards count" });
+    }
+    res.json({ totalAwards: results });
   });
 });
 
