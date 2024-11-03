@@ -204,7 +204,10 @@ const getGenrePopularityOverTime = (callback) => {
     SELECT 
         TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(genre_en, ',', numbers.n), ',', -1)) AS genre_en,
         TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(genre_bg, ',', numbers.n), ',', -1)) AS genre_bg,
-        year,
+        CASE 
+            WHEN LOCATE('–', year) > 0 THEN LEFT(year, LOCATE('–', year) - 1)
+            ELSE year
+        END AS year,
         COUNT(*) AS genre_count
     FROM 
         recommendations
@@ -215,25 +218,31 @@ const getGenrePopularityOverTime = (callback) => {
     ORDER BY 
         year, genre_en;
   `;
+
   db.query(query, (err, results) => {
     if (err) {
       return callback(err);
     }
 
-    // Transform results into the desired structure
+    // Transform results into the desired structure with cumulative sums for genre_count
     const formattedResults = results.reduce((acc, row) => {
       const { year, genre_en, genre_bg, genre_count } = row;
 
+      // Initialize the year object if it doesn't exist
       if (!acc[year]) {
         acc[year] = {};
       }
 
-      // Structure the data as specified
-      acc[year][genre_en] = {
-        genre_en,
-        genre_bg,
-        genre_count
-      };
+      // If genre exists, add to the existing genre_count, otherwise set it
+      if (acc[year][genre_en]) {
+        acc[year][genre_en].genre_count += genre_count;
+      } else {
+        acc[year][genre_en] = {
+          genre_en,
+          genre_bg,
+          genre_count
+        };
+      }
 
       return acc;
     }, {});
@@ -376,70 +385,149 @@ const getTotalAwardsByMovie = (callback) => {
 
 const getTotalAwardsCount = (callback) => {
   const query = `
-SELECT 
-    -- Calculate total Oscar wins
-    (
-        SELECT 
-            SUM(
-                COALESCE(
-                    CAST(NULLIF(SUBSTRING_INDEX(SUBSTRING_INDEX(r2.awards, 'Won ', -1), ' Oscar', 1), '') AS UNSIGNED), 
-                    0
-                )
-            )
-        FROM 
-            recommendations r2
-        WHERE 
-            r2.awards IS NOT NULL
-            AND (r2.awards REGEXP 'Won [0-9]+ Oscar' OR r2.awards REGEXP 'Won [0-9]+ Oscars')
-    ) AS total_oscar_wins,
+  SELECT 
+      -- Calculate total Oscar wins
+      (
+          SELECT 
+              SUM(
+                  COALESCE(
+                      CAST(NULLIF(SUBSTRING_INDEX(SUBSTRING_INDEX(r2.awards, 'Won ', -1), ' Oscar', 1), '') AS UNSIGNED), 
+                      0
+                  )
+              )
+          FROM 
+              recommendations r2
+          WHERE 
+              r2.awards IS NOT NULL
+              AND (r2.awards REGEXP 'Won [0-9]+ Oscar' OR r2.awards REGEXP 'Won [0-9]+ Oscars')
+      ) AS total_oscar_wins,
 
-    -- Calculate total Oscar nominations
-    (
-        SELECT 
-            SUM(
-                COALESCE(
-                    CAST(NULLIF(SUBSTRING_INDEX(SUBSTRING_INDEX(r2.awards, 'Nominated for ', -1), ' Oscar', 1), '') AS UNSIGNED), 
-                    0
-                )
-            )
-        FROM 
-            recommendations r2
-        WHERE 
-            r2.awards IS NOT NULL
-            AND (r2.awards REGEXP 'Nominated for [0-9]+ Oscar' OR r2.awards REGEXP 'Nominated for [0-9]+ Oscars')
-    ) AS total_oscar_nominations,
+      -- Calculate total Oscar nominations
+      (
+          SELECT 
+              SUM(
+                  COALESCE(
+                      CAST(NULLIF(SUBSTRING_INDEX(SUBSTRING_INDEX(r2.awards, 'Nominated for ', -1), ' Oscar', 1), '') AS UNSIGNED), 
+                      0
+                  )
+              )
+          FROM 
+              recommendations r2
+          WHERE 
+              r2.awards IS NOT NULL
+              AND (r2.awards REGEXP 'Nominated for [0-9]+ Oscar' OR r2.awards REGEXP 'Nominated for [0-9]+ Oscars')
+      ) AS total_oscar_nominations,
 
-    -- Calculate total wins from all awards
-    (
-        SELECT 
-            SUM(
-                COALESCE(
-                    CAST(NULLIF(REGEXP_SUBSTR(r2.awards, '([0-9]+) wins'), '') AS UNSIGNED), 
-                    0
-                )
-            )
-        FROM 
-            recommendations r2
-        WHERE 
-            r2.awards IS NOT NULL
-            AND (r2.awards REGEXP '([0-9]+) wins' OR r2.awards REGEXP '([0-9]+) win')
-    ) AS total_awards_wins,
+      -- Calculate total wins from all awards
+      (
+          SELECT 
+              SUM(
+                  COALESCE(
+                      CAST(NULLIF(REGEXP_SUBSTR(r2.awards, '([0-9]+) wins'), '') AS UNSIGNED), 
+                      0
+                  )
+              )
+          FROM 
+              recommendations r2
+          WHERE 
+              r2.awards IS NOT NULL
+              AND (r2.awards REGEXP '([0-9]+) wins' OR r2.awards REGEXP '([0-9]+) win')
+      ) AS total_awards_wins,
 
-    -- Calculate total nominations from all awards
-    (
-        SELECT 
-            SUM(
-                COALESCE(
-                    CAST(NULLIF(REGEXP_SUBSTR(r2.awards, '([0-9]+) nominations'), '') AS UNSIGNED), 
-                    0
-                )
-            )
-        FROM 
-            recommendations r2
-        WHERE 
-            r2.awards IS NOT NULL
-            AND (r2.awards REGEXP '([0-9]+) nominations' OR r2.awards REGEXP '([0-9]+) nomination')
-    ) AS total_awards_nominations;`;
+      -- Calculate total nominations from all awards
+      (
+          SELECT 
+              SUM(
+                  COALESCE(
+                      CAST(NULLIF(REGEXP_SUBSTR(r2.awards, '([0-9]+) nominations'), '') AS UNSIGNED), 
+                      0
+                  )
+              )
+          FROM 
+              recommendations r2
+          WHERE 
+              r2.awards IS NOT NULL
+              AND (r2.awards REGEXP '([0-9]+) nominations' OR r2.awards REGEXP '([0-9]+) nomination')
+      ) AS total_awards_nominations;`;
+  db.query(query, callback);
+};
+
+const getSortedDirectorsByProsperity = (callback) => {
+  const query = `
+  WITH RECURSIVE DirectorSplit AS (
+    SELECT 
+        id, 
+        TRIM(SUBSTRING_INDEX(director, ',', 1)) AS director,
+        SUBSTRING_INDEX(director, ',', -1) AS remaining_directors,
+        imdbRating,
+        metascore,
+        boxOffice,
+        runtime,
+        awards,
+        type
+    FROM recommendations
+    WHERE director IS NOT NULL 
+      AND director != 'N/A'
+      AND type = 'movie'
+    UNION ALL
+    SELECT 
+        id,
+        TRIM(SUBSTRING_INDEX(remaining_directors, ',', 1)) AS director,
+        SUBSTRING_INDEX(remaining_directors, ',', -1) AS remaining_directors,
+        imdbRating,
+        metascore,
+        boxOffice,
+        runtime,
+        awards,
+        type
+    FROM DirectorSplit
+    WHERE remaining_directors LIKE '%,%'
+      AND type = 'movie'
+  )
+  SELECT 
+      director,
+      ROUND(AVG(imdbRating), 2) AS avg_imdb_rating,  -- Round to 2 decimal places
+      AVG(metascore) AS avg_metascore,
+      -- Format total box office with a dollar sign
+      CONCAT('$', FORMAT(SUM(CASE 
+              WHEN boxOffice IS NULL OR boxOffice = 'N/A' 
+              THEN 0 
+              ELSE CAST(REPLACE(REPLACE(boxOffice, '$', ''), ',', '') AS UNSIGNED) 
+          END), 0)) AS total_box_office,
+      AVG(CASE 
+              WHEN runtime IS NULL OR runtime = 'N/A' OR runtime < 30 
+              THEN NULL 
+              ELSE runtime 
+          END) AS avg_runtime,
+      -- Extract total wins as a number
+      CAST(SUM(CASE 
+              WHEN awards IS NOT NULL THEN 
+                  COALESCE(
+                      CAST(REGEXP_SUBSTR(awards, '[0-9]+ wins') AS UNSIGNED), 
+                      0
+                  )
+              ELSE 0 
+          END) AS UNSIGNED) AS total_wins,
+      -- Extract total nominations as a number
+      CAST(SUM(CASE 
+              WHEN awards IS NOT NULL THEN 
+                  COALESCE(
+                      CAST(REGEXP_SUBSTR(awards, '[0-9]+ nominations') AS UNSIGNED), 
+                      0
+                  )
+              ELSE 0 
+          END) AS UNSIGNED) AS total_nominations,
+      COUNT(DISTINCT id) AS movie_count
+  FROM 
+      DirectorSplit
+  WHERE director IS NOT NULL AND director != 'N/A'
+  GROUP BY 
+      director
+  HAVING 
+      movie_count > 1
+  ORDER BY 
+      avg_imdb_rating DESC;
+  `;
   db.query(query, callback);
 };
 
@@ -459,5 +547,6 @@ module.exports = {
   getTopWriters,
   getOscarsByMovie,
   getTotalAwardsByMovie,
-  getTotalAwardsCount
+  getTotalAwardsCount,
+  getSortedDirectorsByProsperity
 };

@@ -551,6 +551,16 @@ app.get("/stats/platform/total-awards", async (req, res) => {
   });
 });
 
+// Вземане на данни за филмови режисьори в платформата, сортирани по успешност
+app.get("/stats/platform/sorted-directors-by-prosperity", async (req, res) => {
+  db.getSortedDirectorsByProsperity((err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Error fetching sorted directors" });
+    }
+    res.json({ directors: results });
+  });
+});
+
 // Start server
 app.listen(5000, () => {
   console.log("Server started on http://localhost:5000");
