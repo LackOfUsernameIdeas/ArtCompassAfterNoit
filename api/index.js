@@ -561,6 +561,66 @@ app.get("/stats/platform/sorted-directors-by-prosperity", async (req, res) => {
   });
 });
 
+// Вземане на данни за актьори в платформата, сортирани по успешност
+app.get("/stats/platform/sorted-actors-by-prosperity", async (req, res) => {
+  db.getSortedActorsByProsperity((err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Error fetching sorted actors" });
+    }
+    res.json({ actors: results });
+  });
+});
+
+// Вземане на данни за сценаристи в платформата, сортирани по успешност
+app.get("/stats/platform/sorted-writers-by-prosperity", async (req, res) => {
+  db.getSortedWritersByProsperity((err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Error fetching sorted writers" });
+    }
+    res.json({ writers: results });
+  });
+});
+
+// Вземане на данни за филми в платформата, сортирани по успешност
+app.get("/stats/platform/sorted-movies-by-prosperity", async (req, res) => {
+  db.getSortedMoviesByProsperity((err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Error fetching sorted movies" });
+    }
+    res.json({ movies: results });
+  });
+});
+
+// Вземане на данни за филми и сериали в платформата, сортирани по meta score
+app.get(
+  "/stats/platform/sorted-movies-and-series-by-metascore",
+  async (req, res) => {
+    db.getTopMoviesAndSeriesByMetascore((err, results) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error fetching sorted movies by meta score" });
+      }
+      res.json({ movies: results });
+    });
+  }
+);
+
+// Вземане на данни за филми и сериали в платформата, сортирани по IMDb rating
+app.get(
+  "/stats/platform/sorted-movies-and-series-by-imdb-rating",
+  async (req, res) => {
+    db.getTopMoviesAndSeriesByIMDbRating((err, results) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error fetching sorted movies by IMDb rating" });
+      }
+      res.json({ movies: results });
+    });
+  }
+);
+
 // Start server
 app.listen(5000, () => {
   console.log("Server started on http://localhost:5000");
