@@ -622,7 +622,23 @@ const getSortedActorsByProsperity = (callback) => {
               ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
           END), 0)) AS total_box_office,
       COUNT(DISTINCT um.imdbID) AS unique_movie_count,  -- Count distinct movies
-      COALESCE(ar.total_recommendations, 0) AS total_recommendations  -- Total recommendations from join
+      COALESCE(ar.total_recommendations, 0) AS total_recommendations,  -- Total recommendations from join
+      CAST(SUM(CASE 
+              WHEN um.awards IS NOT NULL THEN 
+                  COALESCE(
+                      CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ wins') AS UNSIGNED), 
+                      0
+                  )
+              ELSE 0 
+          END) AS UNSIGNED) AS total_wins,  -- Total wins
+      CAST(SUM(CASE 
+              WHEN um.awards IS NOT NULL THEN 
+                  COALESCE(
+                      CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ nominations') AS UNSIGNED), 
+                      0
+                  )
+              ELSE 0 
+          END) AS UNSIGNED) AS total_nominations  -- Total nominations
   FROM 
       UniqueMovies um
   LEFT JOIN 
@@ -631,10 +647,206 @@ const getSortedActorsByProsperity = (callback) => {
       um.actor
   ORDER BY 
       avg_imdb_rating DESC;`;
-
   //after GROUP BY:
   // HAVING
-  // unique_movie_count > 1  -- Ensure actors have more than 1 unique movie
+  // COUNT(DISTINCT um.imdbID) > 1  -- Ensure more than 1 unique movie
+  db.query(query, callback);
+};
+
+const getSortedWritersByProsperity = (callback) => {
+  const query = `
+  WITH RECURSIVE WriterSplit AS (
+    SELECT 
+        id, 
+        TRIM(SUBSTRING_INDEX(writer, ',', 1)) AS writer,
+        SUBSTRING_INDEX(writer, ',', -1) AS remaining_writers,
+        imdbRating,
+        metascore,
+        boxOffice,
+        awards,
+        imdbID,
+        type
+    FROM recommendations
+    WHERE writer IS NOT NULL 
+      AND writer != 'N/A'
+    UNION ALL
+    SELECT 
+        id,
+        TRIM(SUBSTRING_INDEX(remaining_writers, ',', 1)) AS writer,
+        SUBSTRING_INDEX(remaining_writers, ',', -1) AS remaining_writers,
+        imdbRating,
+        metascore,
+        boxOffice,
+        awards,
+        imdbID,
+        type
+    FROM WriterSplit
+    WHERE remaining_writers LIKE '%,%'
+  ),
+  UniqueMovies AS (
+      SELECT 
+          DISTINCT imdbID,
+          writer,
+          imdbRating,
+          metascore,
+          boxOffice,
+          awards
+      FROM 
+          WriterSplit
+      WHERE writer IS NOT NULL AND writer != 'N/A'
+  ),
+  WriterRecommendations AS (
+      SELECT 
+          TRIM(SUBSTRING_INDEX(writer, ',', 1)) AS writer,
+          COUNT(*) AS total_recommendations  -- Count total recommendations for each writer
+      FROM 
+          recommendations
+      WHERE 
+          writer IS NOT NULL 
+          AND writer != 'N/A'
+      GROUP BY 
+          writer
+  )
+  SELECT 
+      um.writer,
+      ROUND(AVG(um.imdbRating), 2) AS avg_imdb_rating,
+      AVG(um.metascore) AS avg_metascore,
+      CONCAT('$', FORMAT(SUM(CASE 
+              WHEN um.boxOffice IS NULL OR um.boxOffice = 'N/A' 
+              THEN 0 
+              ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
+          END), 0)) AS total_box_office,
+      COUNT(DISTINCT um.imdbID) AS unique_movie_count,  -- Count distinct movies
+      COALESCE(wr.total_recommendations, 0) AS total_recommendations,  -- Total recommendations from join
+      SUM(CASE 
+              WHEN um.awards IS NOT NULL THEN 
+                  CASE 
+                      WHEN um.awards LIKE '1 win%' THEN 1
+                      ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ win(s)') AS UNSIGNED), 0)
+                  END
+              ELSE 0 
+          END) AS total_wins,  -- Total wins
+      SUM(CASE 
+              WHEN um.awards IS NOT NULL THEN 
+                  CASE 
+                      WHEN um.awards LIKE '1 nomination%' THEN 1
+                      ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ nomination(s)') AS UNSIGNED), 0)
+                  END
+              ELSE 0 
+          END) AS total_nominations  -- Total nominations
+  FROM 
+      UniqueMovies um
+  LEFT JOIN 
+      WriterRecommendations wr ON um.writer = wr.writer  -- Join to get total recommendations
+  GROUP BY 
+      um.writer
+  ORDER BY 
+      avg_imdb_rating DESC;`;
+
+  // HAVING
+  // COUNT(DISTINCT um.imdbID) > 1  -- Ensure more than 1 unique movie
+  db.query(query, callback);
+};
+
+const getSortedMoviesByProsperity = (callback) => {
+  const query = `
+  WITH RECURSIVE MovieSplit AS (
+    SELECT 
+        id, 
+        TRIM(SUBSTRING_INDEX(imdbID, ',', 1)) AS imdbID,
+        SUBSTRING_INDEX(imdbID, ',', -1) AS remaining_ids,
+        imdbRating,
+        metascore,
+        boxOffice,
+        awards,
+        title_en,
+        title_bg,
+        type
+    FROM recommendations
+    WHERE imdbID IS NOT NULL 
+      AND imdbID != 'N/A'
+    UNION ALL
+    SELECT 
+        id,
+        TRIM(SUBSTRING_INDEX(remaining_ids, ',', 1)) AS imdbID,
+        SUBSTRING_INDEX(remaining_ids, ',', -1) AS remaining_ids,
+        imdbRating,
+        metascore,
+        boxOffice,
+        awards,
+        title_en,
+        title_bg,
+        type
+    FROM MovieSplit
+    WHERE remaining_ids LIKE '%,%'
+  ),
+  UniqueMovies AS (
+      SELECT 
+          DISTINCT imdbID,
+          MAX(title_en) AS title_en,  -- Use MAX to get the title
+          MAX(title_bg) AS title_bg,  -- Use MAX to get the title
+          MAX(type) AS type,           -- Assuming type will be 'movie' for all
+          MAX(imdbRating) AS imdbRating,  -- Get the maximum rating
+          MAX(metascore) AS metascore,  -- Get the maximum metascore
+          MAX(boxOffice) AS boxOffice,  -- Get the maximum box office
+          MAX(awards) AS awards          -- Get the maximum awards
+      FROM 
+          MovieSplit
+      WHERE imdbID IS NOT NULL 
+        AND imdbID != 'N/A'
+        AND type = 'movie'  -- Only include movies
+      GROUP BY 
+          imdbID
+  ),
+  MovieRecommendations AS (
+      SELECT 
+          imdbID,
+          COUNT(*) AS total_recommendations  -- Count total recommendations for each movie
+      FROM 
+          recommendations
+      WHERE 
+          imdbID IS NOT NULL 
+          AND imdbID != 'N/A'
+      GROUP BY 
+          imdbID
+  )
+  SELECT 
+      um.imdbID,
+      um.title_en,  -- Select English title
+      um.title_bg,  -- Select Bulgarian title
+      um.type,      -- Select movie type
+      um.imdbRating,  -- Proper IMDb rating
+      um.metascore,   -- Proper metascore
+      CONCAT('$', FORMAT(MAX(CASE 
+              WHEN boxOffice IS NULL OR boxOffice = 'N/A' THEN 0 
+              ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
+          END), 0)) AS total_box_office,  -- Proper box office
+      COALESCE(mr.total_recommendations, 0) AS total_recommendations,  -- Total recommendations from join
+      SUM(CASE 
+              WHEN um.awards IS NOT NULL THEN 
+                  CASE 
+                      WHEN um.awards LIKE '1 win%' THEN 1
+                      ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ win(s)') AS UNSIGNED), 0)
+                  END
+              ELSE 0 
+          END) AS total_wins,  -- Total wins
+      SUM(CASE 
+              WHEN um.awards IS NOT NULL THEN 
+                  CASE 
+                      WHEN um.awards LIKE '1 nomination%' THEN 1
+                      ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ nomination(s)') AS UNSIGNED), 0)
+                  END
+              ELSE 0 
+          END) AS total_nominations  -- Total nominations
+  FROM 
+      UniqueMovies um
+  LEFT JOIN 
+      MovieRecommendations mr ON um.imdbID = mr.imdbID  -- Join to get total recommendations
+  GROUP BY 
+      um.imdbID, um.title_en, um.title_bg, um.type, um.imdbRating, um.metascore  -- Group by titles and type
+  ORDER BY 
+      um.imdbRating DESC;
+    `;
   db.query(query, callback);
 };
 
@@ -656,5 +868,7 @@ module.exports = {
   getTotalAwardsByMovie,
   getTotalAwardsCount,
   getSortedDirectorsByProsperity,
-  getSortedActorsByProsperity
+  getSortedActorsByProsperity,
+  getSortedWritersByProsperity,
+  getSortedMoviesByProsperity
 };
