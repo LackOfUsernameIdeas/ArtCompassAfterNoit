@@ -850,6 +850,50 @@ const getSortedMoviesByProsperity = (callback) => {
   db.query(query, callback);
 };
 
+const getTopMoviesAndSeriesByMetascore = (limit, callback) => {
+  const query = `
+  SELECT 
+      imdbID,
+      title_en,
+      title_bg,
+      type,
+      imdbRating,
+      metascore,
+      boxOffice,
+      awards
+  FROM recommendations
+  WHERE imdbID IS NOT NULL 
+    AND imdbID != 'N/A'
+    AND metascore IS NOT NULL
+    AND metascore != 'N/A'
+  ORDER BY metascore DESC
+  LIMIT ?;
+  `;
+  db.query(query, [limit], callback);
+};
+
+const getTopMoviesAndSeriesByIMDbRating = (limit, callback) => {
+  const query = `
+  SELECT 
+      imdbID,
+      title_en,
+      title_bg,
+      type,
+      imdbRating,
+      metascore,
+      boxOffice,
+      awards
+  FROM recommendations
+  WHERE imdbID IS NOT NULL 
+    AND imdbID != 'N/A'
+    AND imdbRating IS NOT NULL
+    AND imdbRating != 'N/A'
+  ORDER BY imdbRating DESC
+  LIMIT ?;
+  `;
+  db.query(query, [limit], callback);
+};
+
 module.exports = {
   checkEmailExists,
   createUser,
@@ -870,5 +914,7 @@ module.exports = {
   getSortedDirectorsByProsperity,
   getSortedActorsByProsperity,
   getSortedWritersByProsperity,
-  getSortedMoviesByProsperity
+  getSortedMoviesByProsperity,
+  getTopMoviesAndSeriesByMetascore,
+  getTopMoviesAndSeriesByIMDbRating
 };
