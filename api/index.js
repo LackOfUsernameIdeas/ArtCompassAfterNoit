@@ -595,7 +595,9 @@ app.get("/stats/platform/sorted-movies-by-prosperity", async (req, res) => {
 app.get(
   "/stats/platform/sorted-movies-and-series-by-metascore",
   async (req, res) => {
-    db.getTopMoviesAndSeriesByMetascore((err, results) => {
+    const limit = 10;
+
+    db.getTopMoviesAndSeriesByMetascore(limit, (err, results) => {
       if (err) {
         return res
           .status(500)
@@ -610,7 +612,9 @@ app.get(
 app.get(
   "/stats/platform/sorted-movies-and-series-by-imdb-rating",
   async (req, res) => {
-    db.getTopMoviesAndSeriesByIMDbRating((err, results) => {
+    const limit = 10;
+
+    db.getTopMoviesAndSeriesByIMDbRating(limit, (err, results) => {
       if (err) {
         return res
           .status(500)
