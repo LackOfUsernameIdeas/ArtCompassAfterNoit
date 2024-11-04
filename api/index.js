@@ -625,6 +625,132 @@ app.get(
   }
 );
 
+// Общ endpoint за статистика на платформата
+app.get("/stats/platform/all", async (req, res) => {
+  try {
+    // Задаване на лимит за повечето заявки
+    const limit = 10;
+
+    // Изпълняваме всички заявки към базата данни паралелно
+    const [
+      topRecommendations,
+      topGenres,
+      genrePopularityOverTime,
+      topActors,
+      topDirectors,
+      topWriters,
+      oscarsByMovie,
+      totalAwardsByMovie,
+      totalAwards,
+      sortedDirectorsByProsperity,
+      sortedActorsByProsperity,
+      sortedWritersByProsperity,
+      sortedMoviesByProsperity,
+      sortedMoviesByMetascore,
+      sortedMoviesByIMDbRating
+    ] = await Promise.all([
+      new Promise((resolve, reject) =>
+        db.getTopRecommendations(limit, (err, results) =>
+          err ? reject(err) : resolve(results)
+        )
+      ),
+      new Promise((resolve, reject) =>
+        db.getTopGenres(limit, (err, results) =>
+          err ? reject(err) : resolve(results)
+        )
+      ),
+      new Promise((resolve, reject) =>
+        db.getGenrePopularityOverTime((err, results) =>
+          err ? reject(err) : resolve(results)
+        )
+      ),
+      new Promise((resolve, reject) =>
+        db.getTopActors(limit, (err, results) =>
+          err ? reject(err) : resolve(results)
+        )
+      ),
+      new Promise((resolve, reject) =>
+        db.getTopDirectors(limit, (err, results) =>
+          err ? reject(err) : resolve(results)
+        )
+      ),
+      new Promise((resolve, reject) =>
+        db.getTopWriters(limit, (err, results) =>
+          err ? reject(err) : resolve(results)
+        )
+      ),
+      new Promise((resolve, reject) =>
+        db.getOscarsByMovie((err, results) =>
+          err ? reject(err) : resolve(results)
+        )
+      ),
+      new Promise((resolve, reject) =>
+        db.getTotalAwardsByMovie((err, results) =>
+          err ? reject(err) : resolve(results)
+        )
+      ),
+      new Promise((resolve, reject) =>
+        db.getTotalAwardsCount((err, results) =>
+          err ? reject(err) : resolve(results)
+        )
+      ),
+      new Promise((resolve, reject) =>
+        db.getSortedDirectorsByProsperity((err, results) =>
+          err ? reject(err) : resolve(results)
+        )
+      ),
+      new Promise((resolve, reject) =>
+        db.getSortedActorsByProsperity((err, results) =>
+          err ? reject(err) : resolve(results)
+        )
+      ),
+      new Promise((resolve, reject) =>
+        db.getSortedWritersByProsperity((err, results) =>
+          err ? reject(err) : resolve(results)
+        )
+      ),
+      new Promise((resolve, reject) =>
+        db.getSortedMoviesByProsperity((err, results) =>
+          err ? reject(err) : resolve(results)
+        )
+      ),
+      new Promise((resolve, reject) =>
+        db.getTopMoviesAndSeriesByMetascore(limit, (err, results) =>
+          err ? reject(err) : resolve(results)
+        )
+      ),
+      new Promise((resolve, reject) =>
+        db.getTopMoviesAndSeriesByIMDbRating(limit, (err, results) =>
+          err ? reject(err) : resolve(results)
+        )
+      )
+    ]);
+
+    // Форматираме резултата в JSON с всички данни
+    res.json({
+      topRecommendations,
+      topGenres,
+      genrePopularityOverTime,
+      topActors,
+      topDirectors,
+      topWriters,
+      oscarsByMovie,
+      totalAwardsByMovie,
+      totalAwards,
+      sortedDirectorsByProsperity,
+      sortedActorsByProsperity,
+      sortedWritersByProsperity,
+      sortedMoviesByProsperity,
+      sortedMoviesByMetascore,
+      sortedMoviesByIMDbRating
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error fetching data", details: error.message });
+  }
+});
+
 // Start server
 app.listen(5000, () => {
   console.log("Server started on http://localhost:5000");
