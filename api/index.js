@@ -531,7 +531,7 @@ app.get("/stats/platform/oscars-by-movie", async (req, res) => {
 
 // Вземане на данни за всички награди за всеки филм/сериал в платформата
 app.get("/stats/platform/total-awards-by-movie", async (req, res) => {
-  db.getTotalAwardsByMovie((err, results) => {
+  db.getTotalAwardsByMovieOrSeries((err, results) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching total awards" });
     }

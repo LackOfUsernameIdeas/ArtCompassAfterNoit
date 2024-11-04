@@ -207,7 +207,7 @@ const getGenrePopularityOverTime = (callback) => {
         CASE 
             WHEN LOCATE('–', year) > 0 THEN LEFT(year, LOCATE('–', year) - 1)
             ELSE year
-        END AS year,
+        END AS "year",
         COUNT(*) AS genre_count
     FROM 
         recommendations
@@ -355,7 +355,7 @@ const getOscarsByMovie = (callback) => {
   db.query(query, callback);
 };
 
-const getTotalAwardsByMovie = (callback) => {
+const getTotalAwardsByMovieOrSeries = (callback) => {
   const query = `
   SELECT  
         r.id,
@@ -543,7 +543,10 @@ const getSortedDirectorsByProsperity = (callback) => {
               ELSE 0 
           END) AS UNSIGNED) AS total_nominations,
       COUNT(DISTINCT um.imdbID) AS movie_count,  -- Count distinct movies
-      COALESCE(dr.total_recommendations, 0) AS total_recommendations  -- Total recommendations from join
+      CASE 
+          WHEN COUNT(DISTINCT um.imdbID) = 1 THEN 1  -- If there's only one movie, set recommendations to 1
+          ELSE COALESCE(dr.total_recommendations, 0) 
+      END AS total_recommendations  -- Total recommendations from join
   FROM 
       UniqueMovies um
   LEFT JOIN 
@@ -909,7 +912,7 @@ module.exports = {
   getTopDirectors,
   getTopWriters,
   getOscarsByMovie,
-  getTotalAwardsByMovie,
+  getTotalAwardsByMovieOrSeries,
   getTotalAwardsCount,
   getSortedDirectorsByProsperity,
   getSortedActorsByProsperity,
