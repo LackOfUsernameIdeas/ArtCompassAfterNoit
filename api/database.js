@@ -599,6 +599,11 @@ const getSortedDirectorsByProsperity = (callback) => {
       UniqueMovies um
   LEFT JOIN 
       DirectorRecommendations dr ON um.director = dr.director  -- Join to get total recommendations
+  WHERE 
+      um.boxOffice IS NOT NULL 
+      AND um.boxOffice != 'N/A'
+      AND um.metascore IS NOT NULL 
+      AND um.metascore != 'N/A'
   GROUP BY 
       um.director
   ORDER BY 
@@ -606,7 +611,64 @@ const getSortedDirectorsByProsperity = (callback) => {
   `;
   // HAVING
   // movie_count > 1
-  db.query(query, callback);
+  db.query(query, (err, results) => {
+    if (err) return callback(err);
+
+    // Calculate prosperity scores
+    const weights = {
+      total_wins: 0.3,
+      total_nominations: 0.3,
+      total_box_office: 0.2,
+      avg_metascore: 0.1,
+      avg_imdb_rating: 0.1
+    };
+
+    // Find maximum box office value to normalize
+    const maxBoxOffice = Math.max(
+      ...results.map((director) => {
+        const totalBoxOffice =
+          parseFloat(director.total_box_office.replace(/[$,]/g, "")) || 0;
+        return totalBoxOffice;
+      })
+    );
+
+    const directorsWithProsperity = results.map((director) => {
+      const totalWins = director.total_wins || 0; // Ensure no null values
+      const totalNominations = director.total_nominations || 0;
+
+      // Parse the box office value
+      const totalBoxOffice =
+        parseFloat(director.total_box_office.replace(/[$,]/g, "")) || 0;
+
+      // Normalize the box office value to a scale of 0-1
+      const normalizedBoxOffice = maxBoxOffice
+        ? totalBoxOffice / maxBoxOffice
+        : 0;
+
+      const avgMetascore = director.avg_metascore || 0;
+      const avgIMDbRating = director.avg_imdb_rating || 0;
+
+      // Calculate prosperity score using weighted values
+      const prosperityScore =
+        totalWins * weights.total_wins +
+        totalNominations * weights.total_nominations +
+        normalizedBoxOffice * weights.total_box_office +
+        avgMetascore * weights.avg_metascore +
+        avgIMDbRating * weights.avg_imdb_rating;
+
+      return {
+        ...director,
+        prosperityScore: Number(prosperityScore.toFixed(2))
+      };
+    });
+
+    // Sort directors by prosperity score
+    directorsWithProsperity.sort(
+      (a, b) => b.prosperityScore - a.prosperityScore
+    );
+
+    callback(null, directorsWithProsperity);
+  });
 };
 
 const getSortedActorsByProsperity = (callback) => {
@@ -625,6 +687,7 @@ const getSortedActorsByProsperity = (callback) => {
     FROM recommendations
     WHERE actors IS NOT NULL 
       AND actors != 'N/A'
+      AND type = 'movie'
     UNION ALL
     SELECT 
         id,
@@ -672,7 +735,7 @@ const getSortedActorsByProsperity = (callback) => {
               THEN 0 
               ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
           END), 0)) AS total_box_office,
-      COUNT(DISTINCT um.imdbID) AS unique_movie_count,  -- Count distinct movies
+      COUNT(DISTINCT um.imdbID) AS movie_count,  -- Count distinct movies
       COALESCE(ar.total_recommendations, 0) AS total_recommendations,  -- Total recommendations from join
       CAST(SUM(CASE 
               WHEN um.awards IS NOT NULL THEN 
@@ -694,14 +757,72 @@ const getSortedActorsByProsperity = (callback) => {
       UniqueMovies um
   LEFT JOIN 
       ActorRecommendations ar ON um.actor = ar.actor  -- Join to get total recommendations
+  WHERE 
+      um.boxOffice IS NOT NULL 
+      AND um.boxOffice != 'N/A'
+      AND um.metascore IS NOT NULL 
+      AND um.metascore != 'N/A'
   GROUP BY 
       um.actor
   ORDER BY 
       avg_imdb_rating DESC;`;
-  //after GROUP BY:
-  // HAVING
-  // COUNT(DISTINCT um.imdbID) > 1  -- Ensure more than 1 unique movie
-  db.query(query, callback);
+
+  db.query(query, (err, results) => {
+    if (err) return callback(err);
+
+    // Calculate prosperity scores
+    const weights = {
+      total_wins: 0.3,
+      total_nominations: 0.3,
+      total_box_office: 0.2,
+      avg_imdb_rating: 0.1,
+      avg_metascore: 0.1
+    };
+
+    // Find maximum box office value to normalize
+    const maxBoxOffice = Math.max(
+      ...results.map((actor) => {
+        const totalBoxOffice =
+          parseFloat(actor.total_box_office.replace(/[$,]/g, "")) || 0;
+        return totalBoxOffice;
+      })
+    );
+
+    const actorsWithProsperity = results.map((actor) => {
+      const totalWins = actor.total_wins || 0; // Ensure no null values
+      const totalNominations = actor.total_nominations || 0;
+
+      // Parse and normalize the box office value
+      const totalBoxOffice =
+        parseFloat(actor.total_box_office.replace(/[$,]/g, "")) || 0;
+
+      // Normalize the box office value to a scale of 0-1
+      const normalizedBoxOffice = maxBoxOffice
+        ? totalBoxOffice / maxBoxOffice
+        : 0;
+
+      const avgIMDbRating = actor.avg_imdb_rating || 0;
+      const avgMetascore = actor.avg_metascore || 0; // Add metascore
+
+      // Calculate prosperity score using weighted values
+      const prosperityScore =
+        totalWins * weights.total_wins +
+        totalNominations * weights.total_nominations +
+        normalizedBoxOffice * weights.total_box_office +
+        avgIMDbRating * weights.avg_imdb_rating +
+        avgMetascore * weights.avg_metascore; // Include metascore
+
+      return {
+        ...actor,
+        prosperityScore: Number(prosperityScore.toFixed(2)) // Round to two decimal places
+      };
+    });
+
+    // Sort by prosperity score
+    actorsWithProsperity.sort((a, b) => b.prosperityScore - a.prosperityScore);
+
+    callback(null, actorsWithProsperity);
+  });
 };
 
 const getSortedWritersByProsperity = (callback) => {
@@ -720,6 +841,7 @@ const getSortedWritersByProsperity = (callback) => {
     FROM recommendations
     WHERE writer IS NOT NULL 
       AND writer != 'N/A'
+      AND type = 'movie'  -- Ensure we are only selecting movies
     UNION ALL
     SELECT 
         id,
@@ -755,6 +877,7 @@ const getSortedWritersByProsperity = (callback) => {
       WHERE 
           writer IS NOT NULL 
           AND writer != 'N/A'
+          AND type = 'movie'  -- Ensure we are only counting recommendations for movies
       GROUP BY 
           writer
   )
@@ -767,7 +890,7 @@ const getSortedWritersByProsperity = (callback) => {
               THEN 0 
               ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
           END), 0)) AS total_box_office,
-      COUNT(DISTINCT um.imdbID) AS unique_movie_count,  -- Count distinct movies
+      COUNT(DISTINCT um.imdbID) AS movie_count,  -- Count distinct movies
       COALESCE(wr.total_recommendations, 0) AS total_recommendations,  -- Total recommendations from join
       SUM(CASE 
               WHEN um.awards IS NOT NULL THEN 
@@ -789,14 +912,75 @@ const getSortedWritersByProsperity = (callback) => {
       UniqueMovies um
   LEFT JOIN 
       WriterRecommendations wr ON um.writer = wr.writer  -- Join to get total recommendations
+  WHERE 
+      um.boxOffice IS NOT NULL 
+      AND um.boxOffice != 'N/A'
+      AND um.metascore IS NOT NULL 
+      AND um.metascore != 'N/A'
   GROUP BY 
       um.writer
   ORDER BY 
       avg_imdb_rating DESC;`;
 
+  // Optional: Uncomment this part if you want to ensure more than 1 unique movie
   // HAVING
   // COUNT(DISTINCT um.imdbID) > 1  -- Ensure more than 1 unique movie
-  db.query(query, callback);
+  db.query(query, (err, results) => {
+    if (err) return callback(err);
+
+    // Calculate prosperity scores
+    const weights = {
+      total_wins: 0.3,
+      total_nominations: 0.3,
+      total_box_office: 0.2,
+      avg_imdb_rating: 0.1,
+      avg_metascore: 0.1
+    };
+
+    // Find maximum box office value to normalize
+    const maxBoxOffice = Math.max(
+      ...results.map((writer) => {
+        const totalBoxOffice =
+          parseFloat(writer.total_box_office.replace(/[$,]/g, "")) || 0;
+        return totalBoxOffice;
+      })
+    );
+
+    const writersWithProsperity = results.map((writer) => {
+      const totalWins = writer.total_wins || 0; // Ensure no null values
+      const totalNominations = writer.total_nominations || 0;
+
+      // Parse and normalize the box office value
+      const totalBoxOffice =
+        parseFloat(writer.total_box_office.replace(/[$,]/g, "")) || 0;
+
+      // Normalize the box office value to a scale of 0-1
+      const normalizedBoxOffice = maxBoxOffice
+        ? totalBoxOffice / maxBoxOffice
+        : 0;
+
+      const avgIMDbRating = writer.avg_imdb_rating || 0;
+      const avgMetascore = writer.avg_metascore || 0; // Add metascore
+
+      // Calculate prosperity score using weighted values
+      const prosperityScore =
+        totalWins * weights.total_wins +
+        totalNominations * weights.total_nominations +
+        normalizedBoxOffice * weights.total_box_office +
+        avgIMDbRating * weights.avg_imdb_rating +
+        avgMetascore * weights.avg_metascore; // Include metascore
+
+      return {
+        ...writer,
+        prosperityScore: Number(prosperityScore.toFixed(2)) // Round to two decimal places
+      };
+    });
+
+    // Sort by prosperity score
+    writersWithProsperity.sort((a, b) => b.prosperityScore - a.prosperityScore);
+
+    callback(null, writersWithProsperity);
+  });
 };
 
 const getSortedMoviesByProsperity = (callback) => {
@@ -845,7 +1029,6 @@ const getSortedMoviesByProsperity = (callback) => {
           MovieSplit
       WHERE imdbID IS NOT NULL 
         AND imdbID != 'N/A'
-        AND type = 'movie'  -- Only include movies
       GROUP BY 
           imdbID
   ),
@@ -893,12 +1076,73 @@ const getSortedMoviesByProsperity = (callback) => {
       UniqueMovies um
   LEFT JOIN 
       MovieRecommendations mr ON um.imdbID = mr.imdbID  -- Join to get total recommendations
+  WHERE 
+      um.boxOffice IS NOT NULL 
+      AND um.boxOffice != 'N/A'
+      AND um.metascore IS NOT NULL 
+      AND um.metascore != 'N/A'
   GROUP BY 
       um.imdbID, um.title_en, um.title_bg, um.type, um.imdbRating, um.metascore  -- Group by titles and type
   ORDER BY 
       um.imdbRating DESC;
-    `;
-  db.query(query, callback);
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) return callback(err);
+
+    // Calculate prosperity scores
+    const weights = {
+      total_wins: 0.3,
+      total_nominations: 0.3,
+      total_box_office: 0.2,
+      avg_imdb_rating: 0.1,
+      avg_metascore: 0.1
+    };
+
+    // Find maximum box office value to normalize
+    const maxBoxOffice = Math.max(
+      ...results.map((movie) => {
+        const totalBoxOffice =
+          parseFloat(movie.total_box_office.replace(/[$,]/g, "")) || 0;
+        return totalBoxOffice;
+      })
+    );
+
+    const moviesWithProsperity = results.map((movie) => {
+      const totalWins = movie.total_wins || 0; // Ensure no null values
+      const totalNominations = movie.total_nominations || 0;
+
+      // Parse and normalize the box office value
+      const totalBoxOffice =
+        parseFloat(movie.total_box_office.replace(/[$,]/g, "")) || 0;
+
+      // Normalize the box office value to a scale of 0-1
+      const normalizedBoxOffice = maxBoxOffice
+        ? totalBoxOffice / maxBoxOffice
+        : 0;
+
+      const avgIMDbRating = movie.imdbRating || 0;
+      const avgMetascore = movie.metascore || 0; // Add metascore
+
+      // Calculate prosperity score using weighted values
+      const prosperityScore =
+        totalWins * weights.total_wins +
+        totalNominations * weights.total_nominations +
+        normalizedBoxOffice * weights.total_box_office +
+        avgIMDbRating * weights.avg_imdb_rating +
+        avgMetascore * weights.avg_metascore; // Include metascore
+
+      return {
+        ...movie,
+        prosperityScore: Number(prosperityScore.toFixed(2)) // Round to two decimal places
+      };
+    });
+
+    // Sort by prosperity score
+    moviesWithProsperity.sort((a, b) => b.prosperityScore - a.prosperityScore);
+
+    callback(null, moviesWithProsperity);
+  });
 };
 
 const getTopMoviesAndSeriesByMetascore = (limit, callback) => {
