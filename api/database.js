@@ -912,11 +912,24 @@ const getTopMoviesAndSeriesByMetascore = (limit, callback) => {
       metascore,
       boxOffice,
       awards
-  FROM recommendations
-  WHERE imdbID IS NOT NULL 
-    AND imdbID != 'N/A'
-    AND metascore IS NOT NULL
-    AND metascore != 'N/A'
+  FROM (
+      SELECT 
+          imdbID,
+          title_en,
+          title_bg,
+          type,
+          imdbRating,
+          metascore,
+          boxOffice,
+          awards,
+          ROW_NUMBER() OVER (PARTITION BY imdbID ORDER BY metascore DESC) AS row_num
+      FROM recommendations
+      WHERE imdbID IS NOT NULL 
+        AND imdbID != 'N/A'
+        AND metascore IS NOT NULL
+        AND metascore != 'N/A'
+  ) AS ranked
+  WHERE row_num = 1
   ORDER BY metascore DESC
   LIMIT ?;
   `;
@@ -934,11 +947,24 @@ const getTopMoviesAndSeriesByIMDbRating = (limit, callback) => {
       metascore,
       boxOffice,
       awards
-  FROM recommendations
-  WHERE imdbID IS NOT NULL 
-    AND imdbID != 'N/A'
-    AND imdbRating IS NOT NULL
-    AND imdbRating != 'N/A'
+  FROM (
+      SELECT 
+          imdbID,
+          title_en,
+          title_bg,
+          type,
+          imdbRating,
+          metascore,
+          boxOffice,
+          awards,
+          ROW_NUMBER() OVER (PARTITION BY imdbID ORDER BY imdbRating DESC) AS row_num
+      FROM recommendations
+      WHERE imdbID IS NOT NULL 
+        AND imdbID != 'N/A'
+        AND imdbRating IS NOT NULL
+        AND imdbRating != 'N/A'
+  ) AS ranked
+  WHERE row_num = 1
   ORDER BY imdbRating DESC
   LIMIT ?;
   `;
