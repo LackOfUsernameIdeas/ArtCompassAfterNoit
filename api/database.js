@@ -166,12 +166,60 @@ const saveUserPreferences = (
   });
 };
 
+const getUsersCount = (callback) => {
+  const query = `
+    SELECT COUNT(*) AS user_count
+    FROM users
+  `;
+  db.query(query, callback);
+};
+
+const getAverageBoxOfficeAndScores = (callback) => {
+  const query = `
+  SELECT 
+    CONCAT('$', FORMAT(AVG(boxOffice), 0)) AS average_box_office,
+    ROUND(AVG(metascore), 2) AS average_metascore,
+    ROUND(AVG(imdbRating), 2) AS average_imdb_rating
+  FROM (
+    SELECT DISTINCT imdbID, 
+      CAST(REPLACE(REPLACE(boxOffice, '$', ''), ',', '') AS DECIMAL(15, 2)) AS boxOffice,
+      CAST(metascore AS DECIMAL(15, 2)) AS metascore,
+      CAST(imdbRating AS DECIMAL(15, 2)) AS imdbRating
+    FROM recommendations
+    WHERE boxOffice IS NOT NULL AND boxOffice != 'N/A'
+      AND metascore IS NOT NULL
+      AND imdbRating IS NOT NULL
+  ) AS distinct_data;
+  `;
+  db.query(query, callback);
+};
+
 const getTopRecommendations = (limit, callback) => {
   const query = `
     SELECT title_en, title_bg, COUNT(*) as recommendations
     FROM recommendations
     GROUP BY title_en
     ORDER BY recommendations DESC
+    LIMIT ?
+  `;
+  db.query(query, [limit], callback);
+};
+
+const getTopCountries = (limit, callback) => {
+  const query = `
+    SELECT country, COUNT(*) AS count
+    FROM (
+      SELECT 
+        TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(r.country, ',', numbers.n), ',', -1)) AS country
+      FROM recommendations r
+      INNER JOIN (
+        SELECT 1 AS n UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION
+        SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+      ) AS numbers 
+      ON CHAR_LENGTH(r.country) - CHAR_LENGTH(REPLACE(r.country, ',', '')) >= numbers.n - 1
+    ) AS subquery
+    GROUP BY country
+    ORDER BY count DESC
     LIMIT ?
   `;
   db.query(query, [limit], callback);
@@ -905,7 +953,10 @@ module.exports = {
   getUserById,
   saveRecommendation,
   saveUserPreferences,
+  getUsersCount,
+  getAverageBoxOfficeAndScores,
   getTopRecommendations,
+  getTopCountries,
   getTopGenres,
   getGenrePopularityOverTime,
   getTopActors,

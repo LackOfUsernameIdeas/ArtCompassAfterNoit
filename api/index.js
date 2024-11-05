@@ -445,7 +445,29 @@ app.post("/save-recommendation", (req, res) => {
   });
 });
 
-// Get Most Recommended Movies/Series
+// Вземане на данни за общ брой на потребители в платформата
+app.get("/stats/platform/users-count", (req, res) => {
+  db.getUsersCount((err, result) => {
+    if (err) {
+      return res.status(500).json({ error: "Error fetching users count" });
+    }
+    res.json(result);
+  });
+});
+
+// Вземане на данни за средна печалба на филми/сериали от билети и мета/имdb оценки в платформата
+app.get("/stats/platform/average-scores", (req, res) => {
+  db.getAverageBoxOfficeAndScores((err, result) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ error: "Error fetching average box office and ratings" });
+    }
+    res.json(result);
+  });
+});
+
+// Вземане на данни за най-препоръчвани филми/сериали в платформата
 app.get("/stats/platform/top-recommendations", (req, res) => {
   const limit = 10;
 
@@ -454,6 +476,18 @@ app.get("/stats/platform/top-recommendations", (req, res) => {
       return res
         .status(500)
         .json({ error: "Error fetching top recommendations" });
+    }
+    res.json({ topRecs: results });
+  });
+});
+
+// Вземане на данни за най-препоръчвани държави, които създават филми/сериали в платформата
+app.get("/stats/platform/top-countries", async (req, res) => {
+  const limit = 10;
+
+  db.getTopCountries(limit, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Error fetching top countries" });
     }
     res.json({ topRecs: results });
   });
