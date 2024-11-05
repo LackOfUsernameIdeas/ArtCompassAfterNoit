@@ -514,7 +514,6 @@ const getSortedDirectorsByProsperity = (callback) => {
       FROM recommendations
       WHERE director IS NOT NULL 
         AND director != 'N/A'
-        AND type = 'movie'
       UNION ALL
       SELECT 
           id,
@@ -529,7 +528,6 @@ const getSortedDirectorsByProsperity = (callback) => {
           type
       FROM DirectorSplit
       WHERE remaining_directors LIKE '%,%'
-        AND type = 'movie'
   ),
   UniqueMovies AS (
       SELECT 
@@ -553,7 +551,6 @@ const getSortedDirectorsByProsperity = (callback) => {
       WHERE 
           director IS NOT NULL 
           AND director != 'N/A'
-          AND type = 'movie'
       GROUP BY 
           director
   )
@@ -687,7 +684,6 @@ const getSortedActorsByProsperity = (callback) => {
     FROM recommendations
     WHERE actors IS NOT NULL 
       AND actors != 'N/A'
-      AND type = 'movie'
     UNION ALL
     SELECT 
         id,
@@ -841,7 +837,6 @@ const getSortedWritersByProsperity = (callback) => {
     FROM recommendations
     WHERE writer IS NOT NULL 
       AND writer != 'N/A'
-      AND type = 'movie'  -- Ensure we are only selecting movies
     UNION ALL
     SELECT 
         id,
@@ -877,7 +872,6 @@ const getSortedWritersByProsperity = (callback) => {
       WHERE 
           writer IS NOT NULL 
           AND writer != 'N/A'
-          AND type = 'movie'  -- Ensure we are only counting recommendations for movies
       GROUP BY 
           writer
   )
