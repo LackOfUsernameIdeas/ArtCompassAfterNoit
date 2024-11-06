@@ -176,20 +176,25 @@ const getUsersCount = (callback) => {
 
 const getAverageBoxOfficeAndScores = (callback) => {
   const query = `
-  SELECT 
-    CONCAT('$', FORMAT(AVG(boxOffice), 0)) AS average_box_office,
-    ROUND(AVG(metascore), 2) AS average_metascore,
-    ROUND(AVG(imdbRating), 2) AS average_imdb_rating
-  FROM (
-    SELECT DISTINCT imdbID, 
-      CAST(REPLACE(REPLACE(boxOffice, '$', ''), ',', '') AS DECIMAL(15, 2)) AS boxOffice,
-      CAST(metascore AS DECIMAL(15, 2)) AS metascore,
-      CAST(imdbRating AS DECIMAL(15, 2)) AS imdbRating
-    FROM recommendations
-    WHERE boxOffice IS NOT NULL AND boxOffice != 'N/A'
-      AND metascore IS NOT NULL
-      AND imdbRating IS NOT NULL
-  ) AS distinct_data;
+    SELECT 
+      CONCAT('$', FORMAT(AVG(boxOffice), 0)) AS average_box_office,
+      ROUND(AVG(metascore), 2) AS average_metascore,
+      ROUND(AVG(imdbRating), 2) AS average_imdb_rating,
+      CONCAT(ROUND(AVG(rottenTomatoes), 2), '%') AS average_rotten_tomatoes
+    FROM (
+      SELECT DISTINCT imdbID, 
+        CAST(REPLACE(REPLACE(boxOffice, '$', ''), ',', '') AS DECIMAL(15, 2)) AS boxOffice,
+        CAST(metascore AS DECIMAL(15, 2)) AS metascore,
+        CAST(imdbRating AS DECIMAL(15, 2)) AS imdbRating,
+        CAST(
+          REPLACE(JSON_UNQUOTE(JSON_EXTRACT(ratings, '$[1].Value')), '%', '') AS DECIMAL(5, 2)
+        ) AS rottenTomatoes
+      FROM recommendations
+      WHERE boxOffice IS NOT NULL AND boxOffice != 'N/A'
+        AND metascore IS NOT NULL
+        AND imdbRating IS NOT NULL
+        AND JSON_EXTRACT(ratings, '$[1].Source') = 'Rotten Tomatoes'
+    ) AS distinct_data;
   `;
   db.query(query, callback);
 };
@@ -510,6 +515,7 @@ const getSortedDirectorsByProsperity = (callback) => {
           runtime,
           awards,
           imdbID,
+          ratings,
           type
       FROM recommendations
       WHERE director IS NOT NULL 
@@ -525,6 +531,7 @@ const getSortedDirectorsByProsperity = (callback) => {
           runtime,
           awards,
           imdbID,
+          ratings,
           type
       FROM DirectorSplit
       WHERE remaining_directors LIKE '%,%'
@@ -537,7 +544,12 @@ const getSortedDirectorsByProsperity = (callback) => {
           metascore,
           boxOffice,
           runtime,
-          awards
+          awards,
+          CAST(
+            REPLACE(
+              JSON_UNQUOTE(JSON_EXTRACT(ratings, '$[1].Value')), '%', ''
+            ) AS DECIMAL(5, 2)
+          ) AS rottenTomatoes
       FROM 
           DirectorSplit
       WHERE director IS NOT NULL AND director != 'N/A'
@@ -545,7 +557,7 @@ const getSortedDirectorsByProsperity = (callback) => {
   DirectorRecommendations AS (
       SELECT 
           director,
-          COUNT(*) AS total_recommendations  -- Count total recommendations for each director
+          COUNT(*) AS total_recommendations
       FROM 
           recommendations
       WHERE 
@@ -555,52 +567,48 @@ const getSortedDirectorsByProsperity = (callback) => {
           director
   )
   SELECT 
-      um.director,
-      ROUND(AVG(um.imdbRating), 2) AS avg_imdb_rating,  -- Round to 2 decimal places
-      AVG(um.metascore) AS avg_metascore,
-      -- Format total box office with a dollar sign
-      CONCAT('$', FORMAT(SUM(CASE 
-              WHEN um.boxOffice IS NULL OR um.boxOffice = 'N/A' 
-              THEN 0 
-              ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
-          END), 0)) AS total_box_office,
-      AVG(CASE 
-              WHEN um.runtime IS NULL OR um.runtime = 'N/A' OR um.runtime < 30 
-              THEN NULL 
-              ELSE um.runtime 
-          END) AS avg_runtime,
-      -- Extract total wins as a number
-      CAST(SUM(CASE 
-              WHEN um.awards IS NOT NULL THEN 
-                  COALESCE(
-                      CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ wins') AS UNSIGNED), 
-                      0
-                  )
-              ELSE 0 
-          END) AS UNSIGNED) AS total_wins,
-      -- Extract total nominations as a number
-      CAST(SUM(CASE 
-              WHEN um.awards IS NOT NULL THEN 
-                  COALESCE(
-                      CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ nominations') AS UNSIGNED), 
-                      0
-                  )
-              ELSE 0 
-          END) AS UNSIGNED) AS total_nominations,
-      COUNT(DISTINCT um.imdbID) AS movie_count,  -- Count distinct movies
-      CASE 
-          WHEN COUNT(DISTINCT um.imdbID) = 1 THEN 1  -- If there's only one movie, set recommendations to 1
-          ELSE COALESCE(dr.total_recommendations, 0) 
-      END AS total_recommendations  -- Total recommendations from join
+    um.director,
+    ROUND(AVG(um.imdbRating), 2) AS avg_imdb_rating,
+    AVG(um.metascore) AS avg_metascore,
+    CONCAT('$', FORMAT(SUM(CASE 
+            WHEN um.boxOffice IS NULL OR um.boxOffice = 'N/A' 
+            THEN 0 
+            ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
+        END), 0)) AS total_box_office,
+    CONCAT(ROUND(AVG(um.rottenTomatoes), 0), '%') AS avg_rotten_tomatoes, -- Average Rotten Tomatoes rating
+    AVG(CASE 
+            WHEN um.runtime IS NULL OR um.runtime = 'N/A' OR um.runtime < 30 
+            THEN NULL 
+            ELSE um.runtime 
+        END) AS avg_runtime,
+    SUM(CASE 
+            WHEN um.awards IS NOT NULL THEN 
+                CASE 
+                    WHEN um.awards LIKE '1 win%' THEN 1
+                    ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ win(s)') AS UNSIGNED), 0)
+                END
+            ELSE 0 
+        END) AS total_wins,  -- Total wins
+
+    SUM(CASE 
+            WHEN um.awards IS NOT NULL THEN 
+                CASE 
+                    WHEN um.awards LIKE '1 nomination%' THEN 1
+                    ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ nomination(s)') AS UNSIGNED), 0)
+                END
+            ELSE 0 
+
+        END) AS total_nominations  -- Total nominations
   FROM 
       UniqueMovies um
   LEFT JOIN 
-      DirectorRecommendations dr ON um.director = dr.director  -- Join to get total recommendations
+      DirectorRecommendations dr ON um.director = dr.director
   WHERE 
       um.boxOffice IS NOT NULL 
       AND um.boxOffice != 'N/A'
       AND um.metascore IS NOT NULL 
       AND um.metascore != 'N/A'
+      AND um.rottenTomatoes IS NOT NULL
   GROUP BY 
       um.director
   ORDER BY 
@@ -611,16 +619,15 @@ const getSortedDirectorsByProsperity = (callback) => {
   db.query(query, (err, results) => {
     if (err) return callback(err);
 
-    // Calculate prosperity scores
     const weights = {
-      total_wins: 0.3,
-      total_nominations: 0.3,
-      total_box_office: 0.2,
+      total_wins: 0.25,
+      total_nominations: 0.25,
+      total_box_office: 0.15,
       avg_metascore: 0.1,
-      avg_imdb_rating: 0.1
+      avg_imdb_rating: 0.1,
+      avg_rotten_tomatoes: 0.15
     };
 
-    // Find maximum box office value to normalize
     const maxBoxOffice = Math.max(
       ...results.map((director) => {
         const totalBoxOffice =
@@ -630,28 +637,26 @@ const getSortedDirectorsByProsperity = (callback) => {
     );
 
     const directorsWithProsperity = results.map((director) => {
-      const totalWins = director.total_wins || 0; // Ensure no null values
+      const totalWins = director.total_wins || 0;
       const totalNominations = director.total_nominations || 0;
-
-      // Parse the box office value
       const totalBoxOffice =
         parseFloat(director.total_box_office.replace(/[$,]/g, "")) || 0;
-
-      // Normalize the box office value to a scale of 0-1
       const normalizedBoxOffice = maxBoxOffice
         ? totalBoxOffice / maxBoxOffice
         : 0;
-
       const avgMetascore = director.avg_metascore || 0;
       const avgIMDbRating = director.avg_imdb_rating || 0;
+      const avgRottenTomatoes = director.avg_rotten_tomatoes
+        ? parseFloat(director.avg_rotten_tomatoes.replace("%", "")) / 100
+        : 0;
 
-      // Calculate prosperity score using weighted values
       const prosperityScore =
         totalWins * weights.total_wins +
         totalNominations * weights.total_nominations +
         normalizedBoxOffice * weights.total_box_office +
         avgMetascore * weights.avg_metascore +
-        avgIMDbRating * weights.avg_imdb_rating;
+        avgIMDbRating * weights.avg_imdb_rating +
+        avgRottenTomatoes * weights.avg_rotten_tomatoes;
 
       return {
         ...director,
@@ -659,7 +664,6 @@ const getSortedDirectorsByProsperity = (callback) => {
       };
     });
 
-    // Sort directors by prosperity score
     directorsWithProsperity.sort(
       (a, b) => b.prosperityScore - a.prosperityScore
     );
@@ -671,32 +675,34 @@ const getSortedDirectorsByProsperity = (callback) => {
 const getSortedActorsByProsperity = (callback) => {
   const query = `
   WITH RECURSIVE ActorSplit AS (
-    SELECT 
-        id, 
-        TRIM(SUBSTRING_INDEX(actors, ',', 1)) AS actor,
-        SUBSTRING_INDEX(actors, ',', -1) AS remaining_actors,
-        imdbRating,
-        metascore,
-        boxOffice,
-        awards,
-        imdbID,
-        type
-    FROM recommendations
-    WHERE actors IS NOT NULL 
-      AND actors != 'N/A'
-    UNION ALL
-    SELECT 
-        id,
-        TRIM(SUBSTRING_INDEX(remaining_actors, ',', 1)) AS actor,
-        SUBSTRING_INDEX(remaining_actors, ',', -1) AS remaining_actors,
-        imdbRating,
-        metascore,
-        boxOffice,
-        awards,
-        imdbID,
-        type
-    FROM ActorSplit
-    WHERE remaining_actors LIKE '%,%'
+  SELECT 
+      id, 
+      TRIM(SUBSTRING_INDEX(actors, ',', 1)) AS actor,
+      SUBSTRING_INDEX(actors, ',', -1) AS remaining_actors,
+      imdbRating,
+      metascore,
+      boxOffice,
+      awards,
+      imdbID,
+      ratings,
+      type
+  FROM recommendations
+  WHERE actors IS NOT NULL 
+    AND actors != 'N/A'
+  UNION ALL
+  SELECT 
+      id,
+      TRIM(SUBSTRING_INDEX(remaining_actors, ',', 1)) AS actor,
+      SUBSTRING_INDEX(remaining_actors, ',', -1) AS remaining_actors,
+      imdbRating,
+      metascore,
+      boxOffice,
+      awards,
+      imdbID,
+      ratings,
+      type
+  FROM ActorSplit
+  WHERE remaining_actors LIKE '%,%'
   ),
   UniqueMovies AS (
     SELECT 
@@ -705,7 +711,8 @@ const getSortedActorsByProsperity = (callback) => {
         imdbRating,
         metascore,
         boxOffice,
-        awards
+        awards,
+        ratings
     FROM 
         ActorSplit
     WHERE actor IS NOT NULL AND actor != 'N/A'
@@ -723,32 +730,35 @@ const getSortedActorsByProsperity = (callback) => {
         actor
   )
   SELECT 
-      um.actor,
-      ROUND(AVG(um.imdbRating), 2) AS avg_imdb_rating,
-      AVG(um.metascore) AS avg_metascore,
-      CONCAT('$', FORMAT(SUM(CASE 
-              WHEN um.boxOffice IS NULL OR um.boxOffice = 'N/A' 
-              THEN 0 
-              ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
-          END), 0)) AS total_box_office,
-      COUNT(DISTINCT um.imdbID) AS movie_count,  -- Count distinct movies
-      COALESCE(ar.total_recommendations, 0) AS total_recommendations,  -- Total recommendations from join
-      CAST(SUM(CASE 
-              WHEN um.awards IS NOT NULL THEN 
-                  COALESCE(
-                      CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ wins') AS UNSIGNED), 
-                      0
-                  )
-              ELSE 0 
-          END) AS UNSIGNED) AS total_wins,  -- Total wins
-      CAST(SUM(CASE 
-              WHEN um.awards IS NOT NULL THEN 
-                  COALESCE(
-                      CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ nominations') AS UNSIGNED), 
-                      0
-                  )
-              ELSE 0 
-          END) AS UNSIGNED) AS total_nominations  -- Total nominations
+    um.actor,
+    ROUND(AVG(um.imdbRating), 2) AS avg_imdb_rating,
+    AVG(um.metascore) AS avg_metascore,
+    CONCAT('$', FORMAT(SUM(CASE 
+            WHEN um.boxOffice IS NULL OR um.boxOffice = 'N/A' 
+            THEN 0 
+            ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
+        END), 0)) AS total_box_office,
+    CONCAT(ROUND(AVG(CAST(REPLACE(REPLACE(JSON_UNQUOTE(JSON_EXTRACT(um.ratings, '$[1].Value')), '%', ''), ',', '') AS DECIMAL(5,2))), 0), '%') AS avg_rotten_tomatoes, -- Average Rotten Tomatoes rating
+    COUNT(DISTINCT um.imdbID) AS movie_count,  -- Count distinct movies
+    COALESCE(ar.total_recommendations, 0) AS total_recommendations,  -- Total recommendations from join
+    SUM(CASE 
+            WHEN um.awards IS NOT NULL THEN 
+                CASE 
+                    WHEN um.awards LIKE '1 win%' THEN 1
+                    ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ win(s)') AS UNSIGNED), 0)
+                END
+            ELSE 0 
+        END) AS total_wins,  -- Total wins
+
+    SUM(CASE 
+            WHEN um.awards IS NOT NULL THEN 
+                CASE 
+                    WHEN um.awards LIKE '1 nomination%' THEN 1
+                    ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ nomination(s)') AS UNSIGNED), 0)
+                END
+            ELSE 0 
+
+        END) AS total_nominations  -- Total nominations
   FROM 
       UniqueMovies um
   LEFT JOIN 
@@ -768,11 +778,12 @@ const getSortedActorsByProsperity = (callback) => {
 
     // Calculate prosperity scores
     const weights = {
-      total_wins: 0.3,
-      total_nominations: 0.3,
-      total_box_office: 0.2,
+      total_wins: 0.25,
+      total_nominations: 0.25,
+      total_box_office: 0.15,
+      avg_metascore: 0.1,
       avg_imdb_rating: 0.1,
-      avg_metascore: 0.1
+      avg_rotten_tomatoes: 0.15
     };
 
     // Find maximum box office value to normalize
@@ -799,18 +810,21 @@ const getSortedActorsByProsperity = (callback) => {
 
       const avgIMDbRating = actor.avg_imdb_rating || 0;
       const avgMetascore = actor.avg_metascore || 0; // Add metascore
+      const avgRottenTomatoes = actor.avg_rotten_tomatoes
+        ? parseFloat(actor.avg_rotten_tomatoes.replace("%", "")) / 100
+        : 0;
 
-      // Calculate prosperity score using weighted values
       const prosperityScore =
         totalWins * weights.total_wins +
         totalNominations * weights.total_nominations +
         normalizedBoxOffice * weights.total_box_office +
+        avgMetascore * weights.avg_metascore +
         avgIMDbRating * weights.avg_imdb_rating +
-        avgMetascore * weights.avg_metascore; // Include metascore
+        avgRottenTomatoes * weights.avg_rotten_tomatoes;
 
       return {
         ...actor,
-        prosperityScore: Number(prosperityScore.toFixed(2)) // Round to two decimal places
+        prosperityScore: Number(prosperityScore.toFixed(2))
       };
     });
 
@@ -822,7 +836,7 @@ const getSortedActorsByProsperity = (callback) => {
 };
 
 const getSortedWritersByProsperity = (callback) => {
-  const query = `
+  const query = `  
   WITH RECURSIVE WriterSplit AS (
     SELECT 
         id, 
@@ -833,6 +847,7 @@ const getSortedWritersByProsperity = (callback) => {
         boxOffice,
         awards,
         imdbID,
+        ratings,
         type
     FROM recommendations
     WHERE writer IS NOT NULL 
@@ -847,6 +862,7 @@ const getSortedWritersByProsperity = (callback) => {
         boxOffice,
         awards,
         imdbID,
+        ratings,
         type
     FROM WriterSplit
     WHERE remaining_writers LIKE '%,%'
@@ -858,7 +874,8 @@ const getSortedWritersByProsperity = (callback) => {
           imdbRating,
           metascore,
           boxOffice,
-          awards
+          awards,
+          ratings
       FROM 
           WriterSplit
       WHERE writer IS NOT NULL AND writer != 'N/A'
@@ -884,6 +901,7 @@ const getSortedWritersByProsperity = (callback) => {
               THEN 0 
               ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
           END), 0)) AS total_box_office,
+      CONCAT(ROUND(AVG(CAST(REPLACE(REPLACE(JSON_UNQUOTE(JSON_EXTRACT(um.ratings, '$[1].Value')), '%', ''), ',', '') AS DECIMAL(5,2))), 0), '%') AS avg_rotten_tomatoes, -- Average Rotten Tomatoes rating
       COUNT(DISTINCT um.imdbID) AS movie_count,  -- Count distinct movies
       COALESCE(wr.total_recommendations, 0) AS total_recommendations,  -- Total recommendations from join
       SUM(CASE 
@@ -894,6 +912,7 @@ const getSortedWritersByProsperity = (callback) => {
                   END
               ELSE 0 
           END) AS total_wins,  -- Total wins
+
       SUM(CASE 
               WHEN um.awards IS NOT NULL THEN 
                   CASE 
@@ -901,6 +920,7 @@ const getSortedWritersByProsperity = (callback) => {
                       ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ nomination(s)') AS UNSIGNED), 0)
                   END
               ELSE 0 
+
           END) AS total_nominations  -- Total nominations
   FROM 
       UniqueMovies um
@@ -924,11 +944,12 @@ const getSortedWritersByProsperity = (callback) => {
 
     // Calculate prosperity scores
     const weights = {
-      total_wins: 0.3,
-      total_nominations: 0.3,
-      total_box_office: 0.2,
+      total_wins: 0.25,
+      total_nominations: 0.25,
+      total_box_office: 0.15,
+      avg_metascore: 0.1,
       avg_imdb_rating: 0.1,
-      avg_metascore: 0.1
+      avg_rotten_tomatoes: 0.15
     };
 
     // Find maximum box office value to normalize
@@ -954,7 +975,10 @@ const getSortedWritersByProsperity = (callback) => {
         : 0;
 
       const avgIMDbRating = writer.avg_imdb_rating || 0;
-      const avgMetascore = writer.avg_metascore || 0; // Add metascore
+      const avgMetascore = writer.avg_metascore || 0;
+      const avgRottenTomatoes = writer.avg_rotten_tomatoes
+        ? parseFloat(writer.avg_rotten_tomatoes.replace("%", "")) / 100
+        : 0;
 
       // Calculate prosperity score using weighted values
       const prosperityScore =
@@ -962,7 +986,8 @@ const getSortedWritersByProsperity = (callback) => {
         totalNominations * weights.total_nominations +
         normalizedBoxOffice * weights.total_box_office +
         avgIMDbRating * weights.avg_imdb_rating +
-        avgMetascore * weights.avg_metascore; // Include metascore
+        avgMetascore * weights.avg_metascore +
+        avgRottenTomatoes * weights.avg_rotten_tomatoes;
 
       return {
         ...writer,
@@ -988,6 +1013,7 @@ const getSortedMoviesByProsperity = (callback) => {
         metascore,
         boxOffice,
         awards,
+        ratings,
         title_en,
         title_bg,
         type
@@ -1003,6 +1029,7 @@ const getSortedMoviesByProsperity = (callback) => {
         metascore,
         boxOffice,
         awards,
+        ratings,
         title_en,
         title_bg,
         type
@@ -1018,7 +1045,8 @@ const getSortedMoviesByProsperity = (callback) => {
           MAX(imdbRating) AS imdbRating,  -- Get the maximum rating
           MAX(metascore) AS metascore,  -- Get the maximum metascore
           MAX(boxOffice) AS boxOffice,  -- Get the maximum box office
-          MAX(awards) AS awards          -- Get the maximum awards
+          MAX(awards) AS awards,          -- Get the maximum awards
+          MAX(ratings) AS ratings
       FROM 
           MovieSplit
       WHERE imdbID IS NOT NULL 
@@ -1049,6 +1077,7 @@ const getSortedMoviesByProsperity = (callback) => {
               WHEN boxOffice IS NULL OR boxOffice = 'N/A' THEN 0 
               ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
           END), 0)) AS total_box_office,  -- Proper box office
+	  JSON_UNQUOTE(JSON_EXTRACT(um.ratings, '$[1].Value')) AS rotten_tomatoes, -- Average Rotten Tomatoes rating
       COALESCE(mr.total_recommendations, 0) AS total_recommendations,  -- Total recommendations from join
       SUM(CASE 
               WHEN um.awards IS NOT NULL THEN 
@@ -1086,11 +1115,12 @@ const getSortedMoviesByProsperity = (callback) => {
 
     // Calculate prosperity scores
     const weights = {
-      total_wins: 0.3,
-      total_nominations: 0.3,
-      total_box_office: 0.2,
+      total_wins: 0.25,
+      total_nominations: 0.25,
+      total_box_office: 0.15,
+      avg_metascore: 0.1,
       avg_imdb_rating: 0.1,
-      avg_metascore: 0.1
+      avg_rotten_tomatoes: 0.15
     };
 
     // Find maximum box office value to normalize
@@ -1117,6 +1147,9 @@ const getSortedMoviesByProsperity = (callback) => {
 
       const avgIMDbRating = movie.imdbRating || 0;
       const avgMetascore = movie.metascore || 0; // Add metascore
+      const avgRottenTomatoes = movie.avg_rotten_tomatoes
+        ? parseFloat(movie.avg_rotten_tomatoes.replace("%", "")) / 100
+        : 0;
 
       // Calculate prosperity score using weighted values
       const prosperityScore =
@@ -1124,7 +1157,8 @@ const getSortedMoviesByProsperity = (callback) => {
         totalNominations * weights.total_nominations +
         normalizedBoxOffice * weights.total_box_office +
         avgIMDbRating * weights.avg_imdb_rating +
-        avgMetascore * weights.avg_metascore; // Include metascore
+        avgMetascore * weights.avg_metascore +
+        avgRottenTomatoes * weights.avg_rotten_tomatoes;
 
       return {
         ...movie,
