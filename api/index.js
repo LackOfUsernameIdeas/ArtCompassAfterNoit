@@ -667,6 +667,7 @@ app.get("/stats/platform/all", async (req, res) => {
 
     // Изпълняваме всички заявки към базата данни паралелно
     const [
+      usersCount,
       topRecommendations,
       topGenres,
       genrePopularityOverTime,
@@ -674,15 +675,22 @@ app.get("/stats/platform/all", async (req, res) => {
       topDirectors,
       topWriters,
       oscarsByMovie,
-      totalAwardsByMovie,
+      totalAwardsByMovieOrSeries,
       totalAwards,
       sortedDirectorsByProsperity,
       sortedActorsByProsperity,
       sortedWritersByProsperity,
       sortedMoviesByProsperity,
       sortedMoviesByMetascore,
-      sortedMoviesByIMDbRating
+      sortedMoviesByIMDbRating,
+      averageBoxOfficeAndScores,
+      topCountries
     ] = await Promise.all([
+      new Promise((resolve, reject) =>
+        db.getUsersCount((err, results) =>
+          err ? reject(err) : resolve(results)
+        )
+      ),
       new Promise((resolve, reject) =>
         db.getTopRecommendations(limit, (err, results) =>
           err ? reject(err) : resolve(results)
@@ -719,7 +727,7 @@ app.get("/stats/platform/all", async (req, res) => {
         )
       ),
       new Promise((resolve, reject) =>
-        db.getTotalAwardsByMovie((err, results) =>
+        db.getTotalAwardsByMovieOrSeries((err, results) =>
           err ? reject(err) : resolve(results)
         )
       ),
@@ -757,11 +765,22 @@ app.get("/stats/platform/all", async (req, res) => {
         db.getTopMoviesAndSeriesByIMDbRating(limit, (err, results) =>
           err ? reject(err) : resolve(results)
         )
+      ),
+      new Promise((resolve, reject) =>
+        db.getAverageBoxOfficeAndScores((err, results) =>
+          err ? reject(err) : resolve(results)
+        )
+      ),
+      new Promise((resolve, reject) =>
+        db.getTopCountries(limit, (err, results) =>
+          err ? reject(err) : resolve(results)
+        )
       )
     ]);
 
     // Форматираме резултата в JSON с всички данни
     res.json({
+      usersCount,
       topRecommendations,
       topGenres,
       genrePopularityOverTime,
@@ -769,14 +788,16 @@ app.get("/stats/platform/all", async (req, res) => {
       topDirectors,
       topWriters,
       oscarsByMovie,
-      totalAwardsByMovie,
+      totalAwardsByMovieOrSeries,
       totalAwards,
       sortedDirectorsByProsperity,
       sortedActorsByProsperity,
       sortedWritersByProsperity,
       sortedMoviesByProsperity,
       sortedMoviesByMetascore,
-      sortedMoviesByIMDbRating
+      sortedMoviesByIMDbRating,
+      averageBoxOfficeAndScores,
+      topCountries
     });
   } catch (error) {
     res
