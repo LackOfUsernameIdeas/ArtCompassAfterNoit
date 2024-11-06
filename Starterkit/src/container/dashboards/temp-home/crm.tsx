@@ -13,6 +13,7 @@ import {
 } from "./crmdata";
 import face10 from "../../../assets/images/faces/10.jpg";
 import face12 from "../../../assets/images/faces/12.jpg";
+import { Zoomabletime } from "../../uielements/charts/zoomablechart";
 
 interface CrmProps {}
 
@@ -40,10 +41,34 @@ interface WriterData extends CommonData {
   movie_count: number; // Unified property for Writers
 }
 
+type UsersCountData = {
+  user_count: number;
+};
+
+type DataType = {
+  usersCount: UsersCountData[];
+  topRecommendations: any[];
+  topGenres: any[];
+  genrePopularityOverTime: Record<string, any>;
+  topActors: any[];
+  topDirectors: any[];
+  topWriters: any[];
+  oscarsByMovie: any[];
+  totalAwardsByMovie: any[];
+  totalAwards: any[];
+  sortedDirectorsByProsperity: any[];
+  sortedActorsByProsperity: any[];
+  sortedWritersByProsperity: any[];
+  sortedMoviesByProsperity: any[];
+  averageBoxOfficeAndScores: any[];
+  topCountries: any[];
+};
+
 const TempHome: FC<CrmProps> = () => {
   // for User search function
   const [Data, setData] = useState(Dealsstatistics);
-  const [Data2, setData2] = useState({
+  const [Data2, setData2] = useState<DataType>({
+    usersCount: [],
     topRecommendations: [],
     topGenres: [],
     genrePopularityOverTime: {},
@@ -56,7 +81,9 @@ const TempHome: FC<CrmProps> = () => {
     sortedDirectorsByProsperity: [],
     sortedActorsByProsperity: [],
     sortedWritersByProsperity: [],
-    sortedMoviesByProsperity: []
+    sortedMoviesByProsperity: [],
+    averageBoxOfficeAndScores: [],
+    topCountries: []
   });
   type FilteredTableData = (DirectorData | ActorData | WriterData)[];
 
@@ -88,12 +115,48 @@ const TempHome: FC<CrmProps> = () => {
     useState("Total Award Wins");
   const [prosperitySortCategory, setProsperitySortCategory] =
     useState("Directors");
+  const [currentTableItems, setCurrentTableItems] = useState<FilteredTableData>(
+    []
+  );
+
   const [currentTablePage, setCurrentTablePage] = useState(1);
   const itemsPerTablePage = 5;
   // Handler for dropdown item click
   const handleProsperityTableClick = (category: string) => {
     setProsperitySortCategory(category);
+    fetchProsperityData(category);
+    console.log("Data2 structure:", Data2);
+    console.log("filteredTableData after update:", filteredTableData);
   };
+
+  const fetchProsperityData = (category: string) => {
+    let newItems: FilteredTableData = [];
+
+    // Use type guards to filter data based on the category
+    switch (category) {
+      case "Directors":
+        newItems = filteredTableData.filter(isDirector);
+        break;
+      case "Actors":
+        newItems = filteredTableData.filter(isActor);
+        break;
+      case "Writers":
+        newItems = filteredTableData.filter(isWriter);
+        break;
+      default:
+        newItems = []; // Default to an empty array if no match
+    }
+
+    // Paginate the filtered data
+    const paginatedItems = newItems.slice(
+      (currentTablePage - 1) * itemsPerTablePage,
+      currentTablePage * itemsPerTablePage
+    );
+
+    console.log("Filtered Items for", category, paginatedItems); // Log to verify filtered items
+    setCurrentTableItems(paginatedItems);
+  };
+
   const handleDropdownClick = (name: string, value: string) => {
     setDisplayedNameAwards(name);
     setDisplayedValueAwards(value);
@@ -116,11 +179,6 @@ const TempHome: FC<CrmProps> = () => {
   const totalItems = filteredTableData.length;
   const totalTablePages = Math.ceil(totalItems / itemsPerTablePage);
 
-  const currentItems = filteredTableData.slice(
-    (currentTablePage - 1) * itemsPerTablePage,
-    currentTablePage * itemsPerTablePage
-  );
-
   const myfunction = (idx: any) => {
     let Data;
     for (Data of Dealsstatistics) {
@@ -135,6 +193,10 @@ const TempHome: FC<CrmProps> = () => {
     }
     setData(userdata);
   };
+
+  useEffect(() => {
+    fetchProsperityData(prosperitySortCategory);
+  }, [currentTablePage, prosperitySortCategory]);
 
   useEffect(() => {
     // Check if user is already logged in
@@ -186,28 +248,32 @@ const TempHome: FC<CrmProps> = () => {
         }
 
         const data = await response.json();
+        console.log("Fetched Data:", data); // Log full data for inspection
+
         setData2(data);
         setFilteredTableData(
           data[`sorted${prosperitySortCategory}ByProsperity`]
         );
-        console.log("Data2", data); // Log user data to the console
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     })();
   }, []);
 
-  const handlePrevTablePage = () => {
-    if (currentTablePage > 1) {
-      setCurrentTablePage(currentTablePage - 1);
-    }
-  };
+  const hasData = Object.keys(Data2.genrePopularityOverTime).length > 0;
 
   const handleNextTablePage = () => {
     if (currentTablePage < totalTablePages) {
-      setCurrentTablePage(currentTablePage + 1);
+      setCurrentTablePage((prev) => prev + 1);
     }
   };
+
+  const handlePrevTablePage = () => {
+    if (currentTablePage > 1) {
+      setCurrentTablePage((prev) => prev - 1);
+    }
+  };
+
   return (
     <Fragment>
       <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">
@@ -275,39 +341,27 @@ const TempHome: FC<CrmProps> = () => {
                 </div>
               </div> */}
               <div className="xxl:col-span-6 xl:col-span-6 col-span-12">
-                <div className="box overflow-hidden">
+                <div className="box custom-box">
                   <div className="box-body">
-                    <div className="flex items-top justify-between">
-                      <div>
-                        <span className="!text-[0.8rem]  !w-[2.5rem] !h-[2.5rem] !leading-[2.5rem] !rounded-full inline-flex items-center justify-center bg-primary">
-                          <i className="ti ti-users text-[1rem] text-white"></i>
-                        </span>
+                    <div className="flex flex-wrap items-start justify-between">
+                      <div className="flex-grow">
+                        <p className="mb-0 text-[#8c9097] dark:text-white/50">
+                          Общ брой потребители
+                        </p>
+                        <div className="flex items-center">
+                          <span className="text-[1.25rem] font-semibold">
+                            {Data2.usersCount?.[0]?.user_count || 0}
+                          </span>
+                          <span className="text-[0.75rem] text-success ms-2">
+                            <i className="ti ti-trending-up me-1 inline-block"></i>
+                            0.42%
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex-grow ms-4">
-                        <div className="flex items-center justify-between flex-wrap">
-                          <div>
-                            <p className="text-[#8c9097] dark:text-white/50 text-[0.813rem] mb-0">
-                              Общ брой потребители
-                            </p>
-                            <h4 className="font-semibold  text-[1.5rem] !mb-2 ">
-                              3
-                            </h4>
-                          </div>
-                          <div id="crm-total-customers">
-                            <Totalcustomers />
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-between !mt-1">
-                          <div></div>
-                          <div className="text-end">
-                            <p className="mb-0 text-success text-[0.813rem] font-semibold">
-                              +40%
-                            </p>
-                            <p className="text-[#8c9097] dark:text-white/50 opacity-[0.7] text-[0.6875rem]">
-                              this month
-                            </p>
-                          </div>
-                        </div>
+                      <div>
+                        <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
+                          <i className="bi bi-person-lines-fill text-[1rem]"></i>
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -317,7 +371,7 @@ const TempHome: FC<CrmProps> = () => {
             <div className="xxl:col-span-8  xl:col-span-8  col-span-12">
               <div className="grid grid-cols-12 gap-x-6">
                 <div className="xxl:col-span-6 xl:col-span-6 col-span-12">
-                  <div className="box overflow-hidden">
+                  {/* <div className="box overflow-hidden">
                     <div className="box-body">
                       <div className="flex items-top justify-between">
                         <div>
@@ -423,50 +477,124 @@ const TempHome: FC<CrmProps> = () => {
                         </div>
                       </div>
                     </div>
+                  </div> */}
+                  <div className="box custom-box">
+                    <div className="box-body">
+                      <div className="flex flex-wrap items-start justify-between">
+                        <div className="flex-grow">
+                          <div className="flex flex-wrap items-start">
+                            <p className="mb-0 text-[#8c9097] dark:text-white/50">
+                              {displayedNameAwards}
+                            </p>
+                            <div className="hs-dropdown ti-dropdown">
+                              <Link
+                                to="#"
+                                className="text-[0.75rem] px-2 font-normal text-primary"
+                                aria-expanded="false"
+                              >
+                                View All
+                                <i className="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
+                              </Link>
+                              <ul
+                                className="hs-dropdown-menu ti-dropdown-menu hidden"
+                                role="menu"
+                              >
+                                <li>
+                                  <Link
+                                    onClick={() =>
+                                      handleDropdownClick(
+                                        "Total Award Wins",
+                                        "1,118"
+                                      )
+                                    }
+                                    className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
+                                    to="#"
+                                  >
+                                    Total Award Wins
+                                  </Link>
+                                </li>
+                                <li>
+                                  <Link
+                                    onClick={() =>
+                                      handleDropdownClick(
+                                        "Total Award Nominations",
+                                        "2,262"
+                                      )
+                                    }
+                                    className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
+                                    to="#"
+                                  >
+                                    Total Award Nominations
+                                  </Link>
+                                </li>
+                                <li>
+                                  <Link
+                                    onClick={() =>
+                                      handleDropdownClick(
+                                        "Total Oscar Wins",
+                                        "11"
+                                      )
+                                    }
+                                    className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
+                                    to="#"
+                                  >
+                                    Total Oscar Wins
+                                  </Link>
+                                </li>
+                                <li>
+                                  <Link
+                                    onClick={() =>
+                                      handleDropdownClick(
+                                        "Total Oscar Nominations",
+                                        "18"
+                                      )
+                                    }
+                                    className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
+                                    to="#"
+                                  >
+                                    Total Oscar Nominations
+                                  </Link>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                          <div className="flex items-center">
+                            <span className="text-[1.25rem] font-semibold">
+                              {displayedValueAwards}
+                            </span>
+                            <span className="text-[0.75rem] text-success ms-2">
+                              <i className="ti ti-trending-up me-1 inline-block"></i>
+                              0.42%
+                            </span>
+                          </div>
+                        </div>
+                        <div>
+                          <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
+                            <i className="bi bi-person-lines-fill text-[1rem]"></i>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div className="xxl:col-span-6 xl:col-span-6 col-span-12">
-                  <div className="box overflow-hidden">
+                  <div className="box custom-box">
                     <div className="box-body">
-                      <div className="flex items-top justify-between">
-                        <div>
-                          <span className="!text-[0.8rem]  !w-[2.5rem] !h-[2.5rem] !leading-[2.5rem] !rounded-full inline-flex items-center justify-center bg-secondary">
-                            <i className="ti ti-wallet text-[1rem] text-white"></i>
-                          </span>
+                      <div className="flex flex-wrap items-start justify-between">
+                        <div className="flex-grow">
+                          <p className="mb-0 text-[#8c9097] dark:text-white/50">
+                            Most Recommended
+                          </p>
+                          <div className="flex items-center">
+                            <span className="text-[1.25rem] font-semibold">
+                              {Data2.topRecommendations[0]?.title_bg}
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex-grow ms-4">
-                          <div className="flex items-center justify-between flex-wrap">
-                            <div>
-                              <p className="text-[#8c9097] dark:text-white/50 text-[0.813rem] mb-0">
-                                Total Revenue
-                              </p>
-                              <h4 className="font-semibold text-[1.5rem] !mb-2 ">
-                                $56,562
-                              </h4>
-                            </div>
-                            <div id="crm-total-revenue">
-                              <Totalrevenue />
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between mt-1">
-                            <div>
-                              <Link
-                                className="text-secondary text-[0.813rem]"
-                                to="#"
-                              >
-                                View All
-                                <i className="ti ti-arrow-narrow-right ms-2 font-semibold inline-block"></i>
-                              </Link>
-                            </div>
-                            <div className="text-end">
-                              <p className="mb-0 text-success text-[0.813rem] font-semibold">
-                                +25%
-                              </p>
-                              <p className="text-[#8c9097] dark:text-white/50 opacity-[0.7] text-[0.6875rem]">
-                                this month
-                              </p>
-                            </div>
-                          </div>
+                        <div>
+                          <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
+                            <i className="bi bi-person-lines-fill text-[1rem]"></i>
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -524,7 +652,10 @@ const TempHome: FC<CrmProps> = () => {
               </div>
               <div className="box-body">
                 <div className="overflow-x-auto">
-                  <table className="table min-w-full whitespace-nowrap table-hover border table-bordered">
+                  <table
+                    key={prosperitySortCategory}
+                    className="table min-w-full whitespace-nowrap table-hover border table-bordered"
+                  >
                     <thead>
                       <tr className="border border-inherit border-solid dark:border-defaultborder/10">
                         <th scope="row" className="!ps-4 !pe-5">
@@ -563,7 +694,7 @@ const TempHome: FC<CrmProps> = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {currentItems.map((item, index) => (
+                      {currentTableItems.map((item, index) => (
                         <tr
                           key={index}
                           className="border border-inherit border-solid hover:bg-gray-100 dark:border-defaultborder/10 dark:hover:bg-light"
@@ -659,10 +790,22 @@ const TempHome: FC<CrmProps> = () => {
               </div>
             </div>
           </div>
+          {/* <div className="xl:col-span-6 col-span-12">
+            <div className="box custom-box">
+              <div className="box-header">
+                <div className="box-title">Zoomable Time Series</div>
+              </div>
+              <div className="box-body">
+                <div id="zoom-chart">
+                  <Zoomabletime />
+                </div>
+              </div>
+            </div>
+          </div> */}
           <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
             <div className="box">
               <div className="box-header !gap-0 !m-0 justify-between">
-                <div className="box-title">Revenue Analytics</div>
+                <div className="box-title">Genre popularity over time</div>
                 <div className="hs-dropdown ti-dropdown">
                   <Link
                     to="#"
@@ -705,7 +848,13 @@ const TempHome: FC<CrmProps> = () => {
               </div>
               <div className="box-body !py-5">
                 <div id="crm-revenue-analytics">
-                  <Revenueanalytics />
+                  {hasData ? (
+                    <Revenueanalytics
+                      genrePopularityOverTime={Data2.genrePopularityOverTime}
+                    />
+                  ) : (
+                    <p>Loading chart data...</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -920,44 +1069,23 @@ const TempHome: FC<CrmProps> = () => {
         <div className="xxl:col-span-3 xl:col-span-12 col-span-12">
           <div className="grid grid-cols-12 gap-x-6">
             <div className="xxl:col-span-12 xl:col-span-6 col-span-12">
-              <div className="box overflow-hidden">
+              <div className="box custom-box">
                 <div className="box-body">
-                  <div className="flex items-top justify-between">
-                    <div>
-                      <span className="!text-[0.8rem]  !w-[2.5rem] !h-[2.5rem] !leading-[2.5rem] !rounded-full inline-flex items-center justify-center bg-primary">
-                        <i className="ti ti-users text-[1rem] text-white"></i>
-                      </span>
+                  <div className="flex flex-wrap items-start justify-between">
+                    <div className="flex-grow">
+                      <p className="mb-0 text-[#8c9097] dark:text-white/50">
+                        Top Genre
+                      </p>
+                      <div className="flex items-center">
+                        <span className="text-[1.25rem] font-semibold">
+                          {Data2.topGenres[0]?.genre_bg}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex-grow ms-4">
-                      <div className="flex items-center justify-between flex-wrap">
-                        <div>
-                          <p className="text-[#8c9097] dark:text-white/50 text-[0.813rem] mb-0">
-                            Total Customers
-                          </p>
-                          <h4 className="font-semibold  text-[1.5rem] !mb-2 ">
-                            1,02,890
-                          </h4>
-                        </div>
-                        <div id="crm-total-customers">
-                          <Totalcustomers />
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between !mt-1">
-                        <div>
-                          <Link className="text-primary text-[0.813rem]" to="#">
-                            View All
-                            <i className="ti ti-arrow-narrow-right ms-2 font-semibold inline-block"></i>
-                          </Link>
-                        </div>
-                        <div className="text-end">
-                          <p className="mb-0 text-success text-[0.813rem] font-semibold">
-                            +40%
-                          </p>
-                          <p className="text-[#8c9097] dark:text-white/50 opacity-[0.7] text-[0.6875rem]">
-                            this month
-                          </p>
-                        </div>
-                      </div>
+                    <div>
+                      <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
+                        <i className="bi bi-person-lines-fill text-[1rem]"></i>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -1010,7 +1138,24 @@ const TempHome: FC<CrmProps> = () => {
                     <div className="lead-source-value ">
                       <span className="block text-[0.875rem] ">Total</span>
                       <span className="block text-[1.5625rem] font-bold">
-                        4,145
+                        {(
+                          (parseInt(
+                            Data2.totalAwards?.[0]?.total_awards_wins,
+                            10
+                          ) || 0) +
+                          (parseInt(
+                            Data2.totalAwards?.[0]?.total_awards_nominations,
+                            10
+                          ) || 0) +
+                          (parseInt(
+                            Data2.totalAwards?.[0]?.total_oscar_wins,
+                            10
+                          ) || 0) +
+                          (parseInt(
+                            Data2.totalAwards?.[0]?.total_oscar_nominations,
+                            10
+                          ) || 0)
+                        ).toLocaleString()}
                       </span>
                     </div>
                   </div>
@@ -1019,11 +1164,11 @@ const TempHome: FC<CrmProps> = () => {
                   <div className="col !p-0">
                     <div className="!ps-4 p-[0.95rem] text-center border-e border-dashed dark:border-defaultborder/10">
                       <span className="text-[#8c9097] dark:text-white/50 text-[0.75rem] mb-1 crm-lead-legend mobile inline-block">
-                        Mobile
+                        Awards Wins
                       </span>
                       <div>
                         <span className="text-[1rem]  font-semibold">
-                          1,624
+                          {Data2.totalAwards?.[0]?.total_awards_wins || 0}
                         </span>
                       </div>
                     </div>
@@ -1031,11 +1176,12 @@ const TempHome: FC<CrmProps> = () => {
                   <div className="col !p-0">
                     <div className="p-[0.95rem] text-center border-e border-dashed dark:border-defaultborder/10">
                       <span className="text-[#8c9097] dark:text-white/50 text-[0.75rem] mb-1 crm-lead-legend desktop inline-block">
-                        Desktop
+                        Awards Nom.
                       </span>
                       <div>
                         <span className="text-[1rem]  font-semibold">
-                          1,267
+                          {Data2.totalAwards?.[0]?.total_awards_nominations ||
+                            0}
                         </span>
                       </div>
                     </div>
@@ -1043,11 +1189,11 @@ const TempHome: FC<CrmProps> = () => {
                   <div className="col !p-0">
                     <div className="p-[0.95rem] text-center border-e border-dashed dark:border-defaultborder/10">
                       <span className="text-[#8c9097] dark:text-white/50 text-[0.75rem] mb-1 crm-lead-legend laptop inline-block">
-                        Laptop
+                        Oscar Wins
                       </span>
                       <div>
                         <span className="text-[1rem]  font-semibold">
-                          1,153
+                          {Data2.totalAwards?.[0]?.total_oscar_wins || 0}
                         </span>
                       </div>
                     </div>
@@ -1055,10 +1201,12 @@ const TempHome: FC<CrmProps> = () => {
                   <div className="col !p-0">
                     <div className="!pe-4 p-[0.95rem] text-center">
                       <span className="text-[#8c9097] dark:text-white/50 text-[0.75rem] mb-1 crm-lead-legend tablet inline-block">
-                        Tablet
+                        Oscar Nom.
                       </span>
                       <div>
-                        <span className="text-[1rem]  font-semibold">679</span>
+                        <span className="text-[1rem]  font-semibold">
+                          {Data2.totalAwards?.[0]?.total_oscar_nominations || 0}
+                        </span>
                       </div>
                     </div>
                   </div>
