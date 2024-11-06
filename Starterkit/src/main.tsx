@@ -12,16 +12,14 @@ import Test from "./container/test/test.tsx";
 import "./index.scss";
 import ResetRequest from "./container/authentication/resetpassword/resetrequest.tsx";
 import PrivateRoute from "./pages/PrivateRoute.tsx";
+import TempHome from "./container/dashboards/temp-home/crm.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.Fragment>
     <BrowserRouter>
       <React.Suspense fallback={<div>Зареждане...</div>}>
         <Routes>
-          <Route
-            path="/"
-            element={<Navigate to="/signin" />}
-          />
+          <Route path="/" element={<Navigate to="/signin" />} />
           <Route
             path="/app"
             element={
@@ -33,6 +31,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             {/* Default route */}
             <Route path="" element={<Navigate to="home" />} />
             <Route path="home" element={<Crm />} />
+            <Route path="temp-home" element={<TempHome />} />
             <Route path="test" element={<Test />} />
           </Route>
 
@@ -41,22 +40,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               path="resetpassword/resetcover/:token"
               element={<Resetcover />}
             />
-            <Route
-              path="resetpassword"
-              element={<ResetRequest />}
-            />
-            <Route
-              path="signup"
-              element={<Signupcover />}
-            />
-            <Route
-              path="signin"
-              element={<Signincover />}
-            />
-            <Route
-              path="twostepverification"
-              element={<Twostepcover />}
-            />
+            <Route path="resetpassword" element={<ResetRequest />} />
+            <Route path="signup" element={<Signupcover />} />
+            <Route path="signin" element={<Signincover />} />
+            <Route path="twostepverification" element={<Twostepcover />} />
           </Route>
         </Routes>
       </React.Suspense>

@@ -127,7 +127,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
     }
 
     const passwordStrengthRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
     if (!passwordStrengthRegex.test(formData.password)) {
       setAlerts([
         {
@@ -163,14 +163,9 @@ const Signupcover: FC<SignupcoverProps> = () => {
       }
 
       // Redirect to the verification page
-      navigate(
-        `${
-          import.meta.env.BASE_URL
-        }twostepverification`,
-        {
-          state: { email: formData.email }
-        }
-      );
+      navigate(`${import.meta.env.BASE_URL}twostepverification`, {
+        state: { email: formData.email }
+      });
     } catch (error: any) {
       let errorMessage = "";
       switch (true) {
@@ -389,9 +384,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
                 <p className="text-[0.75rem] text-[#8c9097] dark:text-white/50 mt-4">
                   Вече имате профил?{" "}
                   <Link
-                    to={`${
-                      import.meta.env.BASE_URL
-                    }signin/`}
+                    to={`${import.meta.env.BASE_URL}signin/`}
                     className="text-primary"
                   >
                     Влезнете в профила си!
