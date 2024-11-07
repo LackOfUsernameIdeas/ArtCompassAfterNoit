@@ -798,7 +798,7 @@ interface State {
 }
 
 //color range
-export class Colorrange extends Component<Props, State> {
+export class GenrePopularityOverTime extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -823,26 +823,26 @@ export class Colorrange extends Component<Props, State> {
                 {
                   from: -30,
                   to: 5,
-                  name: "low",
+                  name: "малък брой",
                   color: "#845adf"
                 },
                 {
                   from: 6,
                   to: 20,
-                  name: "medium",
+                  name: "среден брой",
                   color: "#23b7e5"
                 },
                 {
                   from: 21,
                   to: 45,
-                  name: "high",
+                  name: "висок брой",
                   color: "#f5b849"
                 },
                 {
                   from: 46,
                   to: 55,
-                  name: "extreme",
-                  color: "#49b6f5"
+                  name: "много висок брой",
+                  color: "#FF5733"
                 }
               ]
             }

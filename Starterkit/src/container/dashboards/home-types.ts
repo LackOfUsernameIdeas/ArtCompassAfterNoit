@@ -47,3 +47,23 @@ export type DataType = {
 };
 
 export type FilteredTableData = (DirectorData | ActorData | WriterData)[];
+
+// Define the structure of the genre popularity data for each year
+export interface GenrePopularityData {
+  [year: string]: {
+    [genre: string]: {
+      genre_en: string;
+      genre_bg: string;
+      genre_count: number;
+    };
+  };
+}
+
+// Define the structure for each series data (for each genre)
+export interface GenreSeriesData {
+  name: string; // Genre name (e.g., Crime, Drama)
+  data: { x: string; y: number }[]; // Data points: year (x) and genre count (y)
+}
+
+// Define the final chart data format (an array of genres and their respective data)
+export type HeatmapData = GenreSeriesData[];

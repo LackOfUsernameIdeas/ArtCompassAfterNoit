@@ -4,7 +4,9 @@ import {
   FilteredTableData,
   DirectorData,
   ActorData,
-  WriterData
+  WriterData,
+  GenrePopularityData,
+  HeatmapData
 } from "./home-types";
 
 // Type guards for filtering
@@ -114,4 +116,35 @@ export const myFunction = (
     return data.name.toLowerCase().includes(idx.toLowerCase());
   });
   setData(filteredData);
+};
+
+export const generateHeatmapSeriesData = (
+  data: GenrePopularityData
+): HeatmapData => {
+  const years = Object.keys(data); // Get the list of years
+  const genreNames = new Set<string>(); // To store unique genre names
+
+  // Collect all unique genre names across all years
+  years.forEach((year) => {
+    const genresInYear = Object.keys(data[year]);
+    genresInYear.forEach((genre) => genreNames.add(genre));
+  });
+
+  // Create the series data for each genre
+  const series = [...genreNames].map((genre) => {
+    const seriesData = years.map((year) => {
+      const genreData = data[year][genre];
+      return {
+        x: year, // The year as x-axis
+        y: genreData ? genreData.genre_count : 0 // Genre count as y-axis (0 if not available)
+      };
+    });
+
+    return {
+      name: genre, // Genre name
+      data: seriesData // Data for this genre
+    };
+  });
+
+  return series;
 };

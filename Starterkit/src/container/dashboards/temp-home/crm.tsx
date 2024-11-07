@@ -1,13 +1,18 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  Colorrange,
+  GenrePopularityOverTime,
   Dealsstatistics,
   generateData,
   Profitearned,
   Sourcedata
 } from "./crmdata";
-import { DataType, FilteredTableData } from "../home-types";
+import {
+  DataType,
+  FilteredTableData,
+  GenrePopularityData,
+  HeatmapData
+} from "../home-types";
 import {
   fetchData,
   filterTableData,
@@ -16,7 +21,8 @@ import {
   myFunction,
   isDirector,
   isActor,
-  isWriter
+  isWriter,
+  generateHeatmapSeriesData
 } from "../helper_functions";
 import face10 from "../../../assets/images/faces/10.jpg";
 import face12 from "../../../assets/images/faces/12.jpg";
@@ -99,45 +105,8 @@ const TempHome: FC<CrmProps> = () => {
     setCurrentTableItems(newItems);
   }, [currentTablePage, prosperitySortCategory, filteredTableData]);
 
-  const seriesData = [
-    {
-      name: "Jan",
-      data: generateData(20, { min: -30, max: 55 })
-    },
-    {
-      name: "Feb",
-      data: generateData(20, { min: -30, max: 55 })
-    },
-    {
-      name: "Mar",
-      data: generateData(20, { min: -30, max: 55 })
-    },
-    {
-      name: "Apr",
-      data: generateData(20, { min: -30, max: 55 })
-    },
-    {
-      name: "May",
-      data: generateData(20, { min: -30, max: 55 })
-    },
-    {
-      name: "Jun",
-      data: generateData(20, { min: -30, max: 55 })
-    },
-    {
-      name: "Jul",
-      data: generateData(20, { min: -30, max: 55 })
-    },
-    {
-      name: "Aug",
-      data: generateData(20, { min: -30, max: 55 })
-    },
-    {
-      name: "Sep",
-      data: generateData(20, { min: -30, max: 55 })
-    }
-  ];
-
+  // Generate the seriesData for heatmap
+  const seriesData = generateHeatmapSeriesData(Data2.genrePopularityOverTime);
   const handleNextTablePage = () => {
     if (currentTablePage < totalTablePages) {
       setCurrentTablePage((prev) => prev + 1);
@@ -585,7 +554,7 @@ const TempHome: FC<CrmProps> = () => {
                 <div className="box custom-box">
                   <div className="box-body">
                     <div id="heatmap-colorrange">
-                      <Colorrange seriesData={seriesData} />
+                      <GenrePopularityOverTime seriesData={seriesData} />
                     </div>
                   </div>
                 </div>
