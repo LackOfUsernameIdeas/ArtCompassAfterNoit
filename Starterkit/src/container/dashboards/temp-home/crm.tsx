@@ -133,8 +133,8 @@ const TempHome: FC<CrmProps> = () => {
       data: generateData(20, { min: -30, max: 55 })
     },
     {
-      name: "Sep"
-      // data: generateData(20, { min: -30, max: 55 }),
+      name: "Sep",
+      data: generateData(20, { min: -30, max: 55 })
     }
   ];
 
