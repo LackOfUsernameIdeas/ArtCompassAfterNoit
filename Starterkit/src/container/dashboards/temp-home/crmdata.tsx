@@ -6,6 +6,7 @@ import face15 from "../../../assets/images/faces/15.jpg";
 import face11 from "../../../assets/images/faces/11.jpg";
 import face8 from "../../../assets/images/faces/8.jpg";
 import face9 from "../../../assets/images/faces/9.jpg";
+import { MovieData } from "../home-types";
 
 //
 interface spark3 {
@@ -789,17 +790,21 @@ export const Dealsstatistics = [
   }
 ];
 
-interface Props {
+interface GenrePopularityOverTimeProps {
   seriesData: any[]; // Array of dynamic data for the heatmap
 }
 
 interface State {
-  options: any; // ApexCharts options
+  options: any; // Keeps chart configuration options
+  series?: { name: string; data: number[][] }[]; // Optional series for flexibility
 }
 
 //color range
-export class GenrePopularityOverTime extends Component<Props, State> {
-  constructor(props: Props) {
+export class GenrePopularityOverTime extends Component<
+  GenrePopularityOverTimeProps,
+  State
+> {
+  constructor(props: GenrePopularityOverTimeProps) {
     super(props);
 
     this.state = {
@@ -893,7 +898,10 @@ export class GenrePopularityOverTime extends Component<Props, State> {
   }
 
   // Use dynamic data passed as props
-  static getDerivedStateFromProps(nextProps: Props, nextState: State) {
+  static getDerivedStateFromProps(
+    nextProps: GenrePopularityOverTimeProps,
+    nextState: State
+  ) {
     const { seriesData } = nextProps;
 
     // Update the series data dynamically based on the passed prop
@@ -918,6 +926,131 @@ export class GenrePopularityOverTime extends Component<Props, State> {
         series={this.props.seriesData}
         type="heatmap"
         height={350}
+      />
+    );
+  }
+}
+
+interface BoxOfficeVsIMDBRatingProps {
+  movieData: MovieData[];
+}
+
+export class BoxOfficeVsIMDBRating extends Component<
+  BoxOfficeVsIMDBRatingProps,
+  State
+> {
+  constructor(props: BoxOfficeVsIMDBRatingProps) {
+    super(props);
+
+    this.state = {
+      options: {
+        chart: {
+          height: 320,
+          type: "scatter",
+          zoom: {
+            enabled: true,
+            type: "xy"
+          },
+          events: {
+            mounted: (chart: any) => {
+              chart.windowResizeHandler();
+            }
+          }
+        },
+        grid: {
+          borderColor: "#f2f5f7"
+        },
+        colors: ["#845adf"],
+        xaxis: {
+          title: {
+            text: "Box Office Revenue (in Millions)"
+          },
+          tickAmount: 10,
+          labels: {
+            formatter: (val: any) => `$${Math.round(val)}M`, // Round box office for x-axis
+            style: {
+              colors: "#8c9097",
+              fontSize: "11px",
+              fontWeight: 600
+            }
+          }
+        },
+        yaxis: {
+          title: {
+            text: "IMDb Rating"
+          },
+          tickAmount: 7,
+          labels: {
+            style: {
+              colors: "#8c9097",
+              fontSize: "11px",
+              fontWeight: 600
+            }
+          }
+        },
+        tooltip: {
+          shared: false,
+          intersect: true,
+          custom: function ({ seriesIndex, dataPointIndex, w }: any) {
+            console.log("w.globals.series: ", w.globals.series);
+            console.log("seriesIndex: ", seriesIndex);
+            console.log("dataPointIndex: ", dataPointIndex);
+            const movieData = w.globals.series[seriesIndex][dataPointIndex];
+            console.log("movieData: ", movieData);
+            if (movieData) {
+              const movieTitle = movieData.name || "Unknown Movie"; // Movie title
+              const imdbRating = movieData.y || "N/A"; // IMDb rating (y-axis)
+              const boxOffice = movieData.x * 1e6 || "N/A"; // Convert box office back to full value
+              const formattedBoxOffice = `$${boxOffice.toLocaleString()}`;
+
+              return `
+                <div style="padding: 10px;">
+                  <strong>${movieTitle}</strong><br />
+                  IMDb Rating: ${imdbRating}/10<br />
+                  Box Office: ${formattedBoxOffice}
+                </div>
+              `;
+            }
+            return ""; // Return empty if no data found
+          }
+        }
+      },
+      series: []
+    };
+  }
+
+  static getDerivedStateFromProps(
+    nextProps: BoxOfficeVsIMDBRatingProps,
+    prevState: State
+  ) {
+    if (nextProps.movieData.length > 0) {
+      // Modify the seriesData structure to include 'name', 'x', and 'y' for each movie
+      const seriesData = nextProps.movieData.map((movie) => ({
+        name: movie.title, // Store movie title in name
+        data: [
+          {
+            x: movie.boxOffice / 1e6, // Convert box office to millions
+            y: movie.imdbRating, // IMDb rating
+            name: movie.title // Store movie title in each data point
+          }
+        ]
+      }));
+
+      // Log the series data for debugging
+      console.log("Series Data:", seriesData);
+
+      return { ...prevState, series: seriesData };
+    }
+    return null;
+  }
+
+  render() {
+    return (
+      <ReactApexChart
+        options={this.state.options}
+        series={this.state.series}
+        type="scatter"
+        height={320}
       />
     );
   }

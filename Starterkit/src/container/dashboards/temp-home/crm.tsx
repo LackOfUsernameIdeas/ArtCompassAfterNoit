@@ -5,7 +5,8 @@ import {
   Dealsstatistics,
   generateData,
   Profitearned,
-  Sourcedata
+  Sourcedata,
+  BoxOfficeVsIMDBRating
 } from "./crmdata";
 import {
   DataType,
@@ -22,10 +23,12 @@ import {
   isDirector,
   isActor,
   isWriter,
-  generateHeatmapSeriesData
+  generateHeatmapSeriesData,
+  generateScatterSeriesData
 } from "../helper_functions";
 import face10 from "../../../assets/images/faces/10.jpg";
 import face12 from "../../../assets/images/faces/12.jpg";
+import { Basicscatter } from "../../apexcharts/scatterchart/scatterdata";
 
 interface CrmProps {}
 
@@ -106,7 +109,12 @@ const TempHome: FC<CrmProps> = () => {
   }, [currentTablePage, prosperitySortCategory, filteredTableData]);
 
   // Generate the seriesData for heatmap
-  const seriesData = generateHeatmapSeriesData(Data2.genrePopularityOverTime);
+  const seriesDataForHeatmap = generateHeatmapSeriesData(
+    Data2.genrePopularityOverTime
+  );
+  const seriesDataForScatterChart = generateScatterSeriesData(
+    Data2.sortedMoviesByProsperity
+  );
   const handleNextTablePage = () => {
     if (currentTablePage < totalTablePages) {
       setCurrentTablePage((prev) => prev + 1);
@@ -554,9 +562,25 @@ const TempHome: FC<CrmProps> = () => {
                 <div className="box custom-box">
                   <div className="box-body">
                     <div id="heatmap-colorrange">
-                      <GenrePopularityOverTime seriesData={seriesData} />
+                      <GenrePopularityOverTime
+                        seriesData={seriesDataForHeatmap}
+                      />
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="xl:col-span-6 col-span-12">
+            <div className="box custom-box">
+              <div className="box-header">
+                <div className="box-title">Basic Scatter Chart</div>
+              </div>
+              <div className="box-body">
+                <div id="scatter-basic">
+                  <BoxOfficeVsIMDBRating
+                    movieData={seriesDataForScatterChart}
+                  />
                 </div>
               </div>
             </div>

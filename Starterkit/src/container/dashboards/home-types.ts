@@ -46,6 +46,12 @@ export type DataType = {
   topCountries: any[];
 };
 
+export interface MovieData {
+  title: string;
+  boxOffice: number;
+  imdbRating: number;
+}
+
 export type FilteredTableData = (DirectorData | ActorData | WriterData)[];
 
 // Define the structure of the genre popularity data for each year
@@ -57,6 +63,21 @@ export interface GenrePopularityData {
       genre_count: number;
     };
   };
+}
+
+export interface MovieProsperityData {
+  imdbID: string;
+  title_en: string;
+  title_bg: string;
+  type: string;
+  imdbRating: string;
+  metascore: string;
+  total_box_office: string;
+  rotten_tomatoes: string;
+  total_recommendations: number;
+  total_wins: string;
+  total_nominations: string;
+  prosperityScore: number;
 }
 
 // Define the structure for each series data (for each genre)

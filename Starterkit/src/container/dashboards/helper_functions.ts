@@ -6,7 +6,9 @@ import {
   ActorData,
   WriterData,
   GenrePopularityData,
-  HeatmapData
+  HeatmapData,
+  MovieProsperityData,
+  MovieData
 } from "./home-types";
 
 // Type guards for filtering
@@ -147,4 +149,24 @@ export const generateHeatmapSeriesData = (
   });
 
   return series;
+};
+
+export const generateScatterSeriesData = (
+  movies: MovieProsperityData[]
+): MovieData[] => {
+  return movies.map((movie) => {
+    // Parse IMDb rating
+    const imdbRating = parseFloat(movie.imdbRating);
+
+    // Clean the box office string and parse it as a number
+    const boxOffice = parseInt(
+      movie.total_box_office.replace(/[^0-9.-]+/g, "") // Remove non-numeric characters (e.g., $, commas)
+    );
+
+    return {
+      title: movie.title_bg,
+      boxOffice: boxOffice,
+      imdbRating: imdbRating
+    };
+  });
 };
