@@ -6,7 +6,8 @@ import {
   generateData,
   Profitearned,
   Sourcedata,
-  BoxOfficeVsIMDBRating
+  BoxOfficeVsIMDBRating,
+  MovieBarChart
 } from "./crmdata";
 import {
   DataType,
@@ -112,7 +113,7 @@ const TempHome: FC<CrmProps> = () => {
   const seriesDataForHeatmap = generateHeatmapSeriesData(
     Data2.genrePopularityOverTime
   );
-  const seriesDataForScatterChart = generateScatterSeriesData(
+  const seriesDataForMovieCharts = generateScatterSeriesData(
     Data2.sortedMoviesByProsperity
   );
   const handleNextTablePage = () => {
@@ -574,13 +575,27 @@ const TempHome: FC<CrmProps> = () => {
           <div className="xl:col-span-6 col-span-12">
             <div className="box custom-box">
               <div className="box-header">
-                <div className="box-title">Basic Scatter Chart</div>
+                <div className="box-title">
+                  Movies by Box Office and IMDb Rating
+                </div>
               </div>
               <div className="box-body">
                 <div id="scatter-basic">
                   <BoxOfficeVsIMDBRating
-                    movieData={seriesDataForScatterChart}
+                    seriesData={seriesDataForMovieCharts}
                   />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="xl:col-span-6 col-span-12">
+            <div className="box custom-box">
+              <div className="box-header">
+                <div className="box-title">Movies by IMDb Rating</div>
+              </div>
+              <div className="box-body">
+                <div id="bar-basic">
+                  <MovieBarChart seriesData={seriesDataForMovieCharts} />
                 </div>
               </div>
             </div>

@@ -797,6 +797,8 @@ interface GenrePopularityOverTimeProps {
 interface State {
   options: any; // Keeps chart configuration options
   series?: { name: string; data: number[][] }[]; // Optional series for flexibility
+  currentPage?: number;
+  pageSize?: number;
 }
 
 //color range
@@ -932,7 +934,7 @@ export class GenrePopularityOverTime extends Component<
 }
 
 interface BoxOfficeVsIMDBRatingProps {
-  movieData: MovieData[];
+  seriesData: MovieData[];
 }
 
 export class BoxOfficeVsIMDBRating extends Component<
@@ -1023,9 +1025,9 @@ export class BoxOfficeVsIMDBRating extends Component<
     nextProps: BoxOfficeVsIMDBRatingProps,
     prevState: State
   ) {
-    if (nextProps.movieData.length > 0) {
+    if (nextProps.seriesData.length > 0) {
       // Modify the seriesData structure to include 'name', 'x', and 'y' for each movie
-      const seriesData = nextProps.movieData.map((movie) => ({
+      const seriesData = nextProps.seriesData.map((movie) => ({
         name: movie.title, // Store movie title in name
         data: [
           {
@@ -1052,6 +1054,185 @@ export class BoxOfficeVsIMDBRating extends Component<
         type="scatter"
         height={320}
       />
+    );
+  }
+}
+
+export class MovieBarChart extends Component<
+  { seriesData: MovieData[] },
+  State
+> {
+  constructor(
+    props: { seriesData: MovieData[] } | Readonly<{ seriesData: MovieData[] }>
+  ) {
+    super(props);
+
+    this.state = {
+      currentPage: 0, // Default to the first page
+      pageSize: 10, // Default to displaying 10 movies per page
+      series: [],
+      options: {
+        chart: {
+          type: "bar",
+          height: 320,
+          events: {
+            mounted: (chart: any) => {
+              chart.windowResizeHandler();
+            }
+          }
+        },
+        plotOptions: {
+          bar: {
+            borderRadius: 4,
+            horizontal: true
+          }
+        },
+        colors: ["#845adf"],
+        grid: {
+          borderColor: "#f2f5f7"
+        },
+        dataLabels: {
+          enabled: false
+        },
+        xaxis: {
+          title: {
+            text: "Movie"
+          },
+          categories: [], // Movie titles (to be populated)
+          labels: {
+            show: true,
+            style: {
+              colors: "#8c9097",
+              fontSize: "11px",
+              fontWeight: 600,
+              cssClass: "apexcharts-xaxis-label"
+            }
+          }
+        },
+        yaxis: {
+          title: {
+            text: "IMDb Rating"
+          },
+          labels: {
+            show: true,
+            style: {
+              colors: "#8c9097",
+              fontSize: "11px",
+              fontWeight: 600,
+              cssClass: "apexcharts-yaxis-label"
+            }
+          }
+        }
+      }
+    };
+  }
+
+  static getDerivedStateFromProps(
+    nextProps: { seriesData: MovieData[] },
+    prevState: State
+  ) {
+    if (nextProps.seriesData.length > 0) {
+      // Sort the movies by IMDb rating (descending order)
+      const sortedMovies = nextProps.seriesData.sort(
+        (a, b) => b.imdbRating - a.imdbRating
+      );
+
+      // Ensure currentPage and pageSize are defined (use defaults if undefined)
+      const currentPage = prevState.currentPage ?? 0; // Default to page 0 if undefined
+      const pageSize = prevState.pageSize ?? 10; // Default to 10 items per page if undefined
+
+      // Paginate the data based on the current page
+      const start = currentPage * pageSize;
+      const end = start + pageSize;
+      const paginatedMovies = sortedMovies.slice(start, end);
+
+      // Create the series data for the chart
+      const seriesData = {
+        name: "IMDb Rating",
+        data: paginatedMovies.map((movie) => movie.imdbRating)
+      };
+
+      // Create categories (movie titles) for the x-axis
+      const categories = paginatedMovies.map((movie) => movie.title);
+
+      return {
+        ...prevState,
+        series: [seriesData],
+        options: {
+          ...prevState.options,
+          xaxis: {
+            ...prevState.options.xaxis,
+            categories: categories // Set the movie titles on the y-axis
+          }
+        }
+      };
+    }
+    return null;
+  }
+
+  handlePageChange = (direction: "next" | "prev") => {
+    this.setState((prevState) => {
+      // Ensure pageSize and currentPage are defined (use defaults if undefined)
+      const pageSize = prevState.pageSize ?? 10; // Default to 10 items per page if undefined
+      const currentPage = prevState.currentPage ?? 0; // Default to page 0 if undefined
+
+      // Calculate the total number of pages
+      const totalPages = Math.ceil(this.props.seriesData.length / pageSize);
+      let newPage = currentPage;
+
+      // Handle next or previous page change
+      if (direction === "next" && newPage < totalPages - 1) {
+        newPage++;
+      } else if (direction === "prev" && newPage > 0) {
+        newPage--;
+      }
+
+      // Return the new page state
+      return { currentPage: newPage };
+    });
+  };
+
+  render() {
+    const currentPage = this.state.currentPage ?? 0; // Default to 0 if undefined
+    const pageSize = this.state.pageSize ?? 10; // Default to 10 if undefined
+    const totalPages = Math.ceil(this.props.seriesData.length / pageSize);
+
+    return (
+      <div>
+        <ReactApexChart
+          options={this.state.options}
+          series={this.state.series}
+          type="bar"
+          height={320}
+        />
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <nav aria-label="Page navigation" className="pagination-style-4">
+            <ul className="ti-pagination mb-0">
+              <li className="page-item">
+                <button
+                  onClick={() => this.handlePageChange("prev")}
+                  disabled={currentPage === 0}
+                  className="page-link"
+                >
+                  Prev
+                </button>
+              </li>
+              <li className={`page-item ${currentPage ? "active" : ""}`}>
+                <span>{currentPage + 1}</span>
+              </li>
+              <li className="page-item">
+                <button
+                  onClick={() => this.handlePageChange("next")}
+                  disabled={currentPage === totalPages - 1}
+                  className="page-link"
+                >
+                  Next
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
     );
   }
 }
