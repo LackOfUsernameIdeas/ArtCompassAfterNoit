@@ -17,6 +17,24 @@ interface spark3 {
   label?: XAxisAnnotations;
   endingShape?: string;
 }
+
+export function generateData(count: any, yrange: any) {
+  let i = 0;
+  const series = [];
+  while (i < count) {
+    const x = "w" + (i + 1).toString();
+    const y =
+      Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
+
+    series.push({
+      x: x,
+      y: y
+    });
+    i++;
+  }
+  return series;
+}
+
 export class Totalcustomers extends Component<{}, spark3> {
   constructor(props: {} | Readonly<{}>) {
     super(props);
@@ -770,3 +788,137 @@ export const Dealsstatistics = [
     checked: "defaultChecked"
   }
 ];
+
+interface Props {
+  seriesData: any[]; // Array of dynamic data for the heatmap
+}
+
+interface State {
+  options: any; // ApexCharts options
+}
+
+//color range
+export class Colorrange extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+
+    this.state = {
+      options: {
+        chart: {
+          height: 350,
+          type: "heatmap",
+          events: {
+            mounted: (chart: any) => {
+              chart.windowResizeHandler();
+            }
+          }
+        },
+        plotOptions: {
+          heatmap: {
+            shadeIntensity: 0.5,
+            radius: 0,
+            useFillColorAsStroke: true,
+            colorScale: {
+              ranges: [
+                {
+                  from: -30,
+                  to: 5,
+                  name: "low",
+                  color: "#845adf"
+                },
+                {
+                  from: 6,
+                  to: 20,
+                  name: "medium",
+                  color: "#23b7e5"
+                },
+                {
+                  from: 21,
+                  to: 45,
+                  name: "high",
+                  color: "#f5b849"
+                },
+                {
+                  from: 46,
+                  to: 55,
+                  name: "extreme",
+                  color: "#49b6f5"
+                }
+              ]
+            }
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        grid: {
+          borderColor: ""
+        },
+        stroke: {
+          width: 1
+        },
+        title: {
+          text: "HeatMap Chart with Color Range",
+          align: "left",
+          style: {
+            fontSize: "13px",
+            fontWeight: "bold",
+            color: "#8c9097"
+          }
+        },
+        xaxis: {
+          labels: {
+            show: true,
+            style: {
+              colors: "#8c9097",
+              fontSize: "11px",
+              fontWeight: 600,
+              cssClass: "apexcharts-xaxis-label"
+            }
+          }
+        },
+        yaxis: {
+          labels: {
+            show: true,
+            style: {
+              colors: "#8c9097",
+              fontSize: "11px",
+              fontWeight: 600,
+              cssClass: "apexcharts-yaxis-label"
+            }
+          }
+        }
+      }
+    };
+  }
+
+  // Use dynamic data passed as props
+  static getDerivedStateFromProps(nextProps: Props, nextState: State) {
+    const { seriesData } = nextProps;
+
+    // Update the series data dynamically based on the passed prop
+    if (seriesData && seriesData.length > 0) {
+      const updatedSeries = seriesData.map((data: any) => ({
+        name: data.name,
+        data: data.data
+      }));
+
+      return {
+        series: updatedSeries
+      };
+    }
+
+    return null; // No changes to state if the data is not available
+  }
+
+  render() {
+    return (
+      <ReactApexChart
+        options={this.state.options}
+        series={this.props.seriesData}
+        type="heatmap"
+        height={350}
+      />
+    );
+  }
+}

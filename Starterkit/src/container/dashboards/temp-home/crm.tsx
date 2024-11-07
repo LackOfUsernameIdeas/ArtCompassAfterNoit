@@ -1,71 +1,34 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  Conversionratio,
+  Colorrange,
   Dealsstatistics,
-  Profit,
+  generateData,
   Profitearned,
-  Revenueanalytics,
-  Sourcedata,
-  Totalcustomers,
-  Totaldeals,
-  Totalrevenue
+  Sourcedata
 } from "./crmdata";
+import { DataType, FilteredTableData } from "../home-types";
+import {
+  fetchData,
+  filterTableData,
+  handleDropdownClick,
+  handleProsperityTableClick,
+  myFunction,
+  isDirector,
+  isActor,
+  isWriter
+} from "../helper_functions";
 import face10 from "../../../assets/images/faces/10.jpg";
 import face12 from "../../../assets/images/faces/12.jpg";
-import { Zoomabletime } from "../../uielements/charts/zoomablechart";
 
 interface CrmProps {}
 
-interface CommonData {
-  avg_imdb_rating: number;
-  total_box_office: string;
-  total_recommendations: number;
-  total_wins: number;
-  total_nominations: number;
-}
-
-// Step 2: Define specific interfaces for each category
-interface DirectorData extends CommonData {
-  director: string;
-  movie_count: number; // Unified property for Directors
-}
-
-interface ActorData extends CommonData {
-  actor: string;
-  movie_count: number; // Unified property for Actors
-}
-
-interface WriterData extends CommonData {
-  writer: string;
-  movie_count: number; // Unified property for Writers
-}
-
-type UsersCountData = {
-  user_count: number;
-};
-
-type DataType = {
-  usersCount: UsersCountData[];
-  topRecommendations: any[];
-  topGenres: any[];
-  genrePopularityOverTime: Record<string, any>;
-  topActors: any[];
-  topDirectors: any[];
-  topWriters: any[];
-  oscarsByMovie: any[];
-  totalAwardsByMovie: any[];
-  totalAwards: any[];
-  sortedDirectorsByProsperity: any[];
-  sortedActorsByProsperity: any[];
-  sortedWritersByProsperity: any[];
-  sortedMoviesByProsperity: any[];
-  averageBoxOfficeAndScores: any[];
-  topCountries: any[];
-};
-
 const TempHome: FC<CrmProps> = () => {
-  // for User search function
+  const [displayedNameAwards, setDisplayedNameAwards] =
+    useState("Total Award Wins");
+  const [displayedValueAwards, setDisplayedValueAwards] = useState("1,118");
+
+  // States for holding fetched data
   const [Data, setData] = useState(Dealsstatistics);
   const [Data2, setData2] = useState<DataType>({
     usersCount: [],
@@ -85,182 +48,95 @@ const TempHome: FC<CrmProps> = () => {
     averageBoxOfficeAndScores: [],
     topCountries: []
   });
-  type FilteredTableData = (DirectorData | ActorData | WriterData)[];
 
-  // Step 4: Set state with the defined type
+  // Table data filtering and pagination
   const [filteredTableData, setFilteredTableData] = useState<FilteredTableData>(
     []
   );
-
-  // Type guards
-  const isDirector = (
-    item: DirectorData | ActorData | WriterData
-  ): item is DirectorData => {
-    return (item as DirectorData).director !== undefined;
-  };
-
-  const isActor = (
-    item: DirectorData | ActorData | WriterData
-  ): item is ActorData => {
-    return (item as ActorData).actor !== undefined;
-  };
-
-  const isWriter = (
-    item: DirectorData | ActorData | WriterData
-  ): item is WriterData => {
-    return (item as WriterData).writer !== undefined;
-  };
-  const [displayedValueAwards, setDisplayedValueAwards] = useState("1,118");
-  const [displayedNameAwards, setDisplayedNameAwards] =
-    useState("Total Award Wins");
-  const [prosperitySortCategory, setProsperitySortCategory] =
-    useState("Directors");
+  const [currentTablePage, setCurrentTablePage] = useState(1);
+  const itemsPerTablePage = 5;
   const [currentTableItems, setCurrentTableItems] = useState<FilteredTableData>(
     []
   );
+  const [prosperitySortCategory, setProsperitySortCategory] =
+    useState("Directors");
 
-  const [currentTablePage, setCurrentTablePage] = useState(1);
-  const itemsPerTablePage = 5;
-  // Handler for dropdown item click
-  const handleProsperityTableClick = (category: string) => {
-    setProsperitySortCategory(category);
-    fetchProsperityData(category);
-    console.log("Data2 structure:", Data2);
-    console.log("filteredTableData after update:", filteredTableData);
-  };
-
-  const fetchProsperityData = (category: string) => {
-    let newItems: FilteredTableData = [];
-
-    // Use type guards to filter data based on the category
-    switch (category) {
-      case "Directors":
-        newItems = filteredTableData.filter(isDirector);
-        break;
-      case "Actors":
-        newItems = filteredTableData.filter(isActor);
-        break;
-      case "Writers":
-        newItems = filteredTableData.filter(isWriter);
-        break;
-      default:
-        newItems = []; // Default to an empty array if no match
-    }
-
-    // Paginate the filtered data
-    const paginatedItems = newItems.slice(
-      (currentTablePage - 1) * itemsPerTablePage,
-      currentTablePage * itemsPerTablePage
-    );
-
-    console.log("Filtered Items for", category, paginatedItems); // Log to verify filtered items
-    setCurrentTableItems(paginatedItems);
-  };
-
-  const handleDropdownClick = (name: string, value: string) => {
-    setDisplayedNameAwards(name);
-    setDisplayedValueAwards(value);
-  };
-
-  const userdata: any = [];
-
-  const [userData, setUserData] = useState<{
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-  }>({
+  // User data state
+  const [userData, setUserData] = useState({
     id: 0,
     first_name: "",
     last_name: "",
     email: ""
   });
 
+  // Pagination logic
   const totalItems = filteredTableData.length;
   const totalTablePages = Math.ceil(totalItems / itemsPerTablePage);
 
-  const myfunction = (idx: any) => {
-    let Data;
-    for (Data of Dealsstatistics) {
-      if (Data.name[0] == " ") {
-        Data.name = Data.name.trim();
-      }
-      if (Data.name.toLowerCase().includes(idx.toLowerCase())) {
-        if (Data.name.toLowerCase().startsWith(idx.toLowerCase())) {
-          userdata.push(Data);
-        }
-      }
-    }
-    setData(userdata);
-  };
-
+  // Data fetching for user and platform stats (combined into one useEffect)
   useEffect(() => {
-    fetchProsperityData(prosperitySortCategory);
-  }, [currentTablePage, prosperitySortCategory]);
-
-  useEffect(() => {
-    // Check if user is already logged in
     const token =
       localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
-    console.log("token: ", token);
     if (token) {
-      (async () => {
-        try {
-          const response = await fetch("http://localhost:5000/user-data", {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}` // Pass the token in the Authorization header
-            }
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || "Something went wrong");
-          }
-
-          const data = await response.json();
-          setUserData(data);
-          console.log("User Data:", data); // Log user data to the console
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        }
-      })();
+      fetchData(
+        token,
+        prosperitySortCategory,
+        setUserData,
+        setData2,
+        setFilteredTableData
+      );
     }
-  }, []);
+  }, [prosperitySortCategory]);
 
+  // Fetch filtered table data based on category
   useEffect(() => {
-    (async () => {
-      try {
-        const response = await fetch(
-          "http://localhost:5000/stats/platform/all",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json"
-            }
-          }
-        );
+    const newItems = filterTableData(
+      filteredTableData,
+      prosperitySortCategory,
+      currentTablePage,
+      itemsPerTablePage
+    );
+    setCurrentTableItems(newItems);
+  }, [currentTablePage, prosperitySortCategory, filteredTableData]);
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "Something went wrong");
-        }
-
-        const data = await response.json();
-        console.log("Fetched Data:", data); // Log full data for inspection
-
-        setData2(data);
-        setFilteredTableData(
-          data[`sorted${prosperitySortCategory}ByProsperity`]
-        );
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    })();
-  }, []);
-
-  const hasData = Object.keys(Data2.genrePopularityOverTime).length > 0;
+  const seriesData = [
+    {
+      name: "Jan",
+      data: generateData(20, { min: -30, max: 55 })
+    },
+    {
+      name: "Feb",
+      data: generateData(20, { min: -30, max: 55 })
+    },
+    {
+      name: "Mar",
+      data: generateData(20, { min: -30, max: 55 })
+    },
+    {
+      name: "Apr",
+      data: generateData(20, { min: -30, max: 55 })
+    },
+    {
+      name: "May",
+      data: generateData(20, { min: -30, max: 55 })
+    },
+    {
+      name: "Jun",
+      data: generateData(20, { min: -30, max: 55 })
+    },
+    {
+      name: "Jul",
+      data: generateData(20, { min: -30, max: 55 })
+    },
+    {
+      name: "Aug",
+      data: generateData(20, { min: -30, max: 55 })
+    },
+    {
+      name: "Sep"
+      // data: generateData(20, { min: -30, max: 55 }),
+    }
+  ];
 
   const handleNextTablePage = () => {
     if (currentTablePage < totalTablePages) {
@@ -268,6 +144,7 @@ const TempHome: FC<CrmProps> = () => {
     }
   };
 
+  // Handle Previous Page Logic
   const handlePrevTablePage = () => {
     if (currentTablePage > 1) {
       setCurrentTablePage((prev) => prev - 1);
@@ -304,42 +181,6 @@ const TempHome: FC<CrmProps> = () => {
         <div className="xxl:col-span-9 xl:col-span-12  col-span-12">
           <div className="grid grid-cols-12 gap-x-6">
             <div className="xxl:col-span-4 xl:col-span-4  col-span-12">
-              {/* <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
-                <div className="box crm-highlight-card">
-                  <div className="box-body">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="font-semibold text-[1.125rem] text-white mb-2">
-                          Your target is incomplete
-                        </div>
-                        <span className="block text-[0.75rem] text-white">
-                          <span className="opacity-[0.7]">
-                            You have completed
-                          </span>
-                          &nbsp;{" "}
-                          <span className="font-semibold text-warning">
-                            48%
-                          </span>{" "}
-                          <span className="opacity-[0.7]">
-                            of the given target, you can also check your status
-                          </span>
-                          .
-                        </span>
-                        <span className="block font-semibold mt-[0.125rem]">
-                          <Link className="text-white text-[0.813rem]" to="#">
-                            <u>Click here</u>
-                          </Link>
-                        </span>
-                      </div>
-                      <div>
-                        <div id="crm-main">
-                          <Profit />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div> */}
               <div className="xxl:col-span-6 xl:col-span-6 col-span-12">
                 <div className="box custom-box">
                   <div className="box-body">
@@ -371,113 +212,6 @@ const TempHome: FC<CrmProps> = () => {
             <div className="xxl:col-span-8  xl:col-span-8  col-span-12">
               <div className="grid grid-cols-12 gap-x-6">
                 <div className="xxl:col-span-6 xl:col-span-6 col-span-12">
-                  {/* <div className="box overflow-hidden">
-                    <div className="box-body">
-                      <div className="flex items-top justify-between">
-                        <div>
-                          <span className="!text-[0.8rem]  !w-[2.5rem] !h-[2.5rem] !leading-[2.5rem] !rounded-full inline-flex items-center justify-center bg-primary">
-                            <i className="ti ti-users text-[1rem] text-white"></i>
-                          </span>
-                        </div>
-                        <div className="flex-grow ms-4">
-                          <div className="flex items-center justify-between flex-wrap">
-                            <div>
-                              <p className="text-[#8c9097] dark:text-white/50 text-[0.813rem] mb-0">
-                                {displayedNameAwards}
-                              </p>
-                              <h4 className="font-semibold  text-[1.5rem] !mb-2 ">
-                                {displayedValueAwards}
-                              </h4>
-                            </div>
-                            <div id="crm-total-customers">
-                              <Totalcustomers />
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between !mt-1">
-                            <div className="hs-dropdown ti-dropdown">
-                              <Link
-                                to="#"
-                                className="text-[0.75rem] px-2 font-normal text-primary"
-                                aria-expanded="false"
-                              >
-                                View All
-                                <i className="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
-                              </Link>
-                              <ul
-                                className="hs-dropdown-menu ti-dropdown-menu hidden"
-                                role="menu"
-                              >
-                                <li>
-                                  <Link
-                                    onClick={() =>
-                                      handleDropdownClick(
-                                        "Total Award Wins",
-                                        "1,118"
-                                      )
-                                    }
-                                    className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                                    to="#"
-                                  >
-                                    Total Award Wins
-                                  </Link>
-                                </li>
-                                <li>
-                                  <Link
-                                    onClick={() =>
-                                      handleDropdownClick(
-                                        "Total Award Nominations",
-                                        "2,262"
-                                      )
-                                    }
-                                    className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                                    to="#"
-                                  >
-                                    Total Award Nominations
-                                  </Link>
-                                </li>
-                                <li>
-                                  <Link
-                                    onClick={() =>
-                                      handleDropdownClick(
-                                        "Total Oscar Wins",
-                                        "11"
-                                      )
-                                    }
-                                    className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                                    to="#"
-                                  >
-                                    Total Oscar Wins
-                                  </Link>
-                                </li>
-                                <li>
-                                  <Link
-                                    onClick={() =>
-                                      handleDropdownClick(
-                                        "Total Oscar Nominations",
-                                        "18"
-                                      )
-                                    }
-                                    className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                                    to="#"
-                                  >
-                                    Total Oscar Nominations
-                                  </Link>
-                                </li>
-                              </ul>
-                            </div>
-                            <div className="text-end">
-                              <p className="mb-0 text-success text-[0.813rem] font-semibold">
-                                +40%
-                              </p>
-                              <p className="text-[#8c9097] dark:text-white/50 opacity-[0.7] text-[0.6875rem]">
-                                this month
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div> */}
                   <div className="box custom-box">
                     <div className="box-body">
                       <div className="flex flex-wrap items-start justify-between">
@@ -503,6 +237,8 @@ const TempHome: FC<CrmProps> = () => {
                                   <Link
                                     onClick={() =>
                                       handleDropdownClick(
+                                        setDisplayedNameAwards,
+                                        setDisplayedValueAwards,
                                         "Total Award Wins",
                                         "1,118"
                                       )
@@ -517,6 +253,8 @@ const TempHome: FC<CrmProps> = () => {
                                   <Link
                                     onClick={() =>
                                       handleDropdownClick(
+                                        setDisplayedNameAwards,
+                                        setDisplayedValueAwards,
                                         "Total Award Nominations",
                                         "2,262"
                                       )
@@ -531,6 +269,8 @@ const TempHome: FC<CrmProps> = () => {
                                   <Link
                                     onClick={() =>
                                       handleDropdownClick(
+                                        setDisplayedNameAwards,
+                                        setDisplayedValueAwards,
                                         "Total Oscar Wins",
                                         "11"
                                       )
@@ -545,8 +285,10 @@ const TempHome: FC<CrmProps> = () => {
                                   <Link
                                     onClick={() =>
                                       handleDropdownClick(
-                                        "Total Oscar Nominations",
-                                        "18"
+                                        setDisplayedNameAwards,
+                                        setDisplayedValueAwards,
+                                        "Total Oscar Wins",
+                                        "11"
                                       )
                                     }
                                     className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
@@ -617,7 +359,7 @@ const TempHome: FC<CrmProps> = () => {
                       type="text"
                       placeholder="Search Here"
                       onChange={(ele) => {
-                        myfunction(ele.target.value);
+                        myFunction(ele.target.value, Dealsstatistics, setData);
                       }}
                       aria-label=".form-control-sm example"
                     />
@@ -640,7 +382,12 @@ const TempHome: FC<CrmProps> = () => {
                           <Link
                             className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
                             to="#"
-                            onClick={() => handleProsperityTableClick(category)}
+                            onClick={() =>
+                              handleProsperityTableClick(
+                                category,
+                                setProsperitySortCategory
+                              )
+                            }
                           >
                             {category}
                           </Link>
@@ -790,18 +537,6 @@ const TempHome: FC<CrmProps> = () => {
               </div>
             </div>
           </div>
-          {/* <div className="xl:col-span-6 col-span-12">
-            <div className="box custom-box">
-              <div className="box-header">
-                <div className="box-title">Zoomable Time Series</div>
-              </div>
-              <div className="box-body">
-                <div id="zoom-chart">
-                  <Zoomabletime />
-                </div>
-              </div>
-            </div>
-          </div> */}
           <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
             <div className="box">
               <div className="box-header !gap-0 !m-0 justify-between">
@@ -846,15 +581,13 @@ const TempHome: FC<CrmProps> = () => {
                   </ul>
                 </div>
               </div>
-              <div className="box-body !py-5">
-                <div id="crm-revenue-analytics">
-                  {hasData ? (
-                    <Revenueanalytics
-                      genrePopularityOverTime={Data2.genrePopularityOverTime}
-                    />
-                  ) : (
-                    <p>Loading chart data...</p>
-                  )}
+              <div className="xl:col-span-6 col-span-12">
+                <div className="box custom-box">
+                  <div className="box-body">
+                    <div id="heatmap-colorrange">
+                      <Colorrange seriesData={seriesData} />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

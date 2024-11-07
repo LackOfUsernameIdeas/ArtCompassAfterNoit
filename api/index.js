@@ -659,150 +659,182 @@ app.get(
   }
 );
 
-// Общ endpoint за статистика на платформата
+// Общ endpoint за статистики на началната страница в платформата
 app.get("/stats/platform/all", async (req, res) => {
   try {
-    // Задаване на лимит за повечето заявки
-    const limit = 10;
+    // Extract token from Authorization header
+    const token = req.headers.authorization?.split(" ")[1]; // Bearer <token>
 
-    // Изпълняваме всички заявки към базата данни паралелно
-    const [
-      usersCount,
-      topRecommendations,
-      topGenres,
-      genrePopularityOverTime,
-      topActors,
-      topDirectors,
-      topWriters,
-      oscarsByMovie,
-      totalAwardsByMovieOrSeries,
-      totalAwards,
-      sortedDirectorsByProsperity,
-      sortedActorsByProsperity,
-      sortedWritersByProsperity,
-      sortedMoviesByProsperity,
-      sortedMoviesByMetascore,
-      sortedMoviesByIMDbRating,
-      averageBoxOfficeAndScores,
-      topCountries
-    ] = await Promise.all([
-      new Promise((resolve, reject) =>
-        db.getUsersCount((err, results) =>
-          err ? reject(err) : resolve(results)
-        )
-      ),
-      new Promise((resolve, reject) =>
-        db.getTopRecommendations(limit, (err, results) =>
-          err ? reject(err) : resolve(results)
-        )
-      ),
-      new Promise((resolve, reject) =>
-        db.getTopGenres(limit, (err, results) =>
-          err ? reject(err) : resolve(results)
-        )
-      ),
-      new Promise((resolve, reject) =>
-        db.getGenrePopularityOverTime((err, results) =>
-          err ? reject(err) : resolve(results)
-        )
-      ),
-      new Promise((resolve, reject) =>
-        db.getTopActors(limit, (err, results) =>
-          err ? reject(err) : resolve(results)
-        )
-      ),
-      new Promise((resolve, reject) =>
-        db.getTopDirectors(limit, (err, results) =>
-          err ? reject(err) : resolve(results)
-        )
-      ),
-      new Promise((resolve, reject) =>
-        db.getTopWriters(limit, (err, results) =>
-          err ? reject(err) : resolve(results)
-        )
-      ),
-      new Promise((resolve, reject) =>
-        db.getOscarsByMovie((err, results) =>
-          err ? reject(err) : resolve(results)
-        )
-      ),
-      new Promise((resolve, reject) =>
-        db.getTotalAwardsByMovieOrSeries((err, results) =>
-          err ? reject(err) : resolve(results)
-        )
-      ),
-      new Promise((resolve, reject) =>
-        db.getTotalAwardsCount((err, results) =>
-          err ? reject(err) : resolve(results)
-        )
-      ),
-      new Promise((resolve, reject) =>
-        db.getSortedDirectorsByProsperity((err, results) =>
-          err ? reject(err) : resolve(results)
-        )
-      ),
-      new Promise((resolve, reject) =>
-        db.getSortedActorsByProsperity((err, results) =>
-          err ? reject(err) : resolve(results)
-        )
-      ),
-      new Promise((resolve, reject) =>
-        db.getSortedWritersByProsperity((err, results) =>
-          err ? reject(err) : resolve(results)
-        )
-      ),
-      new Promise((resolve, reject) =>
-        db.getSortedMoviesByProsperity((err, results) =>
-          err ? reject(err) : resolve(results)
-        )
-      ),
-      new Promise((resolve, reject) =>
-        db.getTopMoviesAndSeriesByMetascore(limit, (err, results) =>
-          err ? reject(err) : resolve(results)
-        )
-      ),
-      new Promise((resolve, reject) =>
-        db.getTopMoviesAndSeriesByIMDbRating(limit, (err, results) =>
-          err ? reject(err) : resolve(results)
-        )
-      ),
-      new Promise((resolve, reject) =>
-        db.getAverageBoxOfficeAndScores((err, results) =>
-          err ? reject(err) : resolve(results)
-        )
-      ),
-      new Promise((resolve, reject) =>
-        db.getTopCountries(limit, (err, results) =>
-          err ? reject(err) : resolve(results)
-        )
-      )
-    ]);
+    if (!token) {
+      return res.status(401).json({ error: "Token not provided" });
+    }
 
-    // Форматираме резултата в JSON с всички данни
-    res.json({
-      usersCount,
-      topRecommendations,
-      topGenres,
-      genrePopularityOverTime,
-      topActors,
-      topDirectors,
-      topWriters,
-      oscarsByMovie,
-      totalAwardsByMovieOrSeries,
-      totalAwards,
-      sortedDirectorsByProsperity,
-      sortedActorsByProsperity,
-      sortedWritersByProsperity,
-      sortedMoviesByProsperity,
-      sortedMoviesByMetascore,
-      sortedMoviesByIMDbRating,
-      averageBoxOfficeAndScores,
-      topCountries
+    // Verify the token
+    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+      if (err) return res.status(401).json({ error: "Invalid token" });
+
+      const userId = decoded.id;
+
+      // Proceed with fetching user data
+      db.getUserById(userId, (err, results) => {
+        if (err) return res.status(500).json({ error: "Database query error" });
+        if (results.length === 0) {
+          return res.status(404).json({ error: "User not found!" });
+        }
+
+        // User data fetched successfully
+        const user = results[0];
+
+        // User is authenticated, now fetch platform statistics
+        const limit = 10;
+
+        // Run all queries in parallel
+        Promise.all([
+          new Promise((resolve, reject) =>
+            db.getUsersCount((err, results) =>
+              err ? reject(err) : resolve(results)
+            )
+          ),
+          new Promise((resolve, reject) =>
+            db.getTopRecommendations(limit, (err, results) =>
+              err ? reject(err) : resolve(results)
+            )
+          ),
+          new Promise((resolve, reject) =>
+            db.getTopGenres(limit, (err, results) =>
+              err ? reject(err) : resolve(results)
+            )
+          ),
+          new Promise((resolve, reject) =>
+            db.getGenrePopularityOverTime((err, results) =>
+              err ? reject(err) : resolve(results)
+            )
+          ),
+          new Promise((resolve, reject) =>
+            db.getTopActors(limit, (err, results) =>
+              err ? reject(err) : resolve(results)
+            )
+          ),
+          new Promise((resolve, reject) =>
+            db.getTopDirectors(limit, (err, results) =>
+              err ? reject(err) : resolve(results)
+            )
+          ),
+          new Promise((resolve, reject) =>
+            db.getTopWriters(limit, (err, results) =>
+              err ? reject(err) : resolve(results)
+            )
+          ),
+          new Promise((resolve, reject) =>
+            db.getOscarsByMovie((err, results) =>
+              err ? reject(err) : resolve(results)
+            )
+          ),
+          new Promise((resolve, reject) =>
+            db.getTotalAwardsByMovieOrSeries((err, results) =>
+              err ? reject(err) : resolve(results)
+            )
+          ),
+          new Promise((resolve, reject) =>
+            db.getTotalAwardsCount((err, results) =>
+              err ? reject(err) : resolve(results)
+            )
+          ),
+          new Promise((resolve, reject) =>
+            db.getSortedDirectorsByProsperity((err, results) =>
+              err ? reject(err) : resolve(results)
+            )
+          ),
+          new Promise((resolve, reject) =>
+            db.getSortedActorsByProsperity((err, results) =>
+              err ? reject(err) : resolve(results)
+            )
+          ),
+          new Promise((resolve, reject) =>
+            db.getSortedWritersByProsperity((err, results) =>
+              err ? reject(err) : resolve(results)
+            )
+          ),
+          new Promise((resolve, reject) =>
+            db.getSortedMoviesByProsperity((err, results) =>
+              err ? reject(err) : resolve(results)
+            )
+          ),
+          new Promise((resolve, reject) =>
+            db.getTopMoviesAndSeriesByMetascore(limit, (err, results) =>
+              err ? reject(err) : resolve(results)
+            )
+          ),
+          new Promise((resolve, reject) =>
+            db.getTopMoviesAndSeriesByIMDbRating(limit, (err, results) =>
+              err ? reject(err) : resolve(results)
+            )
+          ),
+          new Promise((resolve, reject) =>
+            db.getAverageBoxOfficeAndScores((err, results) =>
+              err ? reject(err) : resolve(results)
+            )
+          ),
+          new Promise((resolve, reject) =>
+            db.getTopCountries(limit, (err, results) =>
+              err ? reject(err) : resolve(results)
+            )
+          )
+        ])
+          .then(
+            ([
+              usersCount,
+              topRecommendations,
+              topGenres,
+              genrePopularityOverTime,
+              topActors,
+              topDirectors,
+              topWriters,
+              oscarsByMovie,
+              totalAwardsByMovieOrSeries,
+              totalAwards,
+              sortedDirectorsByProsperity,
+              sortedActorsByProsperity,
+              sortedWritersByProsperity,
+              sortedMoviesByProsperity,
+              sortedMoviesByMetascore,
+              sortedMoviesByIMDbRating,
+              averageBoxOfficeAndScores,
+              topCountries
+            ]) => {
+              // Return the statistics in the response
+              res.json({
+                user,
+                usersCount,
+                topRecommendations,
+                topGenres,
+                genrePopularityOverTime,
+                topActors,
+                topDirectors,
+                topWriters,
+                oscarsByMovie,
+                totalAwardsByMovieOrSeries,
+                totalAwards,
+                sortedDirectorsByProsperity,
+                sortedActorsByProsperity,
+                sortedWritersByProsperity,
+                sortedMoviesByProsperity,
+                sortedMoviesByMetascore,
+                sortedMoviesByIMDbRating,
+                averageBoxOfficeAndScores,
+                topCountries
+              });
+            }
+          )
+          .catch((error) => {
+            res
+              .status(500)
+              .json({ error: "Error fetching data", details: error.message });
+          });
+      });
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Error fetching data", details: error.message });
+    res.status(500).json({ error: "Unexpected error", details: error.message });
   }
 });
 
