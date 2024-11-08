@@ -88,11 +88,60 @@ export const paginateData = (
   );
 };
 
+const sortByRating = (seriesData: MovieData[]): MovieData[] => {
+  return seriesData.sort((a, b) => b.imdbRating - a.imdbRating);
+};
+
+// Function to paginate data for the bar chart after sorting by rating
+export const paginateBarChartData = (
+  seriesData: MovieData[],
+  currentPage: number,
+  pageSize: number
+): MovieData[] => {
+  // First, sort the data by IMDb rating
+  const sortedData = sortByRating(seriesData);
+
+  // Now paginate the sorted data
+  const start = (currentPage - 1) * pageSize;
+  const end = start + pageSize;
+  return sortedData.slice(start, end);
+};
+
+// Function to handle page change, keeping the logic for next/prev buttons intact
+export const handleBarChartPageChange = (
+  direction: "next" | "prev",
+  currentPage: number,
+  pageSize: number,
+  totalItems: number,
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>
+) => {
+  const totalPages = Math.ceil(totalItems / pageSize);
+  let newPage = currentPage;
+
+  if (direction === "next" && newPage < totalPages) {
+    // Ensure you don't exceed totalPages
+    newPage++;
+  } else if (direction === "prev" && newPage > 1) {
+    // Ensure you don't go below 1
+    newPage--;
+  }
+
+  setCurrentPage(newPage);
+};
+
+// Helper function to get the total pages for the bar chart
+export const getTotalBarChartPages = (
+  totalItems: number,
+  pageSize: number
+): number => {
+  return Math.ceil(totalItems / pageSize);
+};
+
 export const handleDropdownClick = (
   setDisplayedNameAwards: React.Dispatch<React.SetStateAction<string>>,
-  setDisplayedValueAwards: React.Dispatch<React.SetStateAction<string>>,
+  setDisplayedValueAwards: React.Dispatch<React.SetStateAction<number>>,
   name: string,
-  value: string
+  value: number
 ) => {
   setDisplayedNameAwards(name);
   setDisplayedValueAwards(value);

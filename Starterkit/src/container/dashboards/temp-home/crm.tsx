@@ -5,15 +5,16 @@ import {
   Dealsstatistics,
   generateData,
   Profitearned,
-  Sourcedata,
   BoxOfficeVsIMDBRating,
-  MovieBarChart
+  MovieBarChart,
+  AwardsDonutChart
 } from "./crmdata";
 import {
   DataType,
   FilteredTableData,
   GenrePopularityData,
-  HeatmapData
+  HeatmapData,
+  MovieData
 } from "../home-types";
 import {
   fetchData,
@@ -25,22 +26,19 @@ import {
   isActor,
   isWriter,
   generateHeatmapSeriesData,
-  generateScatterSeriesData
+  generateScatterSeriesData,
+  paginateBarChartData,
+  getTotalBarChartPages,
+  handleBarChartPageChange
 } from "../helper_functions";
 import face10 from "../../../assets/images/faces/10.jpg";
 import face12 from "../../../assets/images/faces/12.jpg";
-import { Basicscatter } from "../../apexcharts/scatterchart/scatterdata";
 
 interface CrmProps {}
 
 const TempHome: FC<CrmProps> = () => {
-  const [displayedNameAwards, setDisplayedNameAwards] =
-    useState("Total Award Wins");
-  const [displayedValueAwards, setDisplayedValueAwards] = useState("1,118");
-
   // States for holding fetched data
-  const [Data, setData] = useState(Dealsstatistics);
-  const [Data2, setData2] = useState<DataType>({
+  const [Data, setData] = useState<DataType>({
     usersCount: [],
     topRecommendations: [],
     topGenres: [],
@@ -49,20 +47,30 @@ const TempHome: FC<CrmProps> = () => {
     topDirectors: [],
     topWriters: [],
     oscarsByMovie: [],
-    totalAwardsByMovie: [],
+    totalAwardsByMovieOrSeries: [],
     totalAwards: [],
     sortedDirectorsByProsperity: [],
     sortedActorsByProsperity: [],
     sortedWritersByProsperity: [],
     sortedMoviesByProsperity: [],
+    sortedMoviesAndSeriesByMetascore: [],
+    sortedMoviesAndSeriesByIMDbRating: [],
     averageBoxOfficeAndScores: [],
     topCountries: []
   });
 
+  const [displayedNameAwards, setDisplayedNameAwards] =
+    useState("Total Award Wins");
+  const [displayedValueAwards, setDisplayedValueAwards] = useState<number>(0);
   // Table data filtering and pagination
   const [filteredTableData, setFilteredTableData] = useState<FilteredTableData>(
     []
   );
+  const pageSize = 6; // Number of entries per page for the chart
+  const [currentChartPage, setCurrentChartPage] = useState(1); // Current page for the chart
+  const [seriesDataForMovieBarChart, setSeriesDataForMovieBarChart] = useState<
+    any[]
+  >([]);
   const [currentTablePage, setCurrentTablePage] = useState(1);
   const itemsPerTablePage = 5;
   const [currentTableItems, setCurrentTableItems] = useState<FilteredTableData>(
@@ -92,11 +100,30 @@ const TempHome: FC<CrmProps> = () => {
         token,
         prosperitySortCategory,
         setUserData,
-        setData2,
+        setData,
         setFilteredTableData
       );
     }
   }, [prosperitySortCategory]);
+
+  useEffect(() => {
+    console.log("Data: ", Data);
+    if (Data.totalAwards.length > 0) {
+      setDisplayedValueAwards(Data.totalAwards[0].total_awards_wins);
+    }
+  }, [Data]);
+
+  useEffect(() => {
+    const paginatedData = paginateBarChartData(
+      //Data.sortedMoviesAndSeriesByIMDbRating?.[0]?.movies,
+      Data.sortedMoviesAndSeriesByIMDbRating,
+      currentChartPage,
+      pageSize
+    );
+    setSeriesDataForMovieBarChart(paginatedData);
+    console.log("paginatedData: ", paginatedData);
+    //}, [currentChartPage, Data.sortedMoviesAndSeriesByIMDbRating]);
+  }, [currentChartPage, Data.sortedMoviesAndSeriesByIMDbRating]);
 
   // Fetch filtered table data based on category
   useEffect(() => {
@@ -111,11 +138,60 @@ const TempHome: FC<CrmProps> = () => {
 
   // Generate the seriesData for heatmap
   const seriesDataForHeatmap = generateHeatmapSeriesData(
-    Data2.genrePopularityOverTime
+    Data.genrePopularityOverTime
   );
-  const seriesDataForMovieCharts = generateScatterSeriesData(
-    Data2.sortedMoviesByProsperity
+  const seriesDataForScatterChart = generateScatterSeriesData(
+    Data.sortedMoviesByProsperity
   );
+
+  const awardOptions = [
+    {
+      label: "Total Award Wins",
+      value: Data.totalAwards?.[0]?.total_awards_wins || 0
+    },
+    {
+      label: "Total Award Nominations",
+      value: Data.totalAwards?.[0]?.total_awards_nominations || 0
+    },
+    {
+      label: "Total Oscar Wins",
+      value: Data.totalAwards?.[0]?.total_oscar_wins || 0
+    },
+    {
+      label: "Total Oscar Nominations",
+      value: Data.totalAwards?.[0]?.total_oscar_nominations || 0
+    }
+  ];
+
+  // Total number of pages for pagination
+  const totalChartPages = getTotalBarChartPages(
+    //Data.sortedMoviesAndSeriesByIMDbRating?.[0]?.movies.length,
+    Data.sortedMoviesAndSeriesByIMDbRating.length,
+    pageSize
+  );
+
+  const handlePrevChartPage = () => {
+    handleBarChartPageChange(
+      "prev",
+      currentChartPage,
+      pageSize,
+      //Data.sortedMoviesAndSeriesByIMDbRating?.[0]?.movies.length,
+      Data.sortedMoviesAndSeriesByIMDbRating.length,
+      setCurrentChartPage
+    );
+  };
+
+  const handleNextChartPage = () => {
+    handleBarChartPageChange(
+      "next",
+      currentChartPage,
+      pageSize,
+      //Data.sortedMoviesAndSeriesByIMDbRating?.[0]?.movies.length,
+      Data.sortedMoviesAndSeriesByIMDbRating.length,
+      setCurrentChartPage
+    );
+  };
+
   const handleNextTablePage = () => {
     if (currentTablePage < totalTablePages) {
       setCurrentTablePage((prev) => prev + 1);
@@ -129,7 +205,7 @@ const TempHome: FC<CrmProps> = () => {
     }
   };
 
-  console.log("seriesDataForMovieCharts: ", seriesDataForMovieCharts);
+  console.log("seriesDataForScatterChart: ", seriesDataForScatterChart);
   return (
     <Fragment>
       <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">
@@ -137,23 +213,6 @@ const TempHome: FC<CrmProps> = () => {
           <p className="font-semibold text-[1.125rem] text-defaulttextcolor dark:text-defaulttextcolor/70 !mb-0 ">
             Здравейте, {userData.first_name} {userData.last_name}!
           </p>
-          <p className="font-normal text-[#8c9097] dark:text-white/50 text-[0.813rem]">
-            Track your sales activity, leads and deals here.
-          </p>
-        </div>
-        <div className="btn-list md:mt-0 mt-2">
-          <button
-            type="button"
-            className="ti-btn bg-primary text-white btn-wave !font-medium !me-[0.375rem] !ms-0 !text-[0.85rem] !rounded-[0.35rem] !py-[0.51rem] !px-[0.86rem] shadow-none mb-0"
-          >
-            <i className="ri-filter-3-fill  inline-block"></i>Филтри
-          </button>
-          <button
-            type="button"
-            className="ti-btn ti-btn-outline-secondary btn-wave !font-medium  !me-[0.375rem]  !ms-0 !text-[0.85rem] !rounded-[0.35rem] !py-[0.51rem] !px-[0.86rem] shadow-none mb-0"
-          >
-            <i className="ri-upload-cloud-line  inline-block"></i>Export
-          </button>
         </div>
       </div>
       <div className="grid grid-cols-12 gap-x-6">
@@ -170,7 +229,7 @@ const TempHome: FC<CrmProps> = () => {
                         </p>
                         <div className="flex items-center">
                           <span className="text-[1.25rem] font-semibold">
-                            {Data2.usersCount?.[0]?.user_count || 0}
+                            {Data.usersCount?.[0]?.user_count || 0}
                           </span>
                           <span className="text-[0.75rem] text-success ms-2">
                             <i className="ti ti-trending-up me-1 inline-block"></i>
@@ -212,70 +271,24 @@ const TempHome: FC<CrmProps> = () => {
                                 className="hs-dropdown-menu ti-dropdown-menu hidden"
                                 role="menu"
                               >
-                                <li>
-                                  <Link
-                                    onClick={() =>
-                                      handleDropdownClick(
-                                        setDisplayedNameAwards,
-                                        setDisplayedValueAwards,
-                                        "Total Award Wins",
-                                        "1,118"
-                                      )
-                                    }
-                                    className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                                    to="#"
-                                  >
-                                    Total Award Wins
-                                  </Link>
-                                </li>
-                                <li>
-                                  <Link
-                                    onClick={() =>
-                                      handleDropdownClick(
-                                        setDisplayedNameAwards,
-                                        setDisplayedValueAwards,
-                                        "Total Award Nominations",
-                                        "2,262"
-                                      )
-                                    }
-                                    className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                                    to="#"
-                                  >
-                                    Total Award Nominations
-                                  </Link>
-                                </li>
-                                <li>
-                                  <Link
-                                    onClick={() =>
-                                      handleDropdownClick(
-                                        setDisplayedNameAwards,
-                                        setDisplayedValueAwards,
-                                        "Total Oscar Wins",
-                                        "11"
-                                      )
-                                    }
-                                    className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                                    to="#"
-                                  >
-                                    Total Oscar Wins
-                                  </Link>
-                                </li>
-                                <li>
-                                  <Link
-                                    onClick={() =>
-                                      handleDropdownClick(
-                                        setDisplayedNameAwards,
-                                        setDisplayedValueAwards,
-                                        "Total Oscar Wins",
-                                        "11"
-                                      )
-                                    }
-                                    className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                                    to="#"
-                                  >
-                                    Total Oscar Nominations
-                                  </Link>
-                                </li>
+                                {awardOptions.map(({ label, value }) => (
+                                  <li key={label}>
+                                    <Link
+                                      onClick={() =>
+                                        handleDropdownClick(
+                                          setDisplayedNameAwards,
+                                          setDisplayedValueAwards,
+                                          label,
+                                          value
+                                        )
+                                      }
+                                      className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
+                                      to="#"
+                                    >
+                                      {label}
+                                    </Link>
+                                  </li>
+                                ))}
                               </ul>
                             </div>
                           </div>
@@ -308,7 +321,7 @@ const TempHome: FC<CrmProps> = () => {
                           </p>
                           <div className="flex items-center">
                             <span className="text-[1.25rem] font-semibold">
-                              {Data2.topRecommendations[0]?.title_bg}
+                              {Data.topRecommendations[0]?.title_bg}
                             </span>
                           </div>
                         </div>
@@ -337,9 +350,6 @@ const TempHome: FC<CrmProps> = () => {
                       className="ti-form-control form-control-sm"
                       type="text"
                       placeholder="Search Here"
-                      onChange={(ele) => {
-                        myFunction(ele.target.value, Dealsstatistics, setData);
-                      }}
                       aria-label=".form-control-sm example"
                     />
                   </div>
@@ -571,7 +581,7 @@ const TempHome: FC<CrmProps> = () => {
               <div className="box-body">
                 <div id="scatter-basic">
                   <BoxOfficeVsIMDBRating
-                    seriesData={seriesDataForMovieCharts}
+                    seriesData={seriesDataForScatterChart}
                   />
                 </div>
               </div>
@@ -584,7 +594,69 @@ const TempHome: FC<CrmProps> = () => {
               </div>
               <div className="box-body">
                 <div id="bar-basic">
-                  <MovieBarChart seriesData={seriesDataForMovieCharts} />
+                  {/* Pass only the paginated data to MovieBarChart */}
+                  <MovieBarChart seriesData={seriesDataForMovieBarChart} />
+                </div>
+              </div>
+              <div className="box-footer">
+                <div className="sm:flex items-center">
+                  <div className="text-defaulttextcolor dark:text-defaulttextcolor/70">
+                    Showing {pageSize} Entries{" "}
+                    <i className="bi bi-arrow-right ms-2 font-semibold"></i>
+                  </div>
+                  <div className="ms-auto">
+                    <nav
+                      aria-label="Page navigation"
+                      className="pagination-style-4"
+                    >
+                      <ul className="ti-pagination mb-0">
+                        <li
+                          className={`page-item ${
+                            currentChartPage === 1 ? "disabled" : ""
+                          }`}
+                        >
+                          <Link
+                            className="page-link"
+                            to="#"
+                            onClick={handlePrevChartPage}
+                          >
+                            Prev
+                          </Link>
+                        </li>
+                        {[...Array(totalChartPages)].map((_, index) => (
+                          <li
+                            key={index}
+                            className={`page-item ${
+                              currentChartPage === index + 1 ? "active" : ""
+                            }`}
+                          >
+                            <Link
+                              className="page-link"
+                              to="#"
+                              onClick={() => setCurrentChartPage(index + 1)}
+                            >
+                              {index + 1}
+                            </Link>
+                          </li>
+                        ))}
+                        <li
+                          className={`page-item ${
+                            currentChartPage === totalChartPages
+                              ? "disabled"
+                              : ""
+                          }`}
+                        >
+                          <Link
+                            className="page-link"
+                            to="#"
+                            onClick={handleNextChartPage}
+                          >
+                            Next
+                          </Link>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
                 </div>
               </div>
             </div>
@@ -808,7 +880,7 @@ const TempHome: FC<CrmProps> = () => {
                       </p>
                       <div className="flex items-center">
                         <span className="text-[1.25rem] font-semibold">
-                          {Data2.topGenres[0]?.genre_bg}
+                          {Data.topGenres[0]?.genre_bg}
                         </span>
                       </div>
                     </div>
@@ -864,25 +936,48 @@ const TempHome: FC<CrmProps> = () => {
                 </div>
                 <div className="box-body overflow-hidden">
                   <div className="leads-source-chart flex items-center justify-center">
-                    <Sourcedata />
+                    <AwardsDonutChart
+                      awardsData={{
+                        totalAwardsWins:
+                          parseInt(
+                            Data.totalAwards?.[0]?.total_awards_wins,
+                            10
+                          ) || 0,
+                        totalAwardsNominations:
+                          parseInt(
+                            Data.totalAwards?.[0]?.total_awards_nominations,
+                            10
+                          ) || 0,
+                        totalOscarWins:
+                          parseInt(
+                            Data.totalAwards?.[0]?.total_oscar_wins,
+                            10
+                          ) || 0,
+                        totalOscarNominations:
+                          parseInt(
+                            Data.totalAwards?.[0]?.total_oscar_nominations,
+                            10
+                          ) || 0
+                      }}
+                    />
                     <div className="lead-source-value ">
                       <span className="block text-[0.875rem] ">Total</span>
                       <span className="block text-[1.5625rem] font-bold">
                         {(
                           (parseInt(
-                            Data2.totalAwards?.[0]?.total_awards_wins,
+                            Data.totalAwards?.[0]?.total_awards_wins,
                             10
                           ) || 0) +
                           (parseInt(
-                            Data2.totalAwards?.[0]?.total_awards_nominations,
+                            Data.totalAwards?.[0]?.total_awards_nominations,
                             10
                           ) || 0) +
                           (parseInt(
-                            Data2.totalAwards?.[0]?.total_oscar_wins,
+                            Data.totalAwards?.[0]?.total_oscar_wins,
                             10
                           ) || 0) +
                           (parseInt(
-                            Data2.totalAwards?.[0]?.total_oscar_nominations,
+                            Data.totalAwards?.[0]?.total_oscar_nominations,
                             10
                           ) || 0)
                         ).toLocaleString()}
@@ -898,7 +993,7 @@ const TempHome: FC<CrmProps> = () => {
                       </span>
                       <div>
                         <span className="text-[1rem]  font-semibold">
-                          {Data2.totalAwards?.[0]?.total_awards_wins || 0}
+                          {Data.totalAwards?.[0]?.total_awards_wins || 0}
                         </span>
                       </div>
                     </div>
@@ -910,8 +1005,7 @@ const TempHome: FC<CrmProps> = () => {
                       </span>
                       <div>
                         <span className="text-[1rem]  font-semibold">
-                          {Data2.totalAwards?.[0]?.total_awards_nominations ||
-                            0}
+                          {Data.totalAwards?.[0]?.total_awards_nominations || 0}
                         </span>
                       </div>
                     </div>
@@ -923,7 +1017,7 @@ const TempHome: FC<CrmProps> = () => {
                       </span>
                       <div>
                         <span className="text-[1rem]  font-semibold">
-                          {Data2.totalAwards?.[0]?.total_oscar_wins || 0}
+                          {Data.totalAwards?.[0]?.total_oscar_wins || 0}
                         </span>
                       </div>
                     </div>
@@ -935,7 +1029,7 @@ const TempHome: FC<CrmProps> = () => {
                       </span>
                       <div>
                         <span className="text-[1rem]  font-semibold">
-                          {Data2.totalAwards?.[0]?.total_oscar_nominations || 0}
+                          {Data.totalAwards?.[0]?.total_oscar_nominations || 0}
                         </span>
                       </div>
                     </div>

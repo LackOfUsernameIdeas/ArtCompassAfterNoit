@@ -37,12 +37,14 @@ export type DataType = {
   topDirectors: any[];
   topWriters: any[];
   oscarsByMovie: any[];
-  totalAwardsByMovie: any[];
+  totalAwardsByMovieOrSeries: any[];
   totalAwards: any[];
   sortedDirectorsByProsperity: any[];
   sortedActorsByProsperity: any[];
   sortedWritersByProsperity: any[];
   sortedMoviesByProsperity: any[];
+  sortedMoviesAndSeriesByMetascore: any[];
+  sortedMoviesAndSeriesByIMDbRating: any[];
   averageBoxOfficeAndScores: any[];
   topCountries: any[];
 };

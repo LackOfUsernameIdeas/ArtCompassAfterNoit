@@ -797,8 +797,8 @@ app.get("/stats/platform/all", async (req, res) => {
               sortedActorsByProsperity,
               sortedWritersByProsperity,
               sortedMoviesByProsperity,
-              sortedMoviesByMetascore,
-              sortedMoviesByIMDbRating,
+              sortedMoviesAndSeriesByMetascore,
+              sortedMoviesAndSeriesByIMDbRating,
               averageBoxOfficeAndScores,
               topCountries
             ]) => {
@@ -819,8 +819,8 @@ app.get("/stats/platform/all", async (req, res) => {
                 sortedActorsByProsperity,
                 sortedWritersByProsperity,
                 sortedMoviesByProsperity,
-                sortedMoviesByMetascore,
-                sortedMoviesByIMDbRating,
+                sortedMoviesAndSeriesByMetascore,
+                sortedMoviesAndSeriesByIMDbRating,
                 averageBoxOfficeAndScores,
                 topCountries
               });
