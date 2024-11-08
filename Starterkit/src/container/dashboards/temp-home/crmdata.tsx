@@ -961,7 +961,19 @@ export class BoxOfficeVsIMDBRating extends Component<
           type: "scatter",
           zoom: {
             enabled: true,
-            type: "xy"
+            type: "x",
+            autoScaleYaxis: false,
+            zoomedArea: {
+              fill: {
+                color: "#90CAF9",
+                opacity: 0.4
+              },
+              stroke: {
+                color: "#0D47A1",
+                opacity: 0.4,
+                width: 1
+              }
+            }
           },
           events: {
             mounted: (chart: any) => {
