@@ -7,6 +7,7 @@ import face11 from "../../../assets/images/faces/11.jpg";
 import face8 from "../../../assets/images/faces/8.jpg";
 import face9 from "../../../assets/images/faces/9.jpg";
 import { MovieData } from "../home-types";
+import { parseBoxOffice } from "../helper_functions";
 
 //
 interface spark3 {
@@ -901,24 +902,33 @@ export class GenrePopularityOverTime extends Component<
 
   // Use dynamic data passed as props
   static getDerivedStateFromProps(
-    nextProps: GenrePopularityOverTimeProps,
-    nextState: State
+    nextProps: BoxOfficeVsIMDBRatingProps,
+    prevState: State
   ) {
-    const { seriesData } = nextProps;
+    if (nextProps.seriesData.length > 0) {
+      const seriesData = [
+        {
+          name: "Movies", // Name of the series
+          data: nextProps.seriesData.map((movie) => ({
+            x:
+              typeof movie.boxOffice === "string"
+                ? parseFloat(movie.boxOffice.replace(/[\$,]/g, "")) / 1e6
+                : movie.boxOffice / 1e6, // Convert to millions if it's a string
+            y:
+              typeof movie.imdbRating === "string"
+                ? parseFloat(movie.imdbRating)
+                : movie.imdbRating, // Use as is if it's a number
+            name: movie.title_en // Movie title
+          }))
+        }
+      ];
 
-    // Update the series data dynamically based on the passed prop
-    if (seriesData && seriesData.length > 0) {
-      const updatedSeries = seriesData.map((data: any) => ({
-        name: data.name,
-        data: data.data
-      }));
+      // Log the series data for debugging
+      console.log("Series Data:", seriesData);
 
-      return {
-        series: updatedSeries
-      };
+      return { ...prevState, series: seriesData };
     }
-
-    return null; // No changes to state if the data is not available
+    return null;
   }
 
   render() {
@@ -994,16 +1004,17 @@ export class BoxOfficeVsIMDBRating extends Component<
           shared: false,
           intersect: true,
           custom: function ({ seriesIndex, dataPointIndex, w }: any) {
-            console.log("w.globals.series: ", w.globals.series);
-            console.log("seriesIndex: ", seriesIndex);
-            console.log("dataPointIndex: ", dataPointIndex);
-            const movieData = w.globals.series[seriesIndex][dataPointIndex];
-            console.log("movieData: ", movieData);
+            // Access the full movie data object directly from the series data
+            const movieData = w.config.series[seriesIndex].data[dataPointIndex];
+
             if (movieData) {
-              const movieTitle = movieData.name || "Unknown Movie"; // Movie title
-              const imdbRating = movieData.y || "N/A"; // IMDb rating (y-axis)
-              const boxOffice = movieData.x * 1e6 || "N/A"; // Convert box office back to full value
-              const formattedBoxOffice = `$${boxOffice.toLocaleString()}`;
+              const movieTitle = movieData.title || "Unknown Movie";
+              const imdbRating =
+                movieData.y !== undefined ? movieData.y : "N/A";
+              const boxOffice =
+                movieData.x !== undefined ? movieData.x * 1e6 : "N/A"; // Convert to full value
+              const formattedBoxOffice =
+                boxOffice !== "N/A" ? `$${boxOffice.toLocaleString()}` : "N/A";
 
               return `
                 <div style="padding: 10px;">
@@ -1026,20 +1037,20 @@ export class BoxOfficeVsIMDBRating extends Component<
     prevState: State
   ) {
     if (nextProps.seriesData.length > 0) {
-      // Modify the seriesData structure to include 'name', 'x', and 'y' for each movie
-      const seriesData = nextProps.seriesData.map((movie) => ({
-        name: movie.title, // Store movie title in name
-        data: [
-          {
-            x: movie.boxOffice / 1e6, // Convert box office to millions
-            y: movie.imdbRating, // IMDb rating
-            name: movie.title // Store movie title in each data point
-          }
-        ]
-      }));
+      // Map over the movies to set up series data
+      const seriesData = [
+        {
+          name: "Movies",
+          data: nextProps.seriesData.map((movie) => ({
+            x: parseBoxOffice(movie.boxOffice) / 1e6, // Box Office in millions for x-axis
+            y: movie.imdbRating, // IMDb Rating for y-axis
+            title: movie.title // Movie title for tooltip
+          }))
+        }
+      ];
 
-      // Log the series data for debugging
-      console.log("Series Data:", seriesData);
+      // Log the transformed series data for debugging
+      console.log("Transformed Series Data:", seriesData);
 
       return { ...prevState, series: seriesData };
     }

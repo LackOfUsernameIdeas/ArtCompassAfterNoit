@@ -49,8 +49,9 @@ export type DataType = {
 
 export interface MovieData {
   title: string;
-  boxOffice: number;
+  boxOffice: number | string;
   imdbRating: number;
+  title_en: string;
 }
 
 export type FilteredTableData = (DirectorData | ActorData | WriterData)[];

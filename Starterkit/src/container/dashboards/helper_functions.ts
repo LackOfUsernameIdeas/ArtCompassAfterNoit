@@ -165,8 +165,17 @@ export const generateScatterSeriesData = (
 
     return {
       title: movie.title_bg,
+      title_bg: movie.title_bg,
+      title_en: movie.title_en,
       boxOffice: boxOffice,
       imdbRating: imdbRating
     };
   });
 };
+
+export function parseBoxOffice(value: string | number): number {
+  if (typeof value === "string") {
+    return parseFloat(value.replace(/[\$,]/g, ""));
+  }
+  return value;
+}

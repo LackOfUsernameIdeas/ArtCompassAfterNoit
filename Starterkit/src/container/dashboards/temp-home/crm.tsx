@@ -129,6 +129,7 @@ const TempHome: FC<CrmProps> = () => {
     }
   };
 
+  console.log("seriesDataForMovieCharts: ", seriesDataForMovieCharts);
   return (
     <Fragment>
       <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">
