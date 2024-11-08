@@ -505,36 +505,36 @@ const getTotalAwardsCount = (callback) => {
 const getSortedDirectorsByProsperity = (callback) => {
   const query = `
   WITH RECURSIVE DirectorSplit AS (
-      SELECT 
-          id, 
-          TRIM(SUBSTRING_INDEX(director, ',', 1)) AS director,
-          SUBSTRING_INDEX(director, ',', -1) AS remaining_directors,
-          imdbRating,
-          metascore,
-          boxOffice,
-          runtime,
-          awards,
-          imdbID,
-          ratings,
-          type
-      FROM recommendations
-      WHERE director IS NOT NULL 
-        AND director != 'N/A'
-      UNION ALL
-      SELECT 
-          id,
-          TRIM(SUBSTRING_INDEX(remaining_directors, ',', 1)) AS director,
-          SUBSTRING_INDEX(remaining_directors, ',', -1) AS remaining_directors,
-          imdbRating,
-          metascore,
-          boxOffice,
-          runtime,
-          awards,
-          imdbID,
-          ratings,
-          type
-      FROM DirectorSplit
-      WHERE remaining_directors LIKE '%,%'
+    SELECT 
+        id, 
+        TRIM(SUBSTRING_INDEX(director, ',', 1)) AS director,
+        SUBSTRING_INDEX(director, ',', -1) AS remaining_directors,
+        imdbRating,
+        metascore,
+        boxOffice,
+        runtime,
+        awards,
+        imdbID,
+        ratings,
+        type
+    FROM recommendations
+    WHERE director IS NOT NULL 
+      AND director != 'N/A'
+    UNION ALL
+    SELECT 
+        id,
+        TRIM(SUBSTRING_INDEX(remaining_directors, ',', 1)) AS director,
+        SUBSTRING_INDEX(remaining_directors, ',', -1) AS remaining_directors,
+        imdbRating,
+        metascore,
+        boxOffice,
+        runtime,
+        awards,
+        imdbID,
+        ratings,
+        type
+    FROM DirectorSplit
+    WHERE remaining_directors LIKE '%,%'
   ),
   UniqueMovies AS (
       SELECT 
@@ -546,9 +546,9 @@ const getSortedDirectorsByProsperity = (callback) => {
           runtime,
           awards,
           CAST(
-            REPLACE(
-              JSON_UNQUOTE(JSON_EXTRACT(ratings, '$[1].Value')), '%', ''
-            ) AS DECIMAL(5, 2)
+              REPLACE(
+                JSON_UNQUOTE(JSON_EXTRACT(ratings, '$[1].Value')), '%', ''
+              ) AS DECIMAL(5, 2)
           ) AS rottenTomatoes
       FROM 
           DirectorSplit
@@ -556,8 +556,8 @@ const getSortedDirectorsByProsperity = (callback) => {
   ),
   DirectorRecommendations AS (
       SELECT 
-          director,
-          COUNT(*) AS total_recommendations
+          TRIM(SUBSTRING_INDEX(director, ',', 1)) AS director,
+          COUNT(*) AS total_recommendations  -- Count total recommendations for each director
       FROM 
           recommendations
       WHERE 
@@ -567,42 +567,42 @@ const getSortedDirectorsByProsperity = (callback) => {
           director
   )
   SELECT 
-    um.director,
-    ROUND(AVG(um.imdbRating), 2) AS avg_imdb_rating,
-    AVG(um.metascore) AS avg_metascore,
-    CONCAT('$', FORMAT(SUM(CASE 
-            WHEN um.boxOffice IS NULL OR um.boxOffice = 'N/A' 
-            THEN 0 
-            ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
-        END), 0)) AS total_box_office,
-    CONCAT(ROUND(AVG(um.rottenTomatoes), 0), '%') AS avg_rotten_tomatoes, -- Average Rotten Tomatoes rating
-    AVG(CASE 
-            WHEN um.runtime IS NULL OR um.runtime = 'N/A' OR um.runtime < 30 
-            THEN NULL 
-            ELSE um.runtime 
-        END) AS avg_runtime,
-    SUM(CASE 
-            WHEN um.awards IS NOT NULL THEN 
-                CASE 
-                    WHEN um.awards LIKE '1 win%' THEN 1
-                    ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ win(s)') AS UNSIGNED), 0)
-                END
-            ELSE 0 
-        END) AS total_wins,  -- Total wins
-
-    SUM(CASE 
-            WHEN um.awards IS NOT NULL THEN 
-                CASE 
-                    WHEN um.awards LIKE '1 nomination%' THEN 1
-                    ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ nomination(s)') AS UNSIGNED), 0)
-                END
-            ELSE 0 
-
-        END) AS total_nominations  -- Total nominations
+      um.director,
+      ROUND(AVG(um.imdbRating), 2) AS avg_imdb_rating,
+      AVG(um.metascore) AS avg_metascore,
+      CONCAT('$', FORMAT(SUM(CASE 
+              WHEN um.boxOffice IS NULL OR um.boxOffice = 'N/A' 
+              THEN 0 
+              ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
+          END), 0)) AS total_box_office,
+      CONCAT(ROUND(AVG(um.rottenTomatoes), 0), '%') AS avg_rotten_tomatoes,
+      COUNT(DISTINCT um.imdbID) AS movie_count,  -- Count distinct movies
+      COALESCE(dr.total_recommendations, 0) AS total_recommendations,  -- Total recommendations from join
+      AVG(CASE 
+              WHEN um.runtime IS NULL OR um.runtime = 'N/A' OR um.runtime < 30 
+              THEN NULL 
+              ELSE um.runtime 
+          END) AS avg_runtime,
+      SUM(CASE 
+              WHEN um.awards IS NOT NULL THEN 
+                  CASE 
+                      WHEN um.awards LIKE '1 win%' THEN 1
+                      ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ win(s)') AS UNSIGNED), 0)
+                  END
+              ELSE 0 
+          END) AS total_wins,
+      SUM(CASE 
+              WHEN um.awards IS NOT NULL THEN 
+                  CASE 
+                      WHEN um.awards LIKE '1 nomination%' THEN 1
+                      ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ nomination(s)') AS UNSIGNED), 0)
+                  END
+              ELSE 0 
+          END) AS total_nominations
   FROM 
       UniqueMovies um
   LEFT JOIN 
-      DirectorRecommendations dr ON um.director = dr.director
+      DirectorRecommendations dr ON um.director = dr.director  -- Join to get total recommendations
   WHERE 
       um.boxOffice IS NOT NULL 
       AND um.boxOffice != 'N/A'
@@ -612,8 +612,7 @@ const getSortedDirectorsByProsperity = (callback) => {
   GROUP BY 
       um.director
   ORDER BY 
-      avg_imdb_rating DESC;
-  `;
+      avg_imdb_rating DESC;`;
   // HAVING
   // movie_count > 1
   db.query(query, (err, results) => {

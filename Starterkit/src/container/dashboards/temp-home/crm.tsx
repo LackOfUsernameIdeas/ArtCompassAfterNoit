@@ -383,20 +383,14 @@ const TempHome: FC<CrmProps> = () => {
                   >
                     <thead>
                       <tr className="border border-inherit border-solid dark:border-defaultborder/10">
-                        <th scope="row" className="!ps-4 !pe-5">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id="checkboxNoLabel1"
-                            defaultValue=""
-                            aria-label="..."
-                          />
-                        </th>
                         <th
                           scope="col"
                           className="!text-start !text-[0.85rem] min-w-[200px]"
                         >
                           {prosperitySortCategory}
+                        </th>
+                        <th scope="col" className="!text-start !text-[0.85rem]">
+                          Prosperity score
                         </th>
                         <th scope="col" className="!text-start !text-[0.85rem]">
                           IMDB Rating
@@ -424,13 +418,6 @@ const TempHome: FC<CrmProps> = () => {
                           key={index}
                           className="border border-inherit border-solid hover:bg-gray-100 dark:border-defaultborder/10 dark:hover:bg-light"
                         >
-                          <td className="!ps-4 !pe-5">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              aria-label="..."
-                            />
-                          </td>
                           <td>
                             {isDirector(item)
                               ? item.director
@@ -440,6 +427,7 @@ const TempHome: FC<CrmProps> = () => {
                               ? item.writer
                               : ""}
                           </td>
+                          <td>{item.prosperityScore}</td>
                           <td>{item.avg_imdb_rating}</td>
                           <td>{item.total_box_office}</td>
                           <td>{item.movie_count}</td>

@@ -6,6 +6,7 @@ export interface CommonData {
   total_recommendations: number;
   total_wins: number;
   total_nominations: number;
+  prosperityScore: number;
 }
 
 export interface DirectorData extends CommonData {
