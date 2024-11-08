@@ -115,14 +115,12 @@ const TempHome: FC<CrmProps> = () => {
 
   useEffect(() => {
     const paginatedData = paginateBarChartData(
-      //Data.sortedMoviesAndSeriesByIMDbRating?.[0]?.movies,
       Data.sortedMoviesAndSeriesByIMDbRating,
       currentChartPage,
       pageSize
     );
     setSeriesDataForMovieBarChart(paginatedData);
     console.log("paginatedData: ", paginatedData);
-    //}, [currentChartPage, Data.sortedMoviesAndSeriesByIMDbRating]);
   }, [currentChartPage, Data.sortedMoviesAndSeriesByIMDbRating]);
 
   // Fetch filtered table data based on category
@@ -165,7 +163,6 @@ const TempHome: FC<CrmProps> = () => {
 
   // Total number of pages for pagination
   const totalChartPages = getTotalBarChartPages(
-    //Data.sortedMoviesAndSeriesByIMDbRating?.[0]?.movies.length,
     Data.sortedMoviesAndSeriesByIMDbRating.length,
     pageSize
   );
@@ -175,7 +172,6 @@ const TempHome: FC<CrmProps> = () => {
       "prev",
       currentChartPage,
       pageSize,
-      //Data.sortedMoviesAndSeriesByIMDbRating?.[0]?.movies.length,
       Data.sortedMoviesAndSeriesByIMDbRating.length,
       setCurrentChartPage
     );
@@ -186,7 +182,6 @@ const TempHome: FC<CrmProps> = () => {
       "next",
       currentChartPage,
       pageSize,
-      //Data.sortedMoviesAndSeriesByIMDbRating?.[0]?.movies.length,
       Data.sortedMoviesAndSeriesByIMDbRating.length,
       setCurrentChartPage
     );
