@@ -766,12 +766,12 @@ const getSortedDirectorsByProsperity = (callback) => {
     if (err) return callback(err);
 
     const weights = {
-      total_wins: 0.25,
+      total_wins: 0.3,
       total_nominations: 0.25,
       total_box_office: 0.15,
       avg_metascore: 0.1,
       avg_imdb_rating: 0.1,
-      avg_rotten_tomatoes: 0.15
+      avg_rotten_tomatoes: 0.1
     };
 
     const maxBoxOffice = Math.max(
@@ -933,12 +933,12 @@ const getSortedActorsByProsperity = (callback) => {
 
     // Calculate prosperity scores
     const weights = {
-      total_wins: 0.25,
+      total_wins: 0.3,
       total_nominations: 0.25,
       total_box_office: 0.15,
       avg_metascore: 0.1,
       avg_imdb_rating: 0.1,
-      avg_rotten_tomatoes: 0.15
+      avg_rotten_tomatoes: 0.1
     };
 
     // Find maximum box office value to normalize
@@ -1109,12 +1109,12 @@ const getSortedWritersByProsperity = (callback) => {
 
     // Calculate prosperity scores
     const weights = {
-      total_wins: 0.25,
+      total_wins: 0.3,
       total_nominations: 0.25,
       total_box_office: 0.15,
       avg_metascore: 0.1,
       avg_imdb_rating: 0.1,
-      avg_rotten_tomatoes: 0.15
+      avg_rotten_tomatoes: 0.1
     };
 
     // Find maximum box office value to normalize
@@ -1298,12 +1298,12 @@ const getSortedMoviesByProsperity = (callback) => {
 
     // Calculate prosperity scores
     const weights = {
-      total_wins: 0.25,
+      total_wins: 0.3,
       total_nominations: 0.25,
       total_box_office: 0.15,
       avg_metascore: 0.1,
       avg_imdb_rating: 0.1,
-      avg_rotten_tomatoes: 0.15
+      avg_rotten_tomatoes: 0.1
     };
 
     // Find maximum box office value to normalize
