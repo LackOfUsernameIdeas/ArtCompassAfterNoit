@@ -2,27 +2,16 @@ import { FC, Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   GenrePopularityOverTime,
-  Dealsstatistics,
-  generateData,
   Profitearned,
   BoxOfficeVsIMDBRating,
   MovieBarChart,
-  AwardsDonutChart,
-  AverageScoresStackedBarChart,
   CountryBarChart
 } from "./crmdata";
-import {
-  DataType,
-  FilteredTableData,
-  GenrePopularityData,
-  HeatmapData,
-  MovieData
-} from "../home-types";
+import { DataType, FilteredTableData } from "../home-types";
 import {
   fetchData,
   filterTableData,
   handleProsperityTableClick,
-  myFunction,
   isDirector,
   isActor,
   isWriter,
