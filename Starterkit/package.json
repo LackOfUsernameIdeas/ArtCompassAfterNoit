@@ -26,6 +26,7 @@
     "@simonwep/pickr": "^1.9.0",
     "@tailwindcss/forms": "^0.5.7",
     "apexcharts": "^3.45.2",
+    "chroma-js": "^3.1.2",
     "dotenv": "^16.4.5",
     "email-validator": "^2.0.4",
     "firebase": "^10.7.2",
@@ -49,6 +50,7 @@
     "tailwind-clip-path": "^1.0.0"
   },
   "devDependencies": {
+    "@types/chroma-js": "^2.4.4",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
     "@typescript-eslint/eslint-plugin": "^6.19.0",

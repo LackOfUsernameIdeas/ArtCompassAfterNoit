@@ -88,18 +88,24 @@ export const paginateData = (
   );
 };
 
-const sortByRating = (seriesData: MovieData[]): MovieData[] => {
-  return seriesData.sort((a, b) => b.imdbRating - a.imdbRating);
+const sortByCategory = (
+  seriesData: MovieData[],
+  category: string
+): MovieData[] => {
+  return category === "IMDb"
+    ? seriesData.sort((a, b) => b.imdbRating - a.imdbRating)
+    : seriesData.sort((a, b) => b.metascore - a.metascore);
 };
 
 // Function to paginate data for the bar chart after sorting by rating
 export const paginateBarChartData = (
   seriesData: MovieData[],
   currentPage: number,
-  pageSize: number
+  pageSize: number,
+  category: string
 ): MovieData[] => {
   // First, sort the data by IMDb rating
-  const sortedData = sortByRating(seriesData);
+  const sortedData = sortByCategory(seriesData, category);
 
   // Now paginate the sorted data
   const start = (currentPage - 1) * pageSize;
@@ -137,7 +143,7 @@ export const getTotalBarChartPages = (
   return Math.ceil(totalItems / pageSize);
 };
 
-export const handleDropdownClick = (
+export const handleDropdownClickAwards = (
   setDisplayedNameAwards: React.Dispatch<React.SetStateAction<string>>,
   setDisplayedValueAwards: React.Dispatch<React.SetStateAction<number>>,
   name: string,
@@ -147,6 +153,16 @@ export const handleDropdownClick = (
   setDisplayedValueAwards(value);
 };
 
+export const handleDropdownClickAverages = (
+  setDisplayedNameAverages: React.Dispatch<React.SetStateAction<string>>,
+  setDisplayedValueAverages: React.Dispatch<React.SetStateAction<number>>,
+  name: string,
+  value: number
+) => {
+  setDisplayedNameAverages(name);
+  setDisplayedValueAverages(value);
+};
+
 export const handleProsperityTableClick = (
   category: string,
   setProsperitySortCategory: React.Dispatch<React.SetStateAction<string>>
@@ -154,6 +170,12 @@ export const handleProsperityTableClick = (
   setProsperitySortCategory(category);
 };
 
+export const handleMoviesAndSeriesSortCategory = (
+  category: string,
+  setMoviesAndSeriesSortCategory: React.Dispatch<React.SetStateAction<string>>
+) => {
+  setMoviesAndSeriesSortCategory(category);
+};
 // Filter data based on name matching
 export const myFunction = (
   idx: string,
@@ -206,6 +228,7 @@ export const generateScatterSeriesData = (
   return movies.map((movie) => {
     // Parse IMDb rating
     const imdbRating = parseFloat(movie.imdbRating);
+    const metascore = parseFloat(movie.metascore);
 
     // Clean the box office string and parse it as a number
     const boxOffice = parseInt(
@@ -217,7 +240,8 @@ export const generateScatterSeriesData = (
       title_bg: movie.title_bg,
       title_en: movie.title_en,
       boxOffice: boxOffice,
-      imdbRating: imdbRating
+      imdbRating: imdbRating,
+      metascore: metascore
     };
   });
 };

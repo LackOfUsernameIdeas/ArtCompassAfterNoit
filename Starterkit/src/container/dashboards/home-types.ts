@@ -53,6 +53,8 @@ export interface MovieData {
   title: string;
   boxOffice: number | string;
   imdbRating: number;
+  metascore: number;
+  type?: "movie" | "series";
   title_bg: string;
 }
 

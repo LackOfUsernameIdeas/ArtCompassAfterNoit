@@ -1041,7 +1041,7 @@ export class BoxOfficeVsIMDBRating extends Component<
         grid: {
           borderColor: "#f2f5f7"
         },
-        colors: ["#845adf"],
+        colors: ["#d01616"],
         xaxis: {
           title: {
             text: "Box Office Revenue (in Millions)"
@@ -1139,42 +1139,50 @@ export class BoxOfficeVsIMDBRating extends Component<
 }
 
 export class MovieBarChart extends Component<
-  { seriesData: MovieData[] },
+  { seriesData: MovieData[]; category: string },
   State
 > {
-  constructor(props: { seriesData: MovieData[] }) {
+  constructor(props: { seriesData: MovieData[]; category: string }) {
     super(props);
-    // Initialize the state with proper types
     this.state = {
       series: [],
       options: {
         chart: { type: "bar", height: 320 },
         plotOptions: { bar: { borderRadius: 4, horizontal: true } },
-        colors: ["#845adf"],
         grid: { borderColor: "#f2f5f7" },
         dataLabels: { enabled: false },
-        xaxis: { title: { text: "IMDb Rating" }, categories: [] },
-        yaxis: { title: { text: "Movie" } }
+        xaxis: {
+          title: {
+            text: props.category === "IMDb" ? "IMDb рейтинг" : "Метаскор"
+          },
+          categories: []
+        },
+        yaxis: { title: { text: "Заглавие" } }
       }
     };
   }
 
   static getDerivedStateFromProps(
-    nextProps: { seriesData: MovieData[] },
+    nextProps: { seriesData: MovieData[]; category: string },
     prevState: State
   ) {
-    // Ensure seriesData is not empty and is an array
     if (nextProps.seriesData && nextProps.seriesData.length > 0) {
-      // Sort by imdbRating (no need to parseFloat, it's already a number)
-      const sortedMovies = nextProps.seriesData.sort(
-        (a, b) => b.imdbRating - a.imdbRating
-      );
+      // Sort data by IMDb Rating
+      const sortCategory = nextProps.category;
+      const sortedMovies =
+        sortCategory === "IMDb"
+          ? nextProps.seriesData.sort((a, b) => b.imdbRating - a.imdbRating)
+          : nextProps.seriesData.sort((a, b) => b.metascore - a.metascore);
 
       return {
         series: [
           {
-            name: "IMDb Rating",
-            data: sortedMovies.map((movie) => movie.imdbRating) // Directly use imdbRating as it's already a number
+            name: sortCategory === "IMDb" ? "IMDb рейтинг" : "Метаскор",
+            data: sortedMovies.map((movie) => ({
+              x: movie.title_bg,
+              y: sortCategory === "IMDb" ? movie.imdbRating : movie.metascore,
+              fillColor: movie.type === "movie" ? "#d01616" : "#f28a8a"
+            }))
           }
         ],
         options: {
@@ -1193,6 +1201,23 @@ export class MovieBarChart extends Component<
   render() {
     return (
       <div>
+        <div className="flex justify-center items-center">
+          <div className="flex items-center mr-4">
+            <span
+              className="w-3 h-3 mr-1 rounded-full inline-block"
+              style={{ backgroundColor: "#d01616" }}
+            ></span>
+            <span>Филм</span>
+          </div>
+          <div className="flex items-center">
+            <span
+              className="w-3 h-3 mr-1 rounded-full inline-block"
+              style={{ backgroundColor: "#f28a8a" }}
+            ></span>
+            <span>Сериал</span>
+          </div>
+        </div>
+
         {this.state.series && this.state.series.length > 0 ? (
           <ReactApexChart
             options={this.state.options}

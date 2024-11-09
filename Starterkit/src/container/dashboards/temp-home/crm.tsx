@@ -21,7 +21,6 @@ import {
 import {
   fetchData,
   filterTableData,
-  handleDropdownClick,
   handleProsperityTableClick,
   myFunction,
   isDirector,
@@ -31,7 +30,10 @@ import {
   generateScatterSeriesData,
   paginateBarChartData,
   getTotalBarChartPages,
-  handleBarChartPageChange
+  handleBarChartPageChange,
+  handleDropdownClickAverages,
+  handleDropdownClickAwards,
+  handleMoviesAndSeriesSortCategory
 } from "../helper_functions";
 import face10 from "../../../assets/images/faces/10.jpg";
 import face12 from "../../../assets/images/faces/12.jpg";
@@ -63,6 +65,10 @@ const TempHome: FC<CrmProps> = () => {
 
   const [displayedNameAwards, setDisplayedNameAwards] =
     useState("Total Award Wins");
+  const [displayedValueAverages, setDisplayedValueAverages] =
+    useState<number>(0);
+  const [displayedNameAverages, setDisplayedNameAverages] =
+    useState("Average Box Office");
   const [displayedValueAwards, setDisplayedValueAwards] = useState<number>(0);
   // Table data filtering and pagination
   const [filteredTableData, setFilteredTableData] = useState<FilteredTableData>(
@@ -81,6 +87,8 @@ const TempHome: FC<CrmProps> = () => {
   const [prosperitySortCategory, setProsperitySortCategory] =
     useState("Directors");
 
+  const [moviesAndSeriesSortCategory, setMoviesAndSeriesSortCategory] =
+    useState("IMDb");
   // User data state
   const [userData, setUserData] = useState({
     id: 0,
@@ -109,21 +117,32 @@ const TempHome: FC<CrmProps> = () => {
   }, [prosperitySortCategory]);
 
   useEffect(() => {
-    console.log("Data: ", Data);
-    if (Data.totalAwards.length > 0) {
+    if (
+      Data.totalAwards.length > 0 &&
+      Data.averageBoxOfficeAndScores.length > 0
+    ) {
       setDisplayedValueAwards(Data.totalAwards[0].total_awards_wins);
+      setDisplayedValueAverages(
+        Data.averageBoxOfficeAndScores[0].average_box_office
+      );
     }
   }, [Data]);
 
+  // Updated useEffect to sort data based on selected category
   useEffect(() => {
+    const sortedData =
+      moviesAndSeriesSortCategory === "IMDb"
+        ? Data.sortedMoviesAndSeriesByIMDbRating
+        : Data.sortedMoviesAndSeriesByMetascore;
+
     const paginatedData = paginateBarChartData(
-      Data.sortedMoviesAndSeriesByIMDbRating,
+      sortedData,
       currentChartPage,
-      pageSize
+      pageSize,
+      moviesAndSeriesSortCategory
     );
     setSeriesDataForMovieBarChart(paginatedData);
-    console.log("paginatedData: ", paginatedData);
-  }, [currentChartPage, Data.sortedMoviesAndSeriesByIMDbRating]);
+  }, [currentChartPage, moviesAndSeriesSortCategory, Data]);
 
   // Fetch filtered table data based on category
   useEffect(() => {
@@ -163,6 +182,24 @@ const TempHome: FC<CrmProps> = () => {
     }
   ];
 
+  const averagesOptions = [
+    {
+      label: "Average Box Office",
+      value: Data.averageBoxOfficeAndScores?.[0]?.average_box_office || 0
+    },
+    {
+      label: "Average Metascore",
+      value: Data.averageBoxOfficeAndScores?.[0]?.average_metascore || 0
+    },
+    {
+      label: "Average IMDb Rating",
+      value: Data.averageBoxOfficeAndScores?.[0]?.average_imdb_rating || 0
+    },
+    {
+      label: "Average Rotten Tomatoes",
+      value: Data.averageBoxOfficeAndScores?.[0]?.average_rotten_tomatoes || 0
+    }
+  ];
   // Total number of pages for pagination
   const totalChartPages = getTotalBarChartPages(
     Data.sortedMoviesAndSeriesByIMDbRating.length,
@@ -202,13 +239,21 @@ const TempHome: FC<CrmProps> = () => {
     }
   };
 
-  const categoryDisplayNames: Record<
+  const tableCategoryDisplayNames: Record<
     "Directors" | "Actors" | "Writers",
     string
   > = {
     Directors: "Режисьори",
     Actors: "Актьори",
     Writers: "Сценаристи"
+  };
+
+  const moviesAndSeriesCategoryDisplayNames: Record<
+    "IMDb" | "Metascore",
+    string
+  > = {
+    IMDb: "IMDb рейтинг",
+    Metascore: "Метаскор"
   };
 
   console.log("seriesDataForScatterChart: ", seriesDataForScatterChart);
@@ -281,7 +326,7 @@ const TempHome: FC<CrmProps> = () => {
                                   <li key={label}>
                                     <Link
                                       onClick={() =>
-                                        handleDropdownClick(
+                                        handleDropdownClickAwards(
                                           setDisplayedNameAwards,
                                           setDisplayedValueAwards,
                                           label,
@@ -322,12 +367,51 @@ const TempHome: FC<CrmProps> = () => {
                     <div className="box-body">
                       <div className="flex flex-wrap items-start justify-between">
                         <div className="flex-grow">
-                          <p className="mb-0 text-[#8c9097] dark:text-white/50">
-                            Most Recommended
-                          </p>
+                          <div className="flex flex-wrap items-start">
+                            <p className="mb-0 text-[#8c9097] dark:text-white/50">
+                              {displayedNameAverages}
+                            </p>
+                            <div className="hs-dropdown ti-dropdown">
+                              <Link
+                                to="#"
+                                className="text-[0.75rem] px-2 font-normal text-primary"
+                                aria-expanded="false"
+                              >
+                                View All
+                                <i className="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
+                              </Link>
+                              <ul
+                                className="hs-dropdown-menu ti-dropdown-menu hidden"
+                                role="menu"
+                              >
+                                {averagesOptions.map(({ label, value }) => (
+                                  <li key={label}>
+                                    <Link
+                                      onClick={() =>
+                                        handleDropdownClickAverages(
+                                          setDisplayedNameAverages,
+                                          setDisplayedValueAverages,
+                                          label,
+                                          value
+                                        )
+                                      }
+                                      className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
+                                      to="#"
+                                    >
+                                      {label}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
                           <div className="flex items-center">
                             <span className="text-[1.25rem] font-semibold">
-                              {Data.topRecommendations[0]?.title_bg}
+                              {displayedValueAverages}
+                            </span>
+                            <span className="text-[0.75rem] text-success ms-2">
+                              <i className="ti ti-trending-up me-1 inline-block"></i>
+                              0.42%
                             </span>
                           </div>
                         </div>
@@ -348,8 +432,8 @@ const TempHome: FC<CrmProps> = () => {
               <div className="box-header justify-between">
                 <div className="box-title">
                   {
-                    categoryDisplayNames[
-                      prosperitySortCategory as keyof typeof categoryDisplayNames
+                    tableCategoryDisplayNames[
+                      prosperitySortCategory as keyof typeof tableCategoryDisplayNames
                     ]
                   }{" "}
                   по просперитет
@@ -384,8 +468,8 @@ const TempHome: FC<CrmProps> = () => {
                           }
                         >
                           {
-                            categoryDisplayNames[
-                              category as keyof typeof categoryDisplayNames
+                            tableCategoryDisplayNames[
+                              category as keyof typeof tableCategoryDisplayNames
                             ]
                           }
                         </button>
@@ -410,8 +494,8 @@ const TempHome: FC<CrmProps> = () => {
                         </th>
                         <th scope="col" className="!text-start !text-[0.85rem]">
                           {
-                            categoryDisplayNames[
-                              prosperitySortCategory as keyof typeof categoryDisplayNames
+                            tableCategoryDisplayNames[
+                              prosperitySortCategory as keyof typeof tableCategoryDisplayNames
                             ]
                           }
                         </th>
@@ -619,15 +703,63 @@ const TempHome: FC<CrmProps> = () => {
           </div>
           <div className="xl:col-span-6 col-span-12">
             <div className="box custom-box">
-              <div className="box-header">
+              <div className="box-header justify-between">
                 <div className="box-title">
-                  Movies and Series by IMDb Rating
+                  Филми{" "}
+                  {!(moviesAndSeriesSortCategory === "Metascore") &&
+                    "и сериали"}{" "}
+                  по{" "}
+                  {
+                    moviesAndSeriesCategoryDisplayNames[
+                      moviesAndSeriesSortCategory as keyof typeof moviesAndSeriesCategoryDisplayNames
+                    ]
+                  }
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <div
+                    className="inline-flex rounded-md shadow-sm"
+                    role="group"
+                    aria-label="Sort By"
+                  >
+                    {["IMDb", "Metascore"].map((category, index) => (
+                      <button
+                        key={category}
+                        type="button"
+                        className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
+                          category === moviesAndSeriesSortCategory
+                            ? "ti-btn-primary-full text-white"
+                            : "text-[#CC3333] bg-[#be1313] bg-opacity-10"
+                        } ${
+                          index === 0
+                            ? "rounded-l-md"
+                            : index === 2
+                            ? "rounded-r-md"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          handleMoviesAndSeriesSortCategory(
+                            category,
+                            setMoviesAndSeriesSortCategory
+                          )
+                        }
+                      >
+                        {
+                          moviesAndSeriesCategoryDisplayNames[
+                            category as keyof typeof moviesAndSeriesCategoryDisplayNames
+                          ]
+                        }
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
               <div className="box-body">
                 <div id="bar-basic">
                   {/* Pass only the paginated data to MovieBarChart */}
-                  <MovieBarChart seriesData={seriesDataForMovieBarChart} />
+                  <MovieBarChart
+                    seriesData={seriesDataForMovieBarChart}
+                    category={moviesAndSeriesSortCategory}
+                  />
                 </div>
               </div>
               <div className="box-footer">
@@ -689,20 +821,6 @@ const TempHome: FC<CrmProps> = () => {
                       </ul>
                     </nav>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="xl:col-span-6 col-span-12">
-            <div className="box custom-box">
-              <div className="box-header">
-                <div className="box-title">Stacked Bar Chart</div>
-              </div>
-              <div className="box-body">
-                <div id="bar-stacked">
-                  <AverageScoresStackedBarChart
-                    averageBoxOfficeAndScores={Data?.averageBoxOfficeAndScores}
-                  />
                 </div>
               </div>
             </div>
