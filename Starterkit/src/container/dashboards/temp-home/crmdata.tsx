@@ -1,6 +1,7 @@
 import { Component, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
+import chroma from "chroma-js";
 import face4 from "../../../assets/images/faces/4.jpg";
 import face15 from "../../../assets/images/faces/15.jpg";
 import face11 from "../../../assets/images/faces/11.jpg";
@@ -862,27 +863,51 @@ export class GenrePopularityOverTime extends Component<
               ranges: [
                 {
                   from: -30,
-                  to: 5,
+                  to: 1,
+                  name: "много нисък брой",
+                  color: "#f28a8a"
+                },
+                {
+                  from: 2,
+                  to: 3,
                   name: "малък брой",
-                  color: "#845adf"
+                  color: "#e05656"
+                },
+                {
+                  from: 4,
+                  to: 5,
+                  name: "нисък до умерен брой",
+                  color: "#d83838"
                 },
                 {
                   from: 6,
+                  to: 10,
+                  name: "умерен брой",
+                  color: "#d01616"
+                },
+                {
+                  from: 11,
+                  to: 15,
+                  name: "умерен до среден брой",
+                  color: "#b81414"
+                },
+                {
+                  from: 16,
                   to: 20,
                   name: "среден брой",
-                  color: "#23b7e5"
+                  color: "#a11212"
                 },
                 {
                   from: 21,
                   to: 45,
                   name: "висок брой",
-                  color: "#f5b849"
+                  color: "#8a0f0f"
                 },
                 {
                   from: 46,
                   to: 55,
                   name: "много висок брой",
-                  color: "#FF5733"
+                  color: "#730d0d"
                 }
               ]
             }
@@ -1335,14 +1360,23 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
     0
   );
 
-  const barColors = [
-    "bg-primary",
-    "bg-info",
-    "bg-warning",
-    "bg-success",
-    "bg-secondary",
-    "bg-danger"
-  ];
+  // Generate a color scale based on the number of countries
+  const colorScale = chroma
+    .scale([
+      "#FF0000",
+      "#FF6347",
+      "#FF4500",
+      "#FF1493",
+      "#FF69B4",
+      "#FF8C00",
+      "#DC143C",
+      "#B22222",
+      "#8B0000"
+    ])
+    .mode("lab")
+    .domain([0, topCountries.length - 1])
+    .colors(topCountries.length)
+    .map((color) => chroma(color).darken(0.3).hex());
 
   // Pagination state
   const itemsPerPage = 5;
@@ -1354,32 +1388,18 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
 
   const totalPages = Math.ceil(topCountries.length / itemsPerPage);
 
-  // Handle previous page
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  // Handle next page
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
   return (
     <div>
       <div className="flex w-full h-[0.3125rem] mb-6 rounded-full overflow-hidden">
         {topCountries.map((country, index) => {
           const widthPercentage = (country.count / totalCount) * 100;
-          const bgColorClass = barColors[index % barColors.length];
+          const color = colorScale[index]; // Get the color for each country
 
           return (
             <div
               key={country.country}
-              className={`flex flex-col justify-center overflow-hidden ${bgColorClass}`}
-              style={{ width: `${widthPercentage}%` }}
+              className="flex flex-col justify-center overflow-hidden"
+              style={{ width: `${widthPercentage}%`, backgroundColor: color }}
               aria-valuenow={widthPercentage}
               aria-valuemin={0}
               aria-valuemax={100}
@@ -1389,10 +1409,16 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
         })}
       </div>
 
+      {/* Total Count */}
+      <div className="mb-4 text-sm text-gray-500">
+        <strong>Общ брой на препоръки:</strong> {totalCount}
+      </div>
+
       {/* External Legend */}
-      <ul className="list-none mb-0 pt-2 crm-deals-status flex flex-col">
+      <ul className="list-none mb-6 pt-2 crm-deals-status flex flex-col">
         {currentCountries.map((country, index) => {
-          const bgColorClass = barColors[index % barColors.length];
+          const color =
+            currentPage === 1 ? colorScale[index] : colorScale[index + 5]; // Get the color for each country (based on current page)
 
           return (
             <li
@@ -1400,10 +1426,13 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
               className="flex items-center text-sm mb-2"
             >
               <div
-                className={`w-3 h-3 rounded-full ${bgColorClass}`}
+                className="w-3 h-3 rounded-full"
+                style={{ backgroundColor: color }} // Set the correct color for the dots
                 aria-label={country.country}
               ></div>
-              <span className="ml-2">{country.country}</span>
+              <span className="ml-2">
+                {country.country}: {country.count} пъти
+              </span>
             </li>
           );
         })}
@@ -1413,14 +1442,6 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
         <div className="flex justify-center">
           <nav aria-label="Page navigation" className="pagination-style-4">
             <ul className="ti-pagination mb-0">
-              <li
-                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
-              >
-                <Link className="page-link" to="#" onClick={handlePrevPage}>
-                  Prev
-                </Link>
-              </li>
-
               {[...Array(totalPages)].map((_, index) => (
                 <li
                   key={index}
@@ -1437,16 +1458,6 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
                   </Link>
                 </li>
               ))}
-
-              <li
-                className={`page-item ${
-                  currentPage === totalPages ? "disabled" : ""
-                }`}
-              >
-                <Link className="page-link" to="#" onClick={handleNextPage}>
-                  Next
-                </Link>
-              </li>
             </ul>
           </nav>
         </div>
