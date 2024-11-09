@@ -66,7 +66,7 @@ const TempHome: FC<CrmProps> = () => {
   const [filteredTableData, setFilteredTableData] = useState<FilteredTableData>(
     []
   );
-  const pageSize = 6; // Number of entries per page for the chart
+  const pageSize = 5; // Number of entries per page for the chart
   const [currentChartPage, setCurrentChartPage] = useState(1); // Current page for the chart
   const [seriesDataForMovieBarChart, setSeriesDataForMovieBarChart] = useState<
     any[]
