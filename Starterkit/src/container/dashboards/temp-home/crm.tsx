@@ -422,7 +422,7 @@ const TempHome: FC<CrmProps> = () => {
                           IMDB рейтинг
                         </th>
                         <th scope="col" className="!text-start !text-[0.85rem]">
-                          Бокс офис
+                          Боксофис
                         </th>
                         <th scope="col" className="!text-start !text-[0.85rem]">
                           Брой филми
