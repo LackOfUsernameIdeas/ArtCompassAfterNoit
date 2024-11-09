@@ -79,7 +79,7 @@ const TempHome: FC<CrmProps> = () => {
     []
   );
   const [prosperitySortCategory, setProsperitySortCategory] =
-    useState("Режисьори");
+    useState("Directors");
 
   // User data state
   const [userData, setUserData] = useState({
@@ -202,7 +202,14 @@ const TempHome: FC<CrmProps> = () => {
     }
   };
 
-  const categories = ["Режисьори", "Актьори", "Сценаристи"];
+  const categoryDisplayNames: Record<
+    "Directors" | "Actors" | "Writers",
+    string
+  > = {
+    Directors: "Режисьори",
+    Actors: "Актьори",
+    Writers: "Сценаристи"
+  };
 
   console.log("seriesDataForScatterChart: ", seriesDataForScatterChart);
   return (
@@ -340,7 +347,12 @@ const TempHome: FC<CrmProps> = () => {
             <div className="box custom-card">
               <div className="box-header justify-between">
                 <div className="box-title">
-                  {prosperitySortCategory} по просперитет
+                  {
+                    categoryDisplayNames[
+                      prosperitySortCategory as keyof typeof categoryDisplayNames
+                    ]
+                  }{" "}
+                  по просперитет
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <div
@@ -348,31 +360,37 @@ const TempHome: FC<CrmProps> = () => {
                     role="group"
                     aria-label="Sort By"
                   >
-                    {categories.map((category, index) => (
-                      <button
-                        key={category}
-                        type="button"
-                        className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
-                          category === prosperitySortCategory
-                            ? "ti-btn-primary-full text-white"
-                            : "text-[#CC3333] bg-[#be1313] bg-opacity-10"
-                        } ${
-                          index === 0
-                            ? "rounded-l-md"
-                            : index === 2
-                            ? "rounded-r-md"
-                            : ""
-                        }`}
-                        onClick={() =>
-                          handleProsperityTableClick(
-                            category,
-                            setProsperitySortCategory
-                          )
-                        }
-                      >
-                        {category}
-                      </button>
-                    ))}
+                    {["Directors", "Actors", "Writers"].map(
+                      (category, index) => (
+                        <button
+                          key={category}
+                          type="button"
+                          className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
+                            category === prosperitySortCategory
+                              ? "ti-btn-primary-full text-white"
+                              : "text-[#CC3333] bg-[#be1313] bg-opacity-10"
+                          } ${
+                            index === 0
+                              ? "rounded-l-md"
+                              : index === 2
+                              ? "rounded-r-md"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            handleProsperityTableClick(
+                              category,
+                              setProsperitySortCategory
+                            )
+                          }
+                        >
+                          {
+                            categoryDisplayNames[
+                              category as keyof typeof categoryDisplayNames
+                            ]
+                          }
+                        </button>
+                      )
+                    )}
                   </div>
                 </div>
               </div>
@@ -391,7 +409,11 @@ const TempHome: FC<CrmProps> = () => {
                           #
                         </th>
                         <th scope="col" className="!text-start !text-[0.85rem]">
-                          {prosperitySortCategory}
+                          {
+                            categoryDisplayNames[
+                              prosperitySortCategory as keyof typeof categoryDisplayNames
+                            ]
+                          }
                         </th>
                         <th scope="col" className="!text-start !text-[0.85rem]">
                           Просперитетен рейтинг
