@@ -469,7 +469,7 @@ app.get("/stats/platform/average-scores", (req, res) => {
 
 // Вземане на данни за най-препоръчвани филми/сериали в платформата
 app.get("/stats/platform/top-recommendations", (req, res) => {
-  const limit = 10;
+  const limit = parseInt(req.query.limit) || 10;
 
   db.getTopRecommendations(limit, (err, results) => {
     if (err) {
@@ -483,7 +483,7 @@ app.get("/stats/platform/top-recommendations", (req, res) => {
 
 // Вземане на данни за най-препоръчвани държави, които създават филми/сериали в платформата
 app.get("/stats/platform/top-countries", async (req, res) => {
-  const limit = 10;
+  const limit = parseInt(req.query.limit) || 10;
 
   db.getTopCountries(limit, (err, results) => {
     if (err) {
@@ -495,7 +495,7 @@ app.get("/stats/platform/top-countries", async (req, res) => {
 
 // Вземане на данни за най-препоръчвани жанрове в платформата
 app.get("/stats/platform/top-genres", async (req, res) => {
-  const limit = 10;
+  const limit = parseInt(req.query.limit) || 10;
 
   db.getTopGenres(limit, (err, results) => {
     if (err) {
@@ -519,7 +519,7 @@ app.get("/stats/platform/genre-popularity-over-time", async (req, res) => {
 
 // Вземане на данни за най-препоръчвани актьори в платформата
 app.get("/stats/platform/top-actors", async (req, res) => {
-  const limit = 10;
+  const limit = parseInt(req.query.limit) || 10;
 
   db.getTopActors(limit, (err, results) => {
     if (err) {
@@ -531,7 +531,7 @@ app.get("/stats/platform/top-actors", async (req, res) => {
 
 // Вземане на данни за най-препоръчвани филмови режисьори в платформата
 app.get("/stats/platform/top-directors", async (req, res) => {
-  const limit = 10;
+  const limit = parseInt(req.query.limit) || 10;
 
   db.getTopDirectors(limit, (err, results) => {
     if (err) {
@@ -543,7 +543,7 @@ app.get("/stats/platform/top-directors", async (req, res) => {
 
 // Вземане на данни за най-препоръчвани сценаристи в платформата
 app.get("/stats/platform/top-writers", async (req, res) => {
-  const limit = 10;
+  const limit = parseInt(req.query.limit) || 10;
 
   db.getTopWriters(limit, (err, results) => {
     if (err) {
@@ -629,7 +629,7 @@ app.get("/stats/platform/sorted-movies-by-prosperity", async (req, res) => {
 app.get(
   "/stats/platform/sorted-movies-and-series-by-metascore",
   async (req, res) => {
-    const limit = 10;
+    const limit = parseInt(req.query.limit) || 10;
 
     db.getTopMoviesAndSeriesByMetascore(limit, (err, results) => {
       if (err) {
@@ -646,7 +646,7 @@ app.get(
 app.get(
   "/stats/platform/sorted-movies-and-series-by-imdb-rating",
   async (req, res) => {
-    const limit = 10;
+    const limit = parseInt(req.query.limit) || 10;
 
     db.getTopMoviesAndSeriesByIMDbRating(limit, (err, results) => {
       if (err) {
@@ -686,7 +686,7 @@ app.get("/stats/platform/all", async (req, res) => {
         const user = results[0];
 
         // User is authenticated, now fetch platform statistics
-        const limit = 10;
+        const limit = parseInt(req.query.limit) || 10;
 
         // Run all queries in parallel
         Promise.all([
