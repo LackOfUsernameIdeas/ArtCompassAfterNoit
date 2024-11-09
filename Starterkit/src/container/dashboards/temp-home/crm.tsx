@@ -7,7 +7,9 @@ import {
   Profitearned,
   BoxOfficeVsIMDBRating,
   MovieBarChart,
-  AwardsDonutChart
+  AwardsDonutChart,
+  AverageScoresStackedBarChart,
+  CountryBarChart
 } from "./crmdata";
 import {
   DataType,
@@ -586,7 +588,7 @@ const TempHome: FC<CrmProps> = () => {
             <div className="box custom-box">
               <div className="box-header">
                 <div className="box-title">
-                  Movies and series by IMDb Rating
+                  Movies and Series by IMDb Rating
                 </div>
               </div>
               <div className="box-body">
@@ -654,6 +656,20 @@ const TempHome: FC<CrmProps> = () => {
                       </ul>
                     </nav>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="xl:col-span-6 col-span-12">
+            <div className="box custom-box">
+              <div className="box-header">
+                <div className="box-title">Stacked Bar Chart</div>
+              </div>
+              <div className="box-body">
+                <div id="bar-stacked">
+                  <AverageScoresStackedBarChart
+                    averageBoxOfficeAndScores={Data?.averageBoxOfficeAndScores}
+                  />
                 </div>
               </div>
             </div>
@@ -1080,11 +1096,18 @@ const TempHome: FC<CrmProps> = () => {
                 </div>
                 <div className="box-body">
                   <div className="flex items-center mb-[0.8rem]">
-                    <h4 className="font-bold mb-0 text-[1.5rem] ">4,289</h4>
+                    {/* Dynamically calculate total movies (x) and distinct countries (y) */}
+                    <h4 className="font-bold mb-0 text-[1.5rem]">
+                      {Data?.topCountries?.reduce(
+                        (total, country) => total + country.count,
+                        0
+                      ) || 0}{" "}
+                      movies
+                    </h4>
                     <div className="ms-2">
                       <span className="py-[0.18rem] px-[0.45rem] rounded-sm text-success !font-medium !text-[0.75em] bg-success/10">
                         1.02
-                        <i className="ri-arrow-up-s-fill align-mmiddle ms-1"></i>
+                        <i className="ri-arrow-up-s-fill align-middle ms-1"></i>
                       </span>
                       <span className="text-[#8c9097] dark:text-white/50 text-[0.813rem] ms-1">
                         compared to last week
@@ -1092,70 +1115,11 @@ const TempHome: FC<CrmProps> = () => {
                     </div>
                   </div>
 
-                  <div className="flex w-full h-[0.3125rem] mb-6 rounded-full overflow-hidden">
-                    <div
-                      className="flex flex-col justify-center rounded-s-[0.625rem] overflow-hidden bg-primary w-[21%]"
-                      style={{ width: "21%" }}
-                      aria-valuenow={21}
-                      aria-valuemin={0}
-                      aria-valuemax={100}
-                    ></div>
-                    <div
-                      className="flex flex-col justify-center rounded-none overflow-hidden bg-info w-[26%]"
-                      style={{ width: "26%" }}
-                      aria-valuenow={26}
-                      aria-valuemin={0}
-                      aria-valuemax={100}
-                    ></div>
-                    <div
-                      className="flex flex-col justify-center rounded-none overflow-hidden bg-warning w-[35%]"
-                      style={{ width: "35%" }}
-                      aria-valuenow={35}
-                      aria-valuemin={0}
-                      aria-valuemax={100}
-                    ></div>
-                    <div
-                      className="flex flex-col justify-center rounded-e-[0.625rem] overflow-hidden bg-success w-[18%]"
-                      style={{ width: "18%" }}
-                      aria-valuenow={18}
-                      aria-valuemin={0}
-                      aria-valuemax={100}
-                    ></div>
-                  </div>
-                  <ul className="list-none mb-0 pt-2 crm-deals-status">
-                    <li className="primary">
-                      <div className="flex items-center text-[0.813rem]  justify-between">
-                        <div>Successful Deals</div>
-                        <div className="text-[0.75rem] text-[#8c9097] dark:text-white/50">
-                          987 deals
-                        </div>
-                      </div>
-                    </li>
-                    <li className="info">
-                      <div className="flex items-center text-[0.813rem]  justify-between">
-                        <div>Pending Deals</div>
-                        <div className="text-[0.75rem] text-[#8c9097] dark:text-white/50">
-                          1,073 deals
-                        </div>
-                      </div>
-                    </li>
-                    <li className="warning">
-                      <div className="flex items-center text-[0.813rem]  justify-between">
-                        <div>Rejected Deals</div>
-                        <div className="text-[0.75rem] text-[#8c9097] dark:text-white/50">
-                          1,674 deals
-                        </div>
-                      </div>
-                    </li>
-                    <li className="success">
-                      <div className="flex items-center text-[0.813rem]  justify-between">
-                        <div>Upcoming Deals</div>
-                        <div className="text-[0.75rem] text-[#8c9097] dark:text-white/50">
-                          921 deals
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
+                  <p className="text-[#8c9097] dark:text-white/50 text-[1rem]">
+                    from {Data?.topCountries?.length || 0} countries
+                  </p>
+
+                  <CountryBarChart topCountries={Data?.topCountries} />
                 </div>
               </div>
             </div>

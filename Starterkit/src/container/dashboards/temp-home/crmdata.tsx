@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import face4 from "../../../assets/images/faces/4.jpg";
@@ -6,8 +6,13 @@ import face15 from "../../../assets/images/faces/15.jpg";
 import face11 from "../../../assets/images/faces/11.jpg";
 import face8 from "../../../assets/images/faces/8.jpg";
 import face9 from "../../../assets/images/faces/9.jpg";
-import { MovieData } from "../home-types";
+import {
+  AverageBoxOfficeAndScores,
+  CountryData,
+  MovieData
+} from "../home-types";
 import { parseBoxOffice } from "../helper_functions";
+import { Link } from "react-router-dom";
 
 //
 interface spark3 {
@@ -826,7 +831,7 @@ interface GenrePopularityOverTimeProps {
 
 interface State {
   options: any; // Keeps chart configuration options
-  series?: { name: string; data: number[][] }[]; // Optional series for flexibility
+  series?: { name: string; data: (number | null)[] }[]; // Optional series for flexibility
 }
 
 //color range
@@ -945,7 +950,7 @@ export class GenrePopularityOverTime extends Component<
               typeof movie.imdbRating === "string"
                 ? parseFloat(movie.imdbRating)
                 : movie.imdbRating, // Use as is if it's a number
-            name: movie.title_en // Movie title
+            name: movie.title_bg // Movie title
           }))
         }
       ];
@@ -1151,7 +1156,7 @@ export class MovieBarChart extends Component<
           ...prevState.options,
           xaxis: {
             ...prevState.options.xaxis,
-            categories: sortedMovies.map((movie) => movie.title_en)
+            categories: sortedMovies.map((movie) => movie.title_bg)
           }
         }
       };
@@ -1177,3 +1182,275 @@ export class MovieBarChart extends Component<
     );
   }
 }
+
+interface AverageScoresStackedBarChartProps {
+  averageBoxOfficeAndScores: AverageBoxOfficeAndScores[];
+}
+
+export class AverageScoresStackedBarChart extends Component<
+  AverageScoresStackedBarChartProps,
+  State
+> {
+  constructor(props: AverageScoresStackedBarChartProps) {
+    super(props);
+
+    this.state = {
+      series: [
+        { name: "Average Box Office", data: [null] },
+        { name: "Average Metascore", data: [null] },
+        { name: "Average IMDb Rating", data: [null] },
+        { name: "Average Rotten Tomatoes", data: [null] }
+      ],
+      options: {
+        chart: {
+          type: "bar",
+          height: 320,
+          stacked: true,
+          events: {
+            mounted: (chart: any) => {
+              chart.windowResizeHandler();
+            }
+          }
+        },
+        plotOptions: {
+          bar: {
+            horizontal: true
+          }
+        },
+        stroke: {
+          width: 1,
+          colors: ["#fff"]
+        },
+        colors: ["#845adf", "#23b7e5", "#f5b849", "#38bf94"],
+        grid: {
+          borderColor: "#f2f5f7"
+        },
+        xaxis: {
+          categories: ["Average Scores"],
+          labels: {
+            style: {
+              colors: "#8c9097",
+              fontSize: "11px",
+              fontWeight: 600,
+              cssClass: "apexcharts-xaxis-label"
+            }
+          }
+        },
+        yaxis: {
+          labels: {
+            style: {
+              colors: "#8c9097",
+              fontSize: "11px",
+              fontWeight: 600,
+              cssClass: "apexcharts-yaxis-label"
+            }
+          }
+        },
+        tooltip: {
+          y: {
+            formatter: function (val: number | null) {
+              return val !== null ? val.toString() : ""; // Display only non-null values
+            }
+          }
+        },
+        fill: {
+          opacity: 1
+        },
+        legend: {
+          position: "top",
+          horizontalAlign: "left",
+          offsetX: 40
+        }
+      }
+    };
+  }
+
+  static getDerivedStateFromProps(
+    nextProps: AverageScoresStackedBarChartProps,
+    prevState: State
+  ) {
+    if (
+      !nextProps.averageBoxOfficeAndScores ||
+      nextProps.averageBoxOfficeAndScores.length === 0
+    ) {
+      // If data is not yet available, return early to avoid unnecessary state updates
+      return null;
+    }
+
+    const boxOfficeData = nextProps.averageBoxOfficeAndScores[0];
+    const averageBoxOffice =
+      parseFloat(boxOfficeData.average_box_office.replace(/[^0-9.-]+/g, "")) /
+      1e6;
+    const averageMetascore = parseFloat(boxOfficeData.average_metascore);
+    const averageIMDbRating = parseFloat(boxOfficeData.average_imdb_rating);
+    const averageRottenTomatoes = parseFloat(
+      boxOfficeData.average_rotten_tomatoes.replace("%", "")
+    );
+
+    const updatedSeries = [
+      { name: "Average Box Office (Millions)", data: [averageBoxOffice] },
+      { name: "Average Metascore", data: [averageMetascore] },
+      { name: "Average IMDb Rating", data: [averageIMDbRating] },
+      { name: "Average Rotten Tomatoes (%)", data: [averageRottenTomatoes] }
+    ];
+
+    if (JSON.stringify(updatedSeries) !== JSON.stringify(prevState.series)) {
+      return { series: updatedSeries };
+    }
+    return null;
+  }
+
+  render() {
+    const { averageBoxOfficeAndScores } = this.props;
+
+    // Check if data has been fetched
+    if (!averageBoxOfficeAndScores || averageBoxOfficeAndScores.length === 0) {
+      return <div>Loading...</div>; // Show loading indicator until data is available
+    }
+
+    return (
+      <ReactApexChart
+        options={this.state.options}
+        series={this.state.series}
+        type="bar"
+        height={320}
+      />
+    );
+  }
+}
+
+interface CountryBarProps {
+  topCountries: CountryData[] | null; // Allow null until data is fetched
+}
+
+export const CountryBarChart: React.FC<CountryBarProps> = ({
+  topCountries
+}) => {
+  if (!topCountries) {
+    return <div>Loading...</div>;
+  }
+
+  const totalCount = topCountries.reduce(
+    (sum, country) => sum + country.count,
+    0
+  );
+
+  const barColors = [
+    "bg-primary",
+    "bg-info",
+    "bg-warning",
+    "bg-success",
+    "bg-secondary",
+    "bg-danger"
+  ];
+
+  // Pagination state
+  const itemsPerPage = 5;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentCountries = topCountries.slice(startIndex, endIndex);
+
+  const totalPages = Math.ceil(topCountries.length / itemsPerPage);
+
+  // Handle previous page
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  // Handle next page
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  return (
+    <div>
+      <div className="flex w-full h-[0.3125rem] mb-6 rounded-full overflow-hidden">
+        {topCountries.map((country, index) => {
+          const widthPercentage = (country.count / totalCount) * 100;
+          const bgColorClass = barColors[index % barColors.length];
+
+          return (
+            <div
+              key={country.country}
+              className={`flex flex-col justify-center overflow-hidden ${bgColorClass}`}
+              style={{ width: `${widthPercentage}%` }}
+              aria-valuenow={widthPercentage}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              title={`${country.country}: ${country.count}`}
+            ></div>
+          );
+        })}
+      </div>
+
+      {/* External Legend */}
+      <ul className="list-none mb-0 pt-2 crm-deals-status flex flex-col">
+        {currentCountries.map((country, index) => {
+          const bgColorClass = barColors[index % barColors.length];
+
+          return (
+            <li
+              key={country.country}
+              className="flex items-center text-sm mb-2"
+            >
+              <div
+                className={`w-3 h-3 rounded-full ${bgColorClass}`}
+                aria-label={country.country}
+              ></div>
+              <span className="ml-2">{country.country}</span>
+            </li>
+          );
+        })}
+      </ul>
+
+      {totalPages > 1 && (
+        <div className="flex justify-center">
+          <nav aria-label="Page navigation" className="pagination-style-4">
+            <ul className="ti-pagination mb-0">
+              <li
+                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+              >
+                <Link className="page-link" to="#" onClick={handlePrevPage}>
+                  Prev
+                </Link>
+              </li>
+
+              {[...Array(totalPages)].map((_, index) => (
+                <li
+                  key={index}
+                  className={`page-item ${
+                    currentPage === index + 1 ? "active" : ""
+                  }`}
+                >
+                  <Link
+                    className="page-link"
+                    to="#"
+                    onClick={() => setCurrentPage(index + 1)}
+                  >
+                    {index + 1}
+                  </Link>
+                </li>
+              ))}
+
+              <li
+                className={`page-item ${
+                  currentPage === totalPages ? "disabled" : ""
+                }`}
+              >
+                <Link className="page-link" to="#" onClick={handleNextPage}>
+                  Next
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      )}
+    </div>
+  );
+};

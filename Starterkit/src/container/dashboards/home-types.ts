@@ -53,7 +53,19 @@ export interface MovieData {
   title: string;
   boxOffice: number | string;
   imdbRating: number;
-  title_en: string;
+  title_bg: string;
+}
+
+export interface AverageBoxOfficeAndScores {
+  average_box_office: string;
+  average_metascore: string;
+  average_imdb_rating: string;
+  average_rotten_tomatoes: string;
+}
+
+export interface CountryData {
+  country: string;
+  count: number;
 }
 
 export type FilteredTableData = (DirectorData | ActorData | WriterData)[];
