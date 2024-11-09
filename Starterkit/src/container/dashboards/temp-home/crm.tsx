@@ -79,7 +79,7 @@ const TempHome: FC<CrmProps> = () => {
     []
   );
   const [prosperitySortCategory, setProsperitySortCategory] =
-    useState("Directors");
+    useState("Режисьори");
 
   // User data state
   const [userData, setUserData] = useState({
@@ -201,6 +201,8 @@ const TempHome: FC<CrmProps> = () => {
       setCurrentTablePage((prev) => prev - 1);
     }
   };
+
+  const categories = ["Режисьори", "Актьори", "Сценаристи"];
 
   console.log("seriesDataForScatterChart: ", seriesDataForScatterChart);
   return (
@@ -334,52 +336,43 @@ const TempHome: FC<CrmProps> = () => {
               </div>
             </div>
           </div>
-          {/* tableeee */}
           <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
             <div className="box custom-card">
               <div className="box-header justify-between">
                 <div className="box-title">
-                  {prosperitySortCategory} by Prosperity
+                  {prosperitySortCategory} по просперитет
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <div>
-                    <input
-                      className="ti-form-control form-control-sm"
-                      type="text"
-                      placeholder="Search Here"
-                      aria-label=".form-control-sm example"
-                    />
-                  </div>
-                  <div className="hs-dropdown ti-dropdown">
-                    <Link
-                      to="#"
-                      className="ti-btn ti-btn-primary !bg-primary !text-white !py-1 !px-2 !text-[0.75rem] !m-0 !gap-0 !font-medium"
-                      aria-expanded="false"
-                    >
-                      Sort By
-                      <i className="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
-                    </Link>
-                    <ul
-                      className="hs-dropdown-menu ti-dropdown-menu hidden"
-                      role="menu"
-                    >
-                      {["Directors", "Actors", "Writers"].map((category) => (
-                        <li key={category}>
-                          <Link
-                            className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                            to="#"
-                            onClick={() =>
-                              handleProsperityTableClick(
-                                category,
-                                setProsperitySortCategory
-                              )
-                            }
-                          >
-                            {category}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
+                  <div
+                    className="inline-flex rounded-md shadow-sm"
+                    role="group"
+                    aria-label="Sort By"
+                  >
+                    {categories.map((category, index) => (
+                      <button
+                        key={category}
+                        type="button"
+                        className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
+                          category === prosperitySortCategory
+                            ? "ti-btn-primary-full text-white"
+                            : "text-[#CC3333] bg-[#be1313] bg-opacity-10"
+                        } ${
+                          index === 0
+                            ? "rounded-l-md"
+                            : index === 2
+                            ? "rounded-r-md"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          handleProsperityTableClick(
+                            category,
+                            setProsperitySortCategory
+                          )
+                        }
+                      >
+                        {category}
+                      </button>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -393,30 +386,33 @@ const TempHome: FC<CrmProps> = () => {
                       <tr className="border border-inherit border-solid dark:border-defaultborder/10">
                         <th
                           scope="col"
-                          className="!text-start !text-[0.85rem] min-w-[200px]"
+                          className="!text-start !text-[0.85rem] w-[40px]"
                         >
+                          #
+                        </th>
+                        <th scope="col" className="!text-start !text-[0.85rem]">
                           {prosperitySortCategory}
                         </th>
                         <th scope="col" className="!text-start !text-[0.85rem]">
-                          Prosperity score
+                          Просперитетен рейтинг
                         </th>
                         <th scope="col" className="!text-start !text-[0.85rem]">
-                          IMDB Rating
+                          IMDB рейтинг
                         </th>
                         <th scope="col" className="!text-start !text-[0.85rem]">
-                          Box Office
+                          Бокс офис
                         </th>
                         <th scope="col" className="!text-start !text-[0.85rem]">
-                          Movie Count
+                          Брой филми
                         </th>
                         <th scope="col" className="!text-start !text-[0.85rem]">
-                          Total Recommendations
+                          Общо препоръки
                         </th>
                         <th scope="col" className="!text-start !text-[0.85rem]">
-                          Award Wins
+                          Победи на награди
                         </th>
                         <th scope="col" className="!text-start !text-[0.85rem]">
-                          Award Nominations
+                          Номинации за награди
                         </th>
                       </tr>
                     </thead>
@@ -426,6 +422,7 @@ const TempHome: FC<CrmProps> = () => {
                           key={index}
                           className="border border-inherit border-solid hover:bg-gray-100 dark:border-defaultborder/10 dark:hover:bg-light"
                         >
+                          <td>{(currentTablePage - 1) * 5 + index + 1}</td>
                           <td>
                             {isDirector(item)
                               ? item.director
@@ -451,7 +448,20 @@ const TempHome: FC<CrmProps> = () => {
               <div className="box-footer">
                 <div className="sm:flex items-center">
                   <div className="text-defaulttextcolor dark:text-defaulttextcolor/70">
-                    Showing 5 Entries{" "}
+                    Показване на резултати от{" "}
+                    <b>
+                      {currentTablePage === 1
+                        ? 1
+                        : (currentTablePage - 1) * 5 + 1}{" "}
+                    </b>
+                    до{" "}
+                    <b>
+                      {currentTablePage === totalTablePages
+                        ? totalItems
+                        : currentTablePage * 5}{" "}
+                    </b>
+                    от общо <b>{totalItems}</b> ( Страница{" "}
+                    <b>{currentTablePage}</b> )
                     <i className="bi bi-arrow-right ms-2 font-semibold"></i>
                   </div>
                   <div className="ms-auto">
@@ -470,7 +480,7 @@ const TempHome: FC<CrmProps> = () => {
                             to="#"
                             onClick={handlePrevTablePage}
                           >
-                            Prev
+                            Предишна
                           </Link>
                         </li>
                         {[...Array(totalTablePages)].map((_, index) => (
@@ -501,7 +511,7 @@ const TempHome: FC<CrmProps> = () => {
                             to="#"
                             onClick={handleNextTablePage}
                           >
-                            Next
+                            Следваща
                           </Link>
                         </li>
                       </ul>
@@ -511,6 +521,7 @@ const TempHome: FC<CrmProps> = () => {
               </div>
             </div>
           </div>
+
           <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
             <div className="box">
               <div className="box-header !gap-0 !m-0 justify-between">

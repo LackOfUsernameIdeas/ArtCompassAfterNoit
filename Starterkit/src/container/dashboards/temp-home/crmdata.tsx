@@ -1362,17 +1362,7 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
 
   // Generate a color scale based on the number of countries
   const colorScale = chroma
-    .scale([
-      "#FF0000",
-      "#FF6347",
-      "#FF4500",
-      "#FF1493",
-      "#FF69B4",
-      "#FF8C00",
-      "#DC143C",
-      "#B22222",
-      "#8B0000"
-    ])
+    .scale(["#be1313", "#FF6347", "#FF4500", "#FF1493", "#FF69B4"])
     .mode("lab")
     .domain([0, topCountries.length - 1])
     .colors(topCountries.length)
