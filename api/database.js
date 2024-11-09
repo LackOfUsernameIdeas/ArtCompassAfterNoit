@@ -1049,48 +1049,54 @@ const getSortedWritersByProsperity = (callback) => {
 const getSortedMoviesByProsperity = (callback) => {
   const query = `
   WITH RECURSIVE MovieSplit AS (
-    SELECT 
-        id, 
-        TRIM(SUBSTRING_INDEX(imdbID, ',', 1)) AS imdbID,
-        SUBSTRING_INDEX(imdbID, ',', -1) AS remaining_ids,
-        imdbRating,
-        metascore,
-        boxOffice,
-        awards,
-        ratings,
-        title_en,
-        title_bg,
-        type
-    FROM recommendations
-    WHERE imdbID IS NOT NULL 
-      AND imdbID != 'N/A'
-    UNION ALL
-    SELECT 
-        id,
-        TRIM(SUBSTRING_INDEX(remaining_ids, ',', 1)) AS imdbID,
-        SUBSTRING_INDEX(remaining_ids, ',', -1) AS remaining_ids,
-        imdbRating,
-        metascore,
-        boxOffice,
-        awards,
-        ratings,
-        title_en,
-        title_bg,
-        type
-    FROM MovieSplit
-    WHERE remaining_ids LIKE '%,%'
+      SELECT 
+          id, 
+          TRIM(SUBSTRING_INDEX(imdbID, ',', 1)) AS imdbID,
+          SUBSTRING_INDEX(imdbID, ',', -1) AS remaining_ids,
+          imdbRating,
+          metascore,
+          boxOffice,
+          awards,
+          ratings,
+          title_en,
+          title_bg,
+          type,
+          genre_en, 
+          genre_bg   
+      FROM recommendations
+      WHERE imdbID IS NOT NULL 
+        AND imdbID != 'N/A'
+      UNION ALL
+      SELECT 
+          id,
+          TRIM(SUBSTRING_INDEX(remaining_ids, ',', 1)) AS imdbID,
+          SUBSTRING_INDEX(remaining_ids, ',', -1) AS remaining_ids,
+          imdbRating,
+          metascore,
+          boxOffice,
+          awards,
+          ratings,
+          title_en,
+          title_bg,
+          type,
+          genre_en, 
+          genre_bg  
+      FROM MovieSplit
+      WHERE remaining_ids LIKE '%,%'
   ),
   UniqueMovies AS (
       SELECT 
           DISTINCT imdbID,
-          MAX(title_en) AS title_en,  -- Use MAX to get the title
-          MAX(title_bg) AS title_bg,  -- Use MAX to get the title
-          MAX(type) AS type,           -- Assuming type will be 'movie' for all
-          MAX(imdbRating) AS imdbRating,  -- Get the maximum rating
-          MAX(metascore) AS metascore,  -- Get the maximum metascore
-          MAX(boxOffice) AS boxOffice,  -- Get the maximum box office
-          MAX(awards) AS awards,          -- Get the maximum awards
-          MAX(ratings) AS ratings
+          MAX(title_en) AS title_en,
+          MAX(title_bg) AS title_bg,
+          MAX(type) AS type,
+          MAX(imdbRating) AS imdbRating,
+          MAX(metascore) AS metascore,
+          MAX(boxOffice) AS boxOffice,
+          MAX(awards) AS awards,
+          MAX(ratings) AS ratings,
+          MAX(genre_en) AS genre_en, 
+          MAX(genre_bg) AS genre_bg  
       FROM 
           MovieSplit
       WHERE imdbID IS NOT NULL 
@@ -1101,7 +1107,7 @@ const getSortedMoviesByProsperity = (callback) => {
   MovieRecommendations AS (
       SELECT 
           imdbID,
-          COUNT(*) AS total_recommendations  -- Count total recommendations for each movie
+          COUNT(*) AS total_recommendations
       FROM 
           recommendations
       WHERE 
@@ -1112,17 +1118,17 @@ const getSortedMoviesByProsperity = (callback) => {
   )
   SELECT 
       um.imdbID,
-      um.title_en,  -- Select English title
-      um.title_bg,  -- Select Bulgarian title
-      um.type,      -- Select movie type
-      um.imdbRating,  -- Proper IMDb rating
-      um.metascore,   -- Proper metascore
+      um.title_en,
+      um.title_bg,
+      um.type,
+      um.imdbRating,
+      um.metascore,
       CONCAT('$', FORMAT(MAX(CASE 
               WHEN boxOffice IS NULL OR boxOffice = 'N/A' THEN 0 
               ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
-          END), 0)) AS total_box_office,  -- Proper box office
-	  JSON_UNQUOTE(JSON_EXTRACT(um.ratings, '$[1].Value')) AS rotten_tomatoes, -- Average Rotten Tomatoes rating
-      COALESCE(mr.total_recommendations, 0) AS total_recommendations,  -- Total recommendations from join
+          END), 0)) AS total_box_office,
+      JSON_UNQUOTE(JSON_EXTRACT(um.ratings, '$[1].Value')) AS rotten_tomatoes,
+      COALESCE(mr.total_recommendations, 0) AS total_recommendations,
       SUM(CASE 
               WHEN um.awards IS NOT NULL THEN 
                   CASE 
@@ -1130,7 +1136,7 @@ const getSortedMoviesByProsperity = (callback) => {
                       ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ win(s)') AS UNSIGNED), 0)
                   END
               ELSE 0 
-          END) AS total_wins,  -- Total wins
+          END) AS total_wins,
       SUM(CASE 
               WHEN um.awards IS NOT NULL THEN 
                   CASE 
@@ -1138,18 +1144,20 @@ const getSortedMoviesByProsperity = (callback) => {
                       ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ nomination(s)') AS UNSIGNED), 0)
                   END
               ELSE 0 
-          END) AS total_nominations  -- Total nominations
+          END) AS total_nominations,
+      um.genre_en AS genre_en, 
+      um.genre_bg AS genre_bg   
   FROM 
       UniqueMovies um
   LEFT JOIN 
-      MovieRecommendations mr ON um.imdbID = mr.imdbID  -- Join to get total recommendations
+      MovieRecommendations mr ON um.imdbID = mr.imdbID
   WHERE 
       um.boxOffice IS NOT NULL 
       AND um.boxOffice != 'N/A'
       AND um.metascore IS NOT NULL 
       AND um.metascore != 'N/A'
   GROUP BY 
-      um.imdbID, um.title_en, um.title_bg, um.type, um.imdbRating, um.metascore  -- Group by titles and type
+      um.imdbID, um.title_en, um.title_bg, um.type, um.imdbRating, um.metascore, um.genre_en
   ORDER BY 
       um.imdbRating DESC;
   `;
