@@ -361,6 +361,7 @@ const getTopActors = (limit, callback) => {
         ORDER BY n
     ) n
     WHERE n.n <= 1 + (LENGTH(actors) - LENGTH(REPLACE(actors, ',', '')))
+      AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(actors, ',', n.n), ',', -1)) != 'N/A'
   ) AS actor_list
   GROUP BY actor
   ORDER BY actor_count DESC
@@ -383,6 +384,7 @@ const getTopDirectors = (limit, callback) => {
         ORDER BY n
     ) n
     WHERE n.n <= 1 + (LENGTH(director) - LENGTH(REPLACE(director, ',', '')))
+      AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(director, ',', n.n), ',', -1)) != 'N/A'
   ) AS director_list
   GROUP BY director
   ORDER BY director_count DESC
@@ -405,6 +407,7 @@ const getTopWriters = (limit, callback) => {
         ORDER BY n
     ) n
     WHERE n.n <= 1 + (LENGTH(writer) - LENGTH(REPLACE(writer, ',', '')))
+      AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(writer, ',', n.n), ',', -1)) != 'N/A'
   ) AS writer_list
   GROUP BY writer
   ORDER BY writer_count DESC
