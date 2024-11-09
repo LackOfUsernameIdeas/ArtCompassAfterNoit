@@ -1284,6 +1284,56 @@ const getTopMoviesAndSeriesByIMDbRating = (limit, callback) => {
   db.query(query, [limit], callback);
 };
 
+const getTopMoviesAndSeriesByRottenTomatoesRating = (limit, callback) => {
+  const query = `
+  SELECT 
+      imdbID,
+      title_en,
+      title_bg,
+      type,
+      imdbRating,
+      metascore,
+      boxOffice,
+      awards,
+      ratings,
+      rottenTomatoes
+    FROM (
+      SELECT 
+          imdbID,
+          title_en,
+          title_bg,
+          type,
+          imdbRating,
+          metascore,
+          boxOffice,
+          awards,
+          ratings,
+      
+          -- Extract Rotten Tomatoes score as a decimal, if available
+          CAST(
+              REPLACE(
+                  JSON_UNQUOTE(JSON_EXTRACT(ratings, '$[1].Value')), '%', ''
+              ) AS DECIMAL(5, 2)
+          ) AS rottenTomatoes,
+
+          -- Assign row number based on Rotten Tomatoes score in descending order
+          ROW_NUMBER() OVER (PARTITION BY imdbID ORDER BY 
+              CAST(REPLACE(JSON_UNQUOTE(JSON_EXTRACT(ratings, '$[1].Value')), '%', '') AS DECIMAL(5, 2)) DESC
+          ) AS row_num
+
+      FROM recommendations
+      WHERE imdbID IS NOT NULL 
+        AND imdbID != 'N/A'
+        AND JSON_UNQUOTE(JSON_EXTRACT(ratings, '$[1].Value')) IS NOT NULL
+        AND JSON_UNQUOTE(JSON_EXTRACT(ratings, '$[1].Value')) != 'N/A'
+  ) AS ranked
+  WHERE row_num = 1
+  ORDER BY rottenTomatoes DESC
+  LIMIT ?;
+  `;
+  db.query(query, [limit], callback);
+};
+
 module.exports = {
   checkEmailExists,
   createUser,
@@ -1310,5 +1360,6 @@ module.exports = {
   getSortedWritersByProsperity,
   getSortedMoviesByProsperity,
   getTopMoviesAndSeriesByMetascore,
-  getTopMoviesAndSeriesByIMDbRating
+  getTopMoviesAndSeriesByIMDbRating,
+  getTopMoviesAndSeriesByRottenTomatoesRating
 };

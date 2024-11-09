@@ -652,7 +652,24 @@ app.get(
           .status(500)
           .json({ error: "Error fetching sorted movies by IMDb rating" });
       }
-      res.json({ movies: results });
+      res.json({ entries: results });
+    });
+  }
+);
+
+// Вземане на данни за филми и сериали в платформата, сортирани по rotten tomatoes rating
+app.get(
+  "/stats/platform/sorted-movies-and-series-by-rotten-tomatoes-rating",
+  async (req, res) => {
+    const limit = parseInt(req.query.limit) || 10;
+
+    db.getTopMoviesAndSeriesByRottenTomatoesRating(limit, (err, results) => {
+      if (err) {
+        return res.status(500).json({
+          error: "Error fetching sorted movies by rotten tomatoes rating"
+        });
+      }
+      res.json({ entries: results });
     });
   }
 );
@@ -769,6 +786,12 @@ app.get("/stats/platform/all", async (req, res) => {
             )
           ),
           new Promise((resolve, reject) =>
+            db.getTopMoviesAndSeriesByRottenTomatoesRating(
+              limit,
+              (err, results) => (err ? reject(err) : resolve(results))
+            )
+          ),
+          new Promise((resolve, reject) =>
             db.getAverageBoxOfficeAndScores((err, results) =>
               err ? reject(err) : resolve(results)
             )
@@ -797,6 +820,7 @@ app.get("/stats/platform/all", async (req, res) => {
               sortedMoviesByProsperity,
               sortedMoviesAndSeriesByMetascore,
               sortedMoviesAndSeriesByIMDbRating,
+              sortedMoviesAndSeriesByRottenTomatoesRating,
               averageBoxOfficeAndScores,
               topCountries
             ]) => {
@@ -819,6 +843,7 @@ app.get("/stats/platform/all", async (req, res) => {
                 sortedMoviesByProsperity,
                 sortedMoviesAndSeriesByMetascore,
                 sortedMoviesAndSeriesByIMDbRating,
+                sortedMoviesAndSeriesByRottenTomatoesRating,
                 averageBoxOfficeAndScores,
                 topCountries
               });
