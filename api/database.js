@@ -199,15 +199,57 @@ const getAverageBoxOfficeAndScores = (callback) => {
   db.query(query, callback);
 };
 
-const getTopRecommendations = (limit, callback) => {
+const getTopRecommendations = (callback) => {
   const query = `
-    SELECT title_en, title_bg, COUNT(*) as recommendations
-    FROM recommendations
-    GROUP BY title_en
-    ORDER BY recommendations DESC
-    LIMIT ?
+  SELECT 
+      r.id,
+      r.imdbID,
+      r.title_en,
+      r.title_bg,
+      r.type,
+      r.awards,
+    COUNT(*) AS recommendations,
+
+    -- Extract Oscar wins as an integer (if available)
+    COALESCE(
+        CASE 
+            WHEN r.awards REGEXP 'Won [0-9]+ Oscar' OR r.awards REGEXP 'Won [0-9]+ Oscars' 
+            THEN CAST(NULLIF(SUBSTRING_INDEX(SUBSTRING_INDEX(r.awards, 'Won ', -1), ' Oscar', 1), '') AS UNSIGNED)
+            ELSE 0
+        END, 
+        0
+    ) AS oscar_wins,
+
+    -- Extract Oscar nominations as an integer (if available)
+    COALESCE(
+        CASE 
+            WHEN r.awards REGEXP 'Nominated for [0-9]+ Oscar' OR r.awards REGEXP 'Nominated for [0-9]+ Oscars' 
+            THEN CAST(NULLIF(SUBSTRING_INDEX(SUBSTRING_INDEX(r.awards, 'Nominated for ', -1), ' Oscar', 1), '') AS UNSIGNED)
+            ELSE 0
+        END, 
+        0
+    ) AS oscar_nominations,
+
+    -- Extract total wins as an integer
+      COALESCE(
+          CAST(NULLIF(REGEXP_SUBSTR(r.awards, '([0-9]+) win(s)?'), '') AS UNSIGNED), 
+          0
+      ) AS total_wins,
+
+    -- Extract total nominations as an integer
+      COALESCE(
+          CAST(NULLIF(REGEXP_SUBSTR(r.awards, '([0-9]+) nomination(s)?'), '') AS UNSIGNED), 
+          0
+      ) AS total_nominations
+    FROM 
+        recommendations r
+    GROUP BY 
+        r.title_en
+    ORDER BY 
+        recommendations DESC
+    LIMIT 10
   `;
-  db.query(query, [limit], callback);
+  db.query(query, callback);
 };
 
 const getTopCountries = (limit, callback) => {
@@ -1252,6 +1294,7 @@ module.exports = {
   saveUserPreferences,
   getUsersCount,
   getAverageBoxOfficeAndScores,
+  getTopRecommendations,
   getTopRecommendations,
   getTopCountries,
   getTopGenres,

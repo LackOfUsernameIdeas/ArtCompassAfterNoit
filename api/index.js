@@ -468,10 +468,8 @@ app.get("/stats/platform/average-scores", (req, res) => {
 });
 
 // Вземане на данни за най-препоръчвани филми/сериали в платформата
-app.get("/stats/platform/top-recommendations", (req, res) => {
-  const limit = parseInt(req.query.limit) || 10;
-
-  db.getTopRecommendations(limit, (err, results) => {
+app.get("/stats/platform/top-recommendations-with-all-data", (req, res) => {
+  db.getTopRecommendations((err, results) => {
     if (err) {
       return res
         .status(500)
@@ -696,7 +694,7 @@ app.get("/stats/platform/all", async (req, res) => {
             )
           ),
           new Promise((resolve, reject) =>
-            db.getTopRecommendations(limit, (err, results) =>
+            db.getTopRecommendations((err, results) =>
               err ? reject(err) : resolve(results)
             )
           ),
