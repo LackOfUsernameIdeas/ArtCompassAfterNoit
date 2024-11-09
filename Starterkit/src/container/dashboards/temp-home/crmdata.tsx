@@ -965,7 +965,7 @@ export class GenrePopularityOverTime extends Component<
     if (nextProps.seriesData.length > 0) {
       const seriesData = [
         {
-          name: "Movies", // Name of the series
+          name: "Жанрове",
           data: nextProps.seriesData.map((movie) => ({
             x:
               typeof movie.boxOffice === "string"
@@ -1044,7 +1044,7 @@ export class BoxOfficeVsIMDBRating extends Component<
         colors: ["#be1313"],
         xaxis: {
           title: {
-            text: "Box Office Revenue (in Millions)"
+            text: "Приходи от боксофиса (в милиони)"
           },
           tickAmount: 10,
           labels: {
@@ -1058,7 +1058,7 @@ export class BoxOfficeVsIMDBRating extends Component<
         },
         yaxis: {
           title: {
-            text: "IMDb Rating"
+            text: "IMDb Рейтинг"
           },
           tickAmount: 7,
           labels: {
@@ -1077,19 +1077,20 @@ export class BoxOfficeVsIMDBRating extends Component<
             const movieData = w.config.series[seriesIndex].data[dataPointIndex];
 
             if (movieData) {
-              const movieTitle = movieData.title || "Unknown Movie";
+              const movieTitleEn = movieData.title_en || "Unknown Movie";
+              const movieTitleBg = movieData.title_bg || "Unknown Movie";
               const imdbRating =
                 movieData.y !== undefined ? movieData.y : "N/A";
               const boxOffice =
-                movieData.x !== undefined ? movieData.x * 1e6 : "N/A"; // Convert to full value
+                movieData.x !== undefined ? movieData.x * 1e6 : "N/A";
               const formattedBoxOffice =
                 boxOffice !== "N/A" ? `$${boxOffice.toLocaleString()}` : "N/A";
 
               return `
                 <div style="padding: 10px;">
-                  <strong>${movieTitle}</strong><br />
-                  IMDb Rating: ${imdbRating}/10<br />
-                  Box Office: ${formattedBoxOffice}
+                  <strong>${movieTitleBg} (${movieTitleEn})</strong><br />
+                  IMDb Рейтинг: ${imdbRating}/10<br />
+                  Боксофис: ${formattedBoxOffice}
                 </div>
               `;
             }
@@ -1113,7 +1114,8 @@ export class BoxOfficeVsIMDBRating extends Component<
           data: nextProps.seriesData.map((movie) => ({
             x: parseBoxOffice(movie.boxOffice) / 1e6, // Box Office in millions for x-axis
             y: movie.imdbRating, // IMDb Rating for y-axis
-            title: movie.title // Movie title for tooltip
+            title_en: movie.title_en,
+            title_bg: movie.title_bg
           }))
         }
       ];
@@ -1182,12 +1184,12 @@ export class MovieBarChart extends Component<
           {
             name:
               sortCategory === "IMDb"
-                ? "IMDb рейтинг"
+                ? "IMDb Рейтинг"
                 : sortCategory === "Metascore"
                 ? "Метаскор"
-                : "Rotten Tomatoes рейтинг",
+                : "Rotten Tomatoes Рейтинг",
             data: sortedMovies.map((movie) => ({
-              x: movie.title_bg,
+              x: `${movie.title_bg} (${movie.title_en})`,
               y:
                 sortCategory === "IMDb"
                   ? movie.imdbRating
@@ -1205,12 +1207,14 @@ export class MovieBarChart extends Component<
             title: {
               text:
                 sortCategory === "IMDb"
-                  ? "IMDb рейтинг"
+                  ? "IMDb Рейтинг"
                   : sortCategory === "Metascore"
                   ? "Метаскор"
-                  : "Rotten Tomatoes рейтинг"
+                  : "Rotten Tomatoes Рейтинг"
             },
-            categories: sortedMovies.map((movie) => movie.title_bg)
+            categories: sortedMovies.map(
+              (movie) => `${movie.title_bg} (${movie.title_en})`
+            )
           }
         }
       };
@@ -1433,13 +1437,13 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
 
           return (
             <div
-              key={country.country}
+              key={country.country_en}
               className="flex flex-col justify-center overflow-hidden"
               style={{ width: `${widthPercentage}%`, backgroundColor: color }}
               aria-valuenow={widthPercentage}
               aria-valuemin={0}
               aria-valuemax={100}
-              title={`${country.country}: ${country.count}`}
+              title={`${country.country_bg}: ${country.count}`}
             ></div>
           );
         })}
@@ -1458,16 +1462,16 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
 
           return (
             <li
-              key={country.country}
+              key={country.country_en}
               className="flex items-center text-sm mb-2"
             >
               <div
                 className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: color }} // Set the correct color for the dots
-                aria-label={country.country}
+                aria-label={country.country_en}
               ></div>
               <span className="ml-2">
-                {country.country}: {country.count} пъти
+                {country.country_bg}: {country.count} пъти
               </span>
             </li>
           );

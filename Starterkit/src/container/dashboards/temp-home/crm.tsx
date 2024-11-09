@@ -244,9 +244,9 @@ const TempHome: FC<CrmProps> = () => {
     "IMDb" | "Metascore" | "RottenTomatoes",
     string
   > = {
-    IMDb: "IMDb рейтинг",
+    IMDb: "IMDb Рейтинг",
     Metascore: "Метаскор",
-    RottenTomatoes: "Rotten Tomatoes рейтинг"
+    RottenTomatoes: "Rotten Tomatoes Рейтинг"
   };
 
   console.log("seriesDataForScatterChart: ", seriesDataForScatterChart);
@@ -524,11 +524,11 @@ const TempHome: FC<CrmProps> = () => {
                           <td>{(currentTablePage - 1) * 5 + index + 1}</td>
                           <td>
                             {isDirector(item)
-                              ? item.director
+                              ? item.director_bg
                               : isActor(item)
-                              ? item.actor
+                              ? item.actor_bg
                               : isWriter(item)
-                              ? item.writer
+                              ? item.writer_bg
                               : ""}
                           </td>
                           <td>{item.prosperityScore}</td>

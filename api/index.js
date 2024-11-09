@@ -483,23 +483,11 @@ app.get("/stats/platform/top-recommendations-with-all-data", (req, res) => {
 app.get("/stats/platform/top-countries", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
 
-  db.getTopCountries(limit, async (err, results) => {
+  db.getTopCountries(limit, (err, results) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top countries" });
     }
-
-    const translatedResults = await Promise.all(
-      results.map(async (row) => {
-        const translatedCountry = await translate(row.country);
-        return {
-          country_en: row.country,
-          country_bg: translatedCountry,
-          count: row.count
-        };
-      })
-    );
-
-    res.json({ topRecs: translatedResults });
+    res.json({ topRecs: results });
   });
 });
 
@@ -531,23 +519,11 @@ app.get("/stats/platform/genre-popularity-over-time", async (req, res) => {
 app.get("/stats/platform/top-actors", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
 
-  db.getTopActors(limit, async (err, results) => {
+  db.getTopActors(limit, (err, results) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top actors" });
     }
-
-    const translatedResults = await Promise.all(
-      results.map(async (row) => {
-        const translatedActor = await translate(row.actor);
-        return {
-          actor_en: row.actor,
-          actor_bg: translatedActor,
-          actor_count: row.actor_count
-        };
-      })
-    );
-
-    res.json({ topRecs: translatedResults });
+    res.json({ topRecs: results });
   });
 });
 
@@ -555,23 +531,11 @@ app.get("/stats/platform/top-actors", async (req, res) => {
 app.get("/stats/platform/top-directors", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
 
-  db.getTopDirectors(limit, async (err, results) => {
+  db.getTopDirectors(limit, (err, results) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top directors" });
     }
-
-    const translatedResults = await Promise.all(
-      results.map(async (row) => {
-        const translatedDirector = await translate(row.director);
-        return {
-          director_en: row.director,
-          director_bg: translatedDirector,
-          director_count: row.director_count
-        };
-      })
-    );
-
-    res.json({ topRecs: translatedResults });
+    res.json({ topRecs: results });
   });
 });
 
@@ -579,23 +543,11 @@ app.get("/stats/platform/top-directors", async (req, res) => {
 app.get("/stats/platform/top-writers", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
 
-  db.getTopWriters(limit, async (err, results) => {
+  db.getTopWriters(limit, (err, results) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top writers" });
     }
-
-    const translatedResults = await Promise.all(
-      results.map(async (row) => {
-        const translatedWriter = await translate(row.writer);
-        return {
-          writer_en: row.writer,
-          writer_bg: translatedWriter,
-          writer_count: row.writer_count
-        };
-      })
-    );
-
-    res.json({ topRecs: translatedResults });
+    res.json({ topRecs: results });
   });
 });
 
@@ -633,64 +585,31 @@ app.get("/stats/platform/total-awards", async (req, res) => {
 
 // Вземане на данни за филмови режисьори в платформата, сортирани по успешност
 app.get("/stats/platform/sorted-directors-by-prosperity", async (req, res) => {
-  db.getSortedDirectorsByProsperity(async (err, results) => {
+  db.getSortedDirectorsByProsperity((err, results) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching sorted directors" });
     }
-
-    const translatedResults = await Promise.all(
-      results.map(async (row) => {
-        const translatedDirector = await translate(row.director);
-        return {
-          director_bg: translatedDirector,
-          ...row
-        };
-      })
-    );
-
-    res.json({ directors: translatedResults });
+    res.json({ directors: results });
   });
 });
 
 // Вземане на данни за актьори в платформата, сортирани по успешност
 app.get("/stats/platform/sorted-actors-by-prosperity", async (req, res) => {
-  db.getSortedActorsByProsperity(async (err, results) => {
+  db.getSortedActorsByProsperity((err, results) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching sorted actors" });
     }
-
-    const translatedResults = await Promise.all(
-      results.map(async (row) => {
-        const translatedActor = await translate(row.actor);
-        return {
-          actor_bg: translatedActor,
-          ...row
-        };
-      })
-    );
-
-    res.json({ actors: translatedResults });
+    res.json({ actors: results });
   });
 });
 
 // Вземане на данни за сценаристи в платформата, сортирани по успешност
 app.get("/stats/platform/sorted-writers-by-prosperity", async (req, res) => {
-  db.getSortedWritersByProsperity(async (err, results) => {
+  db.getSortedWritersByProsperity((err, results) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching sorted writers" });
     }
-
-    const translatedResults = await Promise.all(
-      results.map(async (row) => {
-        const translatedWriter = await translate(row.writer);
-        return {
-          writer_bg: translatedWriter,
-          ...row
-        };
-      })
-    );
-
-    res.json({ writers: translatedResults });
+    res.json({ writers: results });
   });
 });
 
@@ -941,28 +860,6 @@ app.get("/stats/platform/all", async (req, res) => {
     res.status(500).json({ error: "Unexpected error", details: error.message });
   }
 });
-
-async function translate(entry) {
-  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bg&dt=t&q=${encodeURIComponent(
-    entry
-  )}`;
-
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-
-    // Flatten the response array to get only the translated text
-    const flattenedTranslation = data[0].map((item) => item[0]).join(" ");
-
-    // Replace multiple spaces with a single space and trim the result
-    const mergedTranslation = flattenedTranslation.replace(/\s+/g, " ").trim();
-    // Return the cleaned translation
-    return mergedTranslation;
-  } catch (error) {
-    console.error(`Error translating entry: ${entry}`, error);
-    return entry;
-  }
-}
 
 // Start server
 app.listen(5000, () => {

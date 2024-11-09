@@ -18,6 +18,28 @@ db.connect((err) => {
   console.log("MySQL Connected...");
 });
 
+async function translate(entry) {
+  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bg&dt=t&q=${encodeURIComponent(
+    entry
+  )}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    // Flatten the response array to get only the translated text
+    const flattenedTranslation = data[0].map((item) => item[0]).join(" ");
+
+    // Replace multiple spaces with a single space and trim the result
+    const mergedTranslation = flattenedTranslation.replace(/\s+/g, " ").trim();
+    // Return the cleaned translation
+    return mergedTranslation;
+  } catch (error) {
+    console.error(`Error translating entry: ${entry}`, error);
+    return entry;
+  }
+}
+
 // Helper functions
 const checkEmailExists = (email, callback) => {
   const query = "SELECT * FROM users WHERE email = ?";
@@ -269,7 +291,27 @@ const getTopCountries = (limit, callback) => {
     ORDER BY count DESC
     LIMIT ?
   `;
-  db.query(query, [limit], callback);
+  db.query(query, [limit], async (err, results) => {
+    if (err) {
+      callback(err, null);
+      return;
+    }
+
+    // Translate each country and return the result
+    const translatedResults = await Promise.all(
+      results.map(async (row) => {
+        const translatedCountry = await translate(row.country);
+        return {
+          country_en: row.country,
+          country_bg: translatedCountry,
+          count: row.count
+        };
+      })
+    );
+
+    // Pass the translated results to the callback
+    callback(null, translatedResults);
+  });
 };
 
 const getTopGenres = (limit, callback) => {
@@ -366,7 +408,27 @@ const getTopActors = (limit, callback) => {
   GROUP BY actor
   ORDER BY actor_count DESC
   LIMIT ?`;
-  db.query(query, [limit], callback);
+  db.query(query, [limit], async (err, results) => {
+    if (err) {
+      callback(err, null);
+      return;
+    }
+
+    // Translate each actor and return the result
+    const translatedResults = await Promise.all(
+      results.map(async (row) => {
+        const translatedActor = await translate(row.actor); // Translate actor name
+        return {
+          actor_en: row.actor, // Original actor name in English
+          actor_bg: translatedActor, // Translated actor name
+          actor_count: row.actor_count // Count of recommendations
+        };
+      })
+    );
+
+    // Pass the translated results to the callback
+    callback(null, translatedResults);
+  });
 };
 
 const getTopDirectors = (limit, callback) => {
@@ -389,7 +451,27 @@ const getTopDirectors = (limit, callback) => {
   GROUP BY director
   ORDER BY director_count DESC
   LIMIT ?`;
-  db.query(query, [limit], callback);
+  db.query(query, [limit], async (err, results) => {
+    if (err) {
+      callback(err, null);
+      return;
+    }
+
+    // Translate each director and return the result
+    const translatedResults = await Promise.all(
+      results.map(async (row) => {
+        const translatedDirector = await translate(row.director); // Translate director name
+        return {
+          director_en: row.director, // Original director name in English
+          director_bg: translatedDirector, // Translated director name
+          director_count: row.director_count // Count of recommendations
+        };
+      })
+    );
+
+    // Pass the translated results to the callback
+    callback(null, translatedResults);
+  });
 };
 
 const getTopWriters = (limit, callback) => {
@@ -412,7 +494,27 @@ const getTopWriters = (limit, callback) => {
   GROUP BY writer
   ORDER BY writer_count DESC
   LIMIT ?`;
-  db.query(query, [limit], callback);
+  db.query(query, [limit], async (err, results) => {
+    if (err) {
+      callback(err, null);
+      return;
+    }
+
+    // Translate each writer and return the result
+    const translatedResults = await Promise.all(
+      results.map(async (row) => {
+        const translatedWriter = await translate(row.writer); // Translate writer name
+        return {
+          writer_en: row.writer, // Original writer name in English
+          writer_bg: translatedWriter, // Translated writer name
+          writer_count: row.writer_count // Count of recommendations
+        };
+      })
+    );
+
+    // Pass the translated results to the callback
+    callback(null, translatedResults);
+  });
 };
 
 const getOscarsByMovie = (callback) => {
@@ -660,7 +762,7 @@ const getSortedDirectorsByProsperity = (callback) => {
       avg_imdb_rating DESC;`;
   // HAVING
   // movie_count > 1
-  db.query(query, (err, results) => {
+  db.query(query, async (err, results) => {
     if (err) return callback(err);
 
     const weights = {
@@ -708,11 +810,20 @@ const getSortedDirectorsByProsperity = (callback) => {
       };
     });
 
-    directorsWithProsperity.sort(
-      (a, b) => b.prosperityScore - a.prosperityScore
+    // Translate each director's name
+    const translatedResults = await Promise.all(
+      directorsWithProsperity.map(async (row) => {
+        const translatedDirector = await translate(row.director);
+        return {
+          director_bg: translatedDirector,
+          ...row
+        };
+      })
     );
 
-    callback(null, directorsWithProsperity);
+    translatedResults.sort((a, b) => b.prosperityScore - a.prosperityScore);
+
+    callback(null, translatedResults);
   });
 };
 
@@ -817,7 +928,7 @@ const getSortedActorsByProsperity = (callback) => {
   ORDER BY 
       avg_imdb_rating DESC;`;
 
-  db.query(query, (err, results) => {
+  db.query(query, async (err, results) => {
     if (err) return callback(err);
 
     // Calculate prosperity scores
@@ -872,10 +983,20 @@ const getSortedActorsByProsperity = (callback) => {
       };
     });
 
-    // Sort by prosperity score
-    actorsWithProsperity.sort((a, b) => b.prosperityScore - a.prosperityScore);
+    // Translate each actor's name
+    const translatedResults = await Promise.all(
+      actorsWithProsperity.map(async (row) => {
+        const translatedActor = await translate(row.actor);
+        return {
+          actor_bg: translatedActor,
+          ...row
+        };
+      })
+    );
 
-    callback(null, actorsWithProsperity);
+    translatedResults.sort((a, b) => b.prosperityScore - a.prosperityScore);
+
+    callback(null, translatedResults);
   });
 };
 
@@ -983,7 +1104,7 @@ const getSortedWritersByProsperity = (callback) => {
   // Optional: Uncomment this part if you want to ensure more than 1 unique movie
   // HAVING
   // COUNT(DISTINCT um.imdbID) > 1  -- Ensure more than 1 unique movie
-  db.query(query, (err, results) => {
+  db.query(query, async (err, results) => {
     if (err) return callback(err);
 
     // Calculate prosperity scores
@@ -1039,10 +1160,20 @@ const getSortedWritersByProsperity = (callback) => {
       };
     });
 
-    // Sort by prosperity score
-    writersWithProsperity.sort((a, b) => b.prosperityScore - a.prosperityScore);
+    // Translate each writer's name
+    const translatedResults = await Promise.all(
+      writersWithProsperity.map(async (row) => {
+        const translatedWriter = await translate(row.writer);
+        return {
+          writer_bg: translatedWriter,
+          ...row
+        };
+      })
+    );
 
-    callback(null, writersWithProsperity);
+    translatedResults.sort((a, b) => b.prosperityScore - a.prosperityScore);
+
+    callback(null, translatedResults);
   });
 };
 

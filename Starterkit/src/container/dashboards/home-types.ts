@@ -2,25 +2,31 @@
 
 export interface CommonData {
   avg_imdb_rating: number;
+  avg_metascore: number;
   total_box_office: string;
-  total_recommendations: number;
-  total_wins: number;
-  total_nominations: number;
+  avg_rotten_tomatoes: string;
+  avg_runtime: number;
+  total_wins: string;
+  total_nominations: string;
   prosperityScore: number;
+  total_recommendations: number;
 }
 
 export interface DirectorData extends CommonData {
   director: string;
+  director_bg: string;
   movie_count: number;
 }
 
 export interface ActorData extends CommonData {
   actor: string;
+  actor_bg: string;
   movie_count: number;
 }
 
 export interface WriterData extends CommonData {
   writer: string;
+  writer_bg: string;
   movie_count: number;
 }
 
@@ -51,7 +57,7 @@ export type DataType = {
 };
 
 export interface MovieData {
-  title: string;
+  title_en: string;
   boxOffice: number | string;
   imdbRating: number;
   metascore: number;
@@ -68,7 +74,8 @@ export interface AverageBoxOfficeAndScores {
 }
 
 export interface CountryData {
-  country: string;
+  country_en: string;
+  country_bg: string;
   count: number;
 }
 

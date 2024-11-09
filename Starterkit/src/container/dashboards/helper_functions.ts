@@ -202,22 +202,30 @@ export const generateHeatmapSeriesData = (
   // Collect all unique genre names across all years
   years.forEach((year) => {
     const genresInYear = Object.keys(data[year]);
-    genresInYear.forEach((genre) => genreNames.add(genre));
+
+    genresInYear.forEach((genreKey) => {
+      const genreData = data[year][genreKey];
+      genreNames.add(genreData.genre_bg);
+    });
   });
 
-  // Create the series data for each genre
-  const series = [...genreNames].map((genre) => {
+  // Create the series data for each genre (using genre_bg as the genre name)
+  const series = [...genreNames].map((genreBg) => {
     const seriesData = years.map((year) => {
-      const genreData = data[year][genre];
+      const genreData = data[year];
+      const genre = Object.values(genreData).find(
+        (item) => item.genre_bg === genreBg
+      );
+
       return {
-        x: year, // The year as x-axis
-        y: genreData ? genreData.genre_count : 0 // Genre count as y-axis (0 if not available)
+        x: year,
+        y: genre ? genre.genre_count : 0
       };
     });
 
     return {
-      name: genre, // Genre name
-      data: seriesData // Data for this genre
+      name: genreBg,
+      data: seriesData
     };
   });
 
