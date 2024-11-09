@@ -585,7 +585,9 @@ const TempHome: FC<CrmProps> = () => {
           <div className="xl:col-span-6 col-span-12">
             <div className="box custom-box">
               <div className="box-header">
-                <div className="box-title">Movies by IMDb Rating</div>
+                <div className="box-title">
+                  Movies and series by IMDb Rating
+                </div>
               </div>
               <div className="box-body">
                 <div id="bar-basic">
