@@ -45,6 +45,7 @@ export type DataType = {
   sortedMoviesByProsperity: any[];
   sortedMoviesAndSeriesByMetascore: any[];
   sortedMoviesAndSeriesByIMDbRating: any[];
+  sortedMoviesAndSeriesByRottenTomatoesRating: any[];
   averageBoxOfficeAndScores: any[];
   topCountries: any[];
 };
@@ -54,6 +55,7 @@ export interface MovieData {
   boxOffice: number | string;
   imdbRating: number;
   metascore: number;
+  rottenTomatoes: number;
   type?: "movie" | "series";
   title_bg: string;
 }

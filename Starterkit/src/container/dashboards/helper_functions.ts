@@ -94,7 +94,9 @@ const sortByCategory = (
 ): MovieData[] => {
   return category === "IMDb"
     ? seriesData.sort((a, b) => b.imdbRating - a.imdbRating)
-    : seriesData.sort((a, b) => b.metascore - a.metascore);
+    : category === "Metascore"
+    ? seriesData.sort((a, b) => b.metascore - a.metascore)
+    : seriesData.sort((a, b) => b.rottenTomatoes - a.rottenTomatoes);
 };
 
 // Function to paginate data for the bar chart after sorting by rating
@@ -229,6 +231,7 @@ export const generateScatterSeriesData = (
     // Parse IMDb rating
     const imdbRating = parseFloat(movie.imdbRating);
     const metascore = parseFloat(movie.metascore);
+    const rottenTomatoes = parseFloat(movie.rotten_tomatoes);
 
     // Clean the box office string and parse it as a number
     const boxOffice = parseInt(
@@ -241,7 +244,8 @@ export const generateScatterSeriesData = (
       title_en: movie.title_en,
       boxOffice: boxOffice,
       imdbRating: imdbRating,
-      metascore: metascore
+      metascore: metascore,
+      rottenTomatoes: rottenTomatoes
     };
   });
 };

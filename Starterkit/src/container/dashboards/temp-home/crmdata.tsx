@@ -1041,7 +1041,7 @@ export class BoxOfficeVsIMDBRating extends Component<
         grid: {
           borderColor: "#f2f5f7"
         },
-        colors: ["#d01616"],
+        colors: ["#be1313"],
         xaxis: {
           title: {
             text: "Box Office Revenue (in Millions)"
@@ -1153,7 +1153,7 @@ export class MovieBarChart extends Component<
         dataLabels: { enabled: false },
         xaxis: {
           title: {
-            text: props.category === "IMDb" ? "IMDb рейтинг" : "Метаскор"
+            text: []
           },
           categories: []
         },
@@ -1167,20 +1167,33 @@ export class MovieBarChart extends Component<
     prevState: State
   ) {
     if (nextProps.seriesData && nextProps.seriesData.length > 0) {
-      // Sort data by IMDb Rating
       const sortCategory = nextProps.category;
       const sortedMovies =
         sortCategory === "IMDb"
           ? nextProps.seriesData.sort((a, b) => b.imdbRating - a.imdbRating)
-          : nextProps.seriesData.sort((a, b) => b.metascore - a.metascore);
+          : sortCategory === "Metascore"
+          ? nextProps.seriesData.sort((a, b) => b.metascore - a.metascore)
+          : nextProps.seriesData.sort(
+              (a, b) => b.rottenTomatoes - a.rottenTomatoes
+            );
 
       return {
         series: [
           {
-            name: sortCategory === "IMDb" ? "IMDb рейтинг" : "Метаскор",
+            name:
+              sortCategory === "IMDb"
+                ? "IMDb рейтинг"
+                : sortCategory === "Metascore"
+                ? "Метаскор"
+                : "Rotten Tomatoes рейтинг",
             data: sortedMovies.map((movie) => ({
               x: movie.title_bg,
-              y: sortCategory === "IMDb" ? movie.imdbRating : movie.metascore,
+              y:
+                sortCategory === "IMDb"
+                  ? movie.imdbRating
+                  : sortCategory === "Metascore"
+                  ? movie.metascore
+                  : movie.rottenTomatoes,
               fillColor: movie.type === "movie" ? "#d01616" : "#f28a8a"
             }))
           }
@@ -1189,6 +1202,14 @@ export class MovieBarChart extends Component<
           ...prevState.options,
           xaxis: {
             ...prevState.options.xaxis,
+            title: {
+              text:
+                sortCategory === "IMDb"
+                  ? "IMDb рейтинг"
+                  : sortCategory === "Metascore"
+                  ? "Метаскор"
+                  : "Rotten Tomatoes рейтинг"
+            },
             categories: sortedMovies.map((movie) => movie.title_bg)
           }
         }

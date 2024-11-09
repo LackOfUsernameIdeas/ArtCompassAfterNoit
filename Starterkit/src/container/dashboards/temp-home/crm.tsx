@@ -59,6 +59,7 @@ const TempHome: FC<CrmProps> = () => {
     sortedMoviesByProsperity: [],
     sortedMoviesAndSeriesByMetascore: [],
     sortedMoviesAndSeriesByIMDbRating: [],
+    sortedMoviesAndSeriesByRottenTomatoesRating: [],
     averageBoxOfficeAndScores: [],
     topCountries: []
   });
@@ -133,7 +134,9 @@ const TempHome: FC<CrmProps> = () => {
     const sortedData =
       moviesAndSeriesSortCategory === "IMDb"
         ? Data.sortedMoviesAndSeriesByIMDbRating
-        : Data.sortedMoviesAndSeriesByMetascore;
+        : moviesAndSeriesSortCategory === "Metascore"
+        ? Data.sortedMoviesAndSeriesByMetascore
+        : Data.sortedMoviesAndSeriesByRottenTomatoesRating;
 
     const paginatedData = paginateBarChartData(
       sortedData,
@@ -249,11 +252,12 @@ const TempHome: FC<CrmProps> = () => {
   };
 
   const moviesAndSeriesCategoryDisplayNames: Record<
-    "IMDb" | "Metascore",
+    "IMDb" | "Metascore" | "RottenTomatoes",
     string
   > = {
     IMDb: "IMDb рейтинг",
-    Metascore: "Метаскор"
+    Metascore: "Метаскор",
+    RottenTomatoes: "Rotten Tomatoes рейтинг"
   };
 
   console.log("seriesDataForScatterChart: ", seriesDataForScatterChart);
@@ -721,35 +725,37 @@ const TempHome: FC<CrmProps> = () => {
                     role="group"
                     aria-label="Sort By"
                   >
-                    {["IMDb", "Metascore"].map((category, index) => (
-                      <button
-                        key={category}
-                        type="button"
-                        className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
-                          category === moviesAndSeriesSortCategory
-                            ? "ti-btn-primary-full text-white"
-                            : "text-[#CC3333] bg-[#be1313] bg-opacity-10"
-                        } ${
-                          index === 0
-                            ? "rounded-l-md"
-                            : index === 2
-                            ? "rounded-r-md"
-                            : ""
-                        }`}
-                        onClick={() =>
-                          handleMoviesAndSeriesSortCategory(
-                            category,
-                            setMoviesAndSeriesSortCategory
-                          )
-                        }
-                      >
-                        {
-                          moviesAndSeriesCategoryDisplayNames[
-                            category as keyof typeof moviesAndSeriesCategoryDisplayNames
-                          ]
-                        }
-                      </button>
-                    ))}
+                    {["IMDb", "Metascore", "RottenTomatoes"].map(
+                      (category, index) => (
+                        <button
+                          key={category}
+                          type="button"
+                          className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
+                            category === moviesAndSeriesSortCategory
+                              ? "ti-btn-primary-full text-white"
+                              : "text-[#CC3333] bg-[#be1313] bg-opacity-10"
+                          } ${
+                            index === 0
+                              ? "rounded-l-md"
+                              : index === 2
+                              ? "rounded-r-md"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            handleMoviesAndSeriesSortCategory(
+                              category,
+                              setMoviesAndSeriesSortCategory
+                            )
+                          }
+                        >
+                          {
+                            moviesAndSeriesCategoryDisplayNames[
+                              category as keyof typeof moviesAndSeriesCategoryDisplayNames
+                            ]
+                          }
+                        </button>
+                      )
+                    )}
                   </div>
                 </div>
               </div>
@@ -765,7 +771,21 @@ const TempHome: FC<CrmProps> = () => {
               <div className="box-footer">
                 <div className="sm:flex items-center">
                   <div className="text-defaulttextcolor dark:text-defaulttextcolor/70">
-                    Showing {pageSize} Entries{" "}
+                    Показване на резултати от{" "}
+                    <b>
+                      {currentChartPage === 1
+                        ? 1
+                        : (currentChartPage - 1) * 5 + 1}{" "}
+                    </b>
+                    до{" "}
+                    <b>
+                      {currentChartPage === totalChartPages
+                        ? Data.sortedMoviesAndSeriesByIMDbRating.length
+                        : currentChartPage * 5}{" "}
+                    </b>
+                    от общо{" "}
+                    <b>{Data.sortedMoviesAndSeriesByIMDbRating.length}</b> (
+                    Страница <b>{currentChartPage}</b> )
                     <i className="bi bi-arrow-right ms-2 font-semibold"></i>
                   </div>
                   <div className="ms-auto">
@@ -784,7 +804,7 @@ const TempHome: FC<CrmProps> = () => {
                             to="#"
                             onClick={handlePrevChartPage}
                           >
-                            Prev
+                            Предишна
                           </Link>
                         </li>
                         {[...Array(totalChartPages)].map((_, index) => (
@@ -815,7 +835,7 @@ const TempHome: FC<CrmProps> = () => {
                             to="#"
                             onClick={handleNextChartPage}
                           >
-                            Next
+                            Следваща
                           </Link>
                         </li>
                       </ul>
