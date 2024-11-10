@@ -470,6 +470,11 @@ const Test: FC<Test> = () => {
 
   const closeModal = () => setIsModalOpen(false);
 
+  const handleSeeMore = (movie: any) => {
+    // Define what happens on "See More" click
+    alert(`More details for ${movie.title}`);
+  };
+
   const toggleGenre = (genre: { en: string; bg: string }) => {
     setGenres((prevGenres) =>
       prevGenres.find((g) => g.en === genre.en)
