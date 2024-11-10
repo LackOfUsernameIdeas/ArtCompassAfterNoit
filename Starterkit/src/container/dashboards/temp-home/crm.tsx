@@ -6,7 +6,8 @@ import {
   BoxOfficeVsIMDBRating,
   MovieBarChart,
   CountryBarChart,
-  MovieProsperityBubbleChart
+  MovieProsperityBubbleChart,
+  Treemap
 } from "./crmdata";
 import { DataType, FilteredTableData } from "../home-types";
 import {
@@ -23,7 +24,8 @@ import {
   handleBarChartPageChange,
   handleDropdownClickAverages,
   handleDropdownClickAwards,
-  handleMoviesAndSeriesSortCategory
+  handleMoviesAndSeriesSortCategory,
+  handleTopStatsSortCategory
 } from "../helper_functions";
 import face10 from "../../../assets/images/faces/10.jpg";
 import face12 from "../../../assets/images/faces/12.jpg";
@@ -80,6 +82,8 @@ const TempHome: FC<CrmProps> = () => {
 
   const [moviesAndSeriesSortCategory, setMoviesAndSeriesSortCategory] =
     useState("IMDb");
+
+  const [topStatsSortCategory, setTopStatsSortCategory] = useState("Actors");
   // User data state
   const [userData, setUserData] = useState({
     id: 0,
@@ -836,13 +840,81 @@ const TempHome: FC<CrmProps> = () => {
           </div>
           <div className="xl:col-span-6 col-span-12">
             <div className="box custom-box">
-              <div className="box-header">
+              <div className="box-header ">
                 <div className="box-title">Simple Bubble Chart</div>
               </div>
+
               <div className="box-body">
                 <div id="bubble-simple">
                   <MovieProsperityBubbleChart
                     sortedMoviesByProsperity={Data.sortedMoviesByProsperity}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="xl:col-span-6 col-span-12">
+            <div className="box custom-box">
+              <div className="box-header justify-between">
+                <div className="box-title">
+                  {
+                    tableCategoryDisplayNames[
+                      topStatsSortCategory as keyof typeof tableCategoryDisplayNames
+                    ]
+                  }{" "}
+                  по бройка
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <div
+                    className="inline-flex rounded-md shadow-sm"
+                    role="group"
+                    aria-label="Sort By"
+                  >
+                    {["Actors", "Directors", "Writers"].map(
+                      (category, index) => (
+                        <button
+                          key={category}
+                          type="button"
+                          className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
+                            category === topStatsSortCategory
+                              ? "ti-btn-primary-full text-white"
+                              : "text-[#CC3333] bg-[#be1313] bg-opacity-10"
+                          } ${
+                            index === 0
+                              ? "rounded-l-md"
+                              : index === 2
+                              ? "rounded-r-md"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            handleTopStatsSortCategory(
+                              category,
+                              setTopStatsSortCategory
+                            )
+                          }
+                        >
+                          {
+                            tableCategoryDisplayNames[
+                              category as keyof typeof tableCategoryDisplayNames
+                            ]
+                          }
+                        </button>
+                      )
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="box-body">
+                <div id="treemap-basic">
+                  <Treemap
+                    data={
+                      topStatsSortCategory === "Actors"
+                        ? Data.topActors
+                        : topStatsSortCategory === "Directors"
+                        ? Data.topDirectors
+                        : Data.topWriters
+                    }
+                    role={topStatsSortCategory}
                   />
                 </div>
               </div>

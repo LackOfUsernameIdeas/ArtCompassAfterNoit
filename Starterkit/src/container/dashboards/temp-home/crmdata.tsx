@@ -8,10 +8,14 @@ import face11 from "../../../assets/images/faces/11.jpg";
 import face8 from "../../../assets/images/faces/8.jpg";
 import face9 from "../../../assets/images/faces/9.jpg";
 import {
+  ActorData,
   AverageBoxOfficeAndScores,
   CountryData,
+  DirectorData,
   MovieData,
-  MovieProsperityData
+  MovieProsperityData,
+  RoleData,
+  WriterData
 } from "../home-types";
 import { parseBoxOffice } from "../helper_functions";
 import { Link } from "react-router-dom";
@@ -1551,7 +1555,7 @@ export class MovieProsperityBubbleChart extends Component<
         },
         yaxis: {
           tickAmount: 7,
-          max: 9,
+          max: 10,
           min: 5,
           labels: {
             style: { colors: "#8c9097", fontSize: "11px", fontWeight: 600 }
@@ -1679,6 +1683,95 @@ export class MovieProsperityBubbleChart extends Component<
         series={this.state.series}
         type="bubble"
         height={500}
+      />
+    );
+  }
+}
+
+interface BasicTreemapProps {
+  data: RoleData;
+  role: string;
+}
+
+interface BasicTreemapState {
+  series: any[];
+  options: any;
+}
+
+export class Treemap extends Component<BasicTreemapProps, BasicTreemapState> {
+  constructor(props: BasicTreemapProps) {
+    super(props);
+
+    // Initial state is set based on the props
+    this.state = {
+      series: [
+        {
+          data: Treemap.formatData(props.data, props.role)
+        }
+      ],
+      options: {
+        legend: {
+          show: false
+        },
+        chart: {
+          height: 350,
+          type: "treemap"
+        },
+        colors: ["#9a110a"]
+      }
+    };
+  }
+
+  // Static method to derive state from props
+  static getDerivedStateFromProps(
+    nextProps: BasicTreemapProps,
+    prevState: BasicTreemapState
+  ) {
+    // Check if data or role has changed before updating the state
+    if (
+      nextProps.data !== prevState.series[0].data ||
+      nextProps.role !== prevState.options.title.text.split(" ")[1]
+    ) {
+      return {
+        series: [
+          {
+            data: Treemap.formatData(nextProps.data, nextProps.role)
+          }
+        ]
+      };
+    }
+    // Return null to avoid unnecessary re-renders
+    return null;
+  }
+
+  // Static method to format the data
+  static formatData(data: RoleData, role: string) {
+    return data.map((item) => {
+      let name = "";
+      let count = 0;
+
+      if (role === "Actors" && "actor_bg" in item) {
+        name = (item as ActorData).actor_bg!;
+        count = (item as ActorData).actor_count!;
+      } else if (role === "Directors" && "director_bg" in item) {
+        name = (item as DirectorData).director_bg!;
+        count = (item as DirectorData).director_count!;
+      } else if (role === "Writers" && "writer_bg" in item) {
+        name = (item as WriterData).writer_bg!;
+        count = (item as WriterData).writer_count!;
+      }
+
+      return { x: name, y: count };
+    });
+  }
+
+  render() {
+    return (
+      <ReactApexChart
+        options={this.state.options}
+        series={this.state.series}
+        type="treemap"
+        height={350}
       />
     );
   }

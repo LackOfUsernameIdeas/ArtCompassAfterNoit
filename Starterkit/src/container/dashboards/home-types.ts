@@ -1,5 +1,3 @@
-// home-types.ts
-
 export interface CommonData {
   avg_imdb_rating: number;
   avg_metascore: number;
@@ -14,21 +12,29 @@ export interface CommonData {
 
 export interface DirectorData extends CommonData {
   director: string;
+  director_en?: string;
   director_bg: string;
   movie_count: number;
+  director_count: number; // Renamed to avoid conflict with other interface
 }
 
 export interface ActorData extends CommonData {
-  actor: string;
+  actor?: string;
+  actor_en?: string;
   actor_bg: string;
   movie_count: number;
+  actor_count: number; // Renamed to avoid conflict
 }
 
 export interface WriterData extends CommonData {
-  writer: string;
+  writer?: string;
+  writer_en?: string;
   writer_bg: string;
   movie_count: number;
+  writer_count: number; // Renamed to avoid conflict
 }
+
+export type RoleData = DirectorData[] | ActorData[] | WriterData[];
 
 export type UsersCountData = {
   user_count: number;

@@ -178,6 +178,14 @@ export const handleMoviesAndSeriesSortCategory = (
 ) => {
   setMoviesAndSeriesSortCategory(category);
 };
+
+export const handleTopStatsSortCategory = (
+  category: string,
+  setTopStatsSortCategory: React.Dispatch<React.SetStateAction<string>>
+) => {
+  setTopStatsSortCategory(category);
+};
+
 // Filter data based on name matching
 export const myFunction = (
   idx: string,
