@@ -10,7 +10,8 @@ import face9 from "../../../assets/images/faces/9.jpg";
 import {
   AverageBoxOfficeAndScores,
   CountryData,
-  MovieData
+  MovieData,
+  MovieProsperityData
 } from "../home-types";
 import { parseBoxOffice } from "../helper_functions";
 import { Link } from "react-router-dom";
@@ -1048,7 +1049,7 @@ export class BoxOfficeVsIMDBRating extends Component<
           },
           tickAmount: 10,
           labels: {
-            formatter: (val: any) => `$${Math.round(val)}M`, // Round box office for x-axis
+            formatter: (val: any) => `$${Math.round(val)}M`,
             style: {
               colors: "#8c9097",
               fontSize: "11px",
@@ -1505,3 +1506,180 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
     </div>
   );
 };
+
+interface SimpleBubbleChartProps {
+  sortedMoviesByProsperity: MovieProsperityData[];
+}
+
+export class MovieProsperityBubbleChart extends Component<
+  SimpleBubbleChartProps,
+  State
+> {
+  constructor(props: SimpleBubbleChartProps) {
+    super(props);
+
+    this.state = {
+      series: [],
+      options: {
+        chart: {
+          type: "bubble",
+          events: {
+            mounted: (chart: any) => {
+              chart.windowResizeHandler();
+            }
+          }
+        },
+        plotOptions: {
+          bubble: {
+            minBubbleRadius: 5,
+            maxBubbleRadius: 2000
+          }
+        },
+        dataLabels: { enabled: false },
+        fill: { opacity: 0.8 },
+        colors: [], // Empty, we will fill it manually
+        xaxis: {
+          tickAmount: 10,
+          labels: {
+            formatter: (val: any) => `$${Math.round(val)}M`,
+            style: { colors: "#8c9097", fontSize: "11px", fontWeight: 600 }
+          },
+          title: {
+            text: "Приходи от боксофиса (в милиони)",
+            style: { fontSize: "12px", fontWeight: "bold", color: "#8c9097" }
+          }
+        },
+        yaxis: {
+          tickAmount: 7,
+          max: 9,
+          min: 5,
+          labels: {
+            style: { colors: "#8c9097", fontSize: "11px", fontWeight: 600 }
+          },
+          title: {
+            text: "IMDb Рейтинг",
+            style: { fontSize: "12px", fontWeight: "bold", color: "#8c9097" }
+          }
+        },
+        legend: {
+          show: true,
+          position: "top",
+          markers: {
+            width: 10,
+            height: 10,
+            radius: 12
+          },
+          itemMargin: {
+            horizontal: 10,
+            vertical: 5
+          },
+          formatter: (seriesName: string) => seriesName // Simplified
+        },
+        tooltip: {
+          shared: false,
+          intersect: true,
+          custom: ({ seriesIndex, dataPointIndex, w }: any) => {
+            const movieData = w.config.series[seriesIndex].data[dataPointIndex];
+
+            if (movieData) {
+              const movieTitleEn = movieData.title_en || "Unknown Movie";
+              const movieTitleBg = movieData.title_bg || "Unknown Movie";
+              const imdbRating =
+                movieData.y !== undefined ? movieData.y : "N/A";
+              const boxOffice =
+                movieData.x !== undefined ? movieData.x * 1e6 : "N/A";
+              const formattedBoxOffice =
+                boxOffice !== "N/A" ? `$${boxOffice.toLocaleString()}` : "N/A";
+
+              return `
+                <div style="padding: 10px;">
+                  <strong>${movieTitleBg} (${movieTitleEn})</strong><br />
+                  IMDb Рейтинг: ${imdbRating}/10<br />
+                  Боксофис: ${formattedBoxOffice}
+                </div>
+              `;
+            }
+            return "";
+          }
+        }
+      }
+    };
+  }
+
+  // Helper function to get the color based on the first genre
+  getColorForGenre(genre: string): string {
+    const genreColorMap: { [key: string]: string } = {
+      Приключенски: "#1f0302",
+      Екшън: "#3e0704",
+      Комедия: "#5c0a06",
+      Драма: "#7b0e08",
+      Трилър: "#9a110a",
+      Романтичен: "#ae413b",
+      Анимация: "#c2706c",
+      "Филм-ноар": "#cd8885"
+    };
+
+    const firstGenre = genre.split(",")[0].trim();
+    return genreColorMap[firstGenre] || "#8c9097";
+  }
+
+  static getDerivedStateFromProps(
+    nextProps: SimpleBubbleChartProps,
+    prevState: State
+  ) {
+    const { sortedMoviesByProsperity } = nextProps;
+    const instance = new MovieProsperityBubbleChart(nextProps);
+    const genreMap: { [key: string]: any[] } = {};
+
+    sortedMoviesByProsperity.forEach((movie) => {
+      const prosperityScore = movie.prosperityScore || 0;
+      const boxOffice =
+        parseFloat(movie.total_box_office.replace(/[^0-9.-]+/g, "")) / 1e6;
+      const imdbRating = parseFloat(movie.imdbRating) || 0;
+      const genreColor = movie.genre_bg
+        ? instance.getColorForGenre(movie.genre_bg)
+        : "#8c9097";
+      const titleEnglish = movie.title_en;
+      const titleBulgarian = movie.title_bg;
+      const genre = movie.genre_bg.split(",")[0].trim();
+
+      if (!genreMap[genre]) {
+        genreMap[genre] = [];
+      }
+
+      genreMap[genre].push({
+        x: boxOffice,
+        y: imdbRating,
+        z: prosperityScore,
+        title_en: titleEnglish,
+        title_bg: titleBulgarian,
+        color: genreColor // Use color directly, no need for fillColor
+      });
+    });
+
+    const series = Object.keys(genreMap).map((genre) => ({
+      name: genre,
+      data: genreMap[genre],
+      color: instance.getColorForGenre(genre)
+    }));
+
+    const colors = [...new Set(series.map((s) => s.color))];
+
+    if (JSON.stringify(series) !== JSON.stringify(prevState.series)) {
+      return { series, options: { ...prevState.options, colors } };
+    }
+
+    return null;
+  }
+
+  render() {
+    return (
+      <ReactApexChart
+        options={this.state.options}
+        series={this.state.series}
+        type="bubble"
+        height={500}
+      />
+    );
+  }
+}

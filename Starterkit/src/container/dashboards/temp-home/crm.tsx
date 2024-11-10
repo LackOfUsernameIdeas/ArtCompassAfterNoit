@@ -5,7 +5,8 @@ import {
   Profitearned,
   BoxOfficeVsIMDBRating,
   MovieBarChart,
-  CountryBarChart
+  CountryBarChart,
+  MovieProsperityBubbleChart
 } from "./crmdata";
 import { DataType, FilteredTableData } from "../home-types";
 import {
@@ -750,7 +751,6 @@ const TempHome: FC<CrmProps> = () => {
               </div>
               <div className="box-body">
                 <div id="bar-basic">
-                  {/* Pass only the paginated data to MovieBarChart */}
                   <MovieBarChart
                     seriesData={seriesDataForMovieBarChart}
                     category={moviesAndSeriesSortCategory}
@@ -830,6 +830,20 @@ const TempHome: FC<CrmProps> = () => {
                       </ul>
                     </nav>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="xl:col-span-6 col-span-12">
+            <div className="box custom-box">
+              <div className="box-header">
+                <div className="box-title">Simple Bubble Chart</div>
+              </div>
+              <div className="box-body">
+                <div id="bubble-simple">
+                  <MovieProsperityBubbleChart
+                    sortedMoviesByProsperity={Data.sortedMoviesByProsperity}
+                  />
                 </div>
               </div>
             </div>

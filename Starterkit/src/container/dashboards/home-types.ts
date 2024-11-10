@@ -105,6 +105,8 @@ export interface MovieProsperityData {
   total_wins: string;
   total_nominations: string;
   prosperityScore: number;
+  genre_en: string;
+  genre_bg: string;
 }
 
 // Define the structure for each series data (for each genre)
