@@ -1613,14 +1613,14 @@ export class MovieProsperityBubbleChart extends Component<
   // Helper function to get the color based on the first genre
   getColorForGenre(genre: string): string {
     const genreColorMap: { [key: string]: string } = {
-      Приключенски: "#1f0302",
-      Екшън: "#3e0704",
-      Комедия: "#5c0a06",
-      Драма: "#7b0e08",
-      Трилър: "#9a110a",
-      Романтичен: "#ae413b",
-      Анимация: "#c2706c",
-      "Филм-ноар": "#cd8885"
+      Приключенски: "#9f1a1a",
+      Екшън: "#a92a1e",
+      Комедия: "#b54b3f",
+      Драма: "#c75a4b",
+      Трилър: "#d8695a",
+      Романтичен: "#d9826a",
+      Анимация: "#e39c7d",
+      "Филм-ноар": "#e6a58a"
     };
 
     const firstGenre = genre.split(",")[0].trim();
