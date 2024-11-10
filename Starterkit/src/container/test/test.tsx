@@ -174,6 +174,11 @@ const Test: FC<Test> = () => {
         return matchedGenre ? matchedGenre.bg : null;
       });
 
+      // Compare and decide which data to use (Google first, then OMDb)
+      const runtime = recommendation.runtimeGoogle || recommendation.runtime; // Use Google runtime if available, otherwise OMDb
+      const imdbRating =
+        recommendation.imdbRatingGoogle || recommendation.imdbRating; // Use Google IMDb rating if available, otherwise OMDb
+
       const formattedRecommendation = {
         token,
         imdbID: recommendation.imdbID || null,
@@ -186,7 +191,7 @@ const Test: FC<Test> = () => {
         year: recommendation.year || null,
         rated: recommendation.rated || null,
         released: recommendation.released || null,
-        runtime: recommendation.runtime || null,
+        runtime: runtime || null,
         director: recommendation.director || null,
         writer: recommendation.writer || null,
         actors: recommendation.actors || null,
@@ -197,7 +202,7 @@ const Test: FC<Test> = () => {
         poster: recommendation.poster || null,
         ratings: recommendation.ratings || [],
         metascore: recommendation.metascore || null,
-        imdbRating: recommendation.imdbRating || null,
+        imdbRating: imdbRating || null,
         imdbVotes: recommendation.imdbVotes || null,
         type: recommendation.type || null,
         DVD: recommendation.DVD || null,
@@ -364,13 +369,38 @@ const Test: FC<Test> = () => {
 
         // Step 4: Extract the IMDb link from the search results
         if (Array.isArray(imdbData.items)) {
-          const imdbLink = imdbData.items.find((item: { link: string }) =>
+          const imdbItem = imdbData.items.find((item: { link: string }) =>
             item.link.includes("imdb.com/title/")
           );
 
-          if (imdbLink) {
-            const imdbUrl = imdbLink.link;
+          if (imdbItem) {
+            const imdbUrl = imdbItem.link;
             const imdbId = imdbUrl.match(/title\/(tt\d+)\//)?.[1]; // Extract IMDb ID from the URL
+
+            // Extract IMDb Rating and Runtime from the metadata (from `metatags`)
+            const imdbRating = imdbItem.pagemap.metatags
+              ? imdbItem.pagemap.metatags[0]["twitter:title"]?.match(
+                  /⭐ ([\d.]+)/
+                )?.[1]
+              : null;
+            const runtime = imdbItem.pagemap.metatags
+              ? imdbItem.pagemap.metatags[0]["og:description"]?.match(
+                  /(\d{1,2}h \d{1,2}m|\d{1,2}h|\d{1,3}m)/
+                )?.[1] // Match runtime patterns like 2h 30m, 2h, or 90m
+              : null;
+
+            const translatedRuntime = runtime
+              ? runtime.replace(/h/g, "ч").replace(/m/g, "м").replace(/s/g, "с")
+              : null;
+
+            console.log(
+              "imdbItem.pagemap.metatags: ",
+              imdbItem.pagemap.metatags
+            );
+            console.log(`Found IMDb ID: ${imdbId}`);
+            console.log(`IMDb Rating: ${imdbRating}`);
+            console.log(`Runtime: ${translatedRuntime}`);
+
             if (imdbId) {
               const omdbResponse = await fetch(
                 `http://www.omdbapi.com/?apikey=89cbf31c&i=${imdbId}&plot=full`
@@ -395,6 +425,7 @@ const Test: FC<Test> = () => {
                 rated: omdbData.Rated,
                 released: omdbData.Released,
                 runtime: omdbData.Runtime,
+                runtimeGoogle: translatedRuntime, // Store Runtime from Google
                 genre: omdbData.Genre,
                 director: omdbData.Director,
                 writer: omdbData.Writer,
@@ -407,6 +438,7 @@ const Test: FC<Test> = () => {
                 ratings: omdbData.Ratings,
                 metascore: omdbData.Metascore,
                 imdbRating: omdbData.imdbRating,
+                imdbRatingGoogle: imdbRating, // Store IMDb Rating from Google
                 imdbVotes: omdbData.imdbVotes,
                 imdbID: omdbData.imdbID,
                 type: omdbData.Type,
