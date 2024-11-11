@@ -870,50 +870,50 @@ export class GenrePopularityOverTime extends Component<
                 {
                   from: -30,
                   to: 1,
-                  name: "много нисък брой",
+                  name: "Изключително нисък брой",
                   color: "#f28a8a"
                 },
                 {
                   from: 2,
                   to: 3,
-                  name: "малък брой",
+                  name: "Много нисък брой",
                   color: "#e05656"
                 },
                 {
                   from: 4,
                   to: 5,
-                  name: "нисък до умерен брой",
+                  name: "Нисък брой",
                   color: "#d83838"
                 },
                 {
                   from: 6,
-                  to: 10,
-                  name: "умерен брой",
-                  color: "#d01616"
-                },
-                {
-                  from: 11,
                   to: 15,
-                  name: "умерен до среден брой",
-                  color: "#b81414"
+                  name: "Умерен брой",
+                  color: "#d01616"
                 },
                 {
                   from: 16,
                   to: 20,
-                  name: "среден брой",
+                  name: "Среден брой",
                   color: "#a11212"
                 },
                 {
                   from: 21,
-                  to: 45,
-                  name: "висок брой",
+                  to: 100,
+                  name: "По-висок от средния брой",
                   color: "#8a0f0f"
                 },
                 {
-                  from: 46,
-                  to: 55,
-                  name: "много висок брой",
+                  from: 101,
+                  to: 200,
+                  name: "Висок брой",
                   color: "#730d0d"
+                },
+                {
+                  from: 201,
+                  to: 1000,
+                  name: "Изключително висок брой",
+                  color: "#5a0a0a"
                 }
               ]
             }
