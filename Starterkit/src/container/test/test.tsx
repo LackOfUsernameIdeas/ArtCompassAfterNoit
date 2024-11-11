@@ -7,6 +7,7 @@ const Test: FC<Test> = () => {
   const [genres, setGenres] = useState<{ en: string; bg: string }[]>([]);
   const [moods, setMoods] = useState<string[]>([]);
   const [timeAvailability, setTimeAvailability] = useState("");
+  const [age, setAge] = useState("");
   const [actors, setActors] = useState("");
   const [directors, setDirectors] = useState("");
   const [interests, setInterests] = useState("");
@@ -81,6 +82,14 @@ const Test: FC<Test> = () => {
     "Нямам предпочитания"
   ];
 
+  const ageOptions = [
+    "Публикуван в последните 3 години",
+    "Публикуван в последните 5 години",
+    "Публикуван в последните 10 години",
+    "Публикуван в последните 20 години",
+    "Нямам предпочитания"
+  ];
+
   const pacingOptions = [
     "бавни, концентриращи се върху разкази на героите",
     "бързи с много напрежение",
@@ -126,6 +135,7 @@ const Test: FC<Test> = () => {
             preferred_genres_bg: preferredGenresBg,
             mood: Array.isArray(moods) ? moods.join(", ") : null,
             timeAvailability,
+            preferred_age: age,
             preferred_type: type,
             preferred_actors: actors,
             preferred_directors: directors,
@@ -258,10 +268,11 @@ const Test: FC<Test> = () => {
               },
               {
                 role: "user",
-                content: `Препоръчай ми 5 ${typeText} за гледане, които да са съобразени с моите вкусове и предпочитания, а именно:
+                content: `Препоръчай ми 5 ${typeText} за гледане, които ЗАДЪЛЖИТЕЛНО да съвпадат с моите вкусове и предпочитания, а именно:
               Любими жанрове: ${genres.map((genre) => genre.bg)}.
               Емоционално състояние в този момент: ${moods}.
               Разполагаемо свободно време за гледане: ${timeAvailability}.
+              Възрастта на ${typeText} задължително да бъде: ${age}
               Любими актьори: ${actors}.
               Любими филмови режисьори: ${directors}.
               Теми, които ме интересуват: ${interests}.
@@ -269,7 +280,11 @@ const Test: FC<Test> = () => {
               Темпото (бързината) на филмите/сериалите предпочитам да бъде: ${pacing}.
               Предпочитам филмите/сериалите да са: ${depth}.
               Целевата група е: ${targetGroup}.
-              Дай информация за всеки отделен филм/сериал по отделно защо той е подходящ за мен. Форматирай своя response във валиден JSON формат по този начин:
+              Дай информация за всеки отделен филм/сериал по отделно защо той е подходящ за мен.
+              Задължително искам имената на филмите/сериалите да бъдат абсолютно точно както са официално на български език – така, както са приети в Уикипедия. 
+              Не се допуска буквален превод на заглавията от английски, ако официалното българско заглавие се различава от буквалния превод. 
+              Не препоръчвай 18+ филми/сериали.
+              Форматирай своя response във валиден JSON формат по този начин:
               {
                 "Официално име на ${typeText} на английски, както е прието да бъде": {
                   "bgName": "Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод",
@@ -282,41 +297,13 @@ const Test: FC<Test> = () => {
                   "reason": "Защо този филм/сериал е подходящ за мен?"
                 },
                 // ...additional movies
-              }. Не добавяй излишни кавички, думи или скоби, JSON формата трябва да е валиден за JavaScript JSON.parse() функцията.`
+              }. Не добавяй излишни кавички(внимавай кога ползваш единични и кога двойни), думи или скоби, JSON формата трябва да е валиден за JavaScript JSON.parse() функцията.`
               }
             ]
           })
         }
       );
 
-      console.log(
-        "prompt: ",
-        `Препоръчай ми 5 ${typeText} за гледане, които да са съобразени с моите вкусове и предпочитания, а именно:
-              Любими жанрове: ${genres.map((genre) => genre.bg)}.
-              Емоционално състояние в този момент: ${moods}.
-              Разполагаемо свободно време за гледане: ${timeAvailability}.
-              Любими актьори: ${actors}.
-              Любими филмови режисьори: ${directors}.
-              Теми, които ме интересуват: ${interests}.
-              Филмите/сериалите могат да бъдат от следните страни: ${countries}.
-              Темпото (бързината) на филмите/сериалите предпочитам да бъде: ${pacing}.
-              Предпочитам филмите/сериалите да са: ${depth}.
-              Целевата група е: ${targetGroup}.
-              Дай информация за всеки отделен филм/сериал по отделно защо той е подходящ за мен. Форматирай своя response във валиден JSON формат по този начин:
-              {
-                "Официално име на ${typeText} на английски, както е прието да бъде, както е прието да бъде": {
-                  "bgName": "Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод, както е прието да бъде, а не буквален превод",
-                  "description": "Описание на ${typeText}",
-                  "reason": "Защо този филм/сериал е подходящ за мен?"
-                },
-                "Официално име на ${typeText} на английски, както е прието да бъде, както е прието да бъде": {
-                  "bgName": "Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод, както е прието да бъде, а не буквален превод",
-                  "description": "Описание на ${typeText}",
-                  "reason": "Защо този филм/сериал е подходящ за мен?"
-                },
-                // ...additional movies
-              }. Не добавяй излишни кавички, думи или скоби, JSON формата трябва да е валиден за JavaScript JSON.parse() функцията.`
-      );
       const responseData = await response.json(); // Get the JSON response
       const responseJson = responseData.choices[0].message.content;
       const unescapedData = responseJson
@@ -523,7 +510,6 @@ const Test: FC<Test> = () => {
     );
   };
 
-  console.log("recommendationList: ", recommendationList);
   return (
     <Fragment>
       <div className="flex flex-col items-center justify-start min-h-screen pt-20 page-header-breadcrumb">
@@ -608,6 +594,27 @@ const Test: FC<Test> = () => {
                   Изберете време
                 </option>
                 {timeAvailabilityOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label htmlFor="age" className="form-label">
+                Колко стар предпочитате да бъде филма/сериала?
+              </label>
+              <select
+                id="age"
+                className="form-control"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                required
+              >
+                <option value="" disabled>
+                  Изберете възраст
+                </option>
+                {ageOptions.map((option) => (
                   <option key={option} value={option}>
                     {option}
                   </option>
@@ -770,9 +777,13 @@ const Test: FC<Test> = () => {
               </label>
               <div className="form-text">
                 Предпочитате филм/сериал, който засяга определена историческа
-                ера, държава или пък такъв, в който се изследва, разгадава
-                мистерия или социален проблем? Дайте описание. Можете също така
-                да споделите примери за филми/сериали, които предпочитате.
+                епоха, държава или дори представя история по действителен
+                случай? Интересуват ви филми, в които се разследва мистерия или
+                социален проблем, или такива, в които животни играят важна роля?
+                А какво ще кажете за филми, свързани с пътешествия и изследване
+                на света, или пък разкази за въображаеми светове? Дайте
+                описание. Можете също така да споделите примери за
+                филми/сериали, които предпочитате.
               </div>
               <textarea
                 className="form-control"
