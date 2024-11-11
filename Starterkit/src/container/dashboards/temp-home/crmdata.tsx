@@ -14,6 +14,7 @@ import {
   DirectorData,
   MovieData,
   MovieProsperityData,
+  RecommendationData,
   RoleData,
   WriterData
 } from "../home-types";
@@ -1400,7 +1401,7 @@ export class AverageScoresStackedBarChart extends Component<
 }
 
 interface CountryBarProps {
-  topCountries: CountryData[] | null; // Allow null until data is fetched
+  topCountries: CountryData[] | null;
 }
 
 export const CountryBarChart: React.FC<CountryBarProps> = ({
@@ -1613,14 +1614,14 @@ export class MovieProsperityBubbleChart extends Component<
   // Helper function to get the color based on the first genre
   getColorForGenre(genre: string): string {
     const genreColorMap: { [key: string]: string } = {
-      Приключенски: "#9f1a1a",
-      Екшън: "#a92a1e",
-      Комедия: "#b54b3f",
-      Драма: "#c75a4b",
-      Трилър: "#d8695a",
-      Романтичен: "#d9826a",
-      Анимация: "#e39c7d",
-      "Филм-ноар": "#e6a58a"
+      Приключенски: "#1f0302",
+      Екшън: "#3e0704",
+      Комедия: "#5c0a06",
+      Драма: "#7b0e08",
+      Трилър: "#9a110a",
+      Романтичен: "#ae413b",
+      Анимация: "#c2706c",
+      "Филм-ноар": "#cd8885"
     };
 
     const firstGenre = genre.split(",")[0].trim();
@@ -1773,6 +1774,100 @@ export class Treemap extends Component<BasicTreemapProps, BasicTreemapState> {
         type="treemap"
         height={350}
       />
+    );
+  }
+}
+
+export class TopRecommendationsBarChart extends Component<
+  { seriesData: RecommendationData[] },
+  State
+> {
+  constructor(props: { seriesData: RecommendationData[] }) {
+    super(props);
+    this.state = {
+      series: [],
+      options: {
+        chart: { type: "bar", height: 320 },
+        plotOptions: { bar: { borderRadius: 4, horizontal: true } },
+        grid: { borderColor: "#f2f5f7" },
+        dataLabels: { enabled: false },
+        xaxis: {
+          title: {
+            text: "Брой препоръчвания"
+          },
+          categories: []
+        },
+        yaxis: { title: { text: "Заглавие" } }
+      }
+    };
+  }
+
+  static getDerivedStateFromProps(
+    nextProps: { seriesData: RecommendationData[] },
+    prevState: State
+  ) {
+    if (nextProps.seriesData && nextProps.seriesData.length > 0) {
+      const sortedMovies = nextProps.seriesData.sort(
+        (a, b) => b.recommendations - a.recommendations
+      );
+
+      return {
+        series: [
+          {
+            name: "Препоръчвания",
+            data: sortedMovies.map((movie) => ({
+              x: `${movie.title_bg} (${movie.title_en})`,
+              y: movie.recommendations,
+              fillColor: movie.type === "movie" ? "#d01616" : "#f28a8a"
+            }))
+          }
+        ],
+        options: {
+          ...prevState.options,
+          xaxis: {
+            ...prevState.options.xaxis,
+            categories: sortedMovies.map(
+              (movie) => `${movie.title_bg} (${movie.title_en})`
+            )
+          }
+        }
+      };
+    }
+
+    return null;
+  }
+
+  render() {
+    return (
+      <div>
+        <div className="flex justify-center items-center">
+          <div className="flex items-center mr-4">
+            <span
+              className="w-3 h-3 mr-1 rounded-full inline-block"
+              style={{ backgroundColor: "#d01616" }}
+            ></span>
+            <span>Филм</span>
+          </div>
+          <div className="flex items-center">
+            <span
+              className="w-3 h-3 mr-1 rounded-full inline-block"
+              style={{ backgroundColor: "#f28a8a" }}
+            ></span>
+            <span>Сериал</span>
+          </div>
+        </div>
+
+        {this.state.series && this.state.series.length > 0 ? (
+          <ReactApexChart
+            options={this.state.options}
+            series={this.state.series}
+            type="bar"
+            height={320}
+          />
+        ) : (
+          <p>No data available</p>
+        )}
+      </div>
     );
   }
 }

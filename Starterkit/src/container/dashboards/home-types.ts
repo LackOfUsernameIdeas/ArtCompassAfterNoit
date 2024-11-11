@@ -115,6 +115,20 @@ export interface MovieProsperityData {
   genre_bg: string;
 }
 
+export interface RecommendationData {
+  id: number;
+  imdbID: string;
+  title_en: string;
+  title_bg: string;
+  type: "movie" | "series";
+  awards: string;
+  recommendations: number;
+  oscar_wins: string;
+  oscar_nominations: string;
+  total_wins: string;
+  total_nominations: string;
+}
+
 // Define the structure for each series data (for each genre)
 export interface GenreSeriesData {
   name: string; // Genre name (e.g., Crime, Drama)

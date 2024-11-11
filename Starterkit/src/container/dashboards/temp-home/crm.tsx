@@ -7,7 +7,8 @@ import {
   MovieBarChart,
   CountryBarChart,
   MovieProsperityBubbleChart,
-  Treemap
+  Treemap,
+  TopRecommendationsBarChart
 } from "./crmdata";
 import { DataType, FilteredTableData } from "../home-types";
 import {
@@ -119,6 +120,10 @@ const TempHome: FC<CrmProps> = () => {
       setDisplayedValueAwards(Data.totalAwards[0].total_awards_wins);
       setDisplayedValueAverages(
         Data.averageBoxOfficeAndScores[0].average_box_office
+      );
+      console.log(
+        "BAR CHART RECOMMENDATIONS SHIT ---->",
+        Data.topRecommendations
       );
     }
   }, [Data]);
@@ -915,6 +920,20 @@ const TempHome: FC<CrmProps> = () => {
                         : Data.topWriters
                     }
                     role={topStatsSortCategory}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="xl:col-span-6 col-span-12">
+            <div className="box custom-box">
+              <div className="box-header">
+                <div className="box-title">Simple Donut Chart</div>
+              </div>
+              <div className="box-body">
+                <div id="donut-simple">
+                  <TopRecommendationsBarChart
+                    seriesData={Data.topRecommendations}
                   />
                 </div>
               </div>
