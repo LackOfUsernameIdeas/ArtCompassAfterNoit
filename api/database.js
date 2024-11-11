@@ -40,6 +40,23 @@ async function translate(entry) {
   }
 }
 
+// Function to reset the request count daily
+const checkAndResetRequestsDaily = (userRequests) => {
+  const currentDate = new Date().toISOString().split('T')[0]; // Get the current date in 'YYYY-MM-DD' format
+
+  // Initialize resetDate if it doesn't exist
+  if (!userRequests.resetDate) {
+    userRequests.resetDate = currentDate; // Set the resetDate for the first time
+  }
+
+  // If the resetDate has changed, reset the requests
+  if (userRequests.resetDate !== currentDate) {
+    userRequests = {}; // Reset the entire request tracking
+    userRequests.resetDate = currentDate; // Set the reset date to today
+    console.log("Request counts reset for the day.");
+  }
+};
+
 // Helper functions
 const checkEmailExists = (email, callback) => {
   const query = "SELECT * FROM users WHERE email = ?";
@@ -1479,6 +1496,7 @@ const getTopMoviesAndSeriesByRottenTomatoesRating = (limit, callback) => {
 };
 
 module.exports = {
+  checkAndResetRequestsDaily,
   checkEmailExists,
   createUser,
   findUserByEmail,

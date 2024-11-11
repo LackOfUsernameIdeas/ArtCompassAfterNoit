@@ -95,6 +95,49 @@ app.post("/signup", (req, res) => {
   });
 });
 
+const MAX_REQUESTS_PER_DAY = 20;
+let userRequests = {};
+
+app.post("/handle-submit", (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1]; // 'Bearer <token>'
+
+  if (!token) {
+    return res.status(401).json({ error: "No token provided" });
+  }
+
+  // Verify and decode the token
+  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: "Invalid token" });
+    }
+
+    const userId = decoded.id; // Extract userId from the decoded token
+
+    // Ensure the request count is reset daily
+    db.checkAndResetRequestsDaily(userRequests); // Pass userRequests to the function
+
+    // If the user doesn't have any data yet, initialize them
+    if (!userRequests[userId]) {
+      userRequests[userId] = { count: 0, lastRequestTime: new Date() };
+    }
+
+    // Check if the user has exceeded the max number of requests for today
+    if (userRequests[userId].count >= MAX_REQUESTS_PER_DAY) {
+      return res.status(400).json({
+        error: "You have exceeded the maximum request limit for today!"
+      });
+    }
+
+    // Proceed with handling the request
+    userRequests[userId].count += 1;
+    userRequests[userId].lastRequestTime = new Date();
+
+    // Your logic for handling the submit goes here
+    console.log("userRequests: ", userRequests);
+    res.json({ message: "Request handled successfully!" });
+  });
+});
+
 // Resend Route
 app.post("/resend", (req, res) => {
   const { email } = req.body;

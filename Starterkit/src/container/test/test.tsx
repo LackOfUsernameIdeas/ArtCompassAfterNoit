@@ -83,6 +83,7 @@ const Test: FC<Test> = () => {
   ];
 
   const ageOptions = [
+    "Публикуван в последната 1 година",
     "Публикуван в последните 3 години",
     "Публикуван в последните 5 години",
     "Публикуван в последните 10 години",
@@ -458,7 +459,7 @@ const Test: FC<Test> = () => {
   };
   console.log(submitCount);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     if (submitCount >= 20) {
       alert("Достигнахте максималния брой предложения! :(");
       return;
@@ -480,11 +481,33 @@ const Test: FC<Test> = () => {
     const date = new Date().toISOString();
 
     event.preventDefault();
-    generateMovieRecommendations(date);
-    saveUserPreferences(date);
 
-    setSubmitCount((prevCount) => prevCount + 1);
-    setIsModalOpen(true);
+    try {
+      // Send POST request to server
+      const response = await fetch("http://localhost:5000/handle-submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (response.status === 200) {
+        // Handle success
+        generateMovieRecommendations(date);
+        saveUserPreferences(date);
+        setSubmitCount((prevCount) => prevCount + 1);
+        setIsModalOpen(true);
+      } else {
+        // Handle error (e.g., exceeding max requests)
+        alert(data.error || "Something went wrong.");
+      }
+    } catch (error) {
+      console.error("Error submitting the request:", error);
+      alert("Something went wrong while submitting your request.");
+    }
   };
 
   const closeModal = () => setIsModalOpen(false);
