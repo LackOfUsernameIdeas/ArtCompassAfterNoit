@@ -104,10 +104,11 @@ export const paginateBarChartData = (
   seriesData: MovieData[],
   currentPage: number,
   pageSize: number,
-  category: string
+  category?: string
 ): MovieData[] => {
-  // First, sort the data by IMDb rating
-  const sortedData = sortByCategory(seriesData, category);
+  const sortedData = category
+    ? sortByCategory(seriesData, category)
+    : seriesData;
 
   // Now paginate the sorted data
   const start = (currentPage - 1) * pageSize;

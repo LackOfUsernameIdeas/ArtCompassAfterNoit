@@ -928,15 +928,6 @@ export class GenrePopularityOverTime extends Component<
         stroke: {
           width: 1
         },
-        title: {
-          text: "HeatMap Chart with Color Range",
-          align: "left",
-          style: {
-            fontSize: "13px",
-            fontWeight: "bold",
-            color: "#8c9097"
-          }
-        },
         xaxis: {
           labels: {
             show: true,
@@ -1064,7 +1055,7 @@ export class BoxOfficeVsIMDBRating extends Component<
         },
         yaxis: {
           title: {
-            text: "IMDb Рейтинг"
+            text: "IMDb рейтинг"
           },
           tickAmount: 7,
           labels: {
@@ -1095,7 +1086,7 @@ export class BoxOfficeVsIMDBRating extends Component<
               return `
                 <div style="padding: 10px;">
                   <strong>${movieTitleBg} (${movieTitleEn})</strong><br />
-                  IMDb Рейтинг: ${imdbRating}/10<br />
+                  IMDb рейтинг: ${imdbRating}/10<br />
                   Боксофис: ${formattedBoxOffice}
                 </div>
               `;
@@ -1190,10 +1181,10 @@ export class MovieBarChart extends Component<
           {
             name:
               sortCategory === "IMDb"
-                ? "IMDb Рейтинг"
+                ? "IMDb рейтинг"
                 : sortCategory === "Metascore"
                 ? "Метаскор"
-                : "Rotten Tomatoes Рейтинг",
+                : "Rotten Tomatoes рейтинг",
             data: sortedMovies.map((movie) => ({
               x: `${movie.title_bg} (${movie.title_en})`,
               y:
@@ -1213,10 +1204,10 @@ export class MovieBarChart extends Component<
             title: {
               text:
                 sortCategory === "IMDb"
-                  ? "IMDb Рейтинг"
+                  ? "IMDb рейтинг"
                   : sortCategory === "Metascore"
                   ? "Метаскор"
-                  : "Rotten Tomatoes Рейтинг"
+                  : "Rotten Tomatoes рейтинг"
             },
             categories: sortedMovies.map(
               (movie) => `${movie.title_bg} (${movie.title_en})`
@@ -1386,7 +1377,7 @@ export class AverageScoresStackedBarChart extends Component<
 
     // Check if data has been fetched
     if (!averageBoxOfficeAndScores || averageBoxOfficeAndScores.length === 0) {
-      return <div>Loading...</div>; // Show loading indicator until data is available
+      return <div>Зареждане...</div>;
     }
 
     return (
@@ -1408,7 +1399,7 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
   topCountries
 }) => {
   if (!topCountries) {
-    return <div>Loading...</div>;
+    return <div>Зареждане...</div>;
   }
 
   const totalCount = topCountries.reduce(
@@ -1562,7 +1553,7 @@ export class MovieProsperityBubbleChart extends Component<
             style: { colors: "#8c9097", fontSize: "11px", fontWeight: 600 }
           },
           title: {
-            text: "IMDb Рейтинг",
+            text: "IMDb рейтинг",
             style: { fontSize: "12px", fontWeight: "bold", color: "#8c9097" }
           }
         },
@@ -1599,7 +1590,7 @@ export class MovieProsperityBubbleChart extends Component<
               return `
                 <div style="padding: 10px;">
                   <strong>${movieTitleBg} (${movieTitleEn})</strong><br />
-                  IMDb Рейтинг: ${imdbRating}/10<br />
+                  IMDb рейтинг: ${imdbRating}/10<br />
                   Боксофис: ${formattedBoxOffice}
                 </div>
               `;

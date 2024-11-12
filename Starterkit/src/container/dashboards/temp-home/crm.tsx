@@ -57,22 +57,26 @@ const TempHome: FC<CrmProps> = () => {
     topCountries: []
   });
 
-  const [displayedNameAwards, setDisplayedNameAwards] =
-    useState("Total Award Wins");
+  const [displayedNameAwards, setDisplayedNameAwards] = useState(
+    "Общ брой спечелени награди"
+  );
   const [displayedValueAverages, setDisplayedValueAverages] =
     useState<number>(0);
   const [displayedNameAverages, setDisplayedNameAverages] =
-    useState("Average Box Office");
+    useState("Среден Боксофис");
   const [displayedValueAwards, setDisplayedValueAwards] = useState<number>(0);
   // Table data filtering and pagination
   const [filteredTableData, setFilteredTableData] = useState<FilteredTableData>(
     []
   );
-  const pageSize = 5; // Number of entries per page for the chart
+  const pageSize = 5; // Number of entries per page for the chartaa
   const [currentChartPage, setCurrentChartPage] = useState(1); // Current page for the chart
+  const [currentTopChartPage, setCurrentTopChartPage] = useState(1); // Current page for the chart
   const [seriesDataForMovieBarChart, setSeriesDataForMovieBarChart] = useState<
     any[]
   >([]);
+  const [seriesDataForTopStatsBarChart, setSeriesDataForTopStatsChart] =
+    useState<any[]>([]);
   const [currentTablePage, setCurrentTablePage] = useState(1);
   const itemsPerTablePage = 5;
   const [currentTableItems, setCurrentTableItems] = useState<FilteredTableData>(
@@ -137,14 +141,26 @@ const TempHome: FC<CrmProps> = () => {
         ? Data.sortedMoviesAndSeriesByMetascore
         : Data.sortedMoviesAndSeriesByRottenTomatoesRating;
 
-    const paginatedData = paginateBarChartData(
+    const paginatedDataForMovieBarChart = paginateBarChartData(
       sortedData,
       currentChartPage,
       pageSize,
       moviesAndSeriesSortCategory
     );
-    setSeriesDataForMovieBarChart(paginatedData);
-  }, [currentChartPage, moviesAndSeriesSortCategory, Data]);
+    const paginatedDataForTopStats = paginateBarChartData(
+      Data.topRecommendations,
+      currentTopChartPage,
+      pageSize
+    );
+    setSeriesDataForMovieBarChart(paginatedDataForMovieBarChart);
+    setSeriesDataForTopStatsChart(paginatedDataForTopStats);
+  }, [
+    currentChartPage,
+    currentTopChartPage,
+    moviesAndSeriesSortCategory,
+    topStatsSortCategory,
+    Data
+  ]);
 
   // Fetch filtered table data based on category
   useEffect(() => {
@@ -167,44 +183,49 @@ const TempHome: FC<CrmProps> = () => {
 
   const awardOptions = [
     {
-      label: "Total Award Wins",
+      label: "Общ брой спечелени награди",
       value: Data.totalAwards?.[0]?.total_awards_wins || 0
     },
     {
-      label: "Total Award Nominations",
+      label: "Общ брой номинации за награди",
       value: Data.totalAwards?.[0]?.total_awards_nominations || 0
     },
     {
-      label: "Total Oscar Wins",
+      label: "Общ брой спечелени Оскари",
       value: Data.totalAwards?.[0]?.total_oscar_wins || 0
     },
     {
-      label: "Total Oscar Nominations",
+      label: "Общ брой номинации за Оскари",
       value: Data.totalAwards?.[0]?.total_oscar_nominations || 0
     }
   ];
 
   const averagesOptions = [
     {
-      label: "Average Box Office",
+      label: "Среден Боксофис",
       value: Data.averageBoxOfficeAndScores?.[0]?.average_box_office || 0
     },
     {
-      label: "Average Metascore",
+      label: "Среден Метаскор",
       value: Data.averageBoxOfficeAndScores?.[0]?.average_metascore || 0
     },
     {
-      label: "Average IMDb Rating",
+      label: "Среден IMDb Рейтинг",
       value: Data.averageBoxOfficeAndScores?.[0]?.average_imdb_rating || 0
     },
     {
-      label: "Average Rotten Tomatoes",
+      label: "Среден Rotten Tomatoes Рейтинг",
       value: Data.averageBoxOfficeAndScores?.[0]?.average_rotten_tomatoes || 0
     }
   ];
   // Total number of pages for pagination
   const totalChartPages = getTotalBarChartPages(
     Data.sortedMoviesAndSeriesByIMDbRating.length,
+    pageSize
+  );
+
+  const totalTopChartPages = getTotalBarChartPages(
+    Data.topRecommendations.length,
     pageSize
   );
 
@@ -225,6 +246,26 @@ const TempHome: FC<CrmProps> = () => {
       pageSize,
       Data.sortedMoviesAndSeriesByIMDbRating.length,
       setCurrentChartPage
+    );
+  };
+
+  const handlePrevTopChartPage = () => {
+    handleBarChartPageChange(
+      "prev",
+      currentTopChartPage,
+      pageSize,
+      Data.topRecommendations.length,
+      setCurrentTopChartPage
+    );
+  };
+
+  const handleNextTopChartPage = () => {
+    handleBarChartPageChange(
+      "next",
+      currentTopChartPage,
+      pageSize,
+      Data.topRecommendations.length,
+      setCurrentTopChartPage
     );
   };
 
@@ -270,166 +311,269 @@ const TempHome: FC<CrmProps> = () => {
         </div>
       </div>
       <div className="grid grid-cols-12 gap-x-6">
-        <div className="xxl:col-span-9 xl:col-span-12  col-span-12">
-          <div className="grid grid-cols-12 gap-x-6">
-            <div className="xxl:col-span-4 xl:col-span-4  col-span-12">
-              <div className="xxl:col-span-6 xl:col-span-6 col-span-12">
-                <div className="box custom-box">
-                  <div className="box-body">
-                    <div className="flex flex-wrap items-start justify-between">
-                      <div className="flex-grow">
-                        <p className="mb-0 text-[#8c9097] dark:text-white/50">
-                          Общ брой потребители
-                        </p>
-                        <div className="flex items-center">
-                          <span className="text-[1.25rem] font-semibold">
-                            {Data.usersCount?.[0]?.user_count || 0}
-                          </span>
-                          <span className="text-[0.75rem] text-success ms-2">
-                            <i className="ti ti-trending-up me-1 inline-block"></i>
-                            0.42%
-                          </span>
-                        </div>
-                      </div>
-                      <div>
-                        <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
-                          <i className="bi bi-person-lines-fill text-[1rem]"></i>
-                        </span>
-                      </div>
-                    </div>
+        <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
+          <div className="box custom-box">
+            <div className="box-body">
+              <div className="flex flex-wrap items-start justify-between">
+                <div className="flex-grow">
+                  <p className="mb-0 text-[#8c9097] dark:text-white/50">
+                    Общ брой потребители
+                  </p>
+                  <div className="flex items-center">
+                    <span className="text-[1.25rem] font-semibold">
+                      {Data.usersCount?.[0]?.user_count || 0}
+                    </span>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className="xxl:col-span-8  xl:col-span-8  col-span-12">
-              <div className="grid grid-cols-12 gap-x-6">
-                <div className="xxl:col-span-6 xl:col-span-6 col-span-12">
-                  <div className="box custom-box">
-                    <div className="box-body">
-                      <div className="flex flex-wrap items-start justify-between">
-                        <div className="flex-grow">
-                          <div className="flex flex-wrap items-start">
-                            <p className="mb-0 text-[#8c9097] dark:text-white/50">
-                              {displayedNameAwards}
-                            </p>
-                            <div className="hs-dropdown ti-dropdown">
-                              <Link
-                                to="#"
-                                className="text-[0.75rem] px-2 font-normal text-primary"
-                                aria-expanded="false"
-                              >
-                                View All
-                                <i className="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
-                              </Link>
-                              <ul
-                                className="hs-dropdown-menu ti-dropdown-menu hidden"
-                                role="menu"
-                              >
-                                {awardOptions.map(({ label, value }) => (
-                                  <li key={label}>
-                                    <Link
-                                      onClick={() =>
-                                        handleDropdownClickAwards(
-                                          setDisplayedNameAwards,
-                                          setDisplayedValueAwards,
-                                          label,
-                                          value
-                                        )
-                                      }
-                                      className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                                      to="#"
-                                    >
-                                      {label}
-                                    </Link>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
-                          <div className="flex items-center">
-                            <span className="text-[1.25rem] font-semibold">
-                              {displayedValueAwards}
-                            </span>
-                            <span className="text-[0.75rem] text-success ms-2">
-                              <i className="ti ti-trending-up me-1 inline-block"></i>
-                              0.42%
-                            </span>
-                          </div>
-                        </div>
-                        <div>
-                          <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
-                            <i className="bi bi-person-lines-fill text-[1rem]"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="xxl:col-span-6 xl:col-span-6 col-span-12">
-                  <div className="box custom-box">
-                    <div className="box-body">
-                      <div className="flex flex-wrap items-start justify-between">
-                        <div className="flex-grow">
-                          <div className="flex flex-wrap items-start">
-                            <p className="mb-0 text-[#8c9097] dark:text-white/50">
-                              {displayedNameAverages}
-                            </p>
-                            <div className="hs-dropdown ti-dropdown">
-                              <Link
-                                to="#"
-                                className="text-[0.75rem] px-2 font-normal text-primary"
-                                aria-expanded="false"
-                              >
-                                View All
-                                <i className="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
-                              </Link>
-                              <ul
-                                className="hs-dropdown-menu ti-dropdown-menu hidden"
-                                role="menu"
-                              >
-                                {averagesOptions.map(({ label, value }) => (
-                                  <li key={label}>
-                                    <Link
-                                      onClick={() =>
-                                        handleDropdownClickAverages(
-                                          setDisplayedNameAverages,
-                                          setDisplayedValueAverages,
-                                          label,
-                                          value
-                                        )
-                                      }
-                                      className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                                      to="#"
-                                    >
-                                      {label}
-                                    </Link>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
-                          <div className="flex items-center">
-                            <span className="text-[1.25rem] font-semibold">
-                              {displayedValueAverages}
-                            </span>
-                            <span className="text-[0.75rem] text-success ms-2">
-                              <i className="ti ti-trending-up me-1 inline-block"></i>
-                              0.42%
-                            </span>
-                          </div>
-                        </div>
-                        <div>
-                          <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
-                            <i className="bi bi-person-lines-fill text-[1rem]"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                <div>
+                  <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
+                    <i className="bi bi-person-lines-fill text-[1rem]"></i>
+                  </span>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+        <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
+          <div className="box custom-box">
+            <div className="box-body">
+              <div className="flex flex-wrap items-start justify-between">
+                <div className="flex-grow">
+                  <p className="mb-0 text-[#8c9097] dark:text-white/50">
+                    Най-препоръчан жанр
+                  </p>
+                  <div className="flex items-center">
+                    <span className="text-[1.25rem] font-semibold">
+                      {Data.topGenres[0]?.genre_bg}
+                    </span>
+                  </div>
+                </div>
+                <div>
+                  <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
+                    <i className="bi bi-person-lines-fill text-[1rem]"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
+          <div className="box custom-box">
+            <div className="box-body">
+              <div className="flex flex-wrap items-start justify-between">
+                <div className="flex-grow">
+                  <div className="flex flex-wrap items-start">
+                    <p className="mb-0 text-[#8c9097] dark:text-white/50">
+                      {displayedNameAverages}
+                    </p>
+                    <div className="hs-dropdown ti-dropdown">
+                      <Link
+                        to="#"
+                        className="text-[0.75rem] px-2 font-normal text-primary"
+                        aria-expanded="false"
+                      >
+                        Сортирай по
+                        <i className="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
+                      </Link>
+                      <ul
+                        className="hs-dropdown-menu ti-dropdown-menu hidden"
+                        role="menu"
+                      >
+                        {averagesOptions.map(({ label, value }) => (
+                          <li key={label}>
+                            <Link
+                              onClick={() =>
+                                handleDropdownClickAverages(
+                                  setDisplayedNameAverages,
+                                  setDisplayedValueAverages,
+                                  label,
+                                  value
+                                )
+                              }
+                              className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
+                              to="#"
+                            >
+                              {label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-[1.25rem] font-semibold">
+                      {displayedValueAverages}
+                    </span>
+                  </div>
+                </div>
+                <div>
+                  <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
+                    <i className="bi bi-person-lines-fill text-[1rem]"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
+          <div className="box custom-box">
+            <div className="box-body">
+              <div className="flex flex-wrap items-start justify-between">
+                <div className="flex-grow">
+                  <div className="flex flex-wrap items-start">
+                    <p className="mb-0 text-[#8c9097] dark:text-white/50">
+                      {displayedNameAwards}
+                    </p>
+                    <div className="hs-dropdown ti-dropdown">
+                      <Link
+                        to="#"
+                        className="text-[0.75rem] px-2 font-normal text-primary"
+                        aria-expanded="false"
+                      >
+                        Сортирай по
+                        <i className="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
+                      </Link>
+                      <ul
+                        className="hs-dropdown-menu ti-dropdown-menu hidden"
+                        role="menu"
+                      >
+                        {awardOptions.map(({ label, value }) => (
+                          <li key={label}>
+                            <Link
+                              onClick={() =>
+                                handleDropdownClickAwards(
+                                  setDisplayedNameAwards,
+                                  setDisplayedValueAwards,
+                                  label,
+                                  value
+                                )
+                              }
+                              className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
+                              to="#"
+                            >
+                              {label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-[1.25rem] font-semibold">
+                      {displayedValueAwards}
+                    </span>
+                  </div>
+                </div>
+                <div>
+                  <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
+                    <i className="bi bi-person-lines-fill text-[1rem]"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="xxl:col-span-6 col-span-12">
+          <div className="xxl:col-span-6 col-span-12">
+            <div className="xl:col-span-6 col-span-12">
+              <div className="box custom-box">
+                <div className="box-header ">
+                  <div className="box-title">
+                    Най-успешни филми по IMDb Рейтинг и Боксофис
+                  </div>
+                </div>
+                <div className="box-body">
+                  <div id="bubble-simple">
+                    <MovieProsperityBubbleChart
+                      sortedMoviesByProsperity={Data.sortedMoviesByProsperity}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="xl:col-span-6 col-span-12">
+              <div className="box custom-box">
+                <div className="box-header justify-between">
+                  <div className="box-title">
+                    {
+                      tableCategoryDisplayNames[
+                        topStatsSortCategory as keyof typeof tableCategoryDisplayNames
+                      ]
+                    }{" "}
+                    по бройка
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <div
+                      className="inline-flex rounded-md shadow-sm"
+                      role="group"
+                      aria-label="Sort By"
+                    >
+                      {["Actors", "Directors", "Writers"].map(
+                        (category, index) => (
+                          <button
+                            key={category}
+                            type="button"
+                            className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
+                              category === topStatsSortCategory
+                                ? "ti-btn-primary-full text-white"
+                                : "text-[#CC3333] bg-[#be1313] bg-opacity-10"
+                            } ${
+                              index === 0
+                                ? "rounded-l-md"
+                                : index === 2
+                                ? "rounded-r-md"
+                                : ""
+                            }`}
+                            onClick={() =>
+                              handleTopStatsSortCategory(
+                                category,
+                                setTopStatsSortCategory
+                              )
+                            }
+                          >
+                            {
+                              tableCategoryDisplayNames[
+                                category as keyof typeof tableCategoryDisplayNames
+                              ]
+                            }
+                          </button>
+                        )
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="box-body">
+                  <div id="treemap-basic">
+                    <Treemap
+                      data={
+                        topStatsSortCategory === "Actors"
+                          ? Data.topActors
+                          : topStatsSortCategory === "Directors"
+                          ? Data.topDirectors
+                          : Data.topWriters
+                      }
+                      role={topStatsSortCategory}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="xxl:col-span-12 xl:col-span-6  col-span-12">
+              <div className="box">
+                <div className="box-header justify-between">
+                  <div className="box-title">
+                    {" "}
+                    Топ държави с най-много препоръки
+                  </div>
+                </div>
+                <div className="box-body">
+                  <CountryBarChart topCountries={Data?.topCountries} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="xxl:col-span-6 xl:col-span-12  col-span-12">
           <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
             <div className="box custom-card">
               <div className="box-header justify-between">
@@ -506,7 +650,7 @@ const TempHome: FC<CrmProps> = () => {
                           Просперитетен рейтинг
                         </th>
                         <th scope="col" className="!text-start !text-[0.85rem]">
-                          IMDB рейтинг
+                          IMDb рейтинг
                         </th>
                         <th scope="col" className="!text-start !text-[0.85rem]">
                           Боксофис
@@ -630,59 +774,89 @@ const TempHome: FC<CrmProps> = () => {
               </div>
             </div>
           </div>
-
-          <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
-            <div className="box">
-              <div className="box-header !gap-0 !m-0 justify-between">
-                <div className="box-title">Genre popularity over time</div>
-                <div className="hs-dropdown ti-dropdown">
-                  <Link
-                    to="#"
-                    className="text-[0.75rem] px-2 font-normal text-[#8c9097] dark:text-white/50"
-                    aria-expanded="false"
-                  >
-                    View All
-                    <i className="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
-                  </Link>
-                  <ul
-                    className="hs-dropdown-menu ti-dropdown-menu hidden"
-                    role="menu"
-                  >
-                    <li>
-                      <Link
-                        className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                        to="#"
-                      >
-                        Today
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                        to="#"
-                      >
-                        This Week
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                        to="#"
-                      >
-                        Last Week
-                      </Link>
-                    </li>
-                  </ul>
+          <div className="xl:col-span-6 col-span-12">
+            <div className="box custom-box">
+              <div className="custom-box-header">
+                <div className="box-title">Най-често препоръчани филми</div>
+              </div>
+              <div className="box-body">
+                <div id="donut-simple">
+                  <TopRecommendationsBarChart
+                    seriesData={seriesDataForTopStatsBarChart}
+                  />
                 </div>
               </div>
-              <div className="xl:col-span-6 col-span-12">
-                <div className="box custom-box">
-                  <div className="box-body">
-                    <div id="heatmap-colorrange">
-                      <GenrePopularityOverTime
-                        seriesData={seriesDataForHeatmap}
-                      />
-                    </div>
+              <div className="box-footer">
+                <div className="sm:flex items-center">
+                  <div className="text-defaulttextcolor dark:text-defaulttextcolor/70">
+                    Показване на резултати от{" "}
+                    <b>
+                      {currentTopChartPage === 1
+                        ? 1
+                        : (currentTopChartPage - 1) * 5 + 1}{" "}
+                    </b>
+                    до{" "}
+                    <b>
+                      {currentTopChartPage === totalTopChartPages
+                        ? Data.topRecommendations.length
+                        : currentTopChartPage * 5}{" "}
+                    </b>
+                    от общо <b>{Data.topRecommendations.length}</b> ( Страница{" "}
+                    <b>{currentTopChartPage}</b> )
+                    <i className="bi bi-arrow-right ms-2 font-semibold"></i>
+                  </div>
+                  <div className="ms-auto">
+                    <nav
+                      aria-label="Page navigation"
+                      className="pagination-style-4"
+                    >
+                      <ul className="ti-pagination mb-0">
+                        <li
+                          className={`page-item ${
+                            currentTopChartPage === 1 ? "disabled" : ""
+                          }`}
+                        >
+                          <Link
+                            className="page-link"
+                            to="#"
+                            onClick={handlePrevTopChartPage}
+                          >
+                            Предишна
+                          </Link>
+                        </li>
+                        {[...Array(totalTopChartPages)].map((_, index) => (
+                          <li
+                            key={index}
+                            className={`page-item ${
+                              currentTopChartPage === index + 1 ? "active" : ""
+                            }`}
+                          >
+                            <Link
+                              className="page-link"
+                              to="#"
+                              onClick={() => setCurrentTopChartPage(index + 1)}
+                            >
+                              {index + 1}
+                            </Link>
+                          </li>
+                        ))}
+                        <li
+                          className={`page-item ${
+                            currentTopChartPage === totalTopChartPages
+                              ? "disabled"
+                              : ""
+                          }`}
+                        >
+                          <Link
+                            className="page-link"
+                            to="#"
+                            onClick={handleNextTopChartPage}
+                          >
+                            Следваща
+                          </Link>
+                        </li>
+                      </ul>
+                    </nav>
                   </div>
                 </div>
               </div>
@@ -690,23 +864,7 @@ const TempHome: FC<CrmProps> = () => {
           </div>
           <div className="xl:col-span-6 col-span-12">
             <div className="box custom-box">
-              <div className="box-header">
-                <div className="box-title">
-                  Movies by Box Office and IMDb Rating
-                </div>
-              </div>
-              <div className="box-body">
-                <div id="scatter-basic">
-                  <BoxOfficeVsIMDBRating
-                    seriesData={seriesDataForScatterChart}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="xl:col-span-6 col-span-12">
-            <div className="box custom-box">
-              <div className="box-header justify-between">
+              <div className="custom-box-header justify-between">
                 <div className="box-title">
                   Филми{" "}
                   {!(moviesAndSeriesSortCategory === "Metascore") &&
@@ -843,582 +1001,21 @@ const TempHome: FC<CrmProps> = () => {
               </div>
             </div>
           </div>
-          <div className="xl:col-span-6 col-span-12">
-            <div className="box custom-box">
-              <div className="box-header ">
-                <div className="box-title">Simple Bubble Chart</div>
-              </div>
-
-              <div className="box-body">
-                <div id="bubble-simple">
-                  <MovieProsperityBubbleChart
-                    sortedMoviesByProsperity={Data.sortedMoviesByProsperity}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="xl:col-span-6 col-span-12">
-            <div className="box custom-box">
-              <div className="box-header justify-between">
+          <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
+            <div className="box">
+              <div className="box-header !gap-0 !m-0 justify-between">
                 <div className="box-title">
-                  {
-                    tableCategoryDisplayNames[
-                      topStatsSortCategory as keyof typeof tableCategoryDisplayNames
-                    ]
-                  }{" "}
-                  по бройка
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <div
-                    className="inline-flex rounded-md shadow-sm"
-                    role="group"
-                    aria-label="Sort By"
-                  >
-                    {["Actors", "Directors", "Writers"].map(
-                      (category, index) => (
-                        <button
-                          key={category}
-                          type="button"
-                          className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
-                            category === topStatsSortCategory
-                              ? "ti-btn-primary-full text-white"
-                              : "text-[#CC3333] bg-[#be1313] bg-opacity-10"
-                          } ${
-                            index === 0
-                              ? "rounded-l-md"
-                              : index === 2
-                              ? "rounded-r-md"
-                              : ""
-                          }`}
-                          onClick={() =>
-                            handleTopStatsSortCategory(
-                              category,
-                              setTopStatsSortCategory
-                            )
-                          }
-                        >
-                          {
-                            tableCategoryDisplayNames[
-                              category as keyof typeof tableCategoryDisplayNames
-                            ]
-                          }
-                        </button>
-                      )
-                    )}
-                  </div>
+                  Популярност на жанровете през времето
                 </div>
               </div>
-              <div className="box-body">
-                <div id="treemap-basic">
-                  <Treemap
-                    data={
-                      topStatsSortCategory === "Actors"
-                        ? Data.topActors
-                        : topStatsSortCategory === "Directors"
-                        ? Data.topDirectors
-                        : Data.topWriters
-                    }
-                    role={topStatsSortCategory}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="xl:col-span-6 col-span-12">
-            <div className="box custom-box">
-              <div className="box-header">
-                <div className="box-title">Simple Donut Chart</div>
-              </div>
-              <div className="box-body">
-                <div id="donut-simple">
-                  <TopRecommendationsBarChart
-                    seriesData={Data.topRecommendations}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
-            <div className="box">
-              <div className="box-header flex justify-between">
-                <div className="box-title">Top Deals</div>
-                <div className="hs-dropdown ti-dropdown">
-                  <Link
-                    aria-label="anchor"
-                    to="#"
-                    className="flex items-center justify-center w-[1.75rem] h-[1.75rem]  !text-[0.8rem] !py-1 !px-2 rounded-sm bg-light border-light shadow-none !font-medium"
-                    aria-expanded="false"
-                  >
-                    <i className="fe fe-more-vertical text-[0.8rem]"></i>
-                  </Link>
-                  <ul className="hs-dropdown-menu ti-dropdown-menu hidden">
-                    <li>
-                      <Link
-                        className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                        to="#"
-                      >
-                        Week
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                        to="#"
-                      >
-                        Month
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                        to="#"
-                      >
-                        Year
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div className="box-body">
-                <ul className="list-none crm-top-deals mb-0">
-                  <li className="mb-[0.9rem]">
-                    <div className="flex items-start flex-wrap">
-                      <div className="me-2">
-                        <span className=" inline-flex items-center justify-center">
-                          <img
-                            src={face10}
-                            alt=""
-                            className="w-[1.75rem] h-[1.75rem] leading-[1.75rem] text-[0.65rem]  rounded-full"
-                          />
-                        </span>
-                      </div>
-                      <div className="flex-grow">
-                        <p className="font-semibold mb-[1.4px]  text-[0.813rem]">
-                          Michael Jordan
-                        </p>
-                        <p className="text-[#8c9097] dark:text-white/50 text-[0.75rem]">
-                          michael.jordan@example.com
-                        </p>
-                      </div>
-                      <div className="font-semibold text-[0.9375rem] ">
-                        $2,893
-                      </div>
+              <div className="xl:col-span-6 col-span-12">
+                <div className="box custom-box">
+                  <div className="box-body">
+                    <div id="heatmap-colorrange">
+                      <GenrePopularityOverTime
+                        seriesData={seriesDataForHeatmap}
+                      />
                     </div>
-                  </li>
-                  <li className="mb-[0.9rem]">
-                    <div className="flex items-start flex-wrap">
-                      <div className="me-2">
-                        <span className="inline-flex items-center justify-center !w-[1.75rem] !h-[1.75rem] leading-[1.75rem] text-[0.65rem]  rounded-full text-warning  bg-warning/10 font-semibold">
-                          EK
-                        </span>
-                      </div>
-                      <div className="flex-grow">
-                        <p className="font-semibold mb-[1.4px]  text-[0.813rem]">
-                          Emigo Kiaren
-                        </p>
-                        <p className="text-[#8c9097] dark:text-white/50 text-[0.75rem]">
-                          emigo.kiaren@gmail.com
-                        </p>
-                      </div>
-                      <div className="font-semibold text-[0.9375rem] ">
-                        $4,289
-                      </div>
-                    </div>
-                  </li>
-                  <li className="mb-[0.9rem]">
-                    <div className="flex items-top flex-wrap">
-                      <div className="me-2">
-                        <span className="inline-flex items-center justify-center">
-                          <img
-                            src={face12}
-                            alt=""
-                            className="!w-[1.75rem] !h-[1.75rem] leading-[1.75rem] text-[0.65rem]  rounded-full"
-                          />
-                        </span>
-                      </div>
-                      <div className="flex-grow">
-                        <p className="font-semibold mb-[1.4px]  text-[0.813rem]">
-                          Randy Origoan
-                        </p>
-                        <p className="text-[#8c9097] dark:text-white/50 text-[0.75rem]">
-                          randy.origoan@gmail.com
-                        </p>
-                      </div>
-                      <div className="font-semibold text-[0.9375rem] ">
-                        $6,347
-                      </div>
-                    </div>
-                  </li>
-                  <li className="mb-[0.9rem]">
-                    <div className="flex items-top flex-wrap">
-                      <div className="me-2">
-                        <span className="inline-flex items-center justify-center !w-[1.75rem] !h-[1.75rem] leading-[1.75rem] text-[0.65rem]  rounded-full text-success bg-success/10 font-semibold">
-                          GP
-                        </span>
-                      </div>
-                      <div className="flex-grow">
-                        <p className="font-semibold mb-[1.4px]  text-[0.813rem]">
-                          George Pieterson
-                        </p>
-                        <p className="text-[#8c9097] dark:text-white/50 text-[0.75rem]">
-                          george.pieterson@gmail.com
-                        </p>
-                      </div>
-                      <div className="font-semibold text-[0.9375rem] ">
-                        $3,894
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="flex items-top flex-wrap">
-                      <div className="me-2">
-                        <span className="inline-flex items-center justify-center !w-[1.75rem] !h-[1.75rem] leading-[1.75rem] text-[0.65rem]  rounded-full text-primary bg-primary/10 font-semibold">
-                          KA
-                        </span>
-                      </div>
-                      <div className="flex-grow">
-                        <p className="font-semibold mb-[1.4px]  text-[0.813rem]">
-                          Kiara Advain
-                        </p>
-                        <p className="text-[#8c9097] dark:text-white/50 text-[0.75rem]">
-                          kiaraadvain214@gmail.com
-                        </p>
-                      </div>
-                      <div className="font-semibold text-[0.9375rem] ">
-                        $2,679
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
-            <div className="box">
-              <div className="box-header justify-between">
-                <div className="box-title">Profit Earned</div>
-                <div className="hs-dropdown ti-dropdown">
-                  <Link
-                    to="#"
-                    className="px-2 font-normal text-[0.75rem] text-[#8c9097] dark:text-white/50"
-                    aria-expanded="false"
-                  >
-                    View All
-                    <i className="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
-                  </Link>
-                  <ul
-                    className="hs-dropdown-menu ti-dropdown-menu hidden"
-                    role="menu"
-                  >
-                    <li>
-                      <Link
-                        className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                        to="#"
-                      >
-                        Today
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                        to="#"
-                      >
-                        This Week
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                        to="#"
-                      >
-                        Last Week
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div className="box-body !py-0 !ps-0">
-                <div id="crm-profits-earned">
-                  <Profitearned />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="xxl:col-span-3 xl:col-span-12 col-span-12">
-          <div className="grid grid-cols-12 gap-x-6">
-            <div className="xxl:col-span-12 xl:col-span-6 col-span-12">
-              <div className="box custom-box">
-                <div className="box-body">
-                  <div className="flex flex-wrap items-start justify-between">
-                    <div className="flex-grow">
-                      <p className="mb-0 text-[#8c9097] dark:text-white/50">
-                        Top Genre
-                      </p>
-                      <div className="flex items-center">
-                        <span className="text-[1.25rem] font-semibold">
-                          {Data.topGenres[0]?.genre_bg}
-                        </span>
-                      </div>
-                    </div>
-                    <div>
-                      <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
-                        <i className="bi bi-person-lines-fill text-[1rem]"></i>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="xxl:col-span-12 xl:col-span-6  col-span-12">
-              <div className="box">
-                <div className="box-header justify-between">
-                  <div className="box-title">
-                    {" "}
-                    Топ държави с най-много препоръки
-                  </div>
-                </div>
-                <div className="box-body">
-                  <CountryBarChart topCountries={Data?.topCountries} />
-                </div>
-              </div>
-            </div>
-            <div className="xxl:col-span-12 xl:col-span-6  col-span-12">
-              <div className="box">
-                <div className="box-header justify-between">
-                  <div className="box-title">Recent Activity</div>
-                  <div className="hs-dropdown ti-dropdown">
-                    <Link
-                      to="#"
-                      className="text-[0.75rem] px-2 font-normal text-[#8c9097] dark:text-white/50"
-                      aria-expanded="false"
-                    >
-                      View All
-                      <i className="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
-                    </Link>
-                    <ul
-                      className="hs-dropdown-menu ti-dropdown-menu hidden"
-                      role="menu"
-                    >
-                      <li>
-                        <Link
-                          className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                          to="#"
-                        >
-                          Today
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                          to="#"
-                        >
-                          This Week
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                          to="#"
-                        >
-                          Last Week
-                        </Link>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="box-body">
-                  <div>
-                    <ul className="list-none mb-0 crm-recent-activity">
-                      <li className="crm-recent-activity-content">
-                        <div className="flex items-start">
-                          <div className="me-4">
-                            <span className="w-[1.25rem] h-[1.25rem] inline-flex items-center justify-center font-medium leading-[1.25rem] text-[0.65rem] text-primary bg-primary/10 rounded-full">
-                              <i className="bi bi-circle-fill text-[0.5rem]"></i>
-                            </span>
-                          </div>
-                          <div className="crm-timeline-content text-defaultsize">
-                            <span className="font-semibold ">
-                              Update of calendar events &amp;
-                            </span>
-                            <span>
-                              <Link
-                                to="#"
-                                className="text-primary font-semibold"
-                              >
-                                Added new events in next week.
-                              </Link>
-                            </span>
-                          </div>
-                          <div className="flex-grow text-end">
-                            <span className="block text-[#8c9097] dark:text-white/50 text-[0.6875rem] opacity-[0.7]">
-                              4:45PM
-                            </span>
-                          </div>
-                        </div>
-                      </li>
-                      <li className="crm-recent-activity-content">
-                        <div className="flex items-start  text-defaultsize">
-                          <div className="me-4">
-                            <span className="w-[1.25rem] h-[1.25rem] leading-[1.25rem] inline-flex items-center justify-center font-medium text-[0.65rem] text-secondary bg-secondary/10 rounded-full">
-                              <i className="bi bi-circle-fill text-[0.5rem]"></i>
-                            </span>
-                          </div>
-                          <div className="crm-timeline-content">
-                            <span>
-                              New theme for{" "}
-                              <span className="font-semibold">
-                                Spruko Website
-                              </span>{" "}
-                              completed
-                            </span>
-                            <span className="block text-[0.75rem] text-[#8c9097] dark:text-white/50">
-                              Lorem ipsum, dolor sit amet.
-                            </span>
-                          </div>
-                          <div className="flex-grow text-end">
-                            <span className="block text-[#8c9097] dark:text-white/50 text-[0.6875rem] opacity-[0.7]">
-                              3 hrs
-                            </span>
-                          </div>
-                        </div>
-                      </li>
-                      <li className="crm-recent-activity-content  text-defaultsize">
-                        <div className="flex items-start">
-                          <div className="me-4">
-                            <span className="w-[1.25rem] h-[1.25rem] leading-[1.25rem] inline-flex items-center justify-center font-medium text-[0.65rem] text-success bg-success/10 rounded-full">
-                              <i className="bi bi-circle-fill  text-[0.5rem]"></i>
-                            </span>
-                          </div>
-                          <div className="crm-timeline-content">
-                            <span>
-                              Created a{" "}
-                              <span className="text-success font-semibold">
-                                New Task
-                              </span>{" "}
-                              today{" "}
-                              <span className="w-[1.25rem] h-[1.25rem] leading-[1.25rem] text-[0.65rem] inline-flex items-center justify-center font-medium bg-purple/10 rounded-full ms-1">
-                                <i className="ri-add-fill text-purple text-[0.75rem]"></i>
-                              </span>
-                            </span>
-                          </div>
-                          <div className="flex-grow text-end">
-                            <span className="block text-[#8c9097] dark:text-white/50 text-[0.6875rem] opacity-[0.7]">
-                              22 hrs
-                            </span>
-                          </div>
-                        </div>
-                      </li>
-                      <li className="crm-recent-activity-content  text-defaultsize">
-                        <div className="flex items-start">
-                          <div className="me-4">
-                            <span className="w-[1.25rem] h-[1.25rem] leading-[1.25rem] inline-flex items-center justify-center font-medium text-[0.65rem] text-pink bg-pink/10 rounded-full">
-                              <i className="bi bi-circle-fill text-[0.5rem]"></i>
-                            </span>
-                          </div>
-                          <div className="crm-timeline-content">
-                            <span>
-                              New member{" "}
-                              <span className="py-[0.2rem] px-[0.45rem] font-semibold rounded-sm text-pink text-[0.75em] bg-pink/10">
-                                @andreas gurrero
-                              </span>{" "}
-                              added today to AI Summit.
-                            </span>
-                          </div>
-                          <div className="flex-grow text-end">
-                            <span className="block text-[#8c9097] dark:text-white/50 text-[0.6875rem] opacity-[0.7]">
-                              Today
-                            </span>
-                          </div>
-                        </div>
-                      </li>
-                      <li className="crm-recent-activity-content  text-defaultsize">
-                        <div className="flex items-start">
-                          <div className="me-4">
-                            <span className="w-[1.25rem] h-[1.25rem] leading-[1.25rem] inline-flex items-center justify-center font-medium text-[0.65rem] text-warning bg-warning/10 rounded-full">
-                              <i className="bi bi-circle-fill text-[0.5rem]"></i>
-                            </span>
-                          </div>
-                          <div className="crm-timeline-content">
-                            <span>32 New people joined summit.</span>
-                          </div>
-                          <div className="flex-grow text-end">
-                            <span className="block text-[#8c9097] dark:text-white/50 text-[0.6875rem] opacity-[0.7]">
-                              22 hrs
-                            </span>
-                          </div>
-                        </div>
-                      </li>
-                      <li className="crm-recent-activity-content  text-defaultsize">
-                        <div className="flex items-start">
-                          <div className="me-4">
-                            <span className="w-[1.25rem] h-[1.25rem] leading-[1.25rem] inline-flex items-center justify-center font-medium text-[0.65rem] text-info bg-info/10 rounded-full">
-                              <i className="bi bi-circle-fill text-[0.5rem]"></i>
-                            </span>
-                          </div>
-                          <div className="crm-timeline-content">
-                            <span>
-                              Neon Tarly added{" "}
-                              <span className="text-info font-semibold">
-                                Robert Bright
-                              </span>{" "}
-                              to AI summit project.
-                            </span>
-                          </div>
-                          <div className="flex-grow text-end">
-                            <span className="block text-[#8c9097] dark:text-white/50 text-[0.6875rem] opacity-[0.7]">
-                              12 hrs
-                            </span>
-                          </div>
-                        </div>
-                      </li>
-                      <li className="crm-recent-activity-content  text-defaultsize">
-                        <div className="flex items-start">
-                          <div className="me-4">
-                            <span className="w-[1.25rem] h-[1.25rem] leading-[1.25rem] inline-flex items-center justify-center font-medium text-[0.65rem] text-[#232323] dark:text-white bg-[#232323]/10 dark:bg-white/20 rounded-full">
-                              <i className="bi bi-circle-fill text-[0.5rem]"></i>
-                            </span>
-                          </div>
-                          <div className="crm-timeline-content">
-                            <span>
-                              Replied to new support request{" "}
-                              <i className="ri-checkbox-circle-line text-success text-[1rem] align-middle"></i>
-                            </span>
-                          </div>
-                          <div className="flex-grow text-end">
-                            <span className="block text-[#8c9097] dark:text-white/50 text-[0.6875rem] opacity-[0.7]">
-                              4 hrs
-                            </span>
-                          </div>
-                        </div>
-                      </li>
-                      <li className="crm-recent-activity-content  text-defaultsize">
-                        <div className="flex items-start">
-                          <div className="me-4">
-                            <span className="w-[1.25rem] h-[1.25rem] leading-[1.25rem] inline-flex items-center justify-center font-medium text-[0.65rem] text-purple bg-purple/10 rounded-full">
-                              <i className="bi bi-circle-fill text-[0.5rem]"></i>
-                            </span>
-                          </div>
-                          <div className="crm-timeline-content">
-                            <span>
-                              Completed documentation of{" "}
-                              <Link
-                                to="#"
-                                className="text-purple underline font-semibold"
-                              >
-                                AI Summit.
-                              </Link>
-                            </span>
-                          </div>
-                          <div className="flex-grow text-end">
-                            <span className="block text-[#8c9097] dark:text-white/50 text-[0.6875rem] opacity-[0.7]">
-                              4 hrs
-                            </span>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
                   </div>
                 </div>
               </div>
@@ -1426,6 +1023,7 @@ const TempHome: FC<CrmProps> = () => {
           </div>
         </div>
       </div>
+      <div className="grid grid-cols-12 gap-x-6"></div>
       <div className="transition fixed inset-0 z-50 bg-gray-900 bg-opacity-50 dark:bg-opacity-80 opacity-0 hidden"></div>
     </Fragment>
   );

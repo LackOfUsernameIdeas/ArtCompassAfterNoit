@@ -15851,6 +15851,13 @@ body {
   @apply font-medium border-b border-b-defaultborder md:flex items-center gap-[0.25rem] rounded-t-sm px-[1.25rem] py-4 dark:border-white/10 flex-wrap;
 }
 
+.custom-box-header {
+  @apply font-medium border-b border-b-defaultborder md:flex items-center gap-[0.25rem] rounded-t-sm px-[1.25rem] py-4 dark:border-white/10 flex-wrap;
+  min-height: 70px; /* Ensures consistent header height across charts */
+  display: flex;
+  align-items: center;
+}
+
 .box-title {
   @apply relative font-[700] text-defaulttextcolor text-[.9375rem] me-auto dark:text-defaulttextcolor/70 before:absolute;
 }
