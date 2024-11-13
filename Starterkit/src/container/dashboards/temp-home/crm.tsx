@@ -395,7 +395,11 @@ const TempHome: FC<CrmProps> = () => {
                                         value
                                       )
                                     }
-                                    className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
+                                    className={`ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium ${
+                                      displayedNameAverages === label
+                                        ? "bg-primary text-white"
+                                        : ""
+                                    }`}
                                     to="#"
                                   >
                                     {label}
@@ -455,7 +459,11 @@ const TempHome: FC<CrmProps> = () => {
                                         value
                                       )
                                     }
-                                    className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
+                                    className={`ti-dropdown-item py-0.5 px-[0.625rem] text-[0.625rem] font-medium block ${
+                                      displayedNameAwards === label
+                                        ? "bg-primary text-white"
+                                        : ""
+                                    }`}
                                     to="#"
                                   >
                                     {label}
@@ -573,7 +581,11 @@ const TempHome: FC<CrmProps> = () => {
                                       value
                                     )
                                   }
-                                  className="ti-dropdown-item py-0.5 px-[0.625rem] text-[0.625rem] font-medium block"
+                                  className={`ti-dropdown-item py-0.5 px-[0.625rem] text-[0.625rem] font-medium block ${
+                                    displayedNameAverages === label
+                                      ? "bg-primary text-white"
+                                      : ""
+                                  }`}
                                   to="#"
                                 >
                                   {label}
@@ -599,7 +611,6 @@ const TempHome: FC<CrmProps> = () => {
                 </div>
               </div>
             </div>
-
             <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
               <div className="box custom-box">
                 <div className="box-body h-[5.5rem]">
@@ -639,7 +650,11 @@ const TempHome: FC<CrmProps> = () => {
                                       value
                                     )
                                   }
-                                  className="ti-dropdown-item py-0.5 px-[0.625rem] text-[0.625rem] font-medium block"
+                                  className={`ti-dropdown-item py-0.5 px-[0.625rem] text-[0.625rem] font-medium block ${
+                                    displayedNameAwards === label
+                                      ? "bg-primary text-white"
+                                      : ""
+                                  }`}
                                   to="#"
                                 >
                                   {label}
@@ -657,7 +672,7 @@ const TempHome: FC<CrmProps> = () => {
                     </div>
                     <div>
                       <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
-                        <i className="bi bi-person-lines-fill text-[0.875rem]"></i>{" "}
+                        <i className="bi bi-person-lines-fill text-[0.875rem]"></i>
                       </span>
                     </div>
                   </div>
