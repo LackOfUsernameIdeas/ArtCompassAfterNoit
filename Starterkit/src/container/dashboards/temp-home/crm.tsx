@@ -28,8 +28,7 @@ import {
   handleMoviesAndSeriesSortCategory,
   handleTopStatsSortCategory
 } from "../helper_functions";
-import face10 from "../../../assets/images/faces/10.jpg";
-import face12 from "../../../assets/images/faces/12.jpg";
+import { useMediaQuery } from "react-responsive";
 
 interface CrmProps {}
 
@@ -300,6 +299,9 @@ const TempHome: FC<CrmProps> = () => {
     RottenTomatoes: "Rotten Tomatoes Рейтинг"
   };
 
+  const is1803 = useMediaQuery({ query: "(max-width: 1803px)" });
+  const is1441 = useMediaQuery({ query: "(max-width: 1441px)" });
+  const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
   console.log("seriesDataForScatterChart: ", seriesDataForScatterChart);
   return (
     <Fragment>
@@ -311,172 +313,363 @@ const TempHome: FC<CrmProps> = () => {
         </div>
       </div>
       <div className="grid grid-cols-12 gap-x-6">
-        <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
-          <div className="box custom-box">
-            <div className="box-body">
-              <div className="flex flex-wrap items-start justify-between">
-                <div className="flex-grow">
-                  <p className="mb-0 text-[#8c9097] dark:text-white/50">
-                    Общ брой потребители
-                  </p>
-                  <div className="flex items-center">
-                    <span className="text-[1.25rem] font-semibold">
-                      {Data.usersCount?.[0]?.user_count || 0}
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
-                    <i className="bi bi-person-lines-fill text-[1rem]"></i>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
-          <div className="box custom-box">
-            <div className="box-body">
-              <div className="flex flex-wrap items-start justify-between">
-                <div className="flex-grow">
-                  <p className="mb-0 text-[#8c9097] dark:text-white/50">
-                    Най-препоръчан жанр
-                  </p>
-                  <div className="flex items-center">
-                    <span className="text-[1.25rem] font-semibold">
-                      {Data.topGenres[0]?.genre_bg}
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
-                    <i className="bi bi-person-lines-fill text-[1rem]"></i>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
-          <div className="box custom-box">
-            <div className="box-body">
-              <div className="flex flex-wrap items-start justify-between">
-                <div className="flex-grow">
-                  <div className="flex flex-wrap items-start">
-                    <p className="mb-0 text-[#8c9097] dark:text-white/50">
-                      {displayedNameAverages}
-                    </p>
-                    <div className="hs-dropdown ti-dropdown">
-                      <Link
-                        to="#"
-                        className="text-[0.75rem] px-2 font-normal text-primary"
-                        aria-expanded="false"
-                      >
-                        Сортирай по
-                        <i className="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
-                      </Link>
-                      <ul
-                        className="hs-dropdown-menu ti-dropdown-menu hidden"
-                        role="menu"
-                      >
-                        {averagesOptions.map(({ label, value }) => (
-                          <li key={label}>
-                            <Link
-                              onClick={() =>
-                                handleDropdownClickAverages(
-                                  setDisplayedNameAverages,
-                                  setDisplayedValueAverages,
-                                  label,
-                                  value
-                                )
-                              }
-                              className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                              to="#"
-                            >
-                              {label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
+        {!is1803 ? (
+          <>
+            <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
+              <div className="box custom-box">
+                <div className="box-body">
+                  <div className="flex flex-wrap items-start justify-between">
+                    <div className="flex-grow">
+                      <p className="mb-0 text-[#8c9097] dark:text-white/50">
+                        Общ брой потребители
+                      </p>
+                      <div className="flex items-center">
+                        <span className="text-[1.25rem] font-semibold">
+                          {Data.usersCount?.[0]?.user_count || 0}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
+                        <i className="bi bi-person-lines-fill text-[1rem]"></i>
+                      </span>
                     </div>
                   </div>
-                  <div className="flex items-center">
-                    <span className="text-[1.25rem] font-semibold">
-                      {displayedValueAverages}
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
-                    <i className="bi bi-person-lines-fill text-[1rem]"></i>
-                  </span>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
-          <div className="box custom-box">
-            <div className="box-body">
-              <div className="flex flex-wrap items-start justify-between">
-                <div className="flex-grow">
-                  <div className="flex flex-wrap items-start">
-                    <p className="mb-0 text-[#8c9097] dark:text-white/50">
-                      {displayedNameAwards}
-                    </p>
-                    <div className="hs-dropdown ti-dropdown">
-                      <Link
-                        to="#"
-                        className="text-[0.75rem] px-2 font-normal text-primary"
-                        aria-expanded="false"
-                      >
-                        Сортирай по
-                        <i className="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
-                      </Link>
-                      <ul
-                        className="hs-dropdown-menu ti-dropdown-menu hidden"
-                        role="menu"
-                      >
-                        {awardOptions.map(({ label, value }) => (
-                          <li key={label}>
-                            <Link
-                              onClick={() =>
-                                handleDropdownClickAwards(
-                                  setDisplayedNameAwards,
-                                  setDisplayedValueAwards,
-                                  label,
-                                  value
-                                )
-                              }
-                              className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
-                              to="#"
-                            >
-                              {label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
+            <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
+              <div className="box custom-box">
+                <div className="box-body">
+                  <div className="flex flex-wrap items-start justify-between">
+                    <div className="flex-grow">
+                      <p className="mb-0 text-[#8c9097] dark:text-white/50">
+                        Най-препоръчан жанр
+                      </p>
+                      <div className="flex items-center">
+                        <span className="text-[1.25rem] font-semibold">
+                          {Data.topGenres[0]?.genre_bg}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
+                        <i className="bi bi-person-lines-fill text-[1rem]"></i>
+                      </span>
                     </div>
                   </div>
-                  <div className="flex items-center">
-                    <span className="text-[1.25rem] font-semibold">
-                      {displayedValueAwards}
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
-                    <i className="bi bi-person-lines-fill text-[1rem]"></i>
-                  </span>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+            <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
+              <div className="box custom-box">
+                <div className="box-body">
+                  <div className="flex flex-wrap items-start justify-between">
+                    <div className="flex-grow">
+                      <div className="flex flex-wrap items-start">
+                        <div className="flex items-center space-x-2">
+                          <p className="mb-0 text-[#8c9097] dark:text-white/50">
+                            {displayedNameAverages}
+                          </p>
+                          <div className="hs-dropdown ti-dropdown">
+                            <Link
+                              to="#"
+                              className="flex items-center px-1 py-0.5 text-xs font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all"
+                              aria-expanded="false"
+                            >
+                              Сортирай по
+                              <i className="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
+                            </Link>
+                            <ul
+                              className="hs-dropdown-menu ti-dropdown-menu hidden"
+                              role="menu"
+                            >
+                              {averagesOptions.map(({ label, value }) => (
+                                <li key={label}>
+                                  <Link
+                                    onClick={() =>
+                                      handleDropdownClickAverages(
+                                        setDisplayedNameAverages,
+                                        setDisplayedValueAverages,
+                                        label,
+                                        value
+                                      )
+                                    }
+                                    className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
+                                    to="#"
+                                  >
+                                    {label}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-[1.25rem] font-semibold">
+                          {displayedValueAverages}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
+                        <i className="bi bi-person-lines-fill text-[1rem]"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
+              <div className="box custom-box">
+                <div className="box-body">
+                  <div className="flex flex-wrap items-start justify-between">
+                    <div className="flex-grow">
+                      <div className="flex flex-wrap items-start">
+                        <div className="flex items-center space-x-2">
+                          <p className="mb-0 text-[#8c9097] dark:text-white/50">
+                            {displayedNameAwards}
+                          </p>
+                          <div className="hs-dropdown ti-dropdown">
+                            <Link
+                              to="#"
+                              className="flex items-center px-1 py-0.5 text-xs font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all"
+                              aria-expanded="false"
+                            >
+                              Сортирай по
+                              <i className="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
+                            </Link>
+                            <ul
+                              className="hs-dropdown-menu ti-dropdown-menu hidden"
+                              role="menu"
+                            >
+                              {awardOptions.map(({ label, value }) => (
+                                <li key={label}>
+                                  <Link
+                                    onClick={() =>
+                                      handleDropdownClickAwards(
+                                        setDisplayedNameAwards,
+                                        setDisplayedValueAwards,
+                                        label,
+                                        value
+                                      )
+                                    }
+                                    className="ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium block"
+                                    to="#"
+                                  >
+                                    {label}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-[1.25rem] font-semibold">
+                          {displayedValueAwards}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
+                        <i className="bi bi-person-lines-fill text-[1rem]"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
+              <div className="box custom-box">
+                <div className="box-body h-[5.5rem]">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-grow">
+                      <p className="mb-0 text-[#8c9097] dark:text-white/50 text-xs">
+                        Общ брой потребители
+                      </p>
+                      <div className="flex items-center">
+                        <span className="text-[1.125rem] font-semibold">
+                          {Data.usersCount?.[0]?.user_count || 0}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
+                        <i className="bi bi-person-lines-fill text-[0.875rem]"></i>{" "}
+                        {/* Smaller icon */}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
+              <div className="box custom-box">
+                <div className="box-body h-[5.5rem]">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-grow">
+                      <p className="mb-0 text-[#8c9097] dark:text-white/50 text-xs">
+                        Най-препоръчан жанр
+                      </p>
+                      <div className="flex items-center">
+                        <span className="text-[1.125rem] font-semibold">
+                          {Data.topGenres[0]?.genre_bg}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
+                        <i className="bi bi-person-lines-fill text-[0.875rem]"></i>{" "}
+                        {/* Smaller icon */}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
+              <div className="box custom-box">
+                <div className="box-body h-[5.5rem]">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-grow">
+                      <div className="flex items-center space-x-2">
+                        <p className="mb-0 text-[#8c9097] dark:text-white/50 truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs">
+                          {displayedNameAverages}
+                        </p>
+                        <div className="hs-dropdown ti-dropdown">
+                          <Link
+                            to="#"
+                            className="flex items-center px-0.5 py-0.25 text-[0.70rem] font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all"
+                            aria-expanded="false"
+                          >
+                            {is1441 ? (
+                              <i className="ri-arrow-down-s-line text-sm"></i>
+                            ) : (
+                              <>
+                                <span>Сортирай по</span>
+                                <i className="ri-arrow-down-s-line ml-0.5 text-sm"></i>
+                              </>
+                            )}
+                          </Link>
+                          <ul
+                            className="hs-dropdown-menu ti-dropdown-menu hidden"
+                            role="menu"
+                          >
+                            {averagesOptions.map(({ label, value }) => (
+                              <li key={label}>
+                                <Link
+                                  onClick={() =>
+                                    handleDropdownClickAverages(
+                                      setDisplayedNameAverages,
+                                      setDisplayedValueAverages,
+                                      label,
+                                      value
+                                    )
+                                  }
+                                  className="ti-dropdown-item py-0.5 px-[0.625rem] text-[0.625rem] font-medium block"
+                                  to="#"
+                                >
+                                  {label}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-[1.125rem] font-semibold">
+                          {displayedValueAverages}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
+                        <i className="bi bi-person-lines-fill text-[0.875rem]"></i>{" "}
+                        {/* Smaller icon */}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
+              <div className="box custom-box">
+                <div className="box-body h-[5.5rem]">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-grow">
+                      <div className="flex items-center space-x-1">
+                        <p className="mb-0 text-[#8c9097] dark:text-white/50 truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs">
+                          {displayedNameAwards}
+                        </p>
+                        <div className="hs-dropdown ti-dropdown">
+                          <Link
+                            to="#"
+                            className="flex items-center px-0.5 py-0.25 text-[0.70rem] font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all"
+                            aria-expanded="false"
+                          >
+                            {is1441 ? (
+                              <i className="ri-arrow-down-s-line text-sm"></i>
+                            ) : (
+                              <>
+                                <span>Сортирай по</span>
+                                <i className="ri-arrow-down-s-line ml-0.5 text-sm"></i>
+                              </>
+                            )}
+                          </Link>
+                          <ul
+                            className="hs-dropdown-menu ti-dropdown-menu hidden"
+                            role="menu"
+                          >
+                            {awardOptions.map(({ label, value }) => (
+                              <li key={label}>
+                                <Link
+                                  onClick={() =>
+                                    handleDropdownClickAwards(
+                                      setDisplayedNameAwards,
+                                      setDisplayedValueAwards,
+                                      label,
+                                      value
+                                    )
+                                  }
+                                  className="ti-dropdown-item py-0.5 px-[0.625rem] text-[0.625rem] font-medium block"
+                                  to="#"
+                                >
+                                  {label}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-[1.125rem] font-semibold">
+                          {displayedValueAwards}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
+                        <i className="bi bi-person-lines-fill text-[0.875rem]"></i>{" "}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
         <div className="xxl:col-span-6 col-span-12">
           <div className="xxl:col-span-6 col-span-12">
             <div className="xl:col-span-6 col-span-12">
-              <div className="box custom-box">
+              <div className="box custom-box h-[28rem]">
                 <div className="box-header ">
                   <div className="box-title">
                     Най-успешни филми по IMDb Рейтинг и Боксофис
@@ -491,16 +684,39 @@ const TempHome: FC<CrmProps> = () => {
                 </div>
               </div>
             </div>
+            <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
+              <div className="box">
+                <div className="box-header !gap-0 !m-0 justify-between">
+                  <div className="box-title">
+                    Популярност на жанровете през времето
+                  </div>
+                </div>
+                <div className="xl:col-span-6 col-span-12">
+                  <div className="box custom-box">
+                    <div className="box-body">
+                      <div id="heatmap-colorrange">
+                        <GenrePopularityOverTime
+                          seriesData={seriesDataForHeatmap}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className="xl:col-span-6 col-span-12">
               <div className="box custom-box">
-                <div className="box-header justify-between">
+                <div className="custom-box-header justify-between">
                   <div className="box-title">
+                    Филми{" "}
+                    {!(moviesAndSeriesSortCategory === "Metascore") &&
+                      "и сериали"}{" "}
+                    по{" "}
                     {
-                      tableCategoryDisplayNames[
-                        topStatsSortCategory as keyof typeof tableCategoryDisplayNames
+                      moviesAndSeriesCategoryDisplayNames[
+                        moviesAndSeriesSortCategory as keyof typeof moviesAndSeriesCategoryDisplayNames
                       ]
-                    }{" "}
-                    по бройка
+                    }
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <div
@@ -508,13 +724,13 @@ const TempHome: FC<CrmProps> = () => {
                       role="group"
                       aria-label="Sort By"
                     >
-                      {["Actors", "Directors", "Writers"].map(
+                      {["IMDb", "Metascore", "RottenTomatoes"].map(
                         (category, index) => (
                           <button
                             key={category}
                             type="button"
                             className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
-                              category === topStatsSortCategory
+                              category === moviesAndSeriesSortCategory
                                 ? "ti-btn-primary-full text-white"
                                 : "text-[#CC3333] bg-[#be1313] bg-opacity-10"
                             } ${
@@ -525,15 +741,15 @@ const TempHome: FC<CrmProps> = () => {
                                 : ""
                             }`}
                             onClick={() =>
-                              handleTopStatsSortCategory(
+                              handleMoviesAndSeriesSortCategory(
                                 category,
-                                setTopStatsSortCategory
+                                setMoviesAndSeriesSortCategory
                               )
                             }
                           >
                             {
-                              tableCategoryDisplayNames[
-                                category as keyof typeof tableCategoryDisplayNames
+                              moviesAndSeriesCategoryDisplayNames[
+                                category as keyof typeof moviesAndSeriesCategoryDisplayNames
                               ]
                             }
                           </button>
@@ -542,32 +758,92 @@ const TempHome: FC<CrmProps> = () => {
                     </div>
                   </div>
                 </div>
-                <div className="box-body">
-                  <div id="treemap-basic">
-                    <Treemap
-                      data={
-                        topStatsSortCategory === "Actors"
-                          ? Data.topActors
-                          : topStatsSortCategory === "Directors"
-                          ? Data.topDirectors
-                          : Data.topWriters
-                      }
-                      role={topStatsSortCategory}
+                <div className="box-body h-[21.75rem]">
+                  <div id="bar-basic">
+                    <MovieBarChart
+                      seriesData={seriesDataForMovieBarChart}
+                      category={moviesAndSeriesSortCategory}
                     />
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className="xxl:col-span-12 xl:col-span-6  col-span-12">
-              <div className="box">
-                <div className="box-header justify-between">
-                  <div className="box-title">
-                    {" "}
-                    Топ държави с най-много препоръки
+                <div className="box-footer">
+                  <div className="sm:flex items-center">
+                    <div
+                      className={`text-defaulttextcolor dark:text-defaulttextcolor/70 text-[${
+                        is1546 ? "0.65rem" : "0.70rem"
+                      }]`}
+                    >
+                      Показване на резултати от{" "}
+                      <b>
+                        {currentChartPage === 1
+                          ? 1
+                          : (currentChartPage - 1) * 5 + 1}{" "}
+                      </b>
+                      до{" "}
+                      <b>
+                        {currentChartPage === totalChartPages
+                          ? Data.sortedMoviesAndSeriesByIMDbRating.length
+                          : currentChartPage * 5}{" "}
+                      </b>
+                      от общо{" "}
+                      <b>{Data.sortedMoviesAndSeriesByIMDbRating.length}</b>{" "}
+                      (Страница <b>{currentChartPage}</b> )
+                      <i className="bi bi-arrow-right ms-2 font-semibold"></i>
+                    </div>
+                    <div className="ms-auto">
+                      <nav
+                        aria-label="Page navigation"
+                        className="pagination-style-4"
+                      >
+                        <ul className="ti-pagination mb-0">
+                          <li
+                            className={`page-item ${
+                              currentChartPage === 1 ? "disabled" : ""
+                            }`}
+                          >
+                            <Link
+                              className="page-link"
+                              to="#"
+                              onClick={handlePrevChartPage}
+                            >
+                              Предишна
+                            </Link>
+                          </li>
+                          {[...Array(totalChartPages)].map((_, index) => (
+                            <li
+                              key={index}
+                              className={`page-item ${
+                                currentChartPage === index + 1 ? "active" : ""
+                              }`}
+                            >
+                              <Link
+                                className="page-link"
+                                to="#"
+                                onClick={() => setCurrentChartPage(index + 1)}
+                              >
+                                {index + 1}
+                              </Link>
+                            </li>
+                          ))}
+                          <li
+                            className={`page-item ${
+                              currentChartPage === totalChartPages
+                                ? "disabled"
+                                : ""
+                            }`}
+                          >
+                            <Link
+                              className="page-link"
+                              to="#"
+                              onClick={handleNextChartPage}
+                            >
+                              Следваща
+                            </Link>
+                          </li>
+                        </ul>
+                      </nav>
+                    </div>
                   </div>
-                </div>
-                <div className="box-body">
-                  <CountryBarChart topCountries={Data?.topCountries} />
                 </div>
               </div>
             </div>
@@ -700,7 +976,11 @@ const TempHome: FC<CrmProps> = () => {
               </div>
               <div className="box-footer">
                 <div className="sm:flex items-center">
-                  <div className="text-defaulttextcolor dark:text-defaulttextcolor/70">
+                  <div
+                    className={`text-defaulttextcolor dark:text-defaulttextcolor/70 text-[${
+                      is1546 ? "0.6rem" : "0.75rem"
+                    }]`}
+                  >
                     Показване на резултати от{" "}
                     <b>
                       {currentTablePage === 1
@@ -775,11 +1055,11 @@ const TempHome: FC<CrmProps> = () => {
             </div>
           </div>
           <div className="xl:col-span-6 col-span-12">
-            <div className="box custom-box">
+            <div className="box custom-box]">
               <div className="custom-box-header">
                 <div className="box-title">Най-често препоръчани филми</div>
               </div>
-              <div className="box-body">
+              <div className="box-body h-[22rem]">
                 <div id="donut-simple">
                   <TopRecommendationsBarChart
                     seriesData={seriesDataForTopStatsBarChart}
@@ -788,7 +1068,11 @@ const TempHome: FC<CrmProps> = () => {
               </div>
               <div className="box-footer">
                 <div className="sm:flex items-center">
-                  <div className="text-defaulttextcolor dark:text-defaulttextcolor/70">
+                  <div
+                    className={`text-defaulttextcolor dark:text-defaulttextcolor/70 text-[${
+                      is1546 ? "0.65rem" : "0.70rem"
+                    }]`}
+                  >
                     Показване на резултати от{" "}
                     <b>
                       {currentTopChartPage === 1
@@ -863,18 +1147,15 @@ const TempHome: FC<CrmProps> = () => {
             </div>
           </div>
           <div className="xl:col-span-6 col-span-12">
-            <div className="box custom-box">
-              <div className="custom-box-header justify-between">
+            <div className="box custom-box h-[30rem]">
+              <div className="box-header justify-between">
                 <div className="box-title">
-                  Филми{" "}
-                  {!(moviesAndSeriesSortCategory === "Metascore") &&
-                    "и сериали"}{" "}
-                  по{" "}
                   {
-                    moviesAndSeriesCategoryDisplayNames[
-                      moviesAndSeriesSortCategory as keyof typeof moviesAndSeriesCategoryDisplayNames
+                    tableCategoryDisplayNames[
+                      topStatsSortCategory as keyof typeof tableCategoryDisplayNames
                     ]
-                  }
+                  }{" "}
+                  по бройка
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <div
@@ -882,13 +1163,13 @@ const TempHome: FC<CrmProps> = () => {
                     role="group"
                     aria-label="Sort By"
                   >
-                    {["IMDb", "Metascore", "RottenTomatoes"].map(
+                    {["Actors", "Directors", "Writers"].map(
                       (category, index) => (
                         <button
                           key={category}
                           type="button"
                           className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
-                            category === moviesAndSeriesSortCategory
+                            category === topStatsSortCategory
                               ? "ti-btn-primary-full text-white"
                               : "text-[#CC3333] bg-[#be1313] bg-opacity-10"
                           } ${
@@ -899,15 +1180,15 @@ const TempHome: FC<CrmProps> = () => {
                               : ""
                           }`}
                           onClick={() =>
-                            handleMoviesAndSeriesSortCategory(
+                            handleTopStatsSortCategory(
                               category,
-                              setMoviesAndSeriesSortCategory
+                              setTopStatsSortCategory
                             )
                           }
                         >
                           {
-                            moviesAndSeriesCategoryDisplayNames[
-                              category as keyof typeof moviesAndSeriesCategoryDisplayNames
+                            tableCategoryDisplayNames[
+                              category as keyof typeof tableCategoryDisplayNames
                             ]
                           }
                         </button>
@@ -916,108 +1197,33 @@ const TempHome: FC<CrmProps> = () => {
                   </div>
                 </div>
               </div>
-              <div className="box-body">
-                <div id="bar-basic">
-                  <MovieBarChart
-                    seriesData={seriesDataForMovieBarChart}
-                    category={moviesAndSeriesSortCategory}
+              <div className="box-body flex justify-center items-center">
+                <div id="treemap-basic" className="w-full">
+                  <Treemap
+                    data={
+                      topStatsSortCategory === "Actors"
+                        ? Data.topActors
+                        : topStatsSortCategory === "Directors"
+                        ? Data.topDirectors
+                        : Data.topWriters
+                    }
+                    role={topStatsSortCategory}
                   />
-                </div>
-              </div>
-              <div className="box-footer">
-                <div className="sm:flex items-center">
-                  <div className="text-defaulttextcolor dark:text-defaulttextcolor/70">
-                    Показване на резултати от{" "}
-                    <b>
-                      {currentChartPage === 1
-                        ? 1
-                        : (currentChartPage - 1) * 5 + 1}{" "}
-                    </b>
-                    до{" "}
-                    <b>
-                      {currentChartPage === totalChartPages
-                        ? Data.sortedMoviesAndSeriesByIMDbRating.length
-                        : currentChartPage * 5}{" "}
-                    </b>
-                    от общо{" "}
-                    <b>{Data.sortedMoviesAndSeriesByIMDbRating.length}</b> (
-                    Страница <b>{currentChartPage}</b> )
-                    <i className="bi bi-arrow-right ms-2 font-semibold"></i>
-                  </div>
-                  <div className="ms-auto">
-                    <nav
-                      aria-label="Page navigation"
-                      className="pagination-style-4"
-                    >
-                      <ul className="ti-pagination mb-0">
-                        <li
-                          className={`page-item ${
-                            currentChartPage === 1 ? "disabled" : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            onClick={handlePrevChartPage}
-                          >
-                            Предишна
-                          </Link>
-                        </li>
-                        {[...Array(totalChartPages)].map((_, index) => (
-                          <li
-                            key={index}
-                            className={`page-item ${
-                              currentChartPage === index + 1 ? "active" : ""
-                            }`}
-                          >
-                            <Link
-                              className="page-link"
-                              to="#"
-                              onClick={() => setCurrentChartPage(index + 1)}
-                            >
-                              {index + 1}
-                            </Link>
-                          </li>
-                        ))}
-                        <li
-                          className={`page-item ${
-                            currentChartPage === totalChartPages
-                              ? "disabled"
-                              : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            onClick={handleNextChartPage}
-                          >
-                            Следваща
-                          </Link>
-                        </li>
-                      </ul>
-                    </nav>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
+
+          <div className="xxl:col-span-12 xl:col-span-6  col-span-12">
             <div className="box">
-              <div className="box-header !gap-0 !m-0 justify-between">
+              <div className="box-header justify-between">
                 <div className="box-title">
-                  Популярност на жанровете през времето
+                  {" "}
+                  Топ държави с най-много препоръки
                 </div>
               </div>
-              <div className="xl:col-span-6 col-span-12">
-                <div className="box custom-box">
-                  <div className="box-body">
-                    <div id="heatmap-colorrange">
-                      <GenrePopularityOverTime
-                        seriesData={seriesDataForHeatmap}
-                      />
-                    </div>
-                  </div>
-                </div>
+              <div className="box-body">
+                <CountryBarChart topCountries={Data?.topCountries} />
               </div>
             </div>
           </div>

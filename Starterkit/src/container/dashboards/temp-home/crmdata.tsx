@@ -49,314 +49,6 @@ export function generateData(count: any, yrange: any) {
   return series;
 }
 
-export class Totalcustomers extends Component<{}, spark3> {
-  constructor(props: {} | Readonly<{}>) {
-    super(props);
-
-    this.state = {
-      series: [
-        {
-          name: "Value",
-          data: [20, 14, 19, 10, 23, 20, 22, 9, 12]
-        }
-      ],
-      options: {
-        colors: ["rgb(132, 90, 223)"],
-        chart: {
-          type: "line",
-          height: 40,
-          width: 100,
-          sparkline: {
-            enabled: true
-          },
-          events: {
-            mounted: (chart: any) => {
-              chart.windowResizeHandler();
-            }
-          }
-        },
-        stroke: {
-          show: true,
-          curve: "smooth",
-          lineCap: "butt",
-          colors: undefined,
-          width: 1.5,
-          dashArray: 0
-        },
-        fill: {
-          type: "gradient",
-          gradient: {
-            opacityFrom: 0.9,
-            opacityTo: 0.9,
-            stops: [0, 98]
-          }
-        },
-        yaxis: {
-          min: 0,
-          show: false,
-          axisBorder: {
-            show: false
-          }
-        },
-        xaxis: {
-          // show: false,
-          axisBorder: {
-            show: false
-          }
-        },
-        tooltip: {
-          enabled: false
-        }
-      }
-    };
-  }
-
-  render() {
-    return (
-      <div>
-        <ReactApexChart
-          options={this.state.options}
-          series={this.state.series}
-          type="line"
-          height={40}
-          width={100}
-        />
-      </div>
-    );
-  }
-}
-//
-export class Totalrevenue extends Component<{}, spark3> {
-  constructor(props: {} | Readonly<{}>) {
-    super(props);
-
-    this.state = {
-      series: [
-        {
-          name: "Value",
-          data: [20, 14, 20, 22, 9, 12, 19, 10, 25]
-        }
-      ],
-      options: {
-        colors: ["rgb(35, 183, 229)"],
-        chart: {
-          type: "line",
-          height: 40,
-          width: 100,
-          sparkline: {
-            enabled: true
-          },
-          events: {
-            mounted: (chart: any) => {
-              chart.windowResizeHandler();
-            }
-          }
-        },
-        stroke: {
-          show: true,
-          curve: "smooth",
-          lineCap: "butt",
-          colors: undefined,
-          width: 1.5,
-          dashArray: 0
-        },
-        fill: {
-          type: "gradient",
-          gradient: {
-            opacityFrom: 0.9,
-            opacityTo: 0.9,
-            stops: [0, 98]
-          }
-        },
-        yaxis: {
-          min: 0,
-          show: false,
-          axisBorder: {
-            show: false
-          }
-        },
-        xaxis: {
-          axisBorder: {
-            show: false
-          }
-        },
-        tooltip: {
-          enabled: false
-        }
-      }
-    };
-  }
-
-  render() {
-    return (
-      <div>
-        <ReactApexChart
-          options={this.state.options}
-          series={this.state.series}
-          type="line"
-          height={40}
-          width={100}
-        />
-      </div>
-    );
-  }
-}
-
-//
-export class Conversionratio extends Component<{}, spark3> {
-  constructor(props: {} | Readonly<{}>) {
-    super(props);
-
-    this.state = {
-      series: [
-        {
-          name: "Value",
-          data: [20, 20, 22, 9, 14, 19, 10, 25, 12]
-        }
-      ],
-      options: {
-        colors: ["rgb(38, 191, 148)"],
-        chart: {
-          type: "line",
-          height: 40,
-          width: 100,
-          sparkline: {
-            enabled: true
-          },
-          events: {
-            mounted: (chart: any) => {
-              chart.windowResizeHandler();
-            }
-          }
-        },
-        stroke: {
-          show: true,
-          curve: "smooth",
-          lineCap: "butt",
-          colors: undefined,
-          width: 1.5,
-          dashArray: 0
-        },
-        fill: {
-          type: "gradient",
-          gradient: {
-            opacityFrom: 0.9,
-            opacityTo: 0.9,
-            stops: [0, 98]
-          }
-        },
-
-        yaxis: {
-          min: 0,
-          show: false,
-          axisBorder: {
-            show: false
-          }
-        },
-        xaxis: {
-          axisBorder: {
-            show: false
-          }
-        },
-        tooltip: {
-          enabled: false
-        }
-      }
-    };
-  }
-
-  render() {
-    return (
-      <div>
-        <ReactApexChart
-          options={this.state.options}
-          series={this.state.series}
-          type="line"
-          height={40}
-          width={100}
-        />
-      </div>
-    );
-  }
-}
-//
-export class Totaldeals extends Component<{}, spark3> {
-  constructor(props: {} | Readonly<{}>) {
-    super(props);
-
-    this.state = {
-      series: [
-        {
-          name: "Value",
-          data: [20, 20, 22, 9, 12, 14, 19, 10, 25]
-        }
-      ],
-      options: {
-        colors: ["rgb(245, 184, 73)"],
-        chart: {
-          type: "line",
-          height: 40,
-          width: 100,
-          sparkline: {
-            enabled: true
-          },
-          events: {
-            mounted: (chart: any) => {
-              chart.windowResizeHandler();
-            }
-          }
-        },
-        stroke: {
-          show: true,
-          curve: "smooth",
-          lineCap: "butt",
-          colors: undefined,
-          width: 1.5,
-          dashArray: 0
-        },
-        fill: {
-          type: "gradient",
-          gradient: {
-            opacityFrom: 0.9,
-            opacityTo: 0.9,
-            stops: [0, 98]
-          }
-        },
-        yaxis: {
-          min: 0,
-          show: false,
-          axisBorder: {
-            show: false
-          }
-        },
-        xaxis: {
-          // show: false,
-          axisBorder: {
-            show: false
-          }
-        },
-        tooltip: {
-          enabled: false
-        }
-      }
-    };
-  }
-
-  render() {
-    return (
-      <div>
-        <ReactApexChart
-          options={this.state.options}
-          series={this.state.series}
-          type="line"
-          height={40}
-          width={100}
-        />
-      </div>
-    );
-  }
-}
-
 interface RevenueAnalyticsProps {
   genrePopularityOverTime: {
     [key: string]: {
@@ -399,7 +91,6 @@ export class Revenueanalytics extends Component<
       series: series,
       options: {
         chart: {
-          height: 350,
           animations: {
             speed: 500
           },
@@ -476,7 +167,7 @@ export class Revenueanalytics extends Component<
     );
   }
 }
-//
+
 //ProfitEarned
 export class Profitearned extends Component<{}, spark3> {
   constructor(props: {} | Readonly<{}>) {
@@ -852,12 +543,9 @@ export class GenrePopularityOverTime extends Component<
     this.state = {
       options: {
         chart: {
-          height: 350,
           type: "heatmap",
-          events: {
-            mounted: (chart: any) => {
-              chart.windowResizeHandler();
-            }
+          toolbar: {
+            show: false
           }
         },
         plotOptions: {
@@ -1146,7 +834,12 @@ export class MovieBarChart extends Component<
     this.state = {
       series: [],
       options: {
-        chart: { type: "bar", height: 320 },
+        chart: {
+          type: "bar",
+          toolbar: {
+            show: false
+          }
+        },
         plotOptions: { bar: { borderRadius: 4, horizontal: true } },
         grid: { borderColor: "#f2f5f7" },
         dataLabels: { enabled: false },
@@ -1523,6 +1216,12 @@ export class MovieProsperityBubbleChart extends Component<
             mounted: (chart: any) => {
               chart.windowResizeHandler();
             }
+          },
+          toolbar: {
+            show: false
+          },
+          zoom: {
+            enabled: false
           }
         },
         plotOptions: {
@@ -1674,7 +1373,7 @@ export class MovieProsperityBubbleChart extends Component<
         options={this.state.options}
         series={this.state.series}
         type="bubble"
-        height={500}
+        height="350px"
       />
     );
   }
@@ -1706,8 +1405,10 @@ export class Treemap extends Component<BasicTreemapProps, BasicTreemapState> {
           show: false
         },
         chart: {
-          height: 350,
-          type: "treemap"
+          type: "treemap",
+          toolbar: {
+            show: false
+          }
         },
         colors: ["#9a110a"]
       }
@@ -1778,7 +1479,12 @@ export class TopRecommendationsBarChart extends Component<
     this.state = {
       series: [],
       options: {
-        chart: { type: "bar", height: 320 },
+        chart: {
+          type: "bar",
+          toolbar: {
+            show: false
+          }
+        },
         plotOptions: { bar: { borderRadius: 4, horizontal: true } },
         grid: { borderColor: "#f2f5f7" },
         dataLabels: { enabled: false },
