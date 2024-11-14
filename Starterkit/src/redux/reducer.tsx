@@ -181,12 +181,17 @@ const initialState = {
     }
   ]
 };
+
 export default function reducer(state = initialState, action: any) {
   const { type, payload } = action;
 
   switch (type) {
     case "ThemeChanger":
-      state = payload;
+      state = {
+        ...payload,
+        colorPrimaryRgb: payload.class === "dark" ? "154 17 10" : "175 11 72",
+        colorPrimary: payload.class === "dark" ? "154 17 10" : "175 11 72"
+      };
       return state;
       break;
 

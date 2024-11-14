@@ -3,14 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import store from "../../../redux/store";
 import { connect } from "react-redux";
 import { ThemeChanger } from "../../../redux/action";
-import desktoplogo from "../../../assets/images/brand-logos/desktop-logo.png";
-import togglelogo from "../../../assets/images/brand-logos/toggle-logo.png";
-import desktopdark from "../../../assets/images/brand-logos/desktop-dark.png";
 import logo from "../../../assets/images/brand-logos/logo.png";
-import logoSmall from "../../../assets/images/brand-logos/logo-small.png";
-import toggledark from "../../../assets/images/brand-logos/toggle-dark.png";
-import desktopwhite from "../../../assets/images/brand-logos/desktop-white.png";
-import togglewhite from "../../../assets/images/brand-logos/toggle-white.png";
 
 interface HeaderProps {}
 
