@@ -32,7 +32,7 @@ import { useMediaQuery } from "react-responsive";
 
 interface CrmProps {}
 
-const TempHome: FC<CrmProps> = () => {
+const Home: FC<CrmProps> = () => {
   // States for holding fetched data
   const [Data, setData] = useState<DataType>({
     usersCount: [],
@@ -1250,4 +1250,4 @@ const TempHome: FC<CrmProps> = () => {
   );
 };
 
-export default TempHome;
+export default Home;

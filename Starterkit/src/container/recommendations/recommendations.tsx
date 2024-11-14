@@ -1,8 +1,8 @@
 import { FC, Fragment, useState } from "react";
 
-interface Test {}
+interface RecommendationList {}
 
-const Test: FC<Test> = () => {
+const RecommendationList: FC<RecommendationList> = () => {
   const [type, setType] = useState("Филм");
   const [genres, setGenres] = useState<{ en: string; bg: string }[]>([]);
   const [moods, setMoods] = useState<string[]>([]);
@@ -862,4 +862,4 @@ const Test: FC<Test> = () => {
   );
 };
 
-export default Test;
+export default RecommendationList;

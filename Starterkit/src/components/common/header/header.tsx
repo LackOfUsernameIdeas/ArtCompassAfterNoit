@@ -1,4 +1,4 @@
-import { FC, Fragment } from "react";
+import { FC, Fragment, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import store from "../../../redux/store";
 import { connect } from "react-redux";
@@ -6,6 +6,8 @@ import { ThemeChanger } from "../../../redux/action";
 import desktoplogo from "../../../assets/images/brand-logos/desktop-logo.png";
 import togglelogo from "../../../assets/images/brand-logos/toggle-logo.png";
 import desktopdark from "../../../assets/images/brand-logos/desktop-dark.png";
+import logo from "../../../assets/images/brand-logos/logo.png";
+import logoSmall from "../../../assets/images/brand-logos/logo-small.png";
 import toggledark from "../../../assets/images/brand-logos/toggle-dark.png";
 import desktopwhite from "../../../assets/images/brand-logos/desktop-white.png";
 import togglewhite from "../../../assets/images/brand-logos/toggle-white.png";
@@ -58,6 +60,10 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
     navigate(`${import.meta.env.BASE_URL}signin/`);
   };
 
+  const [isLogoHovered, setIsLogoHovered] = useState(false);
+  const [isToggleHovered, setIsToggleHovered] = useState(false);
+  const [isLogOutHovered, setIsLogOutHovered] = useState(false);
+
   return (
     <Fragment>
       <header className="app-header">
@@ -69,28 +75,18 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
                   <a
                     href={`${import.meta.env.BASE_URL}app/home/`}
                     className="header-logo"
+                    onMouseEnter={() => setIsLogoHovered(true)}
+                    onMouseLeave={() => setIsLogoHovered(false)}
                   >
                     <img
-                      src={desktoplogo}
+                      src={logo}
                       alt="logo"
-                      className="desktop-logo"
-                    />
-                    <img src={togglelogo} alt="logo" className="toggle-logo" />
-                    <img
-                      src={desktopdark}
-                      alt="logo"
-                      className="desktop-dark"
-                    />
-                    <img src={toggledark} alt="logo" className="toggle-dark" />
-                    <img
-                      src={desktopwhite}
-                      alt="logo"
-                      className="desktop-white"
-                    />
-                    <img
-                      src={togglewhite}
-                      alt="logo"
-                      className="toggle-white"
+                      className="logo"
+                      style={{
+                        transform: isLogoHovered ? "scale(1.8)" : "scale(1.5)",
+                        transformOrigin: "center",
+                        transition: "transform 0.3s ease"
+                      }}
                     />
                   </a>
                 </div>
@@ -100,6 +96,13 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
               <div
                 className="header-element header-theme-mode hidden !items-center sm:block !py-[1rem] md:!px-[0.65rem] px-2"
                 onClick={() => ToggleDark()}
+                style={{
+                  transform: isToggleHovered ? "scale(1.1)" : "scale(0.9)", // Increase size on hover
+                  transformOrigin: "center",
+                  transition: "transform 0.3s ease" // Smooth transition
+                }}
+                onMouseEnter={() => setIsToggleHovered(true)}
+                onMouseLeave={() => setIsToggleHovered(false)}
               >
                 <Link
                   aria-label="anchor"
@@ -111,15 +114,24 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
                 </Link>
                 <Link
                   aria-label="anchor"
-                  className="hs-dark-mode-active:flex hidden hs-dark-mode group flex-shrink-0 justify-center items-center gap-2 
-             rounded-full font-medium text-defaulttextcolor  transition-all text-xs dark:bg-bodybg dark:bg-bgdark dark:hover:bg-black/20 dark:text-[#8c9097] dark:text-white/50 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
+                  className="hs-dark-mode-active:flex hidden hs-dark-mode group flex-shrink-0 justify-center items-center gap-2 rounded-full font-medium text-defaulttextcolor  transition-all text-xs dark:bg-bodybg dark:bg-bgdark dark:hover:bg-black/20 dark:text-[#8c9097] dark:text-white/50 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
                   to="#"
                   data-hs-theme-click-value="light"
                 >
                   <i className="bx bx-sun header-link-icon"></i>
                 </Link>
               </div>
-              <div className="header-element md:!px-[0.65rem] px-2 hs-dropdown !items-center ti-dropdown [--placement:bottom-left]">
+
+              <div
+                className="header-element md:!px-[0.65rem] px-2 hs-dropdown !items-center ti-dropdown [--placement:bottom-left]"
+                style={{
+                  transform: isLogOutHovered ? "scale(1.1)" : "scale(0.9)", // Increase size on hover
+                  transformOrigin: "center",
+                  transition: "transform 0.3s ease" // Smooth transition
+                }}
+                onMouseEnter={() => setIsLogOutHovered(true)}
+                onMouseLeave={() => setIsLogOutHovered(false)}
+              >
                 <button
                   className="w-full ti-dropdown-item !text-[0.8125rem] !p-[0.65rem] !gap-x-0 !inline-flex"
                   onClick={handleLogout}

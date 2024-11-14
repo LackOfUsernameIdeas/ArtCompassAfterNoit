@@ -1,9 +1,6 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import desktoplogo from "../../../assets/images/brand-logos/desktop-logo.png";
-import desktopdarklogo from "../../../assets/images/brand-logos/desktop-dark.png";
-import img2 from "../../../assets/images/authentication/2.png";
-import img3 from "../../../assets/images/authentication/3.png";
+import logo from "../../../assets/images/brand-logos/logo.png";
 
 // Import Swiper styles
 import "swiper/css";
@@ -179,23 +176,6 @@ const Signincover: FC<SignincoverProps> = () => {
             <div className="xxl:col-span-3 xl:col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-2"></div>
             <div className="xxl:col-span-6 xl:col-span-6 lg:col-span-6 md:col-span-6 sm:col-span-8 col-span-12">
               <div className="p-[3rem]">
-                <div className="mb-4">
-                  <Link
-                    aria-label="anchor"
-                    to={`${import.meta.env.BASE_URL}app/home`}
-                  >
-                    <img
-                      src={desktoplogo}
-                      alt=""
-                      className="authentication-brand desktop-logo"
-                    />
-                    <img
-                      src={desktopdarklogo}
-                      alt=""
-                      className="authentication-brand desktop-dark"
-                    />
-                  </Link>
-                </div>
                 <p className="h5 font-semibold mb-2">Имате профил?</p>
                 <p className="mb-4 text-[#8c9097] dark:text-white/50 opacity-[0.7] font-normal">
                   Попълнете Вашите имейл и парола, за да влезете в профила си!
@@ -257,9 +237,7 @@ const Signincover: FC<SignincoverProps> = () => {
                         >
                           Парола
                           <Link
-                            to={`${
-                              import.meta.env.BASE_URL
-                            }resetpassword`}
+                            to={`${import.meta.env.BASE_URL}resetpassword`}
                             className="ltr:float-right rtl:float-left text-danger"
                           >
                             Забравена парола
@@ -323,9 +301,7 @@ const Signincover: FC<SignincoverProps> = () => {
                   <p className="text-[0.75rem] text-[#8c9097] dark:text-white/50 mt-4">
                     Нямате профил?{" "}
                     <Link
-                      to={`${
-                        import.meta.env.BASE_URL
-                      }signup`}
+                      to={`${import.meta.env.BASE_URL}signup`}
                       className="text-primary"
                     >
                       Създайте такъв сега!
@@ -355,67 +331,24 @@ const Signincover: FC<SignincoverProps> = () => {
                       <div>
                         <div className="mb-[3rem]">
                           <img
-                            src={img2}
+                            src={logo}
                             className="authentication-image"
-                            alt=""
+                            alt="Logo"
+                            style={{ width: "100%", height: "auto" }}
                           />
                         </div>
-                        <h6 className="font-semibold text-[1rem]">Sign In</h6>
+                        <h6 className="font-semibold text-[1rem]">
+                          Добре дошли в Кино Компас!
+                        </h6>
                         <p className="font-normal text-[.875rem] opacity-[0.7]">
-                          {" "}
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Ipsa eligendi expedita aliquam quaerat nulla
-                          voluptas facilis. Porro rem voluptates possimus, ad,
-                          autem quae culpa architecto, quam labore blanditiis at
-                          ratione.
+                          Наслаждавайте се на идеалните филмови и сериални
+                          предложения, създадени за вас с помощта на изкуствен
+                          интелект!
                         </p>
                       </div>
                     </div>
                   </SwiperSlide>
-                  <SwiperSlide>
-                    <div className="text-white text-center p-[3rem] flex items-center justify-center">
-                      <div>
-                        <div className="mb-[3rem]">
-                          <img
-                            src={img3}
-                            className="authentication-image"
-                            alt=""
-                          />
-                        </div>
-                        <h6 className="font-semibold text-[1rem]">Sign In</h6>
-                        <p className="font-normal text-[.875rem] opacity-[0.7]">
-                          {" "}
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Ipsa eligendi expedita aliquam quaerat nulla
-                          voluptas facilis. Porro rem voluptates possimus, ad,
-                          autem quae culpa architecto, quam labore blanditiis at
-                          ratione.
-                        </p>
-                      </div>
-                    </div>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <div className="text-white text-center p-[3rem] flex items-center justify-center">
-                      <div>
-                        <div className="mb-[3rem]">
-                          <img
-                            src={img2}
-                            className="authentication-image"
-                            alt=""
-                          />
-                        </div>
-                        <h6 className="font-semibold text-[1rem]">Sign In</h6>
-                        <p className="font-normal text-[.875rem] opacity-[0.7]">
-                          {" "}
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Ipsa eligendi expedita aliquam quaerat nulla
-                          voluptas facilis. Porro rem voluptates possimus, ad,
-                          autem quae culpa architecto, quam labore blanditiis at
-                          ratione.
-                        </p>
-                      </div>
-                    </div>
-                  </SwiperSlide>
+                  {/* Add additional slides here if needed */}
                 </Swiper>
               </div>
             </div>

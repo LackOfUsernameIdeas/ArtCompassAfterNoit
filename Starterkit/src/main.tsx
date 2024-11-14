@@ -7,12 +7,11 @@ import Authenticationlayout from "./pages/authenticationlayout.tsx";
 import Resetcover from "./container/authentication/resetpassword/resetpassword.tsx";
 import Signupcover from "./container/authentication/signup/signup.tsx";
 import Twostepcover from "./container/authentication/twostepverification/twostepverification.tsx";
-import Crm from "./container/dashboards/crm/crm.tsx";
-import Test from "./container/test/test.tsx";
+import Test from "./container/recommendations/recommendations.tsx";
 import "./index.scss";
 import ResetRequest from "./container/authentication/resetpassword/resetrequest.tsx";
 import PrivateRoute from "./pages/PrivateRoute.tsx";
-import TempHome from "./container/dashboards/temp-home/crm.tsx";
+import Home from "./container/dashboards/home/crm.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.Fragment>
@@ -30,9 +29,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           >
             {/* Default route */}
             <Route path="" element={<Navigate to="home" />} />
-            <Route path="home" element={<Crm />} />
-            <Route path="temp-home" element={<TempHome />} />
-            <Route path="test" element={<Test />} />
+            <Route path="home" element={<Home />} />
+            <Route path="recommendations" element={<Test />} />
           </Route>
 
           <Route path="/" element={<Authenticationlayout />}>

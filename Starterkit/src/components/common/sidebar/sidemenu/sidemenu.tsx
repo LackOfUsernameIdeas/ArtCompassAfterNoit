@@ -16,26 +16,13 @@ export const MENUITEMS = [
       "badge !bg-warning/10 !text-warning !py-[0.25rem] !px-[0.45rem] !text-[0.75em] ms-2"
   },
   {
-    path: `${import.meta.env.BASE_URL}app/temp-home`,
-    icon: <i className="side-menu__icon bx bx-home"></i>,
+    path: `${import.meta.env.BASE_URL}app/recommendations`,
+    icon: <i className="side-menu__icon bx bx-movie-play"></i>,
     type: "link",
     Name: "",
     active: false,
     selected: false,
-    title: "psst over here",
-    badge: "",
-    badgetxt: "12",
-    class:
-      "badge !bg-warning/10 !text-warning !py-[0.25rem] !px-[0.45rem] !text-[0.75em] ms-2"
-  },
-  {
-    path: `${import.meta.env.BASE_URL}app/test`,
-    icon: <i className="side-menu__icon bx bx-home"></i>,
-    type: "link",
-    Name: "",
-    active: false,
-    selected: false,
-    title: "Тест",
+    title: "Нови препоръки",
     badge: "",
     badgetxt: "12",
     class:
@@ -44,44 +31,44 @@ export const MENUITEMS = [
 
   {
     menutitle: "WEB APPS"
-  },
-
-  {
-    title: "Падащо меню",
-    icon: <i className="bx bx-layer side-menu__icon"></i>,
-    type: "sub",
-    selected: false,
-    active: false,
-    children: [
-      {
-        path: "#",
-        title: "Подменю 1",
-        type: "empty",
-        active: false,
-        selected: false
-      },
-      {
-        title: "Подменю 2",
-        type: "sub",
-        selected: false,
-        active: false,
-        children: [
-          {
-            path: "#",
-            title: "Подменю 2.1",
-            type: "empty",
-            active: false,
-            selected: false
-          },
-          {
-            path: "#",
-            title: "Подменю 2.2",
-            type: "empty",
-            active: false,
-            selected: false
-          }
-        ]
-      }
-    ]
   }
+
+  // {
+  //   title: "Падащо меню",
+  //   icon: <i className="bx bx-layer side-menu__icon"></i>,
+  //   type: "sub",
+  //   selected: false,
+  //   active: false,
+  //   children: [
+  //     {
+  //       path: "#",
+  //       title: "Подменю 1",
+  //       type: "empty",
+  //       active: false,
+  //       selected: false
+  //     },
+  //     {
+  //       title: "Подменю 2",
+  //       type: "sub",
+  //       selected: false,
+  //       active: false,
+  //       children: [
+  //         {
+  //           path: "#",
+  //           title: "Подменю 2.1",
+  //           type: "empty",
+  //           active: false,
+  //           selected: false
+  //         },
+  //         {
+  //           path: "#",
+  //           title: "Подменю 2.2",
+  //           type: "empty",
+  //           active: false,
+  //           selected: false
+  //         }
+  //       ]
+  //     }
+  //   ]
+  // }
 ];
