@@ -60,6 +60,7 @@ export type DataType = {
   sortedMoviesAndSeriesByRottenTomatoesRating: any[];
   averageBoxOfficeAndScores: any[];
   topCountries: any[];
+  [key: `sorted${string}ByProsperity`]: any[];
 };
 
 export interface MovieData {

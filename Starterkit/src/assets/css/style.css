@@ -551,6 +551,97 @@ Background Image
   @apply ps-0 !important;
 }
 
+/* Footer Styles */
+.footer {
+  background-color: #fff;
+  padding: 3rem 2rem;
+  box-shadow: 0 0 0.4rem rgba(0, 0, 0, 0.1);
+  border-top: 4px solid rgb(154, 17, 10);
+  border-radius: 2rem;
+  margin-left: 5rem;
+  margin-right: 5rem;
+  margin-bottom: 1rem;
+}
+
+.footer .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.footer-column {
+  text-align: center;
+}
+
+.footer-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links li {
+  margin: 0.5rem 0;
+}
+
+.footer-links a {
+  color: #666;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.footer-links a:hover {
+  color: rgb(154, 17, 10);
+}
+
+.tech-stack img {
+  max-width: 150px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.footer-text {
+  display: block;
+}
+
+.footer-brand-name {
+  font-weight: bold;
+  color: rgb(154, 17, 10);
+}
+
+.footer-text .bi-heart-fill {
+  color: red;
+}
+
+@media screen and (min-width: 640px) {
+  .footer-content {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .footer-content {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}
+
 .box.crm-highlight-card {
   @apply relative overflow-hidden shadow-none after:absolute after:h-full after:w-full after:bg-[url("../images/media/media-65.png")] after:bg-cover after:bg-center after:bg-no-repeat after:z-[0] after:opacity-20;
   @apply bg-primary !important;
@@ -19480,12 +19571,12 @@ input[type="color" i]::-webkit-color-swatch {
 }
 
 /* Sign-In and Sign-Up */
-.empty-field{
+.empty-field {
   border: 2px solid #e6533c !important;
 }
 
 /*EMAILS*/
-.email-center{
+.email-center {
   text-align: center;
 }
 
@@ -19499,13 +19590,13 @@ input[type="color" i]::-webkit-color-swatch {
   max-width: 50%;
   padding: 1em;
   border-inline: var(--t) solid #0000;
-  border-radius: calc(var(--r) + var(--t))/var(--r);
-  mask:
-    radial-gradient(100% 100% at var(--_p) 0, #0000 99%, #000 102%) var(--_p) 100%/var(--t) var(--t) no-repeat,
+  border-radius: calc(var(--r) + var(--t)) / var(--r);
+  mask: radial-gradient(100% 100% at var(--_p) 0, #0000 99%, #000 102%)
+      var(--_p) 100% / var(--t) var(--t) no-repeat,
     linear-gradient(#000 0 0) padding-box;
   background: linear-gradient(135deg, #6f3508, #fd3636) border-box;
   color: #fff;
-} 
+}
 
 .left {
   text-align: left;

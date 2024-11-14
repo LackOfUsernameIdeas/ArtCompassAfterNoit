@@ -22,7 +22,7 @@ export const MENUITEMS = [
     Name: "",
     active: false,
     selected: false,
-    title: "Нови препоръки",
+    title: "Нови Препоръки",
     badge: "",
     badgetxt: "12",
     class:

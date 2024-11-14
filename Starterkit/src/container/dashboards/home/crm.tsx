@@ -34,7 +34,7 @@ interface CrmProps {}
 
 const Home: FC<CrmProps> = () => {
   // States for holding fetched data
-  const [Data, setData] = useState<DataType>({
+  const [data, setData] = useState<DataType>({
     usersCount: [],
     topRecommendations: [],
     topGenres: [],
@@ -112,33 +112,34 @@ const Home: FC<CrmProps> = () => {
         setData,
         setFilteredTableData
       );
+      console.log("fetching");
     }
   }, [prosperitySortCategory]);
 
   useEffect(() => {
     if (
-      Data.totalAwards.length > 0 &&
-      Data.averageBoxOfficeAndScores.length > 0
+      data.totalAwards.length > 0 &&
+      data.averageBoxOfficeAndScores.length > 0
     ) {
-      setDisplayedValueAwards(Data.totalAwards[0].total_awards_wins);
+      setDisplayedValueAwards(data.totalAwards[0].total_awards_wins);
       setDisplayedValueAverages(
-        Data.averageBoxOfficeAndScores[0].average_box_office
+        data.averageBoxOfficeAndScores[0].average_box_office
       );
       console.log(
         "BAR CHART RECOMMENDATIONS SHIT ---->",
-        Data.topRecommendations
+        data.topRecommendations
       );
     }
-  }, [Data]);
+  }, [data]);
 
   // Updated useEffect to sort data based on selected category
   useEffect(() => {
     const sortedData =
       moviesAndSeriesSortCategory === "IMDb"
-        ? Data.sortedMoviesAndSeriesByIMDbRating
+        ? data.sortedMoviesAndSeriesByIMDbRating
         : moviesAndSeriesSortCategory === "Metascore"
-        ? Data.sortedMoviesAndSeriesByMetascore
-        : Data.sortedMoviesAndSeriesByRottenTomatoesRating;
+        ? data.sortedMoviesAndSeriesByMetascore
+        : data.sortedMoviesAndSeriesByRottenTomatoesRating;
 
     const paginatedDataForMovieBarChart = paginateBarChartData(
       sortedData,
@@ -147,7 +148,7 @@ const Home: FC<CrmProps> = () => {
       moviesAndSeriesSortCategory
     );
     const paginatedDataForTopStats = paginateBarChartData(
-      Data.topRecommendations,
+      data.topRecommendations,
       currentTopChartPage,
       pageSize
     );
@@ -158,7 +159,7 @@ const Home: FC<CrmProps> = () => {
     currentTopChartPage,
     moviesAndSeriesSortCategory,
     topStatsSortCategory,
-    Data
+    data
   ]);
 
   // Fetch filtered table data based on category
@@ -174,57 +175,57 @@ const Home: FC<CrmProps> = () => {
 
   // Generate the seriesData for heatmap
   const seriesDataForHeatmap = generateHeatmapSeriesData(
-    Data.genrePopularityOverTime
+    data.genrePopularityOverTime
   );
   const seriesDataForScatterChart = generateScatterSeriesData(
-    Data.sortedMoviesByProsperity
+    data.sortedMoviesByProsperity
   );
 
   const awardOptions = [
     {
       label: "Общ брой спечелени награди",
-      value: Data.totalAwards?.[0]?.total_awards_wins || 0
+      value: data.totalAwards?.[0]?.total_awards_wins || 0
     },
     {
       label: "Общ брой номинации за награди",
-      value: Data.totalAwards?.[0]?.total_awards_nominations || 0
+      value: data.totalAwards?.[0]?.total_awards_nominations || 0
     },
     {
       label: "Общ брой спечелени Оскари",
-      value: Data.totalAwards?.[0]?.total_oscar_wins || 0
+      value: data.totalAwards?.[0]?.total_oscar_wins || 0
     },
     {
       label: "Общ брой номинации за Оскари",
-      value: Data.totalAwards?.[0]?.total_oscar_nominations || 0
+      value: data.totalAwards?.[0]?.total_oscar_nominations || 0
     }
   ];
 
   const averagesOptions = [
     {
       label: "Среден Боксофис",
-      value: Data.averageBoxOfficeAndScores?.[0]?.average_box_office || 0
+      value: data.averageBoxOfficeAndScores?.[0]?.average_box_office || 0
     },
     {
       label: "Среден Метаскор",
-      value: Data.averageBoxOfficeAndScores?.[0]?.average_metascore || 0
+      value: data.averageBoxOfficeAndScores?.[0]?.average_metascore || 0
     },
     {
       label: "Среден IMDb Рейтинг",
-      value: Data.averageBoxOfficeAndScores?.[0]?.average_imdb_rating || 0
+      value: data.averageBoxOfficeAndScores?.[0]?.average_imdb_rating || 0
     },
     {
       label: "Среден Rotten Tomatoes Рейтинг",
-      value: Data.averageBoxOfficeAndScores?.[0]?.average_rotten_tomatoes || 0
+      value: data.averageBoxOfficeAndScores?.[0]?.average_rotten_tomatoes || 0
     }
   ];
   // Total number of pages for pagination
   const totalChartPages = getTotalBarChartPages(
-    Data.sortedMoviesAndSeriesByIMDbRating.length,
+    data.sortedMoviesAndSeriesByIMDbRating.length,
     pageSize
   );
 
   const totalTopChartPages = getTotalBarChartPages(
-    Data.topRecommendations.length,
+    data.topRecommendations.length,
     pageSize
   );
 
@@ -233,7 +234,7 @@ const Home: FC<CrmProps> = () => {
       "prev",
       currentChartPage,
       pageSize,
-      Data.sortedMoviesAndSeriesByIMDbRating.length,
+      data.sortedMoviesAndSeriesByIMDbRating.length,
       setCurrentChartPage
     );
   };
@@ -243,7 +244,7 @@ const Home: FC<CrmProps> = () => {
       "next",
       currentChartPage,
       pageSize,
-      Data.sortedMoviesAndSeriesByIMDbRating.length,
+      data.sortedMoviesAndSeriesByIMDbRating.length,
       setCurrentChartPage
     );
   };
@@ -253,7 +254,7 @@ const Home: FC<CrmProps> = () => {
       "prev",
       currentTopChartPage,
       pageSize,
-      Data.topRecommendations.length,
+      data.topRecommendations.length,
       setCurrentTopChartPage
     );
   };
@@ -263,7 +264,7 @@ const Home: FC<CrmProps> = () => {
       "next",
       currentTopChartPage,
       pageSize,
-      Data.topRecommendations.length,
+      data.topRecommendations.length,
       setCurrentTopChartPage
     );
   };
@@ -279,6 +280,12 @@ const Home: FC<CrmProps> = () => {
     if (currentTablePage > 1) {
       setCurrentTablePage((prev) => prev - 1);
     }
+  };
+
+  const handleCategoryChange = (category: string) => {
+    // Switch the filtered data based on the selected category
+    setFilteredTableData(data[`sorted${category}ByProsperity`]);
+    setProsperitySortCategory(category);
   };
 
   const tableCategoryDisplayNames: Record<
@@ -325,7 +332,7 @@ const Home: FC<CrmProps> = () => {
                       </p>
                       <div className="flex items-center">
                         <span className="text-[1.25rem] font-semibold">
-                          {Data.usersCount?.[0]?.user_count || 0}
+                          {data.usersCount?.[0]?.user_count || 0}
                         </span>
                       </div>
                     </div>
@@ -348,7 +355,7 @@ const Home: FC<CrmProps> = () => {
                       </p>
                       <div className="flex items-center">
                         <span className="text-[1.25rem] font-semibold">
-                          {Data.topGenres[0]?.genre_bg}
+                          {data.topGenres[0]?.genre_bg}
                         </span>
                       </div>
                     </div>
@@ -502,7 +509,7 @@ const Home: FC<CrmProps> = () => {
                       </p>
                       <div className="flex items-center">
                         <span className="text-[1.125rem] font-semibold">
-                          {Data.usersCount?.[0]?.user_count || 0}
+                          {data.usersCount?.[0]?.user_count || 0}
                         </span>
                       </div>
                     </div>
@@ -527,7 +534,7 @@ const Home: FC<CrmProps> = () => {
                       </p>
                       <div className="flex items-center">
                         <span className="text-[1.125rem] font-semibold">
-                          {Data.topGenres[0]?.genre_bg}
+                          {data.topGenres[0]?.genre_bg}
                         </span>
                       </div>
                     </div>
@@ -693,7 +700,7 @@ const Home: FC<CrmProps> = () => {
                 <div className="box-body">
                   <div id="bubble-simple">
                     <MovieProsperityBubbleChart
-                      sortedMoviesByProsperity={Data.sortedMoviesByProsperity}
+                      sortedMoviesByProsperity={data.sortedMoviesByProsperity}
                     />
                   </div>
                 </div>
@@ -797,11 +804,11 @@ const Home: FC<CrmProps> = () => {
                       до{" "}
                       <b>
                         {currentChartPage === totalChartPages
-                          ? Data.sortedMoviesAndSeriesByIMDbRating.length
+                          ? data.sortedMoviesAndSeriesByIMDbRating.length
                           : currentChartPage * 5}{" "}
                       </b>
                       от общо{" "}
-                      <b>{Data.sortedMoviesAndSeriesByIMDbRating.length}</b>{" "}
+                      <b>{data.sortedMoviesAndSeriesByIMDbRating.length}</b>{" "}
                       (Страница <b>{currentChartPage}</b> )
                       <i className="bi bi-arrow-right ms-2 font-semibold"></i>
                     </div>
@@ -898,12 +905,7 @@ const Home: FC<CrmProps> = () => {
                               ? "rounded-r-md"
                               : ""
                           }`}
-                          onClick={() =>
-                            handleProsperityTableClick(
-                              category,
-                              setProsperitySortCategory
-                            )
-                          }
+                          onClick={() => handleCategoryChange(category)} // Change this line
                         >
                           {
                             tableCategoryDisplayNames[
@@ -1097,10 +1099,10 @@ const Home: FC<CrmProps> = () => {
                     до{" "}
                     <b>
                       {currentTopChartPage === totalTopChartPages
-                        ? Data.topRecommendations.length
+                        ? data.topRecommendations.length
                         : currentTopChartPage * 5}{" "}
                     </b>
-                    от общо <b>{Data.topRecommendations.length}</b> ( Страница{" "}
+                    от общо <b>{data.topRecommendations.length}</b> ( Страница{" "}
                     <b>{currentTopChartPage}</b> )
                     <i className="bi bi-arrow-right ms-2 font-semibold"></i>
                   </div>
@@ -1217,10 +1219,10 @@ const Home: FC<CrmProps> = () => {
                   <Treemap
                     data={
                       topStatsSortCategory === "Actors"
-                        ? Data.topActors
+                        ? data.topActors
                         : topStatsSortCategory === "Directors"
-                        ? Data.topDirectors
-                        : Data.topWriters
+                        ? data.topDirectors
+                        : data.topWriters
                     }
                     role={topStatsSortCategory}
                   />
@@ -1238,7 +1240,7 @@ const Home: FC<CrmProps> = () => {
                 </div>
               </div>
               <div className="box-body">
-                <CountryBarChart topCountries={Data?.topCountries} />
+                <CountryBarChart topCountries={data?.topCountries} />
               </div>
             </div>
           </div>
