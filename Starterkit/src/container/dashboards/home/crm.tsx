@@ -981,7 +981,7 @@ const Home: FC<CrmProps> = () => {
         </div>
         <div className="xxl:col-span-6 xl:col-span-12  col-span-12">
           <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
-            <div className="box custom-card">
+            <div className="box custom-card h-[27.75rem]">
               <div className="box-header justify-between">
                 <div className="box-title">
                   {
@@ -1305,7 +1305,7 @@ const Home: FC<CrmProps> = () => {
             </div>
           </div>
           <div className="xl:col-span-6 col-span-12">
-            <div className="box custom-box h-[30rem]">
+            <div className="box custom-box h-[30.1rem]">
               <div className="box-header justify-between">
                 <div className="box-title">
                   {
