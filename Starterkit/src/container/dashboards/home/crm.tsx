@@ -1305,7 +1305,7 @@ const Home: FC<CrmProps> = () => {
             </div>
           </div>
           <div className="xl:col-span-6 col-span-12">
-            <div className="box custom-box h-[30.1rem]">
+            <div className="box custom-box h-[30rem]">
               <div className="box-header justify-between">
                 <div className="box-title">
                   {
