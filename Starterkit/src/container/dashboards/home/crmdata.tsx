@@ -57,117 +57,6 @@ interface RevenueAnalyticsProps {
   };
 }
 
-export class Revenueanalytics extends Component<
-  RevenueAnalyticsProps,
-  { series: any; options: any }
-> {
-  constructor(props: RevenueAnalyticsProps) {
-    super(props);
-
-    const { genrePopularityOverTime } = this.props;
-
-    // Prepare data for the chart series
-    const genres = new Set<string>();
-    // Collect all genres from genrePopularityOverTime
-    Object.values(genrePopularityOverTime).forEach((yearData) => {
-      Object.keys(yearData).forEach((genre) => {
-        genres.add(genre);
-      });
-    });
-
-    // Prepare the chart series data for all genres
-    const series = Array.from(genres).map((genre) => {
-      return {
-        type: "line",
-        name: genre, // Use genre name
-        data: Object.keys(genrePopularityOverTime).map((year) => {
-          const genreData = genrePopularityOverTime[year][genre];
-          return genreData ? genreData.genre_count : 0;
-        })
-      };
-    });
-
-    this.state = {
-      series: series,
-      options: {
-        chart: {
-          animations: {
-            speed: 500
-          },
-          dropShadow: {
-            enabled: true,
-            top: 8,
-            left: 0,
-            blur: 3,
-            color: "#000",
-            opacity: 0.1
-          },
-          toolbar: {
-            show: false
-          }
-        },
-        colors: [
-          "rgb(132, 90, 223)",
-          "rgba(35, 183, 229, 0.85)",
-          "rgba(119, 119, 142, 0.05)"
-        ],
-        dataLabels: {
-          enabled: false
-        },
-        grid: {
-          borderColor: "#f1f1f1",
-          strokeDashArray: 3
-        },
-        stroke: {
-          curve: "smooth",
-          width: [2, 2, 0],
-          dashArray: [0, 5, 0]
-        },
-        xaxis: {
-          categories: Object.keys(genrePopularityOverTime), // Years (1944, 1947, 1950, ...)
-          axisTicks: {
-            show: false
-          }
-        },
-        yaxis: {
-          labels: {
-            formatter: function (value: number) {
-              return value;
-            }
-          }
-        },
-        tooltip: {
-          y: [
-            {
-              formatter: function (e: number) {
-                return void 0 !== e ? e.toFixed(0) : e;
-              }
-            }
-          ]
-        },
-        markers: {
-          hover: {
-            sizeOffset: 5
-          }
-        }
-      }
-    };
-  }
-
-  render() {
-    return (
-      <div>
-        <ReactApexChart
-          options={this.state.options}
-          series={this.state.series}
-          type="line"
-          height={350}
-        />
-      </div>
-    );
-  }
-}
-
 //ProfitEarned
 export class Profitearned extends Component<{}, spark3> {
   constructor(props: {} | Readonly<{}>) {
@@ -624,7 +513,13 @@ export class GenrePopularityOverTime extends Component<
               fontSize: "11px",
               fontWeight: 600,
               cssClass: "apexcharts-xaxis-label"
-            }
+            },
+            margin: 10
+          },
+          tickAmount: 12,
+          axisTicks: {
+            show: true,
+            interval: 1
           }
         },
         yaxis: {
@@ -642,7 +537,6 @@ export class GenrePopularityOverTime extends Component<
     };
   }
 
-  // Use dynamic data passed as props
   static getDerivedStateFromProps(
     nextProps: BoxOfficeVsIMDBRatingProps,
     prevState: State
@@ -680,6 +574,7 @@ export class GenrePopularityOverTime extends Component<
         series={this.props.seriesData}
         type="heatmap"
         height={350}
+        width="100%" // Ensure it resizes with the container
       />
     );
   }
