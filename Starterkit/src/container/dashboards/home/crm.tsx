@@ -308,7 +308,10 @@ const Home: FC<CrmProps> = () => {
 
   const is1803 = useMediaQuery({ query: "(max-width: 1803px)" });
   const is1441 = useMediaQuery({ query: "(max-width: 1441px)" });
+  const is1461 = useMediaQuery({ query: "(max-width: 1461px)" });
   const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
+  const is1675 = useMediaQuery({ query: "(max-width: 1675px)" });
+
   console.log("seriesDataForScatterChart: ", seriesDataForScatterChart);
   return (
     <Fragment>
@@ -729,7 +732,22 @@ const Home: FC<CrmProps> = () => {
             <div className="xl:col-span-6 col-span-12">
               <div className="box custom-box">
                 <div className="custom-box-header justify-between">
-                  <div className="box-title">
+                  <div
+                    className="box-title"
+                    style={{
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      maxWidth:
+                        window.innerWidth < 1400
+                          ? "100%"
+                          : is1675
+                          ? is1461
+                            ? "200px"
+                            : "250px"
+                          : "100%"
+                    }}
+                  >
                     Филми{" "}
                     {!(moviesAndSeriesSortCategory === "Metascore") &&
                       "и сериали"}{" "}
@@ -740,6 +758,7 @@ const Home: FC<CrmProps> = () => {
                       ]
                     }
                   </div>
+
                   <div className="flex flex-wrap gap-2">
                     <div
                       className="inline-flex rounded-md shadow-sm"
@@ -780,6 +799,7 @@ const Home: FC<CrmProps> = () => {
                     </div>
                   </div>
                 </div>
+
                 <div className="box-body h-[21.75rem]">
                   <div id="bar-basic">
                     <MovieBarChart
@@ -827,6 +847,11 @@ const Home: FC<CrmProps> = () => {
                               className="page-link"
                               to="#"
                               onClick={handlePrevChartPage}
+                              style={{
+                                padding: "0.25rem 0.5rem",
+                                fontSize: "0.8rem",
+                                lineHeight: "1.25"
+                              }}
                             >
                               Предишна
                             </Link>
@@ -842,6 +867,11 @@ const Home: FC<CrmProps> = () => {
                                 className="page-link"
                                 to="#"
                                 onClick={() => setCurrentChartPage(index + 1)}
+                                style={{
+                                  padding: "0.25rem 0.5rem",
+                                  fontSize: "0.8rem",
+                                  lineHeight: "1.25"
+                                }}
                               >
                                 {index + 1}
                               </Link>
@@ -858,6 +888,11 @@ const Home: FC<CrmProps> = () => {
                               className="page-link"
                               to="#"
                               onClick={handleNextChartPage}
+                              style={{
+                                padding: "0.25rem 0.5rem",
+                                fontSize: "0.8rem",
+                                lineHeight: "1.25"
+                              }}
                             >
                               Следваща
                             </Link>
@@ -1024,11 +1059,17 @@ const Home: FC<CrmProps> = () => {
                           className={`page-item ${
                             currentTablePage === 1 ? "disabled" : ""
                           }`}
+                          style={{ marginRight: "0.25rem" }} // Adjust space between items
                         >
                           <Link
                             className="page-link"
                             to="#"
                             onClick={handlePrevTablePage}
+                            style={{
+                              padding: "0.25rem 0.5rem",
+                              fontSize: "0.8rem",
+                              lineHeight: "1.25"
+                            }}
                           >
                             Предишна
                           </Link>
@@ -1039,11 +1080,17 @@ const Home: FC<CrmProps> = () => {
                             className={`page-item ${
                               currentTablePage === index + 1 ? "active" : ""
                             }`}
+                            style={{ marginRight: "0.25rem" }} // Adjust space between items
                           >
                             <Link
                               className="page-link"
                               to="#"
                               onClick={() => setCurrentTablePage(index + 1)}
+                              style={{
+                                padding: "0.25rem 0.5rem",
+                                fontSize: "0.8rem",
+                                lineHeight: "1.25"
+                              }}
                             >
                               {index + 1}
                             </Link>
@@ -1055,11 +1102,17 @@ const Home: FC<CrmProps> = () => {
                               ? "disabled"
                               : ""
                           }`}
+                          style={{ marginRight: "0.25rem" }} // Adjust space between items
                         >
                           <Link
                             className="page-link"
                             to="#"
                             onClick={handleNextTablePage}
+                            style={{
+                              padding: "0.25rem 0.5rem",
+                              fontSize: "0.8rem",
+                              lineHeight: "1.25"
+                            }}
                           >
                             Следваща
                           </Link>
@@ -1121,6 +1174,11 @@ const Home: FC<CrmProps> = () => {
                             className="page-link"
                             to="#"
                             onClick={handlePrevTopChartPage}
+                            style={{
+                              padding: "0.25rem 0.5rem",
+                              fontSize: "0.8rem",
+                              lineHeight: "1.25"
+                            }}
                           >
                             Предишна
                           </Link>
@@ -1136,6 +1194,11 @@ const Home: FC<CrmProps> = () => {
                               className="page-link"
                               to="#"
                               onClick={() => setCurrentTopChartPage(index + 1)}
+                              style={{
+                                padding: "0.25rem 0.5rem",
+                                fontSize: "0.8rem",
+                                lineHeight: "1.25"
+                              }}
                             >
                               {index + 1}
                             </Link>
@@ -1152,6 +1215,11 @@ const Home: FC<CrmProps> = () => {
                             className="page-link"
                             to="#"
                             onClick={handleNextTopChartPage}
+                            style={{
+                              padding: "0.25rem 0.5rem",
+                              fontSize: "0.8rem",
+                              lineHeight: "1.25"
+                            }}
                           >
                             Следваща
                           </Link>

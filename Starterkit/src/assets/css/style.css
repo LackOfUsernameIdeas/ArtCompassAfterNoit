@@ -597,7 +597,7 @@ Background Image
   margin: 0.5rem 0;
 }
 
-.footer-links a {
+.footer-links {
   color: #666;
   text-decoration: none;
   font-weight: bold;
