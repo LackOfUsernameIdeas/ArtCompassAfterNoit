@@ -294,12 +294,12 @@ const Home: FC<CrmProps> = () => {
 
   const toggleAwardsMenu = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    setIsAwardsMenuOpen(!isAwardsMenuOpen);
+    setIsAwardsMenuOpen((prev) => !prev);
   };
 
   const toggleAveragesMenu = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    setIsAveragesMenuOpen(!isAveragesMenuOpen);
+    setIsAveragesMenuOpen((prev) => !prev);
   };
 
   const tableCategoryDisplayNames: Record<
