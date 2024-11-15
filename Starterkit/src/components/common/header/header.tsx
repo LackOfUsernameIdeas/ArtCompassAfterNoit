@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import store from "../../../redux/store";
 import { connect } from "react-redux";
 import { ThemeChanger } from "../../../redux/action";
-import logo from "../../../assets/images/brand-logos/logo.png";
+import logo from "../../../assets/images/brand-logos/logo-large.png";
 
 interface HeaderProps {}
 
