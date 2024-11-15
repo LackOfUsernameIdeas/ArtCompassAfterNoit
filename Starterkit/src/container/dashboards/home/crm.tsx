@@ -774,7 +774,7 @@ const Home: FC<CrmProps> = () => {
         <div className="xxl:col-span-6 col-span-12">
           <div className="xxl:col-span-6 col-span-12">
             <div className="xl:col-span-6 col-span-12">
-              <div className="box custom-box h-[28rem]">
+              <div className="box custom-box h-[27.75rem]">
                 <div className="box-header">
                   <div className="box-title">
                     Най-успешни филми по IMDb Рейтинг и Боксофис
