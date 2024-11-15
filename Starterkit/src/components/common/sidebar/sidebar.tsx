@@ -12,6 +12,10 @@ import logo5 from "../../../assets/images/brand-logos/desktop-white.png";
 import logo6 from "../../../assets/images/brand-logos/toggle-white.png";
 import SimpleBar from "simplebar-react";
 import Menuloop from "../../ui/menuloop";
+
+import gradientDark from "../../../assets/images/menu-bg-images/low-poly-grid-haikei-dark.svg";
+import gradientLight from "../../../assets/images/menu-bg-images/low-poly-grid-haikei-light.svg";
+
 interface SidebarProps {}
 
 const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
@@ -640,6 +644,15 @@ const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
         id="sidebar"
         onMouseEnter={() => Onhover()}
         onMouseLeave={() => Outhover()}
+        style={{
+          backgroundImage:
+            local_varaiable.class === "dark"
+              ? `url(${gradientDark})`
+              : `url(${gradientLight})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          transition: "background-image 0.3s ease"
+        }}
       >
         <div className="main-sidebar-header">
           <a
@@ -656,24 +669,6 @@ const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
         </div>
         <SimpleBar className="main-sidebar" id="sidebar-scroll">
           <nav className="main-menu-container nav nav-pills flex-column sub-open">
-            {/* <div
-              className="slide-left"
-              id="slide-left"
-              onClick={() => {
-                slideLeft();
-              }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="#7b8191"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"></path>
-              </svg>
-            </div> */}
-
             <ul className="main-menu" onClick={() => Sideclick()}>
               {MENUITEMS.map((levelone: any) => (
                 <Fragment key={Math.random()}>
@@ -744,23 +739,6 @@ const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
                 </Fragment>
               ))}
             </ul>
-            {/* <div
-              className="slide-right"
-              id="slide-right"
-              onClick={() => {
-                slideRight();
-              }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="#7b8191"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path>
-              </svg>
-            </div> */}
           </nav>
         </SimpleBar>
       </aside>

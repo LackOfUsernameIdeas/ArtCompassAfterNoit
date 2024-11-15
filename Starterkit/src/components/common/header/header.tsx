@@ -59,7 +59,10 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
 
   return (
     <Fragment>
-      <header className="app-header">
+      <header className="app-header relative overflow-hidden">
+        {/* Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 z-[-1] opacity-70"></div>
+
         <nav className="main-header !h-[3.75rem]" aria-label="Global">
           <div className="main-header-container ps-[0.725rem] pe-[1rem] ">
             <div className="header-content-left">
@@ -99,7 +102,7 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
               >
                 <Link
                   aria-label="anchor"
-                  className="hs-dark-mode-active:hidden flex hs-dark-mode group flex-shrink-0 justify-center items-center gap-2  rounded-full font-medium transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-[#8c9097] dark:text-white/50 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
+                  className="hs-dark-mode-active:hidden flex hs-dark-mode group flex-shrink-0 justify-center items-center gap-2 rounded-full font-medium transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-[#8c9097] dark:text-white/50 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
                   to="#"
                   data-hs-theme-click-value="dark"
                 >
@@ -107,7 +110,7 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
                 </Link>
                 <Link
                   aria-label="anchor"
-                  className="hs-dark-mode-active:flex hidden hs-dark-mode group flex-shrink-0 justify-center items-center gap-2 rounded-full font-medium text-defaulttextcolor  transition-all text-xs dark:bg-bodybg dark:bg-bgdark dark:hover:bg-black/20 dark:text-[#8c9097] dark:text-white/50 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
+                  className="hs-dark-mode-active:flex hidden hs-dark-mode group flex-shrink-0 justify-center items-center gap-2 rounded-full font-medium text-defaulttextcolor transition-all text-xs dark:bg-bodybg dark:bg-bgdark dark:hover:bg-black/20 dark:text-[#8c9097] dark:text-white/50 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
                   to="#"
                   data-hs-theme-click-value="light"
                 >
@@ -140,7 +143,9 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
     </Fragment>
   );
 };
+
 const mapStateToProps = (state: any) => ({
   local_varaiable: state
 });
+
 export default connect(mapStateToProps, { ThemeChanger })(Header);
