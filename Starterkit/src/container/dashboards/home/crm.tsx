@@ -354,8 +354,8 @@ const Home: FC<CrmProps> = () => {
                       </div>
                     </div>
                     <div>
-                      <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
-                        <i className="bi bi-person-lines-fill text-[1rem]"></i>
+                      <span className="avatar avatar-md !rounded-full bg-primary/10 !text-secondary text-[1.125rem]">
+                        <i className="bi bi-person text-primary text-[1rem]"></i>
                       </span>
                     </div>
                   </div>
@@ -377,8 +377,8 @@ const Home: FC<CrmProps> = () => {
                       </div>
                     </div>
                     <div>
-                      <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
-                        <i className="bi bi-person-lines-fill text-[1rem]"></i>
+                      <span className="avatar avatar-md !rounded-full bg-primary/10 !text-secondary text-[1.125rem]">
+                        <i className="bi bi-film text-primary text-[1rem]"></i>
                       </span>
                     </div>
                   </div>
@@ -454,8 +454,14 @@ const Home: FC<CrmProps> = () => {
                       </div>
                     </div>
                     <div>
-                      <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
-                        <i className="bi bi-person-lines-fill text-[1rem]"></i>
+                      <span className="avatar avatar-md !rounded-full bg-primary/10 !text-secondary text-[1.125rem]">
+                        <i
+                          className={`bi bi-${
+                            displayedNameAverages == "Среден Боксофис"
+                              ? "ticket-perforated"
+                              : "bi bi-clipboard-data"
+                          } text-[1rem] text-primary`}
+                        ></i>
                       </span>
                     </div>
                   </div>
@@ -531,8 +537,8 @@ const Home: FC<CrmProps> = () => {
                       </div>
                     </div>
                     <div>
-                      <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
-                        <i className="bi bi-person-lines-fill text-[1rem]"></i>
+                      <span className="avatar avatar-md !rounded-full bg-primary/10 !text-secondary text-[1.125rem]">
+                        <i className="bi bi-trophy text-[1rem] text-primary"></i>
                       </span>
                     </div>
                   </div>
@@ -557,9 +563,8 @@ const Home: FC<CrmProps> = () => {
                       </div>
                     </div>
                     <div>
-                      <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
-                        <i className="bi bi-person-lines-fill text-[0.875rem]"></i>{" "}
-                        {/* Smaller icon */}
+                      <span className="avatar avatar-md !rounded-full bg-primary/10 !text-secondary text-[1.125rem]">
+                        <i className="bi bi-person text-primary text-[0.875rem]"></i>
                       </span>
                     </div>
                   </div>
@@ -582,9 +587,8 @@ const Home: FC<CrmProps> = () => {
                       </div>
                     </div>
                     <div>
-                      <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
-                        <i className="bi bi-person-lines-fill text-[0.875rem]"></i>{" "}
-                        {/* Smaller icon */}
+                      <span className="avatar avatar-md !rounded-full bg-primary/10 !text-secondary text-[1.125rem]">
+                        <i className="bi bi-film text-primary text-[0.875rem]"></i>
                       </span>
                     </div>
                   </div>
@@ -669,9 +673,14 @@ const Home: FC<CrmProps> = () => {
                       </div>
                     </div>
                     <div>
-                      <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
-                        <i className="bi bi-person-lines-fill text-[0.875rem]"></i>{" "}
-                        {/* Smaller icon */}
+                      <span className="avatar avatar-md !rounded-full bg-primary/10 !text-secondary text-[1.125rem]">
+                        <i
+                          className={`bi bi-${
+                            displayedNameAverages == "Среден Боксофис"
+                              ? "ticket-perforated"
+                              : "bi bi-clipboard-data"
+                          } text-[0.875rem] text-primary`}
+                        ></i>
                       </span>
                     </div>
                   </div>
@@ -752,8 +761,8 @@ const Home: FC<CrmProps> = () => {
                       </div>
                     </div>
                     <div>
-                      <span className="avatar avatar-md !rounded-full bg-secondary/10 !text-secondary text-[1.125rem]">
-                        <i className="bi bi-person-lines-fill text-[0.875rem]"></i>
+                      <span className="avatar avatar-md !rounded-full bg-primary/10 !text-secondary text-[1.125rem]">
+                        <i className="bi bi-trophy text-[0.875rem] text-primary"></i>
                       </span>
                     </div>
                   </div>
@@ -766,7 +775,7 @@ const Home: FC<CrmProps> = () => {
           <div className="xxl:col-span-6 col-span-12">
             <div className="xl:col-span-6 col-span-12">
               <div className="box custom-box h-[28rem]">
-                <div className="box-header ">
+                <div className="box-header">
                   <div className="box-title">
                     Най-успешни филми по IMDb Рейтинг и Боксофис
                   </div>
