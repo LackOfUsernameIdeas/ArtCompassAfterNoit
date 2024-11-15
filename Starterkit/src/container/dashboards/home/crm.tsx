@@ -63,6 +63,10 @@ const Home: FC<CrmProps> = () => {
     useState<number>(0);
   const [displayedNameAverages, setDisplayedNameAverages] =
     useState("Среден Боксофис");
+
+  const [isAveragesMenuOpen, setIsAveragesMenuOpen] = useState(false);
+  const [isAwardsMenuOpen, setIsAwardsMenuOpen] = useState(false);
+
   const [displayedValueAwards, setDisplayedValueAwards] = useState<number>(0);
   // Table data filtering and pagination
   const [filteredTableData, setFilteredTableData] = useState<FilteredTableData>(
@@ -288,6 +292,16 @@ const Home: FC<CrmProps> = () => {
     setProsperitySortCategory(category);
   };
 
+  const toggleAwardsMenu = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setIsAwardsMenuOpen(!isAwardsMenuOpen);
+  };
+
+  const toggleAveragesMenu = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setIsAveragesMenuOpen(!isAveragesMenuOpen);
+  };
+
   const tableCategoryDisplayNames: Record<
     "Directors" | "Actors" | "Writers",
     string
@@ -385,13 +399,22 @@ const Home: FC<CrmProps> = () => {
                             <Link
                               to="#"
                               className="flex items-center px-1 py-0.5 text-xs font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all"
-                              aria-expanded="false"
+                              onClick={toggleAveragesMenu}
+                              aria-expanded={
+                                isAveragesMenuOpen ? "true" : "false"
+                              }
                             >
                               Сортирай по
-                              <i className="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
+                              <i
+                                className={`ri-arrow-${
+                                  isAveragesMenuOpen ? "up" : "down"
+                                }-s-line align-middle ms-1 inline-block`}
+                              ></i>
                             </Link>
                             <ul
-                              className="hs-dropdown-menu ti-dropdown-menu hidden"
+                              className={`hs-dropdown-menu ti-dropdown-menu ${
+                                isAveragesMenuOpen ? "block" : "hidden"
+                              }`}
                               role="menu"
                             >
                               {averagesOptions.map(({ label, value }) => (
@@ -405,9 +428,13 @@ const Home: FC<CrmProps> = () => {
                                         value
                                       )
                                     }
-                                    className={`ti-dropdown-item !py-2 !px-[0.9375rem] !text-[0.8125rem] !font-medium ${
+                                    className={`ti-dropdown-item ${
                                       displayedNameAverages === label
-                                        ? "bg-primary text-white"
+                                        ? "active"
+                                        : ""
+                                    } ${
+                                      displayedNameAverages === label
+                                        ? "disabled"
                                         : ""
                                     }`}
                                     to="#"
@@ -449,13 +476,22 @@ const Home: FC<CrmProps> = () => {
                             <Link
                               to="#"
                               className="flex items-center px-1 py-0.5 text-xs font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all"
-                              aria-expanded="false"
+                              onClick={toggleAwardsMenu}
+                              aria-expanded={
+                                isAveragesMenuOpen ? "true" : "false"
+                              }
                             >
                               Сортирай по
-                              <i className="ri-arrow-down-s-line align-middle ms-1 inline-block"></i>
+                              <i
+                                className={`ri-arrow-${
+                                  isAwardsMenuOpen ? "up" : "down"
+                                }-s-line align-middle ms-1 inline-block`}
+                              ></i>
                             </Link>
                             <ul
-                              className="hs-dropdown-menu ti-dropdown-menu hidden"
+                              className={`hs-dropdown-menu ti-dropdown-menu ${
+                                isAwardsMenuOpen ? "block" : "hidden"
+                              }`}
                               role="menu"
                             >
                               {awardOptions.map(({ label, value }) => (
@@ -469,9 +505,13 @@ const Home: FC<CrmProps> = () => {
                                         value
                                       )
                                     }
-                                    className={`ti-dropdown-item py-0.5 px-[0.625rem] text-[0.625rem] font-medium block ${
+                                    className={`ti-dropdown-item ${
                                       displayedNameAwards === label
-                                        ? "bg-primary text-white"
+                                        ? "active"
+                                        : ""
+                                    } ${
+                                      displayedNameAwards === label
+                                        ? "disabled"
                                         : ""
                                     }`}
                                     to="#"
@@ -565,19 +605,32 @@ const Home: FC<CrmProps> = () => {
                           <Link
                             to="#"
                             className="flex items-center px-0.5 py-0.25 text-[0.70rem] font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all"
-                            aria-expanded="false"
+                            onClick={toggleAveragesMenu}
+                            aria-expanded={
+                              isAveragesMenuOpen ? "true" : "false"
+                            }
                           >
                             {is1441 ? (
-                              <i className="ri-arrow-down-s-line text-sm"></i>
+                              <i
+                                className={`ri-arrow-${
+                                  isAveragesMenuOpen ? "up" : "down"
+                                }-s-line text-sm`}
+                              ></i>
                             ) : (
                               <>
                                 <span>Сортирай по</span>
-                                <i className="ri-arrow-down-s-line ml-0.5 text-sm"></i>
+                                <i
+                                  className={`ri-arrow-${
+                                    isAveragesMenuOpen ? "up" : "down"
+                                  }-s-line ml-0.5 text-sm`}
+                                ></i>
                               </>
                             )}
                           </Link>
                           <ul
-                            className="hs-dropdown-menu ti-dropdown-menu hidden"
+                            className={`hs-dropdown-menu ti-dropdown-menu ${
+                              isAveragesMenuOpen ? "block" : "hidden"
+                            }`}
                             role="menu"
                           >
                             {averagesOptions.map(({ label, value }) => (
@@ -591,9 +644,13 @@ const Home: FC<CrmProps> = () => {
                                       value
                                     )
                                   }
-                                  className={`ti-dropdown-item py-0.5 px-[0.625rem] text-[0.625rem] font-medium block ${
+                                  className={`ti-dropdown-item ${
                                     displayedNameAverages === label
-                                      ? "bg-primary text-white"
+                                      ? "active"
+                                      : ""
+                                  } ${
+                                    displayedNameAverages === label
+                                      ? "disabled"
                                       : ""
                                   }`}
                                   to="#"
@@ -634,19 +691,29 @@ const Home: FC<CrmProps> = () => {
                           <Link
                             to="#"
                             className="flex items-center px-0.5 py-0.25 text-[0.70rem] font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all"
-                            aria-expanded="false"
+                            onClick={toggleAwardsMenu}
                           >
                             {is1441 ? (
-                              <i className="ri-arrow-down-s-line text-sm"></i>
+                              <i
+                                className={`ri-arrow-${
+                                  isAwardsMenuOpen ? "up" : "down"
+                                }-s-line text-sm`}
+                              ></i>
                             ) : (
                               <>
                                 <span>Сортирай по</span>
-                                <i className="ri-arrow-down-s-line ml-0.5 text-sm"></i>
+                                <i
+                                  className={`ri-arrow-${
+                                    isAwardsMenuOpen ? "up" : "down"
+                                  }-s-line ml-0.5 text-sm`}
+                                ></i>
                               </>
                             )}
                           </Link>
                           <ul
-                            className="hs-dropdown-menu ti-dropdown-menu hidden"
+                            className={`hs-dropdown-menu ti-dropdown-menu ${
+                              isAwardsMenuOpen ? "block" : "hidden"
+                            }`}
                             role="menu"
                           >
                             {awardOptions.map(({ label, value }) => (
@@ -660,9 +727,13 @@ const Home: FC<CrmProps> = () => {
                                       value
                                     )
                                   }
-                                  className={`ti-dropdown-item py-0.5 px-[0.625rem] text-[0.625rem] font-medium block ${
+                                  className={`ti-dropdown-item ${
                                     displayedNameAwards === label
-                                      ? "bg-primary text-white"
+                                      ? "active"
+                                      : ""
+                                  } ${
+                                    displayedNameAwards === label
+                                      ? "disabled"
                                       : ""
                                   }`}
                                   to="#"
