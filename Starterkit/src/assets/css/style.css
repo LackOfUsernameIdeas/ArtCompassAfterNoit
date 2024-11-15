@@ -16042,6 +16042,14 @@ body {
   @apply before:absolute before:h-4 before:w-[0.2rem] before:top-[0.15rem] before:-start-[0.65rem] before:bg-gradient-to-b before:from-primary/50 before:to-[#2c0700] before:rounded-md;
 }
 
+.custom-box .custom-box-header .box-title {
+  @apply relative font-[700] text-defaulttextcolor text-[.9375rem] me-auto dark:text-defaulttextcolor/70 before:absolute;
+}
+
+.custom-box .custom-box-header .box-title::before {
+  @apply absolute h-4 w-[0.2rem] top-[0.15rem] -start-[0.65rem] bg-gradient-to-b from-primary/50 to-[#2c0700] rounded-md;
+}
+
 .box-body {
   @apply p-5 text-defaulttextcolor dark:text-defaulttextcolor/70;
 }

@@ -815,9 +815,6 @@ const Home: FC<CrmProps> = () => {
                   <div
                     className="box-title"
                     style={{
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
                       maxWidth:
                         window.innerWidth < 1400
                           ? "100%"
@@ -828,15 +825,11 @@ const Home: FC<CrmProps> = () => {
                           : "100%"
                     }}
                   >
-                    Филми{" "}
-                    {!(moviesAndSeriesSortCategory === "Metascore") &&
-                      "и сериали"}{" "}
-                    по{" "}
-                    {
+                    {`Филми и сериали по ${
                       moviesAndSeriesCategoryDisplayNames[
                         moviesAndSeriesSortCategory as keyof typeof moviesAndSeriesCategoryDisplayNames
                       ]
-                    }
+                    }`}
                   </div>
 
                   <div className="flex flex-wrap gap-2">
@@ -1205,9 +1198,9 @@ const Home: FC<CrmProps> = () => {
             </div>
           </div>
           <div className="xl:col-span-6 col-span-12">
-            <div className="box custom-box]">
+            <div className="box custom-box">
               <div className="custom-box-header">
-                <div className="box-title">Най-често препоръчани филми</div>
+                <div className="box-title">Най-често препоръчвани филми</div>
               </div>
               <div className="box-body h-[22rem]">
                 <div id="donut-simple">
@@ -1383,7 +1376,6 @@ const Home: FC<CrmProps> = () => {
             <div className="box">
               <div className="box-header justify-between">
                 <div className="box-title">
-                  {" "}
                   Топ държави с най-много препоръки
                 </div>
               </div>
