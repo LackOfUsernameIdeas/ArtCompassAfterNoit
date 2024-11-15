@@ -7,8 +7,12 @@ const Footer: FC = () => (
         <div className="footer-content grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           <div className="footer-column">
             <div className="brand-name">
-              <span className="brand-name-cine">Кино </span>
-              <span className="brand-name-compass">Компас</span>
+              <span className="footer-brand-name" style={{ color: "#610000" }}>
+                Кино{" "}
+              </span>
+              <span className="footer-brand-name" style={{ color: "#c5750d" }}>
+                Компас
+              </span>
             </div>
             <ul className="footer-links">
               <li>

@@ -107,6 +107,8 @@ Background Image
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 /* Montserrat */
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap");
+/* Ga Maamli */
+@import url("https://fonts.googleapis.com/css2?family=Ga+Maamli&family=Sour+Gummy:ital,wdth,wght@1,125,900&display=swap");
 /* End Tailwind Styles Styles */
 @import url("../iconfonts/RemixIcons/fonts/remixicon.css");
 @import url("../iconfonts/tabler-icons/iconfont/tabler-icons.css");
@@ -558,8 +560,8 @@ Background Image
   box-shadow: 0 0 0.4rem rgba(0, 0, 0, 0.1);
   border-top: 4px solid rgb(154, 17, 10);
   border-radius: 2rem;
-  margin-left: 5rem;
-  margin-right: 5rem;
+  margin-left: 4.5rem;
+  margin-right: 4.5rem;
   margin-bottom: 1rem;
 }
 
@@ -616,6 +618,13 @@ Background Image
 }
 
 .footer-brand-name {
+  font-family: "Ga Maamli", sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: x-large;
+}
+
+.footer-brand-name {
   font-weight: bold;
   color: rgb(154, 17, 10);
 }
@@ -624,21 +633,97 @@ Background Image
   color: red;
 }
 
-@media screen and (min-width: 640px) {
+/* Responsive Styles */
+@media screen and (max-width: 430px) {
+  .footer {
+    padding: 2rem 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
   .footer-content {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr; /* Single column layout on smaller screens */
+    gap: 1rem;
+  }
+
+  .footer-column {
+    text-align: left; /* Align text left for better readability */
+  }
+
+  .footer-title {
+    font-size: 1.1rem;
+  }
+
+  .footer-links li {
+    margin: 0.25rem 0; /* Reduced margin for better spacing */
+  }
+
+  .footer-links a {
+    font-size: 0.9rem; /* Slightly smaller text for links */
+  }
+
+  .tech-stack img {
+    max-width: 120px; /* Reduce image size for smaller screens */
   }
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 431px) {
+  .footer {
+    padding: 2rem 1rem;
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
+  }
+
   .footer-content {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr;
   }
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 431px) {
+  .footer {
+    padding: 2rem 1rem;
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
+  }
+
   .footer-content {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .footer {
+    padding: 2rem 1rem;
+    margin-left: 3.5rem;
+    margin-right: 3.5rem;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (min-width: 1517px) {
+  .footer {
+    padding: 2rem 1rem;
+    margin-left: 4rem;
+    margin-right: 4rem;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (min-width: 1817px) {
+  .footer {
+    padding: 2rem 1rem;
+    margin-left: 4.5rem;
+    margin-right: 4.5rem;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
   }
 }
 
