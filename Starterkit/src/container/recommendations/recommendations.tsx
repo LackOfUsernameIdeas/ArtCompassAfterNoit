@@ -1,8 +1,19 @@
-import { FC, Fragment, useState } from "react";
+import { FC, Fragment, useEffect, useState } from "react";
+import { CSSTransition } from "react-transition-group";
+import { tailChase } from "ldrs";
+import {
+  fetchFakeMovieDataForTesting,
+  Rating,
+  Recommendations
+} from "./recommendationsdata";
 
 interface RecommendationList {}
 
 const RecommendationList: FC<RecommendationList> = () => {
+  //FOR TESTING ONLY
+  const [testing, setTesting] = useState(false);
+  //FOR TESTING ONLY
+
   const [type, setType] = useState("Филм");
   const [genres, setGenres] = useState<{ en: string; bg: string }[]>([]);
   const [moods, setMoods] = useState<string[]>([]);
@@ -17,9 +28,15 @@ const RecommendationList: FC<RecommendationList> = () => {
   const [targetGroup, setTargetGroup] = useState("");
 
   const [submitCount, setSubmitCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [retake, setRetake] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recommendationList, setRecommendationList] = useState<any[]>([]);
-
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [showQuestion, setShowQuestion] = useState(true);
+  const [selectedAnswer, setSelectedAnswer] = useState<string[] | null>(null);
+  const [showNextButton, setShowNextButton] = useState(false);
   const typeOptions = ["Филм", "Сериал"];
 
   const genreOptions = [
@@ -111,6 +128,85 @@ const RecommendationList: FC<RecommendationList> = () => {
     "Семейство и деца",
     "Възрастни над 65"
   ];
+
+  // Add this array of questions at the top of the component
+  const questions = [
+    {
+      question: "Какво търсите - филм или сериал?",
+      options: typeOptions,
+      setter: setType
+    },
+    {
+      question: "Кои жанрове Ви се гледат в момента?",
+      options: genreOptions.map((g) => g.bg),
+      isMultipleChoice: true,
+      setter: setGenres
+    },
+    // {
+    //   question: "Как се чувствате в момента?",
+    //   options: moodOptions,
+    //   isMultipleChoice: true,
+    //   setter: setMoods
+    // },
+    // {
+    //   question: "С какво време за гледане разполагате?",
+    //   options: timeAvailabilityOptions,
+    //   setter: setTimeAvailability
+    // },
+    // {
+    //   question: "Колко стар предпочитате да бъде филма/сериала?",
+    //   options: ageOptions,
+    //   setter: setAge
+    // },
+    // {
+    //   question: "Кои са вашите любими актьори?",
+    //   isInput: true,
+    //   value: actors,
+    //   setter: setActors,
+    //   placeholder: "Пример: Брад Пит, Леонардо ди Каприо, Ема Уотсън"
+    // },
+    // {
+    //   question: "Кои филмови режисьори предпочитате?",
+    //   isInput: true,
+    //   value: directors,
+    //   setter: setDirectors,
+    //   placeholder: "Пример: Дъфър брадърс, Стивън Спилбърг, Джеки Чан"
+    // },
+    // {
+    //   question: "От кои страни предпочитате да е филмът/сериалът?",
+    //   isInput: true,
+    //   value: countries,
+    //   setter: setCountries,
+    //   placeholder: "Пример: България, САЩ"
+    // },
+    // {
+    //   question:
+    //     "Филми/Сериали с каква бързина на развитие на сюжетното действие предпочитате?",
+    //   options: pacingOptions,
+    //   setter: setPacing
+    // },
+    // {
+    //   question: "Филми/Сериали с какво ниво на задълбочаване харесвате?",
+    //   options: depthOptions,
+    //   setter: setDepth
+    // },
+    // {
+    //   question: "Каква е вашата целева група?",
+    //   options: targetGroupOptions,
+    //   setter: setTargetGroup
+    // },
+    {
+      question: "Какви теми ви интересуват?",
+      isInput: true,
+      value: interests,
+      setter: setInterests,
+      placeholder: "Опишете темите, които ви интересуват",
+      description:
+        "Предпочитате филм/сериал, който засяга определена историческа епоха, държава или дори представя история по действителен случай? Интересуват ви филми, в които се разследва мистерия или социален проблем, или такива, в които животни играят важна роля? А какво ще кажете за филми, свързани с пътешествия и изследване на света, или пък разкази за въображаеми светове? Дайте описание. Можете също така да споделите примери за филми/сериали, които предпочитате."
+    }
+  ];
+
+  const [currentQuestion, setCurrentQuestion] = useState(questions[0]);
 
   const token =
     localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
@@ -451,7 +547,6 @@ const RecommendationList: FC<RecommendationList> = () => {
           // TO DO: Да се измисли какво да се прави ако не се намери филма/сериала
         }
       }
-
       // Process the API response (e.g., display the recommended movies)
     } catch (error) {
       console.error("Error generating recommendations:", error);
@@ -464,6 +559,9 @@ const RecommendationList: FC<RecommendationList> = () => {
       alert("Достигнахте максималния брой предложения! :(");
       return;
     }
+    setLoading(true);
+    setSubmitted(true);
+    setShowQuestion(false);
     if (
       !moods ||
       !timeAvailability ||
@@ -504,9 +602,11 @@ const RecommendationList: FC<RecommendationList> = () => {
         // Handle error (e.g., exceeding max requests)
         alert(data.error || "Something went wrong.");
       }
+      setLoading(false);
     } catch (error) {
       console.error("Error submitting the request:", error);
       alert("Something went wrong while submitting your request.");
+      setLoading(false);
     }
   };
 
@@ -533,332 +633,693 @@ const RecommendationList: FC<RecommendationList> = () => {
     );
   };
 
-  return (
-    <Fragment>
-      <div className="flex flex-col items-center justify-start min-h-screen pt-20 page-header-breadcrumb">
-        <div className="grid grid-cols-16 gap-1">
-          <div className="xl:col-span-6 col-span-16">
-            <div className="mb-4">
-              <h6 className="questionTxt bubble left">
-                Какво търсите - филм или сериал?
-              </h6>
-              <div className="bubble right">
-                <select
-                  id="type"
-                  className="form-control"
-                  value={type}
-                  onChange={(e) => setType(e.target.value)}
-                  required
-                >
-                  {typeOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="mb-4">
-              <h6 className="questionTxt bubble left">
-                Кои жанрове Ви се гледат в момента?
-              </h6>
-              <div className="bubble right multiCh MChitem">
-                {genreOptions.map((genre) => (
-                  <div key={genre.en}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        value={genre.en}
-                        checked={
-                          genres.find((g) => g.en === genre.en) !== undefined
-                        }
-                        onChange={() => toggleGenre(genre)}
-                        required
-                      />
-                      {genre.bg}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="mb-4">
-              <h6 className="questionTxt bubble left">
-                Как се чувствате в момента?
-              </h6>
-              <div className="bubble right multiCh MChitem">
-                {moodOptions.map((mood) => (
-                  <div key={mood}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        value={mood}
-                        checked={moods.includes(mood)}
-                        onChange={() => toggleMood(mood)}
-                        required
-                      />
-                      {mood}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="mb-4">
-              <label htmlFor="timeAvailability" className="form-label">
-                С какво време за гледане разполагате?
-              </label>
-              <select
-                id="timeAvailability"
-                className="form-control"
-                value={timeAvailability}
-                onChange={(e) => setTimeAvailability(e.target.value)}
-                required
-              >
-                <option value="" disabled>
-                  Изберете време
-                </option>
-                {timeAvailabilityOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-4">
-              <label htmlFor="age" className="form-label">
-                Колко стар предпочитате да бъде филма/сериала?
-              </label>
-              <select
-                id="age"
-                className="form-control"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
-                required
-              >
-                <option value="" disabled>
-                  Изберете възраст
-                </option>
-                {ageOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-4">
-              <label htmlFor="formGroupExampleInput2" className="form-label">
-                Кои са вашите любими актьори?
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Пример: Брад Пит, Леонардо ди Каприо, Ема Уотсън"
-                value={actors}
-                onChange={(e) => setActors(e.target.value)}
-                required
-              />
-              <label>
-                <input
-                  type="checkbox"
-                  checked={actors === "Нямам предпочитания"}
-                  onChange={() => {
-                    setActors(
-                      actors === "Нямам предпочитания"
-                        ? ""
-                        : "Нямам предпочитания"
-                    );
-                  }}
-                  required
-                />
-                Нямам предпочитания
-              </label>
-            </div>
-            <div className="mb-4">
-              <label htmlFor="formGroupExampleInput2" className="form-label">
-                Кои филмови режисьори предпочитате?
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="formGroupExampleInput2"
-                placeholder="Пример: Дъфър брадърс, Стивън Спилбърг, Джеки Чан"
-                value={directors}
-                onChange={(e) => setDirectors(e.target.value)}
-                required
-              />
-              <label>
-                <input
-                  type="checkbox"
-                  checked={directors === "Нямам предпочитания"}
-                  onChange={() => {
-                    setDirectors(
-                      directors === "Нямам предпочитания"
-                        ? ""
-                        : "Нямам предпочитания"
-                    );
-                  }}
-                  required
-                />
-                Нямам предпочитания
-              </label>
-            </div>
-            <div className="mb-4">
-              <label htmlFor="formGroupExampleInput2" className="form-label">
-                От кои страни предпочитате да е филмът/сериалът?
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="formGroupExampleInput2"
-                placeholder="Пример: България, САЩ"
-                value={countries}
-                onChange={(e) => setCountries(e.target.value)}
-                required
-              />
-              <label>
-                <input
-                  type="checkbox"
-                  checked={countries === "Нямам предпочитания"}
-                  onChange={() => {
-                    setCountries(
-                      countries === "Нямам предпочитания"
-                        ? ""
-                        : "Нямам предпочитания"
-                    );
-                  }}
-                  required
-                />
-                Нямам предпочитания
-              </label>
-            </div>
-            <div className="mb-4">
-              <label htmlFor="pacing" className="form-label">
-                Филми/Сериали с каква бързина на развитие на сюжетното действие
-                предпочитате?
-              </label>
-              <select
-                id="pacing"
-                className="form-control"
-                value={pacing}
-                onChange={(e) => setPacing(e.target.value)}
-                required
-              >
-                <option value="" disabled>
-                  Изберете бързина на развитие
-                </option>
-                {pacingOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-4">
-              <label htmlFor="depth" className="form-label">
-                Филми/Сериали с какво ниво на задълбочаване харесвате?
-              </label>
-              <select
-                id="depth"
-                className="form-control"
-                value={depth}
-                onChange={(e) => setDepth(e.target.value)}
-                required
-              >
-                <option value="" disabled>
-                  Изберете ниво на задълбочаване
-                </option>
-                {depthOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-4">
-              <label htmlFor="targetGroup" className="form-label">
-                Каква е вашата целева група?
-              </label>
-              <select
-                id="targetGroup"
-                className="form-control"
-                value={targetGroup}
-                onChange={(e) => setTargetGroup(e.target.value)}
-                required
-              >
-                <option value="" disabled>
-                  Изберете целева група
-                </option>
-                {targetGroupOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-4">
-              <label htmlFor="formGroupExampleInput2" className="form-label">
-                Какви теми ви интересуват?
-              </label>
-              <div className="form-text">
-                Предпочитате филм/сериал, който засяга определена историческа
-                епоха, държава или дори представя история по действителен
-                случай? Интересуват ви филми, в които се разследва мистерия или
-                социален проблем, или такива, в които животни играят важна роля?
-                А какво ще кажете за филми, свързани с пътешествия и изследване
-                на света, или пък разкази за въображаеми светове? Дайте
-                описание. Можете също така да споделите примери за
-                филми/сериали, които предпочитате.
-              </div>
-              <textarea
-                className="form-control"
-                id="formGroupExampleInput2"
-                placeholder="Опишете темите, които ви интересуват"
-                value={interests}
-                onChange={(e) => setInterests(e.target.value)}
-                rows={4}
-                maxLength={200}
-              />
-              <div className="text-right mt-2">
-                <small>{`${interests.length} / 200`}</small>
-              </div>
-            </div>
+  // const handleNext = () => {
+  //   setShowQuestion(false); // trigger fade-out
+  //   setTimeout(() => {
+  //     setCurrentQuestionIndex((prev) => (prev + 1) % questions.length); // loop through questions
+  //     setShowQuestion(true); // trigger fade-in
+  //     setShowNextButton(false);
+  //   }, 300); // match timeout with transition duration
+  // };
 
-            <div>
-              <div className="ti-btn-list space-x-2 rtl:space-x-reverse mt-4">
-                <button
-                  type="button"
-                  className={`ti-btn ti-btn-primary-gradient ti-btn-wave`}
-                  onClick={handleSubmit}
-                >
-                  Submit
-                </button>
-              </div>
-              {/* Modal */}
-              {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                  <div className="bg-red rounded-lg p-6 max-w-md w-full relative overflow-y-auto max-h-80">
+  const handleNext = () => {
+    setSelectedAnswer(null); // Reset to null when moving to the next question
+    setShowQuestion(false);
+    setTimeout(() => {
+      setCurrentQuestionIndex((prev) => (prev + 1) % questions.length); // Loop through questions
+      setShowQuestion(true);
+    }, 300); // Delay for fade-out/fade-in effect
+  };
+
+  useEffect(() => {
+    if (selectedAnswer && selectedAnswer.length > 0) {
+      // Delay showing the button for a smoother effect
+      const timer = setTimeout(() => setShowNextButton(true), 100);
+      return () => clearTimeout(timer);
+    } else {
+      setShowNextButton(false);
+    }
+  }, [selectedAnswer]);
+
+  const handleAnswerClick = (
+    setter: React.Dispatch<React.SetStateAction<any>>,
+    answer: string
+  ) => {
+    if (currentQuestion.isMultipleChoice) {
+      setSelectedAnswer((prev) => {
+        const updatedAnswers = prev
+          ? prev.includes(answer)
+            ? prev.filter((item) => item !== answer)
+            : [...prev, answer]
+          : [answer];
+        console.log("Updated Answer Selection1:", updatedAnswers);
+        setter(updatedAnswers); // Set the updated answers directly
+        return updatedAnswers; // Return updated state for `selectedAnswer`
+      });
+    } else {
+      setter(answer);
+      setSelectedAnswer([answer]);
+      console.log("Updated Answer Selection2:", [answer]);
+      console.log("raw2:", answer);
+    }
+  };
+
+  const handleInputChange = (
+    setter: React.Dispatch<React.SetStateAction<any>>,
+    value: string
+  ) => {
+    setter(value);
+    console.log("Updated Field Value:", value);
+  };
+
+  const handleSubmitTest = () => {
+    console.log("Form Field Values on Submit:", {
+      moods,
+      timeAvailability,
+      actors,
+      directors,
+      countries,
+      pacing,
+      depth,
+      targetGroup
+    });
+    setLoading(true);
+    setSubmitted(true);
+    setShowQuestion(false);
+
+    setTimeout(() => {
+      fetchFakeMovieDataForTesting(setRecommendationList);
+      setLoading(false);
+    }, 5000);
+  };
+
+  tailChase.register();
+
+  useEffect(() => {
+    console.log("Updated Form Field Values:", {
+      type,
+      moods,
+      genres,
+      timeAvailability,
+      actors,
+      directors,
+      countries,
+      pacing,
+      depth,
+      targetGroup
+    });
+  }, [
+    type,
+    moods,
+    genres,
+    timeAvailability,
+    actors,
+    directors,
+    countries,
+    pacing,
+    depth,
+    targetGroup
+  ]);
+
+  useEffect(() => {
+    setCurrentQuestion(questions[currentQuestionIndex]);
+  }, [currentQuestionIndex]);
+
+  const handleRetakeQuiz = () => {
+    setRetake(true);
+    setTimeout(() => {
+      setSubmitted(false);
+      setRecommendationList([]);
+      setCurrentQuestionIndex(0);
+      setCurrentQuestion({ ...questions[0] });
+      setSelectedAnswer(null);
+      setTesting(true); // Show quiz again
+      setRetake(false);
+    }, 0);
+  };
+
+  useEffect(() => {
+    if (currentQuestion.isInput && currentQuestion.setter === setInterests) {
+      currentQuestion.value = interests; // Sync value from state
+    }
+  }, [currentQuestion, interests]);
+  // useEffect(() => {
+  //   // Simulate fetching fake movie data
+  //   setTesting(true);
+  //   setLoading(true);
+  //   fetchFakeMovieDataForTesting(setRecommendationList);
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //     setSubmitted(true);
+  //   }, 1000); // Simulating a 1-second delay
+  // }, []);
+
+  return (
+    <div>
+      {!retake && (
+        <div>
+          {testing ? (
+            <div className="flex items-center justify-center px-4">
+              <CSSTransition
+                in={loading}
+                timeout={500}
+                classNames="fade"
+                unmountOnExit
+              >
+                <div className="fixed inset-0 flex flex-col items-center justify-center text-white p-8 rounded-lg space-y-4">
+                  <l-tail-chase
+                    size="40"
+                    speed="1.75"
+                    color="white"
+                  ></l-tail-chase>
+                  <p>Submitting, please wait...</p>
+                </div>
+              </CSSTransition>
+              {!loading && submitted && recommendationList.length > 0 && (
+                <div>
+                  <Recommendations recommendationList={recommendationList} />
+                  <div className="mt-8 flex justify-center">
                     <button
-                      className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
-                      onClick={closeModal}
+                      onClick={handleRetakeQuiz}
+                      className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition"
                     >
-                      ✕
+                      Retake Quiz
                     </button>
-                    <div className="text-center">
-                      <h2 className="text-xl font-semibold mb-4">
-                        Нашите предложения:
-                      </h2>
-                      {/* Content goes here; this will be scrollable if it exceeds max height */}
-                      <p>
-                        Your generated recommendations will be displayed here...
-                      </p>
-                    </div>
                   </div>
                 </div>
               )}
             </div>
-          </div>
+          ) : (
+            <div className="flex items-center justify-center px-4">
+              <CSSTransition
+                in={loading}
+                timeout={500}
+                classNames="fade"
+                unmountOnExit
+              >
+                <div className="fixed inset-0 flex flex-col items-center justify-center text-white p-8 rounded-lg space-y-4">
+                  <l-tail-chase
+                    size="40"
+                    speed="1.75"
+                    color="white"
+                  ></l-tail-chase>
+                  <p>Submitting, please wait...</p>
+                </div>
+              </CSSTransition>
+
+              {/* Main Quiz Content */}
+              {!loading ? (
+                <CSSTransition
+                  in={showQuestion}
+                  timeout={300}
+                  classNames="fade"
+                  unmountOnExit
+                >
+                  <div className="w-full max-w-3xl px-4 py-8">
+                    <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 mb-8 glow-effect transition-all duration-300">
+                      <h2 className="text-xl font-semibold break-words">
+                        {currentQuestion.question}
+                      </h2>
+                      {currentQuestion.description && (
+                        <p className="text-sm text-gray-500 mt-2">
+                          {currentQuestion.description}
+                        </p>
+                      )}
+                    </div>
+                    {currentQuestion.isInput ? (
+                      <div className="mb-4">
+                        {currentQuestion.setter === setInterests ? (
+                          <div>
+                            <textarea
+                              className="form-control bg-opacity-70 border-2 rounded-lg p-4 mb-2 text-white glow-effect transition-all duration-300 hover:text-[#d94545]"
+                              placeholder={currentQuestion.placeholder}
+                              value={interests} // Use state directly
+                              onChange={(e) =>
+                                handleInputChange(setInterests, e.target.value)
+                              }
+                              rows={4} // Set larger height with 4 rows
+                              maxLength={200} // Set character limit
+                            />
+                            <div className="text-right mt-2">
+                              <small>{`${interests.length} / 200`}</small>
+                            </div>
+                          </div>
+                        ) : (
+                          <div>
+                            <input
+                              type="text"
+                              className="input-field form-control bg-opacity-70 border-2 rounded-lg p-4 mb-2 text-white glow-effect transition-all duration-300 hover:text-[#d94545]"
+                              placeholder={currentQuestion.placeholder}
+                              value={currentQuestion.value}
+                              onChange={(e) =>
+                                handleInputChange(
+                                  currentQuestion.setter,
+                                  e.target.value
+                                )
+                              }
+                              required
+                            />
+                            <div className="flex items-center text-white">
+                              <input
+                                type="checkbox"
+                                className="checkbox"
+                                checked={
+                                  currentQuestion.value ===
+                                  "Нямам предпочитания"
+                                }
+                                onChange={() => {
+                                  currentQuestion.setter(
+                                    currentQuestion.value ===
+                                      "Нямам предпочитания"
+                                      ? ""
+                                      : "Нямам предпочитания"
+                                  );
+                                }}
+                              />
+                              <label className="ml-2 cursor-pointer hover:text-[#d94545]">
+                                Нямам предпочитания
+                              </label>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div
+                        className={`grid gap-4 ${
+                          (currentQuestion.options?.length ?? 0) > 6
+                            ? "grid-cols-2 md:grid-cols-4"
+                            : "grid-cols-1"
+                        }`}
+                      >
+                        {currentQuestion?.options?.map((answer, index) => (
+                          <div
+                            key={index}
+                            className={`${
+                              selectedAnswer && selectedAnswer.includes(answer)
+                                ? "selected-answer"
+                                : "question"
+                            } bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300 ${
+                              selectedAnswer && selectedAnswer.includes(answer)
+                                ? "transform scale-105"
+                                : "hover:bg-[#d94545] hover:text-white"
+                            }`}
+                          >
+                            <button
+                              className="block w-full p-2 rounded"
+                              onClick={() =>
+                                handleAnswerClick(
+                                  currentQuestion.setter,
+                                  answer
+                                )
+                              }
+                            >
+                              {answer}
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Next or Submit Button, based on question index */}
+                    <div
+                      className={`next bg-red-600 bg-opacity-70 text-white rounded-lg p-4 mt-4 transition-all duration-500 ${
+                        (selectedAnswer && selectedAnswer.length > 0) ||
+                        (currentQuestion.isInput && currentQuestion.value)
+                          ? "opacity-100 pointer-events-auto"
+                          : "opacity-0 pointer-events-none"
+                      }`}
+                    >
+                      {currentQuestionIndex === questions.length - 1 ? (
+                        <button
+                          onClick={handleSubmitTest} // Submit functionality
+                          className="block w-full p-2 text-white rounded hover:bg-red-700"
+                          disabled={
+                            !(
+                              (selectedAnswer && selectedAnswer.length > 0) ||
+                              currentQuestion.value
+                            )
+                          }
+                        >
+                          Submit
+                        </button>
+                      ) : (
+                        <button
+                          onClick={handleNext}
+                          className="block w-full p-2 text-white rounded hover:bg-red-700"
+                          disabled={
+                            !(
+                              (selectedAnswer && selectedAnswer.length > 0) ||
+                              currentQuestion.value
+                            )
+                          }
+                        >
+                          Next Question
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </CSSTransition>
+              ) : null}
+
+              {/* Submission Message */}
+              {!loading && submitted && recommendationList.length > 0 && (
+                <div>
+                  <Recommendations recommendationList={recommendationList} />
+                  <div className="mt-8 flex justify-center">
+                    <button
+                      onClick={handleRetakeQuiz}
+                      className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition"
+                    >
+                      Retake Quiz
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
-      </div>
-    </Fragment>
+      )}
+    </div>
+
+    // <Fragment>
+    //   <div className="flex flex-col items-center justify-start min-h-screen pt-20 page-header-breadcrumb">
+    //     <div className="grid grid-cols-16 gap-1">
+    //       <div className="xl:col-span-6 col-span-16">
+    //         <div className="mb-4">
+    //           <h6 className="">Какво търсите - филм или сериал?</h6>
+    //           <div className="">
+    //             <select
+    //               id="type"
+    //               className="form-control"
+    //               value={type}
+    //               onChange={(e) => setType(e.target.value)}
+    //               required
+    //             >
+    //               {typeOptions.map((option) => (
+    //                 <option key={option} value={option}>
+    //                   {option}
+    //                 </option>
+    //               ))}
+    //             </select>
+    //           </div>
+    //         </div>
+    //         <div className="mb-4">
+    //           <h6 className="">Кои жанрове Ви се гледат в момента?</h6>
+    //           <div className="multiCh MChitem">
+    //             {genreOptions.map((genre) => (
+    //               <div key={genre.en}>
+    //                 <label>
+    //                   <input
+    //                     type="checkbox"
+    //                     value={genre.en}
+    //                     checked={
+    //                       genres.find((g) => g.en === genre.en) !== undefined
+    //                     }
+    //                     onChange={() => toggleGenre(genre)}
+    //                     required
+    //                   />
+    //                   {genre.bg}
+    //                 </label>
+    //               </div>
+    //             ))}
+    //           </div>
+    //         </div>
+    //         <div className="mb-4">
+    //           <h6 className="">Как се чувствате в момента?</h6>
+    //           <div className="multiCh MChitem">
+    //             {moodOptions.map((mood) => (
+    //               <div key={mood}>
+    //                 <label>
+    //                   <input
+    //                     type="checkbox"
+    //                     value={mood}
+    //                     checked={moods.includes(mood)}
+    //                     onChange={() => toggleMood(mood)}
+    //                     required
+    //                   />
+    //                   {mood}
+    //                 </label>
+    //               </div>
+    //             ))}
+    //           </div>
+    //         </div>
+    //         <div className="mb-4">
+    //           <label htmlFor="timeAvailability" className="form-label">
+    //             С какво време за гледане разполагате?
+    //           </label>
+    //           <select
+    //             id="timeAvailability"
+    //             className="form-control"
+    //             value={timeAvailability}
+    //             onChange={(e) => setTimeAvailability(e.target.value)}
+    //             required
+    //           >
+    //             <option value="" disabled>
+    //               Изберете време
+    //             </option>
+    //             {timeAvailabilityOptions.map((option) => (
+    //               <option key={option} value={option}>
+    //                 {option}
+    //               </option>
+    //             ))}
+    //           </select>
+    //         </div>
+    //         <div className="mb-4">
+    //           <label htmlFor="age" className="form-label">
+    //             Колко стар предпочитате да бъде филма/сериала?
+    //           </label>
+    //           <select
+    //             id="age"
+    //             className="form-control"
+    //             value={age}
+    //             onChange={(e) => setAge(e.target.value)}
+    //             required
+    //           >
+    //             <option value="" disabled>
+    //               Изберете възраст
+    //             </option>
+    //             {ageOptions.map((option) => (
+    //               <option key={option} value={option}>
+    //                 {option}
+    //               </option>
+    //             ))}
+    //           </select>
+    //         </div>
+    //         <div className="mb-4">
+    //           <label htmlFor="formGroupExampleInput2" className="form-label">
+    //             Кои са вашите любими актьори?
+    //           </label>
+    //           <input
+    //             type="text"
+    //             className="form-control"
+    //             placeholder="Пример: Брад Пит, Леонардо ди Каприо, Ема Уотсън"
+    //             value={actors}
+    //             onChange={(e) => setActors(e.target.value)}
+    //             required
+    //           />
+    //           <label>
+    //             <input
+    //               type="checkbox"
+    //               checked={actors === "Нямам предпочитания"}
+    //               onChange={() => {
+    //                 setActors(
+    //                   actors === "Нямам предпочитания"
+    //                     ? ""
+    //                     : "Нямам предпочитания"
+    //                 );
+    //               }}
+    //               required
+    //             />
+    //             Нямам предпочитания
+    //           </label>
+    //         </div>
+    //         <div className="mb-4">
+    //           <label htmlFor="formGroupExampleInput2" className="form-label">
+    //             Кои филмови режисьори предпочитате?
+    //           </label>
+    //           <input
+    //             type="text"
+    //             className="form-control"
+    //             id="formGroupExampleInput2"
+    //             placeholder="Пример: Дъфър брадърс, Стивън Спилбърг, Джеки Чан"
+    //             value={directors}
+    //             onChange={(e) => setDirectors(e.target.value)}
+    //             required
+    //           />
+    //           <label>
+    //             <input
+    //               type="checkbox"
+    //               checked={directors === "Нямам предпочитания"}
+    //               onChange={() => {
+    //                 setDirectors(
+    //                   directors === "Нямам предпочитания"
+    //                     ? ""
+    //                     : "Нямам предпочитания"
+    //                 );
+    //               }}
+    //               required
+    //             />
+    //             Нямам предпочитания
+    //           </label>
+    //         </div>
+    //         <div className="mb-4">
+    //           <label htmlFor="formGroupExampleInput2" className="form-label">
+    //             От кои страни предпочитате да е филмът/сериалът?
+    //           </label>
+    //           <input
+    //             type="text"
+    //             className="form-control"
+    //             id="formGroupExampleInput2"
+    //             placeholder="Пример: България, САЩ"
+    //             value={countries}
+    //             onChange={(e) => setCountries(e.target.value)}
+    //             required
+    //           />
+    //           <label>
+    //             <input
+    //               type="checkbox"
+    //               checked={countries === "Нямам предпочитания"}
+    //               onChange={() => {
+    //                 setCountries(
+    //                   countries === "Нямам предпочитания"
+    //                     ? ""
+    //                     : "Нямам предпочитания"
+    //                 );
+    //               }}
+    //               required
+    //             />
+    //             Нямам предпочитания
+    //           </label>
+    //         </div>
+    //         <div className="mb-4">
+    //           <label htmlFor="pacing" className="form-label">
+    //             Филми/Сериали с каква бързина на развитие на сюжетното действие
+    //             предпочитате?
+    //           </label>
+    //           <select
+    //             id="pacing"
+    //             className="form-control"
+    //             value={pacing}
+    //             onChange={(e) => setPacing(e.target.value)}
+    //             required
+    //           >
+    //             <option value="" disabled>
+    //               Изберете бързина на развитие
+    //             </option>
+    //             {pacingOptions.map((option) => (
+    //               <option key={option} value={option}>
+    //                 {option}
+    //               </option>
+    //             ))}
+    //           </select>
+    //         </div>
+    //         <div className="mb-4">
+    //           <label htmlFor="depth" className="form-label">
+    //             Филми/Сериали с какво ниво на задълбочаване харесвате?
+    //           </label>
+    //           <select
+    //             id="depth"
+    //             className="form-control"
+    //             value={depth}
+    //             onChange={(e) => setDepth(e.target.value)}
+    //             required
+    //           >
+    //             <option value="" disabled>
+    //               Изберете ниво на задълбочаване
+    //             </option>
+    //             {depthOptions.map((option) => (
+    //               <option key={option} value={option}>
+    //                 {option}
+    //               </option>
+    //             ))}
+    //           </select>
+    //         </div>
+    //         <div className="mb-4">
+    //           <label htmlFor="targetGroup" className="form-label">
+    //             Каква е вашата целева група?
+    //           </label>
+    //           <select
+    //             id="targetGroup"
+    //             className="form-control"
+    //             value={targetGroup}
+    //             onChange={(e) => setTargetGroup(e.target.value)}
+    //             required
+    //           >
+    //             <option value="" disabled>
+    //               Изберете целева група
+    //             </option>
+    //             {targetGroupOptions.map((option) => (
+    //               <option key={option} value={option}>
+    //                 {option}
+    //               </option>
+    //             ))}
+    //           </select>
+    //         </div>
+    //         <div className="mb-4">
+    //           <label htmlFor="formGroupExampleInput2" className="form-label">
+    //             Какви теми ви интересуват?
+    //           </label>
+    //           <div className="form-text">
+    //             Предпочитате филм/сериал, който засяга определена историческа
+    //             епоха, държава или дори представя история по действителен
+    //             случай? Интересуват ви филми, в които се разследва мистерия или
+    //             социален проблем, или такива, в които животни играят важна роля?
+    //             А какво ще кажете за филми, свързани с пътешествия и изследване
+    //             на света, или пък разкази за въображаеми светове? Дайте
+    //             описание. Можете също така да споделите примери за
+    //             филми/сериали, които предпочитате.
+    //           </div>
+    //           <textarea
+    //             className="form-control"
+    //             id="formGroupExampleInput2"
+    //             placeholder="Опишете темите, които ви интересуват"
+    //             value={interests}
+    //             onChange={(e) => setInterests(e.target.value)}
+    //             rows={4}
+    //             maxLength={200}
+    //           />
+    //           <div className="text-right mt-2">
+    //             <small>{`${interests.length} / 200`}</small>
+    //           </div>
+    //         </div>
+
+    //         <div>
+    //           <div className="ti-btn-list space-x-2 rtl:space-x-reverse mt-4">
+    //             <button
+    //               type="button"
+    //               className={`ti-btn ti-btn-primary-gradient ti-btn-wave`}
+    //               onClick={handleSubmit}
+    //             >
+    //               Submit
+    //             </button>
+    //           </div>
+    //           {/* Modal */}
+    //           {isModalOpen && (
+    //             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    //               <div className="bg-red rounded-lg p-6 max-w-md w-full relative overflow-y-auto max-h-80">
+    //                 <button
+    //                   className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+    //                   onClick={closeModal}
+    //                 >
+    //                   ✕
+    //                 </button>
+    //                 <div className="text-center">
+    //                   <h2 className="text-xl font-semibold mb-4">
+    //                     Нашите предложения:
+    //                   </h2>
+    //                   {/* Content goes here; this will be scrollable if it exceeds max height */}
+    //                   <p>
+    //                     Your generated recommendations will be displayed here...
+    //                   </p>
+    //                 </div>
+    //               </div>
+    //             </div>
+    //           )}
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </div>
+    // </Fragment>
   );
 };
 

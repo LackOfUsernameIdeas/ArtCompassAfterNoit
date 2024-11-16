@@ -19716,4 +19716,48 @@ input[type="color" i]::-webkit-color-swatch {
   margin-bottom: 0.5em;
 }
 
+.fade-enter {
+  opacity: 0;
+  transform: scale(0.9);
+}
+.fade-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 500ms, transform 500ms;
+}
+.fade-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+.fade-exit-active {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 500ms, transform 500ms;
+}
+
+.glow-effect {
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+}
+
+/* Remove background color from .question */
+.question {
+  @apply flex flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative dark:bg-bodybg;
+}
+
+.input-field {
+  @apply flex glow-effect flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative dark:bg-bodybg border-2 dark:border-white focus:ring-4 focus:ring-[#d94545] focus:border-[#d94545];
+}
+
+.selected-answer {
+  @apply flex flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 bg-[#d94545] text-[0.813rem] relative;
+}
+
+.checkbox {
+  @apply mr-2 h-5 w-5 appearance-none bg-opacity-70 bg-[#2a2a2a] rounded-md checked:bg-[#d94545] checked:border-[#d94545] transition-all duration-300 hover:scale-110 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#d94545];
+}
+
+.next {
+  @apply flex flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 bg-[#d52d2d] text-[0.813rem] relative;
+}
+
 /*# sourceMappingURL=style.css.map */
