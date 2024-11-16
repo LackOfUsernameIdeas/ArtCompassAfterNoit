@@ -1124,6 +1124,18 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
 
   const totalPages = Math.ceil(topCountries.length / itemsPerPage);
 
+  const handlePrevChartPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextChartPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   return (
     <div>
       <div className="flex w-full h-[0.3125rem] mb-6 rounded-full overflow-hidden">
@@ -1181,6 +1193,22 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
         <div className="flex justify-center">
           <nav aria-label="Page navigation" className="pagination-style-4">
             <ul className="ti-pagination mb-0">
+              <li
+                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+              >
+                <Link
+                  className="page-link"
+                  to="#"
+                  onClick={handlePrevChartPage}
+                  style={{
+                    padding: "0.25rem 0.5rem",
+                    fontSize: "0.8rem",
+                    lineHeight: "1.25"
+                  }}
+                >
+                  Предишна
+                </Link>
+              </li>
               {[...Array(totalPages)].map((_, index) => (
                 <li
                   key={index}
@@ -1188,15 +1216,41 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
                     currentPage === index + 1 ? "active" : ""
                   }`}
                 >
-                  <a
+                  <Link
                     className="page-link"
-                    href="#"
-                    onClick={() => setCurrentPage(index + 1)}
+                    to="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setCurrentPage(index + 1);
+                    }}
+                    style={{
+                      padding: "0.25rem 0.5rem",
+                      fontSize: "0.8rem",
+                      lineHeight: "1.25"
+                    }}
                   >
                     {index + 1}
-                  </a>
+                  </Link>
                 </li>
               ))}
+              <li
+                className={`page-item ${
+                  currentPage === totalPages ? "disabled" : ""
+                }`}
+              >
+                <Link
+                  className="page-link"
+                  to="#"
+                  onClick={handleNextChartPage}
+                  style={{
+                    padding: "0.25rem 0.5rem",
+                    fontSize: "0.8rem",
+                    lineHeight: "1.25"
+                  }}
+                >
+                  Следваща
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>

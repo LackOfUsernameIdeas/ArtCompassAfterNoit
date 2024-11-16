@@ -1372,7 +1372,7 @@ const Home: FC<CrmProps> = () => {
             </div>
           </div>
 
-          <div className="xxl:col-span-12 xl:col-span-6  col-span-12">
+          <div className="xxl:col-span-12 xl:col-span-6 col-span-12">
             <div className="box">
               <div className="box-header justify-between">
                 <div className="box-title">
