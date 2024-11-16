@@ -4,6 +4,7 @@ import store from "../../../redux/store";
 import { connect } from "react-redux";
 import { ThemeChanger } from "../../../redux/action";
 import logo from "../../../assets/images/brand-logos/logo-large.png";
+import logoPink from "../../../assets/images/brand-logos/logo-large-pink.png";
 
 interface HeaderProps {}
 
@@ -75,7 +76,7 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
                     onMouseLeave={() => setIsLogoHovered(false)}
                   >
                     <img
-                      src={logo}
+                      src={local_varaiable.class == "dark" ? logo : logoPink}
                       alt="logo"
                       className="logo"
                       style={{

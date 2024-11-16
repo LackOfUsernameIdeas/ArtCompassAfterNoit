@@ -1,7 +1,8 @@
 import { FC, Fragment, useCallback, useEffect, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
-import logo from "../../../assets/images/brand-logos/logo.png";
+import logo from "../../../assets/images/brand-logos/logo-large.png";
+import logoPink from "../../../assets/images/brand-logos/logo-large-pink.png";
 
 // Import Swiper styles
 import "swiper/css";
@@ -329,12 +330,23 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
                   <SwiperSlide>
                     <div className="text-white text-center p-[3rem] flex items-center justify-center flex-col lg:space-y-8 md:space-y-4 sm:space-y-2 space-y-2">
                       <div>
-                        <div className="mb-[3rem]">
+                        <div className="mb-[6rem] dark:hidden">
+                          <img
+                            src={logoPink}
+                            className="authentication-image"
+                            alt="Logo"
+                            style={{ width: "100%", height: "auto" }}
+                          />
+                        </div>
+                        <div className="mb-[6rem] hidden dark:block">
                           <img
                             src={logo}
                             className="authentication-image"
                             alt="Logo"
-                            style={{ width: "85%", height: "auto" }}
+                            style={{
+                              width: "100%",
+                              height: "auto"
+                            }}
                           />
                         </div>
                         <h6 className="font-semibold text-[1rem] sm:text-[1.325rem] lg:text-[1.5rem]">

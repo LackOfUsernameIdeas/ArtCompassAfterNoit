@@ -119,6 +119,20 @@ Background Image
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*-- Declare Local Fonts --*/
+
+/* Equilibrist  */
+@font-face {
+  font-family: "Equilibrist";
+  src: url("../../assets/fonts/EquilibristRegular.ttf");
+}
+
+/* Opsilon */
+@font-face {
+  font-family: "Opsilon";
+  src: url("../../assets/fonts/Opsilon.ttf");
+}
 :root {
   --body-bg: 240 241 247;
   --primary: 154 17 10;
@@ -604,7 +618,7 @@ Background Image
 }
 
 .footer-links a:hover {
-  color: rgb(154, 17, 10);
+  @apply text-primary;
 }
 
 .tech-stack img {
@@ -617,16 +631,24 @@ Background Image
   display: block;
 }
 
-.footer-brand-name {
-  font-family: "Ga Maamli", sans-serif;
-  font-weight: 900;
-  font-style: italic;
-  font-size: x-large;
+.brand-name {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
-.footer-brand-name {
+.footer-brand-name-cine {
+  font-family: "Opsilon", sans-serif;
   font-weight: bold;
-  color: rgb(154, 17, 10);
+  font-size: 2rem;
+}
+
+.footer-brand-name-compass {
+  font-family: "Equilibrist", sans-serif;
+  font-weight: bold;
+  font-size: 1.8rem;
+  color: #c5750d;
+  margin-left: 0.5rem;
 }
 
 .footer-text .bi-heart-fill {
