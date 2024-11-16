@@ -159,6 +159,9 @@ interface QuizQuestionProps {
   isBackDisabled: boolean;
   handleSubmitTest: () => void; // Function to submit the quiz
   setInterests: Dispatch<SetStateAction<string>>;
+  recommendationList: any[];
+  handleViewRecommendations: () => void;
+  submitted: boolean;
 }
 
 export const QuizQuestion: FC<QuizQuestionProps> = ({
@@ -174,8 +177,21 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
   handleBack,
   isBackDisabled,
   handleSubmitTest,
-  setInterests
+  setInterests,
+  recommendationList,
+  handleViewRecommendations,
+  submitted
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to control the modal
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true); // Open the modal
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false); // Close the modal
+  };
+
   return (
     <CSSTransition
       in={showQuestion}
@@ -311,7 +327,6 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
           </div>
         )}
 
-        {/* Next or Submit Button */}
         <div
           className={`next bg-red-600 bg-opacity-70 text-white rounded-lg p-4 mt-4 transition-all duration-500 ${
             (selectedAnswer && selectedAnswer.length > 0) ||
@@ -321,18 +336,49 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
           }`}
         >
           {currentQuestionIndex === totalQuestions - 1 ? (
-            <button
-              onClick={handleSubmitTest}
-              className="block w-full p-2 text-white rounded hover:bg-red-700"
-              disabled={
-                !(
-                  (selectedAnswer && selectedAnswer.length > 0) ||
-                  currentQuestion.value
-                )
-              }
-            >
-              Submit
-            </button>
+            <div>
+              <button
+                onClick={handleOpenModal}
+                className="block w-full p-2 text-white rounded hover:bg-red-700"
+                disabled={
+                  !(
+                    (selectedAnswer && selectedAnswer.length > 0) ||
+                    currentQuestion.value
+                  )
+                }
+              >
+                Submit
+              </button>
+              {isModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                  <div className="bg-white p-6 rounded shadow-lg space-y-4">
+                    <h2 className="text-lg font-semibold text-gray-800">
+                      Are you sure you want to submit the test?
+                    </h2>
+                    <p className="text-sm text-gray-600">
+                      Once submitted, you cannot change your answers.
+                    </p>
+                    <div className="flex justify-end space-x-4">
+                      <button
+                        onClick={handleCloseModal}
+                        className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          handleSubmitTest(); // Call the passed-down function
+                          handleCloseModal(); // Close the modal
+                        }}
+                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                      >
+                        Confirm
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           ) : (
             <button
               onClick={handleNext}
@@ -348,6 +394,16 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
             </button>
           )}
         </div>
+        {recommendationList.length > 0 && !submitted && (
+          <div className="flex justify-center">
+            <button
+              onClick={handleViewRecommendations}
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition"
+            >
+              View Recommendations
+            </button>
+          </div>
+        )}
       </div>
     </CSSTransition>
   );

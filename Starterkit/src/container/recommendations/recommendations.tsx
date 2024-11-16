@@ -612,7 +612,6 @@ const RecommendationList: FC<RecommendationList> = () => {
   const closeModal = () => setIsModalOpen(false);
 
   const handleSeeMore = (movie: any) => {
-    // Define what happens on "See More" click
     alert(`More details for ${movie.title}`);
   };
 
@@ -632,41 +631,30 @@ const RecommendationList: FC<RecommendationList> = () => {
     );
   };
 
-  // const handleNext = () => {
-  //   setShowQuestion(false); // trigger fade-out
-  //   setTimeout(() => {
-  //     setCurrentQuestionIndex((prev) => (prev + 1) % questions.length); // loop through questions
-  //     setShowQuestion(true); // trigger fade-in
-  //     setShowNextButton(false);
-  //   }, 300); // match timeout with transition duration
-  // };
-
   const handleNext = () => {
-    setSelectedAnswer(null); // Reset to null when moving to the next question
+    setSelectedAnswer(null);
     setShowQuestion(false);
     setTimeout(() => {
-      setCurrentQuestionIndex((prev) => (prev + 1) % questions.length); // Loop through questions
+      setCurrentQuestionIndex((prev) => (prev + 1) % questions.length);
       setShowQuestion(true);
-    }, 300); // Delay for fade-out/fade-in effect
+    }, 300);
   };
 
   const handleBack = () => {
-    setSelectedAnswer(null); // Reset to null when going back
+    setSelectedAnswer(null);
     setShowQuestion(false);
     setTimeout(() => {
       setCurrentQuestionIndex(
         (prev) => (prev - 1 + questions.length) % questions.length
-      ); // Loop backwards through questions
+      );
       setShowQuestion(true);
-    }, 300); // Delay for fade-out/fade-in effect
+    }, 300);
   };
 
-  // Add logic to disable the back button on the first question
   const isBackDisabled = currentQuestionIndex === 0;
 
   useEffect(() => {
     if (selectedAnswer && selectedAnswer.length > 0) {
-      // Delay showing the button for a smoother effect
       const timer = setTimeout(() => setShowNextButton(true), 100);
       return () => clearTimeout(timer);
     } else {
@@ -766,20 +754,20 @@ const RecommendationList: FC<RecommendationList> = () => {
   };
 
   const handleRetakeQuiz = () => {
-    setLoading(true); // Optionally, show the loader for a brief moment before the quiz resets
+    setLoading(true);
     setTimeout(() => {
-      setCurrentQuestionIndex(0); // Reset to the first question
-      setSelectedAnswer([]); // Clear selected answers
-      setInterests(""); // Clear any input fields like interests
-      setSubmitted(false); // Ensure the quiz is not in a submitted state
-      setShowQuestion(true); // Ensure the first question is visible
-      setLoading(false); // Turn off loader once everything is reset
-    }, 500); // Delay the reset to match the CSSTransition timing
+      setCurrentQuestionIndex(0);
+      setSelectedAnswer([]);
+      setInterests("");
+      setSubmitted(false);
+      setShowQuestion(true);
+      setLoading(false);
+    }, 500);
   };
 
   useEffect(() => {
     if (currentQuestion.isInput && currentQuestion.setter === setInterests) {
-      currentQuestion.value = interests; // Sync value from state
+      currentQuestion.value = interests;
     }
   }, [currentQuestion, interests]);
 
@@ -841,7 +829,6 @@ const RecommendationList: FC<RecommendationList> = () => {
             </div>
           </CSSTransition>
 
-          {/* Main Quiz Content */}
           {!loading && !submitted ? (
             <div className="w-full max-w-3xl">
               <QuizQuestion
@@ -858,21 +845,13 @@ const RecommendationList: FC<RecommendationList> = () => {
                 isBackDisabled={isBackDisabled}
                 handleSubmitTest={handleSubmitTest}
                 setInterests={setInterests}
+                recommendationList={recommendationList}
+                handleViewRecommendations={handleViewRecommendations}
+                submitted={submitted}
               />
-              {recommendationList.length > 0 && !submitted && (
-                <div className="mt-8 flex justify-center">
-                  <button
-                    onClick={handleViewRecommendations}
-                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition"
-                  >
-                    View Recommendations
-                  </button>
-                </div>
-              )}
             </div>
           ) : null}
 
-          {/* Submission Message */}
           {!loading && submitted && recommendationList.length > 0 && (
             <CSSTransition
               in={submitted}
