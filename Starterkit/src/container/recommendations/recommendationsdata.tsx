@@ -365,7 +365,13 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
           {currentQuestionIndex === totalQuestions - 1 ? (
             <div>
               <button
-                onClick={handleOpenModal}
+                onClick={() => {
+                  if (recommendationList.length > 0) {
+                    handleOpenModal(); // Open modal for confirmation
+                  } else {
+                    handleSubmitTest(); // Directly submit if no recommendations
+                  }
+                }}
                 className="block w-full p-2 text-white rounded hover:bg-red-700"
                 disabled={
                   !(
@@ -376,7 +382,7 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
               >
                 Submit
               </button>
-              {isModalOpen && (
+              {isModalOpen && recommendationList.length > 0 && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                   <div className="bg-white p-6 rounded shadow-lg space-y-4">
                     <h2 className="text-lg font-semibold text-gray-800">
@@ -394,7 +400,7 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
                       </button>
                       <button
                         onClick={() => {
-                          handleSubmitTest(); // Call the passed-down function
+                          handleSubmitTest(); // Submit the test
                           handleCloseModal(); // Close the modal
                         }}
                         className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
@@ -422,7 +428,14 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
           )}
         </div>
         {recommendationList.length > 0 && !submitted && (
-          <div className="flex justify-center">
+          <div
+            className={`absolute top-0 left-0 w-full flex justify-center items-center transition-transform duration-500 ${
+              (selectedAnswer && selectedAnswer.length > 0) ||
+              (currentQuestion.isInput && currentQuestion.value)
+                ? "translate-y-16"
+                : "translate-y-0"
+            }`}
+          >
             <button
               onClick={handleViewRecommendations}
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition"

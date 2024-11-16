@@ -752,6 +752,10 @@ const RecommendationList: FC<RecommendationList> = () => {
     targetGroup
   ]);
 
+  useEffect(() => {
+    setSelectedAnswer(null);
+  }, [currentQuestionIndex]);
+
   const currentQuestion = questions[currentQuestionIndex];
 
   const handleViewRecommendations = () => {
