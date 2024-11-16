@@ -2995,14 +2995,14 @@ Background Image
   @apply text-defaulttextcolor bg-white dark:bg-bodybg dark:border-defaultborder/10 border border-solid border-defaultborder focus-visible:outline-none;
 }
 .page-link:focus {
-  @apply shadow-none bg-light;
+  @apply shadow-none bg-light dark:bg-light;
 }
 .page-link:hover {
   @apply text-primary bg-light border-defaultborder;
 }
 
 .page-item.active .page-link {
-  @apply text-white bg-primary border-primary;
+  @apply text-white bg-primary dark:bg-primary border-primary;
 }
 
 .disabled > .page-link,
@@ -18030,10 +18030,10 @@ hr {
   @apply pointer-events-none text-gray-500 dark:bg-bodybg;
 }
 .ti-pagination li .page-link:focus {
-  @apply shadow-none bg-light;
+  @apply shadow-none;
 }
 .ti-pagination li .page-link:hover {
-  @apply text-primary bg-light border-defaultborder;
+  @apply text-primary dark:bg-light bg-light border-defaultborder;
 }
 .ti-pagination li:first-child .page-link {
   @apply rounded-s-md;
