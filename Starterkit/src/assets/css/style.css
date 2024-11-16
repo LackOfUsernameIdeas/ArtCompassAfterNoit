@@ -558,7 +558,7 @@ Background Image
   background-color: #fff;
   padding: 3rem 2rem;
   box-shadow: 0 0 0.4rem rgba(0, 0, 0, 0.1);
-  border-top: 4px solid rgb(154, 17, 10);
+  border-top: 4px solid "bg-primary";
   border-radius: 2rem;
   margin-left: 4.5rem;
   margin-right: 4.5rem;
