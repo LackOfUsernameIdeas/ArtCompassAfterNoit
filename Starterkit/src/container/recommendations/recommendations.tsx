@@ -3,6 +3,7 @@ import { CSSTransition } from "react-transition-group";
 import { tailChase } from "ldrs";
 import {
   fetchFakeMovieDataForTesting,
+  QuizQuestion,
   Rating,
   Recommendations
 } from "./recommendationsdata";
@@ -205,8 +206,6 @@ const RecommendationList: FC<RecommendationList> = () => {
         "Предпочитате филм/сериал, който засяга определена историческа епоха, държава или дори представя история по действителен случай? Интересуват ви филми, в които се разследва мистерия или социален проблем, или такива, в които животни играят важна роля? А какво ще кажете за филми, свързани с пътешествия и изследване на света, или пък разкази за въображаеми светове? Дайте описание. Можете също така да споделите примери за филми/сериали, които предпочитате."
     }
   ];
-
-  const [currentQuestion, setCurrentQuestion] = useState(questions[0]);
 
   const token =
     localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
@@ -651,6 +650,20 @@ const RecommendationList: FC<RecommendationList> = () => {
     }, 300); // Delay for fade-out/fade-in effect
   };
 
+  const handleBack = () => {
+    setSelectedAnswer(null); // Reset to null when going back
+    setShowQuestion(false);
+    setTimeout(() => {
+      setCurrentQuestionIndex(
+        (prev) => (prev - 1 + questions.length) % questions.length
+      ); // Loop backwards through questions
+      setShowQuestion(true);
+    }, 300); // Delay for fade-out/fade-in effect
+  };
+
+  // Add logic to disable the back button on the first question
+  const isBackDisabled = currentQuestionIndex === 0;
+
   useEffect(() => {
     if (selectedAnswer && selectedAnswer.length > 0) {
       // Delay showing the button for a smoother effect
@@ -717,6 +730,7 @@ const RecommendationList: FC<RecommendationList> = () => {
 
   useEffect(() => {
     console.log("Updated Form Field Values:", {
+      interests,
       type,
       moods,
       genres,
@@ -729,6 +743,7 @@ const RecommendationList: FC<RecommendationList> = () => {
       targetGroup
     });
   }, [
+    interests,
     type,
     moods,
     genres,
@@ -741,21 +756,25 @@ const RecommendationList: FC<RecommendationList> = () => {
     targetGroup
   ]);
 
-  useEffect(() => {
-    setCurrentQuestion(questions[currentQuestionIndex]);
-  }, [currentQuestionIndex]);
+  const currentQuestion = questions[currentQuestionIndex];
+
+  const handleViewRecommendations = () => {
+    setShowQuestion(false);
+    setTimeout(() => {
+      setSubmitted(true);
+    }, 300);
+  };
 
   const handleRetakeQuiz = () => {
-    setRetake(true);
+    setLoading(true); // Optionally, show the loader for a brief moment before the quiz resets
     setTimeout(() => {
-      setSubmitted(false);
-      setRecommendationList([]);
-      setCurrentQuestionIndex(0);
-      setCurrentQuestion({ ...questions[0] });
-      setSelectedAnswer(null);
-      setTesting(true); // Show quiz again
-      setRetake(false);
-    }, 0);
+      setCurrentQuestionIndex(0); // Reset to the first question
+      setSelectedAnswer([]); // Clear selected answers
+      setInterests(""); // Clear any input fields like interests
+      setSubmitted(false); // Ensure the quiz is not in a submitted state
+      setShowQuestion(true); // Ensure the first question is visible
+      setLoading(false); // Turn off loader once everything is reset
+    }, 500); // Delay the reset to match the CSSTransition timing
   };
 
   useEffect(() => {
@@ -763,8 +782,13 @@ const RecommendationList: FC<RecommendationList> = () => {
       currentQuestion.value = interests; // Sync value from state
     }
   }, [currentQuestion, interests]);
+
+  useEffect(() => {
+    console.log("recommendationList: ", recommendationList);
+  }, [recommendationList]);
+
   // useEffect(() => {
-  //   // Simulate fetching fake movie data
+  //   // TESTING USE EFFECT!!!!!
   //   setTesting(true);
   //   setLoading(true);
   //   fetchFakeMovieDataForTesting(setRecommendationList);
@@ -776,226 +800,98 @@ const RecommendationList: FC<RecommendationList> = () => {
 
   return (
     <div>
-      {!retake && (
-        <div>
-          {testing ? (
-            <div className="flex items-center justify-center px-4">
-              <CSSTransition
-                in={loading}
-                timeout={500}
-                classNames="fade"
-                unmountOnExit
-              >
-                <div className="fixed inset-0 flex flex-col items-center justify-center text-white p-8 rounded-lg space-y-4">
-                  <l-tail-chase
-                    size="40"
-                    speed="1.75"
-                    color="white"
-                  ></l-tail-chase>
-                  <p>Submitting, please wait...</p>
-                </div>
-              </CSSTransition>
-              {!loading && submitted && recommendationList.length > 0 && (
-                <div>
-                  <Recommendations recommendationList={recommendationList} />
-                  <div className="mt-8 flex justify-center">
-                    <button
-                      onClick={handleRetakeQuiz}
-                      className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition"
-                    >
-                      Retake Quiz
-                    </button>
-                  </div>
-                </div>
-              )}
+      {testing ? (
+        <div className="flex items-center justify-center px-4">
+          <CSSTransition
+            in={loading}
+            timeout={500}
+            classNames="fade"
+            unmountOnExit
+          >
+            <div className="fixed inset-0 flex flex-col items-center justify-center text-white p-8 rounded-lg space-y-4">
+              <l-tail-chase size="40" speed="1.75" color="white"></l-tail-chase>
+              <p>Submitting, please wait...</p>
             </div>
-          ) : (
-            <div className="flex items-center justify-center px-4">
-              <CSSTransition
-                in={loading}
-                timeout={500}
-                classNames="fade"
-                unmountOnExit
-              >
-                <div className="fixed inset-0 flex flex-col items-center justify-center text-white p-8 rounded-lg space-y-4">
-                  <l-tail-chase
-                    size="40"
-                    speed="1.75"
-                    color="white"
-                  ></l-tail-chase>
-                  <p>Submitting, please wait...</p>
-                </div>
-              </CSSTransition>
-
-              {/* Main Quiz Content */}
-              {!loading ? (
-                <CSSTransition
-                  in={showQuestion}
-                  timeout={300}
-                  classNames="fade"
-                  unmountOnExit
+          </CSSTransition>
+          {!loading && submitted && recommendationList.length > 0 && (
+            <div>
+              <Recommendations recommendationList={recommendationList} />
+              <div className="mt-8 flex justify-center">
+                <button
+                  onClick={handleRetakeQuiz}
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition"
                 >
-                  <div className="w-full max-w-3xl px-4 py-8">
-                    <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 mb-8 glow-effect transition-all duration-300">
-                      <h2 className="text-xl font-semibold break-words">
-                        {currentQuestion.question}
-                      </h2>
-                      {currentQuestion.description && (
-                        <p className="text-sm text-gray-500 mt-2">
-                          {currentQuestion.description}
-                        </p>
-                      )}
-                    </div>
-                    {currentQuestion.isInput ? (
-                      <div className="mb-4">
-                        {currentQuestion.setter === setInterests ? (
-                          <div>
-                            <textarea
-                              className="form-control bg-opacity-70 border-2 rounded-lg p-4 mb-2 text-white glow-effect transition-all duration-300 hover:text-[#d94545]"
-                              placeholder={currentQuestion.placeholder}
-                              value={interests} // Use state directly
-                              onChange={(e) =>
-                                handleInputChange(setInterests, e.target.value)
-                              }
-                              rows={4} // Set larger height with 4 rows
-                              maxLength={200} // Set character limit
-                            />
-                            <div className="text-right mt-2">
-                              <small>{`${interests.length} / 200`}</small>
-                            </div>
-                          </div>
-                        ) : (
-                          <div>
-                            <input
-                              type="text"
-                              className="input-field form-control bg-opacity-70 border-2 rounded-lg p-4 mb-2 text-white glow-effect transition-all duration-300 hover:text-[#d94545]"
-                              placeholder={currentQuestion.placeholder}
-                              value={currentQuestion.value}
-                              onChange={(e) =>
-                                handleInputChange(
-                                  currentQuestion.setter,
-                                  e.target.value
-                                )
-                              }
-                              required
-                            />
-                            <div className="flex items-center text-white">
-                              <input
-                                type="checkbox"
-                                className="checkbox"
-                                checked={
-                                  currentQuestion.value ===
-                                  "Нямам предпочитания"
-                                }
-                                onChange={() => {
-                                  currentQuestion.setter(
-                                    currentQuestion.value ===
-                                      "Нямам предпочитания"
-                                      ? ""
-                                      : "Нямам предпочитания"
-                                  );
-                                }}
-                              />
-                              <label className="ml-2 cursor-pointer hover:text-[#d94545]">
-                                Нямам предпочитания
-                              </label>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <div
-                        className={`grid gap-4 ${
-                          (currentQuestion.options?.length ?? 0) > 6
-                            ? "grid-cols-2 md:grid-cols-4"
-                            : "grid-cols-1"
-                        }`}
-                      >
-                        {currentQuestion?.options?.map((answer, index) => (
-                          <div
-                            key={index}
-                            className={`${
-                              selectedAnswer && selectedAnswer.includes(answer)
-                                ? "selected-answer"
-                                : "question"
-                            } bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300 ${
-                              selectedAnswer && selectedAnswer.includes(answer)
-                                ? "transform scale-105"
-                                : "hover:bg-[#d94545] hover:text-white"
-                            }`}
-                          >
-                            <button
-                              className="block w-full p-2 rounded"
-                              onClick={() =>
-                                handleAnswerClick(
-                                  currentQuestion.setter,
-                                  answer
-                                )
-                              }
-                            >
-                              {answer}
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                  Retake Quiz
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="flex items-center justify-center px-4">
+          <CSSTransition
+            in={loading}
+            timeout={500}
+            classNames="fade"
+            unmountOnExit
+          >
+            <div className="fixed inset-0 flex flex-col items-center justify-center text-white p-8 rounded-lg space-y-4">
+              <l-tail-chase size="40" speed="1.75" color="white"></l-tail-chase>
+              <p>Submitting, please wait...</p>
+            </div>
+          </CSSTransition>
 
-                    {/* Next or Submit Button, based on question index */}
-                    <div
-                      className={`next bg-red-600 bg-opacity-70 text-white rounded-lg p-4 mt-4 transition-all duration-500 ${
-                        (selectedAnswer && selectedAnswer.length > 0) ||
-                        (currentQuestion.isInput && currentQuestion.value)
-                          ? "opacity-100 pointer-events-auto"
-                          : "opacity-0 pointer-events-none"
-                      }`}
-                    >
-                      {currentQuestionIndex === questions.length - 1 ? (
-                        <button
-                          onClick={handleSubmitTest} // Submit functionality
-                          className="block w-full p-2 text-white rounded hover:bg-red-700"
-                          disabled={
-                            !(
-                              (selectedAnswer && selectedAnswer.length > 0) ||
-                              currentQuestion.value
-                            )
-                          }
-                        >
-                          Submit
-                        </button>
-                      ) : (
-                        <button
-                          onClick={handleNext}
-                          className="block w-full p-2 text-white rounded hover:bg-red-700"
-                          disabled={
-                            !(
-                              (selectedAnswer && selectedAnswer.length > 0) ||
-                              currentQuestion.value
-                            )
-                          }
-                        >
-                          Next Question
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </CSSTransition>
-              ) : null}
-
-              {/* Submission Message */}
-              {!loading && submitted && recommendationList.length > 0 && (
-                <div>
-                  <Recommendations recommendationList={recommendationList} />
-                  <div className="mt-8 flex justify-center">
-                    <button
-                      onClick={handleRetakeQuiz}
-                      className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition"
-                    >
-                      Retake Quiz
-                    </button>
-                  </div>
+          {/* Main Quiz Content */}
+          {!loading && !submitted ? (
+            <div className="w-full max-w-3xl">
+              <QuizQuestion
+                showQuestion={showQuestion}
+                currentQuestion={currentQuestion}
+                currentQuestionIndex={currentQuestionIndex}
+                totalQuestions={questions.length}
+                selectedAnswer={selectedAnswer}
+                interests={interests}
+                handleInputChange={handleInputChange}
+                handleAnswerClick={handleAnswerClick}
+                handleNext={handleNext}
+                handleBack={handleBack}
+                isBackDisabled={isBackDisabled}
+                handleSubmitTest={handleSubmitTest}
+                setInterests={setInterests}
+              />
+              {recommendationList.length > 0 && !submitted && (
+                <div className="mt-8 flex justify-center">
+                  <button
+                    onClick={handleViewRecommendations}
+                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition"
+                  >
+                    View Recommendations
+                  </button>
                 </div>
               )}
             </div>
+          ) : null}
+
+          {/* Submission Message */}
+          {!loading && submitted && recommendationList.length > 0 && (
+            <CSSTransition
+              in={submitted}
+              timeout={500}
+              classNames="fade"
+              unmountOnExit
+            >
+              <div>
+                <Recommendations recommendationList={recommendationList} />
+                <div className="mt-8 flex justify-center">
+                  <button
+                    onClick={handleRetakeQuiz}
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition"
+                  >
+                    Retake Quiz
+                  </button>
+                </div>
+              </div>
+            </CSSTransition>
           )}
         </div>
       )}

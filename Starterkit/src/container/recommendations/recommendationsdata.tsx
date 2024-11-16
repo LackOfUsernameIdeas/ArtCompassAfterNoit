@@ -1,9 +1,38 @@
-import React, { FC, useState } from "react";
+import React, { Dispatch, FC, SetStateAction, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
+import { CSSTransition } from "react-transition-group";
 export interface Rating {
   Source: string;
   Value: string;
+}
+
+interface Movie {
+  title: string;
+  bgName: string;
+  description: string;
+  reason: string;
+  year: string;
+  rated: string;
+  released: string;
+  runtime: string;
+  runtimeGoogle: string;
+  genre: string;
+  director: string;
+  writer: string;
+  actors: string;
+  plot: string;
+  language: string;
+  country: string;
+  awards: string;
+  poster: string;
+  ratings: { Source: string; Value: string }[];
+  metascore: string;
+  imdbRating: string;
+  imdbVotes: string;
+  imdbID: string;
+  type: string;
+  boxOffice: string;
 }
 
 const fakeMovieData = [
@@ -111,9 +140,217 @@ const fakeMovieData = [
 ];
 
 export const fetchFakeMovieDataForTesting = (
-  setter: React.Dispatch<React.SetStateAction<any>>
+  setter: React.Dispatch<React.SetStateAction<Movie[]>>
 ) => {
-  setter(fakeMovieData);
+  setter((prevData) => [...prevData, ...fakeMovieData]);
+};
+
+interface QuizQuestionProps {
+  showQuestion: boolean; // Whether the question should be visible
+  currentQuestion: any;
+  currentQuestionIndex: number; // Index of the current question
+  totalQuestions: number; // Total number of questions in the quiz
+  selectedAnswer?: string[] | null; // Array of selected answers (if any)
+  interests: string; // Current input for interests
+  handleInputChange: (setter: (value: string) => void, value: string) => void; // Function to handle input changes
+  handleAnswerClick: (setter: (value: string) => void, answer: string) => void; // Function to handle option clicks
+  handleNext: () => void; // Function to move to the next question
+  handleBack: () => void;
+  isBackDisabled: boolean;
+  handleSubmitTest: () => void; // Function to submit the quiz
+  setInterests: Dispatch<SetStateAction<string>>;
+}
+
+export const QuizQuestion: FC<QuizQuestionProps> = ({
+  showQuestion,
+  currentQuestion,
+  currentQuestionIndex,
+  totalQuestions,
+  selectedAnswer,
+  interests,
+  handleInputChange,
+  handleAnswerClick,
+  handleNext,
+  handleBack,
+  isBackDisabled,
+  handleSubmitTest,
+  setInterests
+}) => {
+  return (
+    <CSSTransition
+      in={showQuestion}
+      timeout={300}
+      classNames="fade"
+      unmountOnExit
+    >
+      <div className="w-full max-w-3xl px-4 py-8">
+        {/* Question Content */}
+        <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
+          <h2 className="text-xl font-semibold break-words">
+            {currentQuestion.question}
+          </h2>
+          {currentQuestion.description && (
+            <p className="text-sm text-gray-500 mt-2">
+              {currentQuestion.description}
+            </p>
+          )}
+        </div>
+        <div className={isBackDisabled ? "my-8" : "mb-2"}>
+          {!isBackDisabled && (
+            <div className="flex justify-start ">
+              <button
+                onClick={handleBack}
+                className="back-button text-blue-600 text-3xl transition-all duration-300 hover:text-blue-800"
+              >
+                &#8592;
+              </button>
+            </div>
+          )}
+        </div>
+        {/* Input or Options */}
+        {currentQuestion.isInput ? (
+          <div className="mb-4">
+            {currentQuestion.setter === setInterests ? (
+              <div>
+                <textarea
+                  className="form-control bg-opacity-70 border-2 rounded-lg p-4 mb-2 text-white glow-effect transition-all duration-300 hover:text-[#d94545]"
+                  placeholder={currentQuestion.placeholder}
+                  value={interests}
+                  onChange={(e) =>
+                    handleInputChange(currentQuestion.setter, e.target.value)
+                  }
+                  rows={4}
+                  maxLength={200}
+                />
+                <div className="flex justify-between">
+                  <div className="flex items-center text-white">
+                    <input
+                      type="checkbox"
+                      className="checkbox"
+                      checked={currentQuestion.value === "Нямам предпочитания"}
+                      onChange={() => {
+                        currentQuestion.setter(
+                          currentQuestion.value === "Нямам предпочитания"
+                            ? ""
+                            : "Нямам предпочитания"
+                        );
+                      }}
+                    />
+                    <label className="ml-2 cursor-pointer hover:text-[#d94545]">
+                      Нямам предпочитания
+                    </label>
+                  </div>
+                  <div className="text-right mt-2">
+                    <small>{`${interests.length} / 200`}</small>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <input
+                  type="text"
+                  className="input-field form-control bg-opacity-70 border-2 rounded-lg p-4 mb-2 text-white glow-effect transition-all duration-300 hover:text-[#d94545]"
+                  placeholder={currentQuestion.placeholder}
+                  value={currentQuestion.value}
+                  onChange={(e) =>
+                    handleInputChange(currentQuestion.setter, e.target.value)
+                  }
+                  required
+                />
+                <div className="flex items-center text-white">
+                  <input
+                    type="checkbox"
+                    className="checkbox"
+                    checked={currentQuestion.value === "Нямам предпочитания"}
+                    onChange={() => {
+                      currentQuestion.setter(
+                        currentQuestion.value === "Нямам предпочитания"
+                          ? ""
+                          : "Нямам предпочитания"
+                      );
+                    }}
+                  />
+                  <label className="ml-2 cursor-pointer hover:text-[#d94545]">
+                    Нямам предпочитания
+                  </label>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div
+            className={`grid gap-4 ${
+              (currentQuestion.options?.length ?? 0) > 6
+                ? "grid-cols-2 md:grid-cols-4"
+                : "grid-cols-1"
+            }`}
+          >
+            {currentQuestion.options?.map((answer: string, index: number) => (
+              <div
+                key={index}
+                className={`${
+                  selectedAnswer && selectedAnswer.includes(answer)
+                    ? "selected-answer"
+                    : "question"
+                } bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300 ${
+                  selectedAnswer && selectedAnswer.includes(answer)
+                    ? "transform scale-105"
+                    : "hover:bg-[#d94545] hover:text-white"
+                }`}
+              >
+                <button
+                  className="block w-full p-2 rounded"
+                  onClick={() =>
+                    handleAnswerClick(currentQuestion.setter, answer)
+                  }
+                >
+                  {answer}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Next or Submit Button */}
+        <div
+          className={`next bg-red-600 bg-opacity-70 text-white rounded-lg p-4 mt-4 transition-all duration-500 ${
+            (selectedAnswer && selectedAnswer.length > 0) ||
+            (currentQuestion.isInput && currentQuestion.value)
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
+          }`}
+        >
+          {currentQuestionIndex === totalQuestions - 1 ? (
+            <button
+              onClick={handleSubmitTest}
+              className="block w-full p-2 text-white rounded hover:bg-red-700"
+              disabled={
+                !(
+                  (selectedAnswer && selectedAnswer.length > 0) ||
+                  currentQuestion.value
+                )
+              }
+            >
+              Submit
+            </button>
+          ) : (
+            <button
+              onClick={handleNext}
+              className="block w-full p-2 text-white rounded hover:bg-red-700"
+              disabled={
+                !(
+                  (selectedAnswer && selectedAnswer.length > 0) ||
+                  currentQuestion.value
+                )
+              }
+            >
+              Next Question
+            </button>
+          )}
+        </div>
+      </div>
+    </CSSTransition>
+  );
 };
 
 interface RecommendationsProps {
