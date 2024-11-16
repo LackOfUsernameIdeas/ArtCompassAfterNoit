@@ -15,7 +15,7 @@ const RecommendationList: FC<RecommendationList> = () => {
   const [testing, setTesting] = useState(false);
   //FOR TESTING ONLY
 
-  const [type, setType] = useState("Филм");
+  const [type, setType] = useState("");
   const [genres, setGenres] = useState<{ en: string; bg: string }[]>([]);
   const [moods, setMoods] = useState<string[]>([]);
   const [timeAvailability, setTimeAvailability] = useState("");
@@ -135,67 +135,75 @@ const RecommendationList: FC<RecommendationList> = () => {
     {
       question: "Какво търсите - филм или сериал?",
       options: typeOptions,
+      value: type,
       setter: setType
     },
     {
       question: "Кои жанрове Ви се гледат в момента?",
       options: genreOptions.map((g) => g.bg),
       isMultipleChoice: true,
+      value: genres,
       setter: setGenres
     },
-    // {
-    //   question: "Как се чувствате в момента?",
-    //   options: moodOptions,
-    //   isMultipleChoice: true,
-    //   setter: setMoods
-    // },
-    // {
-    //   question: "С какво време за гледане разполагате?",
-    //   options: timeAvailabilityOptions,
-    //   setter: setTimeAvailability
-    // },
-    // {
-    //   question: "Колко стар предпочитате да бъде филма/сериала?",
-    //   options: ageOptions,
-    //   setter: setAge
-    // },
-    // {
-    //   question: "Кои са вашите любими актьори?",
-    //   isInput: true,
-    //   value: actors,
-    //   setter: setActors,
-    //   placeholder: "Пример: Брад Пит, Леонардо ди Каприо, Ема Уотсън"
-    // },
-    // {
-    //   question: "Кои филмови режисьори предпочитате?",
-    //   isInput: true,
-    //   value: directors,
-    //   setter: setDirectors,
-    //   placeholder: "Пример: Дъфър брадърс, Стивън Спилбърг, Джеки Чан"
-    // },
-    // {
-    //   question: "От кои страни предпочитате да е филмът/сериалът?",
-    //   isInput: true,
-    //   value: countries,
-    //   setter: setCountries,
-    //   placeholder: "Пример: България, САЩ"
-    // },
-    // {
-    //   question:
-    //     "Филми/Сериали с каква бързина на развитие на сюжетното действие предпочитате?",
-    //   options: pacingOptions,
-    //   setter: setPacing
-    // },
-    // {
-    //   question: "Филми/Сериали с какво ниво на задълбочаване харесвате?",
-    //   options: depthOptions,
-    //   setter: setDepth
-    // },
-    // {
-    //   question: "Каква е вашата целева група?",
-    //   options: targetGroupOptions,
-    //   setter: setTargetGroup
-    // },
+    {
+      question: "Как се чувствате в момента?",
+      options: moodOptions,
+      isMultipleChoice: true,
+      value: moods,
+      setter: setMoods
+    },
+    {
+      question: "С какво време за гледане разполагате?",
+      options: timeAvailabilityOptions,
+      value: timeAvailability,
+      setter: setTimeAvailability
+    },
+    {
+      question: "Колко стар предпочитате да бъде филма/сериала?",
+      options: ageOptions,
+      value: age,
+      setter: setAge
+    },
+    {
+      question: "Кои са вашите любими актьори?",
+      isInput: true,
+      value: actors,
+      setter: setActors,
+      placeholder: "Пример: Брад Пит, Леонардо ди Каприо, Ема Уотсън"
+    },
+    {
+      question: "Кои филмови режисьори предпочитате?",
+      isInput: true,
+      value: directors,
+      setter: setDirectors,
+      placeholder: "Пример: Дъфър брадърс, Стивън Спилбърг, Джеки Чан"
+    },
+    {
+      question: "От кои страни предпочитате да е филмът/сериалът?",
+      isInput: true,
+      value: countries,
+      setter: setCountries,
+      placeholder: "Пример: България, САЩ"
+    },
+    {
+      question:
+        "Филми/Сериали с каква бързина на развитие на сюжетното действие предпочитате?",
+      options: pacingOptions,
+      value: pacing,
+      setter: setPacing
+    },
+    {
+      question: "Филми/Сериали с какво ниво на задълбочаване харесвате?",
+      options: depthOptions,
+      value: depth,
+      setter: setDepth
+    },
+    {
+      question: "Каква е вашата целева група?",
+      options: targetGroupOptions,
+      value: targetGroup,
+      setter: setTargetGroup
+    },
     {
       question: "Какви теми ви интересуват?",
       isInput: true,
@@ -758,7 +766,6 @@ const RecommendationList: FC<RecommendationList> = () => {
     setTimeout(() => {
       setCurrentQuestionIndex(0);
       setSelectedAnswer([]);
-      setInterests("");
       setSubmitted(false);
       setShowQuestion(true);
       setLoading(false);
@@ -832,6 +839,7 @@ const RecommendationList: FC<RecommendationList> = () => {
           {!loading && !submitted ? (
             <div className="w-full max-w-3xl">
               <QuizQuestion
+                setSelectedAnswer={setSelectedAnswer}
                 showQuestion={showQuestion}
                 currentQuestion={currentQuestion}
                 currentQuestionIndex={currentQuestionIndex}
