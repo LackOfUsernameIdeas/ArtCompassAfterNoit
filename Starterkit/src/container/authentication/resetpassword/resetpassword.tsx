@@ -1,9 +1,6 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import desktoplogo from "../../../assets/images/brand-logos/desktop-logo.png";
-import desktopdarklogo from "../../../assets/images/brand-logos/desktop-dark.png";
-import img2 from "../../../assets/images/authentication/2.png";
-import img3 from "../../../assets/images/authentication/3.png";
+import logo from "../../../assets/images/brand-logos/logo.png";
 
 // Import Swiper styles
 import "swiper/css";
@@ -147,23 +144,6 @@ const Resetcover: FC<ResetcoverProps> = () => {
         <div className="xxl:col-span-7 xl:col-span-7 lg:col-span-12 col-span-12">
           <div className="flex justify-center items-center h-full">
             <div className="p-[3rem]">
-              <div className="mb-4">
-                <Link
-                  aria-label="anchor"
-                  to={`${import.meta.env.BASE_URL}app/home/`}
-                >
-                  <img
-                    src={desktoplogo}
-                    alt=""
-                    className="authentication-brand desktop-logo"
-                  />
-                  <img
-                    src={desktopdarklogo}
-                    alt=""
-                    className="authentication-brand desktop-dark"
-                  />
-                </Link>
-              </div>
               <p className="h5 font-semibold mb-2">Смяна на паролата</p>
               <p className="mb-4 text-[#8c9097] dark:text-white/50 opacity-[0.7] font-normal">
                 Сменете своята парола тук!
@@ -275,9 +255,7 @@ const Resetcover: FC<ResetcoverProps> = () => {
                 <p className="text-[0.75rem] text-[#8c9097] dark:text-white/50 mt-4">
                   Объркахте нещо?{" "}
                   <Link
-                    to={`${
-                      import.meta.env.BASE_URL
-                    }signin/`}
+                    to={`${import.meta.env.BASE_URL}signin/`}
                     className="text-primary"
                   >
                     Върни се към формата за влизане
@@ -288,7 +266,7 @@ const Resetcover: FC<ResetcoverProps> = () => {
           </div>
         </div>
         <div className="xxl:col-span-5 xl:col-span-5 lg:col-span-5 col-span-12 xl:block hidden px-0">
-          <div className="authentication-cover">
+          <div className="authentication-cover ">
             <div className="aunthentication-cover-content rounded">
               <div className="swiper keyboard-control">
                 <Swiper
@@ -301,77 +279,28 @@ const Resetcover: FC<ResetcoverProps> = () => {
                   className="mySwiper"
                 >
                   <SwiperSlide>
-                    <div className="text-white text-center p-[3rem] flex items-center justify-center">
+                    <div className="text-white text-center p-[3rem] flex items-center justify-center flex-col lg:space-y-8 md:space-y-4 sm:space-y-2 space-y-2">
                       <div>
                         <div className="mb-[3rem]">
                           <img
-                            src={img2}
+                            src={logo}
                             className="authentication-image"
-                            alt=""
+                            alt="Logo"
+                            style={{ width: "85%", height: "auto" }}
                           />
                         </div>
-                        <h6 className="font-semibold text-[1rem]">
-                          Reset Password
+                        <h6 className="font-semibold text-[1rem] sm:text-[1.325rem] lg:text-[1.5rem]">
+                          Добре дошли в Кино Компас!
                         </h6>
-                        <p className="font-normal text-[.875rem] opacity-[0.7]">
-                          {" "}
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Ipsa eligendi expedita aliquam quaerat nulla
-                          voluptas facilis. Porro rem voluptates possimus, ad,
-                          autem quae culpa architecto, quam labore blanditiis at
-                          ratione.
+                        <p className="font-normal text-[0.875rem] opacity-[0.7] sm:text-[1rem] lg:mt-8">
+                          Наслаждавайте се на идеалните филмови и сериални
+                          предложения, създадени за вас с помощта на изкуствен
+                          интелект!
                         </p>
                       </div>
                     </div>
                   </SwiperSlide>
-                  <SwiperSlide>
-                    <div className="text-white text-center p-[3rem] flex items-center justify-center">
-                      <div>
-                        <div className="mb-[3rem]">
-                          <img
-                            src={img3}
-                            className="authentication-image"
-                            alt=""
-                          />
-                        </div>
-                        <h6 className="font-semibold text-[1rem]">
-                          Reset Password
-                        </h6>
-                        <p className="font-normal text-[.875rem] opacity-[0.7]">
-                          {" "}
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Ipsa eligendi expedita aliquam quaerat nulla
-                          voluptas facilis. Porro rem voluptates possimus, ad,
-                          autem quae culpa architecto, quam labore blanditiis at
-                          ratione.
-                        </p>
-                      </div>
-                    </div>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <div className="text-white text-center p-[3rem] flex items-center justify-center">
-                      <div>
-                        <div className="mb-[3rem]">
-                          <img
-                            src={img2}
-                            className="authentication-image"
-                            alt=""
-                          />
-                        </div>
-                        <h6 className="font-semibold text-[1rem]">
-                          Reset Password
-                        </h6>
-                        <p className="font-normal text-[.875rem] opacity-[0.7]">
-                          {" "}
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Ipsa eligendi expedita aliquam quaerat nulla
-                          voluptas facilis. Porro rem voluptates possimus, ad,
-                          autem quae culpa architecto, quam labore blanditiis at
-                          ratione.
-                        </p>
-                      </div>
-                    </div>
-                  </SwiperSlide>
+                  {/* Add additional slides here if needed */}
                 </Swiper>
               </div>
             </div>

@@ -187,12 +187,12 @@ const Signincover: FC<SignincoverProps> = () => {
                       role="alert"
                       key={idx}
                       style={{
-                        maxWidth: "100%", // Ensures it adapts to the form width
+                        maxWidth: "100%",
                         height: "auto",
-                        marginBottom: "1rem", // Adds space between alert and form
-                        wordBreak: "break-word", // Wraps long messages properly
-                        padding: "0.75rem 1rem", // Adjust padding to match typical alert sizing
-                        minHeight: "auto", // Allows the alert to shrink to fit smaller content
+                        marginBottom: "1rem",
+                        wordBreak: "break-word",
+                        padding: "0.75rem 1rem",
+                        minHeight: "auto",
                         alignItems: "center"
                       }}
                     >
@@ -314,7 +314,7 @@ const Signincover: FC<SignincoverProps> = () => {
           </div>
         </div>
         <div className="xxl:col-span-5 xl:col-span-5 lg:col-span-5 col-span-12 xl:block hidden px-0">
-          <div className="authentication-cover">
+          <div className="authentication-cover ">
             <div className="aunthentication-cover-content rounded">
               <div className="swiper keyboard-control">
                 <Swiper
@@ -327,20 +327,20 @@ const Signincover: FC<SignincoverProps> = () => {
                   className="mySwiper"
                 >
                   <SwiperSlide>
-                    <div className="text-white text-center p-[3rem] flex items-center justify-center">
+                    <div className="text-white text-center p-[3rem] flex items-center justify-center flex-col lg:space-y-8 md:space-y-4 sm:space-y-2 space-y-2">
                       <div>
                         <div className="mb-[3rem]">
                           <img
                             src={logo}
                             className="authentication-image"
                             alt="Logo"
-                            style={{ width: "100%", height: "auto" }}
+                            style={{ width: "85%", height: "auto" }}
                           />
                         </div>
-                        <h6 className="font-semibold text-[1rem]">
+                        <h6 className="font-semibold text-[1rem] sm:text-[1.325rem] lg:text-[1.5rem]">
                           Добре дошли в Кино Компас!
                         </h6>
-                        <p className="font-normal text-[.875rem] opacity-[0.7]">
+                        <p className="font-normal text-[0.875rem] opacity-[0.7] sm:text-[1rem] lg:mt-8">
                           Наслаждавайте се на идеалните филмови и сериални
                           предложения, създадени за вас с помощта на изкуствен
                           интелект!
