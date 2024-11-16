@@ -995,26 +995,40 @@ const rgbToHex = (rgb: string): string => {
     .join("")}`;
 };
 
+const updatePrimaryColor = (
+  setter: React.Dispatch<React.SetStateAction<string>>
+) => {
+  const rootStyles = getComputedStyle(document.documentElement);
+  const primary = rootStyles.getPropertyValue("--primary").trim();
+  const primaryWithCommas = primary.split(" ").join(",");
+  const primaryHex = rgbToHex(primaryWithCommas);
+  setter(primaryHex);
+};
+
 export const CountryBarChart: React.FC<CountryBarProps> = ({
   topCountries
 }) => {
   const [primaryColor, setPrimaryColor] = useState<string>("#8B0000");
 
   useEffect(() => {
-    // Retrieve the current theme's primary color
-    const rootStyles = getComputedStyle(document.documentElement);
+    // Initial color update on mount
+    updatePrimaryColor(setPrimaryColor);
 
-    // Check the theme class on the body or html element
-    const currentTheme = document.body.classList.contains("dark")
-      ? "dark"
-      : "light";
-    console.log("Current Theme: ", currentTheme);
+    // Listener to detect theme changes by monitoring the body or html class
+    const observer = new MutationObserver(() => {
+      updatePrimaryColor(setPrimaryColor);
+    });
 
-    // Get the primary color based on the current theme
-    const primary = rootStyles.getPropertyValue("--primary").trim();
-    const primaryWithCommas = primary.split(" ").join(",");
-    const primaryHex = rgbToHex(primaryWithCommas);
-    setPrimaryColor(primaryHex);
+    // Observe changes in classList (e.g., dark/light mode changes)
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"] // Only track class changes
+    });
+
+    // Cleanup observer on component unmount
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   console.log("primaryColor: ", primaryColor);
