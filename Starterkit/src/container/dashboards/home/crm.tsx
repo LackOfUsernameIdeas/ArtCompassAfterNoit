@@ -341,7 +341,7 @@ const Home: FC<CrmProps> = () => {
           <>
             <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
               <div className="box custom-box">
-                <div className="box-body">
+                <div className="box-body h-[5.5rem]">
                   <div className="flex flex-wrap items-start justify-between">
                     <div className="flex-grow">
                       <p className="mb-0 text-[#8c9097] dark:text-white/50">
@@ -364,7 +364,7 @@ const Home: FC<CrmProps> = () => {
             </div>
             <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
               <div className="box custom-box">
-                <div className="box-body">
+                <div className="box-body h-[5.5rem]">
                   <div className="flex flex-wrap items-start justify-between">
                     <div className="flex-grow">
                       <p className="mb-0 text-[#8c9097] dark:text-white/50">
@@ -387,7 +387,7 @@ const Home: FC<CrmProps> = () => {
             </div>
             <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
               <div className="box custom-box">
-                <div className="box-body">
+                <div className="box-body h-[5.5rem]">
                   <div className="flex flex-wrap items-start justify-between">
                     <div className="flex-grow">
                       <div className="flex flex-wrap items-start">
@@ -470,7 +470,7 @@ const Home: FC<CrmProps> = () => {
             </div>
             <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
               <div className="box custom-box">
-                <div className="box-body">
+                <div className="box-body h-[5.5rem]">
                   <div className="flex flex-wrap items-start justify-between">
                     <div className="flex-grow">
                       <div className="flex flex-wrap items-start">
