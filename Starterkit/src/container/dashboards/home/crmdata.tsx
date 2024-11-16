@@ -1008,7 +1008,7 @@ const updatePrimaryColor = (
 export const CountryBarChart: React.FC<CountryBarProps> = ({
   topCountries
 }) => {
-  const [primaryColor, setPrimaryColor] = useState<string>("#8B0000");
+  const [primaryColor, setPrimaryColor] = useState<string>("#ffffff");
 
   useEffect(() => {
     // Initial color update on mount
@@ -1045,9 +1045,9 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
   // Generate a color scale based on the primary color
   const colorScale = chroma
     .scale([
-      chroma(primaryColor).darken(2).hex(), // Darker shade of the primary color
-      primaryColor, // The primary color itself
-      chroma(primaryColor).brighten(2).hex() // Lighter shade of the primary color
+      chroma(primaryColor).brighten(0.5).saturate(1).hex(), // Slightly lighter, subtle change
+      chroma(primaryColor).brighten(3).saturate(0.5).hex(), // Brightened midpoint
+      chroma(primaryColor).darken(1).saturate(1).hex() // Slightly darker end
     ])
     .mode("lab")
     .domain([0, topCountries.length - 1])
