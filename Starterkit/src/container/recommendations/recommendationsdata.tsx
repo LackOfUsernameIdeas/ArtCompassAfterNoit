@@ -1,4 +1,10 @@
-import React, { Dispatch, FC, SetStateAction, useState } from "react";
+import React, {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useEffect,
+  useState
+} from "react";
 import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
 import { CSSTransition } from "react-transition-group";
@@ -146,6 +152,7 @@ export const fetchFakeMovieDataForTesting = (
 };
 
 interface QuizQuestionProps {
+  setSelectedAnswer: Dispatch<SetStateAction<string[] | null>>;
   showQuestion: boolean; // Whether the question should be visible
   currentQuestion: any;
   currentQuestionIndex: number; // Index of the current question
@@ -165,6 +172,7 @@ interface QuizQuestionProps {
 }
 
 export const QuizQuestion: FC<QuizQuestionProps> = ({
+  setSelectedAnswer,
   showQuestion,
   currentQuestion,
   currentQuestionIndex,
@@ -191,6 +199,25 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
   const handleCloseModal = () => {
     setIsModalOpen(false); // Close the modal
   };
+
+  useEffect(() => {
+    // Check if the current question value is different from the current selected answer
+    if (
+      currentQuestion?.value &&
+      JSON.stringify(selectedAnswer) !==
+        JSON.stringify(
+          Array.isArray(currentQuestion.value)
+            ? currentQuestion.value
+            : [currentQuestion.value]
+        )
+    ) {
+      setSelectedAnswer(
+        Array.isArray(currentQuestion.value)
+          ? currentQuestion.value
+          : [currentQuestion.value]
+      );
+    }
+  }, [currentQuestion, selectedAnswer]);
 
   return (
     <CSSTransition
