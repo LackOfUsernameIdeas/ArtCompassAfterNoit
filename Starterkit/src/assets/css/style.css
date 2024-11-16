@@ -121,8 +121,8 @@ Background Image
 @tailwind utilities;
 :root {
   --body-bg: 240 241 247;
-  --primary: 132 90 223;
-  --primary-rgb: 132, 90, 223;
+  --primary: 154 17 10;
+  --primary-rgb: 154 17 10;
   --secondary: 35 183 229;
   --warning: 245 184 73;
   --info: 73 182 245;

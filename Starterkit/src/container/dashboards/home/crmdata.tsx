@@ -1,4 +1,4 @@
-import { Component, useState } from "react";
+import { Component, useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import chroma from "chroma-js";
@@ -983,9 +983,32 @@ interface CountryBarProps {
   topCountries: CountryData[] | null;
 }
 
+const rgbToHex = (rgb: string): string => {
+  // Ensure the input is in the format "rgb(r, g, b)"
+  const result = rgb.match(/\d+/g);
+  if (!result || result.length !== 3) {
+    throw new Error("Invalid RGB color format");
+  }
+
+  return `#${result
+    .map((x) => parseInt(x).toString(16).padStart(2, "0")) // Convert each RGB value to hex
+    .join("")}`;
+};
+
 export const CountryBarChart: React.FC<CountryBarProps> = ({
   topCountries
 }) => {
+  const [primaryColor, setPrimaryColor] = useState<string>("#8B0000");
+
+  useEffect(() => {
+    const rootStyles = getComputedStyle(document.documentElement);
+    const primary = rootStyles.getPropertyValue("--primary").trim();
+    const primaryWithCommas = primary.split(" ").join(",");
+    const primaryHex = rgbToHex(primaryWithCommas);
+    setPrimaryColor(primaryHex);
+  }, []);
+
+  console.log("primaryColor: ", primaryColor);
   if (!topCountries) {
     return <div>Зареждане...</div>;
   }
@@ -995,13 +1018,16 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
     0
   );
 
-  // Generate a color scale based on the number of countries
+  // Generate a color scale based on the primary color
   const colorScale = chroma
-    .scale(["#be1313", "#FF6347", "#FF4500", "#FF1493", "#FF69B4"])
+    .scale([
+      chroma(primaryColor).darken(2).hex(), // Darker shade of the primary color
+      primaryColor, // The primary color itself
+      chroma(primaryColor).brighten(2).hex() // Lighter shade of the primary color
+    ])
     .mode("lab")
     .domain([0, topCountries.length - 1])
-    .colors(topCountries.length)
-    .map((color) => chroma(color).darken(0.3).hex());
+    .colors(topCountries.length);
 
   // Pagination state
   const itemsPerPage = 5;
@@ -1018,13 +1044,16 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
       <div className="flex w-full h-[0.3125rem] mb-6 rounded-full overflow-hidden">
         {topCountries.map((country, index) => {
           const widthPercentage = (country.count / totalCount) * 100;
-          const color = colorScale[index]; // Get the color for each country
+          const color = colorScale[index];
 
           return (
             <div
               key={country.country_en}
               className="flex flex-col justify-center overflow-hidden"
-              style={{ width: `${widthPercentage}%`, backgroundColor: color }}
+              style={{
+                width: `${widthPercentage}%`,
+                backgroundColor: color
+              }}
               aria-valuenow={widthPercentage}
               aria-valuemin={0}
               aria-valuemax={100}
@@ -1043,7 +1072,7 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
       <ul className="list-none mb-6 pt-2 crm-deals-status flex flex-col">
         {currentCountries.map((country, index) => {
           const color =
-            currentPage === 1 ? colorScale[index] : colorScale[index + 5]; // Get the color for each country (based on current page)
+            currentPage === 1 ? colorScale[index] : colorScale[index + 5];
 
           return (
             <li
@@ -1052,7 +1081,7 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
             >
               <div
                 className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: color }} // Set the correct color for the dots
+                style={{ backgroundColor: color }}
                 aria-label={country.country_en}
               ></div>
               <span className="ml-2">
@@ -1074,13 +1103,13 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
                     currentPage === index + 1 ? "active" : ""
                   }`}
                 >
-                  <Link
+                  <a
                     className="page-link"
-                    to="#"
+                    href="#"
                     onClick={() => setCurrentPage(index + 1)}
                   >
                     {index + 1}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -1090,7 +1119,6 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
     </div>
   );
 };
-
 interface SimpleBubbleChartProps {
   sortedMoviesByProsperity: MovieProsperityData[];
 }
