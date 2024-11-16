@@ -1001,7 +1001,16 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
   const [primaryColor, setPrimaryColor] = useState<string>("#8B0000");
 
   useEffect(() => {
+    // Retrieve the current theme's primary color
     const rootStyles = getComputedStyle(document.documentElement);
+
+    // Check the theme class on the body or html element
+    const currentTheme = document.body.classList.contains("dark")
+      ? "dark"
+      : "light";
+    console.log("Current Theme: ", currentTheme);
+
+    // Get the primary color based on the current theme
     const primary = rootStyles.getPropertyValue("--primary").trim();
     const primaryWithCommas = primary.split(" ").join(",");
     const primaryHex = rgbToHex(primaryWithCommas);
@@ -1009,6 +1018,7 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
   }, []);
 
   console.log("primaryColor: ", primaryColor);
+
   if (!topCountries) {
     return <div>Зареждане...</div>;
   }
