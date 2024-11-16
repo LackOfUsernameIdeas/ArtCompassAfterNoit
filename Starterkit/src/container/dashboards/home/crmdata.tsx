@@ -49,6 +49,27 @@ export function generateData(count: any, yrange: any) {
   return series;
 }
 
+const rgbToHex = (rgb: string): string => {
+  // Ensure the input is in the format "rgb(r, g, b)"
+  const result = rgb.match(/\d+/g);
+  if (!result || result.length !== 3) {
+    throw new Error("Invalid RGB color format");
+  }
+
+  return `#${result
+    .map((x) => parseInt(x).toString(16).padStart(2, "0")) // Convert each RGB value to hex
+    .join("")}`;
+};
+
+const updatePrimaryColor = () => {
+  const rootStyles = getComputedStyle(document.documentElement);
+  const primary = rootStyles.getPropertyValue("--primary").trim();
+  const primaryWithCommas = primary.split(" ").join(",");
+  const primaryHex = rgbToHex(primaryWithCommas);
+
+  return primaryHex;
+};
+
 interface RevenueAnalyticsProps {
   genrePopularityOverTime: {
     [key: string]: {
@@ -421,13 +442,24 @@ interface State {
   series?: { name: string; data: (number | null)[] }[]; // Optional series for flexibility
 }
 
-//color range
 export class GenrePopularityOverTime extends Component<
   GenrePopularityOverTimeProps,
   State
 > {
+  private observer: MutationObserver | null = null;
+
   constructor(props: GenrePopularityOverTimeProps) {
     super(props);
+
+    const initialColor = updatePrimaryColor();
+    const initialColorRange = chroma
+      .scale([
+        chroma(initialColor).darken(0.5).hex(),
+        chroma(initialColor).darken(1).hex()
+      ])
+      .mode("lab")
+      .domain([0, 100]) // Adjust domain values to fit your data
+      .colors(10);
 
     this.state = {
       options: {
@@ -443,56 +475,11 @@ export class GenrePopularityOverTime extends Component<
             radius: 0,
             useFillColorAsStroke: true,
             colorScale: {
-              ranges: [
-                {
-                  from: -30,
-                  to: 1,
-                  name: "Изключително нисък брой",
-                  color: "#f28a8a"
-                },
-                {
-                  from: 2,
-                  to: 3,
-                  name: "Много нисък брой",
-                  color: "#e05656"
-                },
-                {
-                  from: 4,
-                  to: 5,
-                  name: "Нисък брой",
-                  color: "#d83838"
-                },
-                {
-                  from: 6,
-                  to: 15,
-                  name: "Умерен брой",
-                  color: "#d01616"
-                },
-                {
-                  from: 16,
-                  to: 20,
-                  name: "Среден брой",
-                  color: "#a11212"
-                },
-                {
-                  from: 21,
-                  to: 100,
-                  name: "По-висок от средния брой",
-                  color: "#8a0f0f"
-                },
-                {
-                  from: 101,
-                  to: 200,
-                  name: "Висок брой",
-                  color: "#730d0d"
-                },
-                {
-                  from: 201,
-                  to: 1000,
-                  name: "Изключително висок брой",
-                  color: "#5a0a0a"
-                }
-              ]
+              ranges: initialColorRange.map((color, index) => ({
+                from: index * 10,
+                to: (index + 1) * 10,
+                color: color
+              }))
             }
           }
         },
@@ -532,39 +519,85 @@ export class GenrePopularityOverTime extends Component<
               cssClass: "apexcharts-yaxis-label"
             }
           }
+        },
+        tooltip: {
+          custom: function ({
+            seriesIndex,
+            dataPointIndex,
+            w
+          }: {
+            seriesIndex: number;
+            dataPointIndex: number;
+            w: any;
+          }) {
+            const genre = w.config.series[seriesIndex].name;
+            const count = w.config.series[seriesIndex].data[dataPointIndex].y;
+            const year = w.config.series[seriesIndex].data[dataPointIndex].x;
+
+            return `<div style="padding: 10px;">
+                      <strong>Жанр: ${genre}</strong><br>
+                      <span>Брой препоръчвания: ${count}</span>
+                    </div>`;
+          }
         }
       }
     };
   }
 
-  static getDerivedStateFromProps(
-    nextProps: BoxOfficeVsIMDBRatingProps,
-    prevState: State
-  ) {
-    if (nextProps.seriesData.length > 0) {
-      const seriesData = [
-        {
-          name: "Жанрове",
-          data: nextProps.seriesData.map((movie) => ({
-            x:
-              typeof movie.boxOffice === "string"
-                ? parseFloat(movie.boxOffice.replace(/[\$,]/g, "")) / 1e6
-                : movie.boxOffice / 1e6, // Convert to millions if it's a string
-            y:
-              typeof movie.imdbRating === "string"
-                ? parseFloat(movie.imdbRating)
-                : movie.imdbRating, // Use as is if it's a number
-            name: movie.title_bg // Movie title
-          }))
-        }
-      ];
+  componentDidMount() {
+    this.updateColorRange();
 
-      // Log the series data for debugging
-      console.log("Series Data:", seriesData);
+    // Initialize the MutationObserver to watch for class changes on document.documentElement
+    this.observer = new MutationObserver(() => {
+      this.updateColorRange();
+    });
 
-      return { ...prevState, series: seriesData };
+    // Observe changes in the classList of the document's root element (theme changes)
+    this.observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"]
+    });
+  }
+
+  componentWillUnmount() {
+    // Clean up the MutationObserver when the component is unmounted
+    if (this.observer) {
+      this.observer.disconnect();
     }
-    return null;
+  }
+
+  updateColorRange() {
+    const primaryHex = updatePrimaryColor();
+
+    // Generate the new color range based on the primary color
+    const newColorRange = chroma
+      .scale([
+        chroma(primaryHex).darken(0.5).hex(),
+        chroma(primaryHex).darken(1).hex()
+      ]) // Slightly darker colors
+      .mode("lab")
+      .domain([0, 100]) // Adjust domain values to fit your data
+      .colors(10); // Generate 10 colors based on the primary color
+
+    // Update the state with the new color range
+    this.setState((prevState) => ({
+      options: {
+        ...prevState.options,
+        plotOptions: {
+          ...prevState.options.plotOptions,
+          heatmap: {
+            ...prevState.options.plotOptions.heatmap,
+            colorScale: {
+              ranges: newColorRange.map((color, index) => ({
+                from: index * 10,
+                to: (index + 1) * 10,
+                color: color
+              }))
+            }
+          }
+        }
+      }
+    }));
   }
 
   render() {
@@ -700,9 +733,6 @@ export class BoxOfficeVsIMDBRating extends Component<
         }
       ];
 
-      // Log the transformed series data for debugging
-      console.log("Transformed Series Data:", seriesData);
-
       return { ...prevState, series: seriesData };
     }
     return null;
@@ -724,27 +754,33 @@ export class MovieBarChart extends Component<
   { seriesData: MovieData[]; category: string },
   State
 > {
+  private observer: MutationObserver | null = null;
+
   constructor(props: { seriesData: MovieData[]; category: string }) {
     super(props);
+
+    // Get the initial color for the theme
+    const initialColor = updatePrimaryColor();
+
     this.state = {
       series: [],
       options: {
         chart: {
           type: "bar",
-          toolbar: {
-            show: false
-          }
+          toolbar: { show: false }
         },
         plotOptions: { bar: { borderRadius: 4, horizontal: true } },
         grid: { borderColor: "#f2f5f7" },
         dataLabels: { enabled: false },
         xaxis: {
-          title: {
-            text: []
-          },
+          title: { text: [] },
           categories: []
         },
-        yaxis: { title: { text: "Заглавие" } }
+        yaxis: { title: { text: "Заглавие" } },
+        colors: [
+          chroma(initialColor).darken(0.6).hex(), // Brighter color for Movies
+          chroma(initialColor).brighten(0.6).hex() // Darker color for Series
+        ]
       }
     };
   }
@@ -773,16 +809,24 @@ export class MovieBarChart extends Component<
                 : sortCategory === "Metascore"
                 ? "Метаскор"
                 : "Rotten Tomatoes рейтинг",
-            data: sortedMovies.map((movie) => ({
-              x: `${movie.title_bg} (${movie.title_en})`,
-              y:
-                sortCategory === "IMDb"
-                  ? movie.imdbRating
-                  : sortCategory === "Metascore"
-                  ? movie.metascore
-                  : movie.rottenTomatoes,
-              fillColor: movie.type === "movie" ? "#d01616" : "#f28a8a"
-            }))
+            data: sortedMovies.map((movie) => {
+              // Determine the color based on the type (Movie or Series)
+              const color =
+                movie.type === "movie"
+                  ? prevState.options.colors[0] // Brighter color for movies
+                  : prevState.options.colors[1]; // Darker color for series
+
+              return {
+                x: `${movie.title_bg} (${movie.title_en})`,
+                y:
+                  sortCategory === "IMDb"
+                    ? movie.imdbRating
+                    : sortCategory === "Metascore"
+                    ? movie.metascore
+                    : movie.rottenTomatoes,
+                fillColor: color // Use dynamic color for each movie/series
+              };
+            })
           }
         ],
         options: {
@@ -805,24 +849,65 @@ export class MovieBarChart extends Component<
       };
     }
 
-    return null; // No update if no data
+    return null;
+  }
+
+  componentDidMount() {
+    this.updateColorRange();
+
+    // Initialize the MutationObserver to watch for class changes on document.documentElement
+    this.observer = new MutationObserver(() => {
+      this.updateColorRange();
+    });
+
+    // Observe changes in the classList of the document's root element (theme changes)
+    this.observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"]
+    });
+  }
+
+  componentWillUnmount() {
+    // Clean up the MutationObserver when the component is unmounted
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  }
+
+  updateColorRange() {
+    const primaryHex = updatePrimaryColor(); // Get the updated theme color
+
+    // Define the distinct colors based on the updated primary color
+    const movieColor = chroma(primaryHex).darken(0.6).hex(); // Brighter movie color
+    const seriesColor = chroma(primaryHex).brighten(0.6).hex(); // Darker series color
+
+    // Update the state with the new color values
+    this.setState((prevState) => ({
+      options: {
+        ...prevState.options,
+        colors: [movieColor, seriesColor] // Update colors for both categories
+      }
+    }));
   }
 
   render() {
+    const movieColor = this.state.options.colors[0];
+    const seriesColor = this.state.options.colors[1];
+
     return (
       <div>
         <div className="flex justify-center items-center">
           <div className="flex items-center mr-4">
             <span
               className="w-3 h-3 mr-1 rounded-full inline-block"
-              style={{ backgroundColor: "#d01616" }}
+              style={{ backgroundColor: movieColor }}
             ></span>
             <span>Филм</span>
           </div>
           <div className="flex items-center">
             <span
               className="w-3 h-3 mr-1 rounded-full inline-block"
-              style={{ backgroundColor: "#f28a8a" }}
+              style={{ backgroundColor: seriesColor }}
             ></span>
             <span>Сериал</span>
           </div>
@@ -983,28 +1068,6 @@ interface CountryBarProps {
   topCountries: CountryData[] | null;
 }
 
-const rgbToHex = (rgb: string): string => {
-  // Ensure the input is in the format "rgb(r, g, b)"
-  const result = rgb.match(/\d+/g);
-  if (!result || result.length !== 3) {
-    throw new Error("Invalid RGB color format");
-  }
-
-  return `#${result
-    .map((x) => parseInt(x).toString(16).padStart(2, "0")) // Convert each RGB value to hex
-    .join("")}`;
-};
-
-const updatePrimaryColor = (
-  setter: React.Dispatch<React.SetStateAction<string>>
-) => {
-  const rootStyles = getComputedStyle(document.documentElement);
-  const primary = rootStyles.getPropertyValue("--primary").trim();
-  const primaryWithCommas = primary.split(" ").join(",");
-  const primaryHex = rgbToHex(primaryWithCommas);
-  setter(primaryHex);
-};
-
 export const CountryBarChart: React.FC<CountryBarProps> = ({
   topCountries
 }) => {
@@ -1012,11 +1075,11 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
 
   useEffect(() => {
     // Initial color update on mount
-    updatePrimaryColor(setPrimaryColor);
+    setPrimaryColor(updatePrimaryColor());
 
     // Listener to detect theme changes by monitoring the body or html class
     const observer = new MutationObserver(() => {
-      updatePrimaryColor(setPrimaryColor);
+      setPrimaryColor(updatePrimaryColor());
     });
 
     // Observe changes in classList (e.g., dark/light mode changes)
@@ -1030,8 +1093,6 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
       observer.disconnect();
     };
   }, []);
-
-  console.log("primaryColor: ", primaryColor);
 
   if (!topCountries) {
     return <div>Зареждане...</div>;
@@ -1337,10 +1398,21 @@ interface BasicTreemapState {
 }
 
 export class Treemap extends Component<BasicTreemapProps, BasicTreemapState> {
+  private observer: MutationObserver | null = null;
+
   constructor(props: BasicTreemapProps) {
     super(props);
 
-    // Initial state is set based on the props
+    const initialColor = updatePrimaryColor();
+    const initialColorRange = chroma
+      .scale([
+        chroma(initialColor).darken(0.5).hex(),
+        chroma(initialColor).darken(1).hex()
+      ])
+      .mode("lab")
+      .domain([0, 100])
+      .colors(10); // Generates a range of 10 colors
+
     this.state = {
       series: [
         {
@@ -1348,16 +1420,16 @@ export class Treemap extends Component<BasicTreemapProps, BasicTreemapState> {
         }
       ],
       options: {
-        legend: {
-          show: false
-        },
         chart: {
           type: "treemap",
           toolbar: {
             show: false
           }
         },
-        colors: ["#9a110a"]
+        colors: initialColorRange, // Set initial colors based on the theme
+        legend: {
+          show: false
+        }
       }
     };
   }
@@ -1367,10 +1439,9 @@ export class Treemap extends Component<BasicTreemapProps, BasicTreemapState> {
     nextProps: BasicTreemapProps,
     prevState: BasicTreemapState
   ) {
-    // Check if data or role has changed before updating the state
     if (
       nextProps.data !== prevState.series[0].data ||
-      nextProps.role !== prevState.options.title.text.split(" ")[1]
+      nextProps.role !== prevState.options.title?.text?.split(" ")[1]
     ) {
       return {
         series: [
@@ -1380,7 +1451,6 @@ export class Treemap extends Component<BasicTreemapProps, BasicTreemapState> {
         ]
       };
     }
-    // Return null to avoid unnecessary re-renders
     return null;
   }
 
@@ -1405,6 +1475,55 @@ export class Treemap extends Component<BasicTreemapProps, BasicTreemapState> {
     });
   }
 
+  // Function to get the primary color based on the theme
+  getPrimaryColor() {
+    const root = document.documentElement;
+    const primaryColor = window
+      .getComputedStyle(root)
+      .getPropertyValue("--primary-color");
+    return primaryColor || "#9a110a"; // Default to a red color if primary color is not found
+  }
+
+  // Function to update the color scale
+  updateColorRange() {
+    const primaryHex = updatePrimaryColor();
+    console.log("primaryHex: ", primaryHex);
+    const newColorRange = chroma
+      .scale([
+        chroma(primaryHex).darken(0.5).hex(),
+        chroma(primaryHex).darken(1).hex()
+      ])
+      .mode("lab")
+      .domain([0, 100])
+      .colors(10);
+
+    this.setState((prevState) => ({
+      options: {
+        ...prevState.options,
+        colors: newColorRange // Update the colors
+      }
+    }));
+  }
+
+  componentDidMount() {
+    // Observe theme changes to update the color scale dynamically
+    this.observer = new MutationObserver(() => {
+      this.updateColorRange();
+    });
+
+    this.observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"]
+    });
+  }
+
+  componentWillUnmount() {
+    // Cleanup observer when the component unmounts
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  }
+
   render() {
     return (
       <ReactApexChart
@@ -1421,27 +1540,42 @@ export class TopRecommendationsBarChart extends Component<
   { seriesData: RecommendationData[] },
   State
 > {
+  private observer: MutationObserver | null = null;
+
   constructor(props: { seriesData: RecommendationData[] }) {
     super(props);
+
+    // Get the initial color for the theme
+    const initialColor = updatePrimaryColor();
+
+    // Set the distinct colors for Movies and Series based on the primary color
     this.state = {
       series: [],
       options: {
         chart: {
           type: "bar",
-          toolbar: {
-            show: false
-          }
+          toolbar: { show: false }
         },
         plotOptions: { bar: { borderRadius: 4, horizontal: true } },
         grid: { borderColor: "#f2f5f7" },
         dataLabels: { enabled: false },
         xaxis: {
-          title: {
-            text: "Брой препоръчвания"
-          },
+          title: { text: "Брой препоръчвания" },
           categories: []
         },
-        yaxis: { title: { text: "Заглавие" } }
+        yaxis: { title: { text: "Заглавие" } },
+        // Adjust brightness more for Movies (brighter) and darken more for Series (darker)
+        colors: [
+          chroma(initialColor).darken(0.6).hex(), // Brighter color for Movies
+          chroma(initialColor).brighten(0.6).hex() // Darker color for Series
+        ],
+        legend: {
+          show: true,
+          position: "top", // Optionally change legend position
+          labels: {
+            colors: ["#000", "#000"] // You can adjust the legend text color here
+          }
+        }
       }
     };
   }
@@ -1455,15 +1589,27 @@ export class TopRecommendationsBarChart extends Component<
         (a, b) => b.recommendations - a.recommendations
       );
 
+      const updatedSeries = sortedMovies.map((movie) => {
+        // Apply distinct colors for movies and series
+        const isMovie = movie.type === "movie";
+
+        // Get the color for the movie or series
+        const color = isMovie
+          ? prevState.options.colors[0] // Brighter Movie color
+          : prevState.options.colors[1]; // Darker Series color
+
+        return {
+          x: `${movie.title_bg} (${movie.title_en})`,
+          y: movie.recommendations,
+          fillColor: color // Set the dynamic color based on movie type
+        };
+      });
+
       return {
         series: [
           {
             name: "Препоръчвания",
-            data: sortedMovies.map((movie) => ({
-              x: `${movie.title_bg} (${movie.title_en})`,
-              y: movie.recommendations,
-              fillColor: movie.type === "movie" ? "#d01616" : "#f28a8a"
-            }))
+            data: updatedSeries
           }
         ],
         options: {
@@ -1481,21 +1627,62 @@ export class TopRecommendationsBarChart extends Component<
     return null;
   }
 
+  componentDidMount() {
+    this.updateColorRange();
+
+    // Initialize the MutationObserver to watch for class changes on document.documentElement
+    this.observer = new MutationObserver(() => {
+      this.updateColorRange();
+    });
+
+    // Observe changes in the classList of the document's root element (theme changes)
+    this.observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"]
+    });
+  }
+
+  componentWillUnmount() {
+    // Clean up the MutationObserver when the component is unmounted
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  }
+
+  updateColorRange() {
+    const primaryHex = updatePrimaryColor(); // Get the updated theme color
+
+    // Define the distinct colors based on the updated primary color
+    const movieColor = chroma(primaryHex).darken(0.6).hex(); // Much brighter movie color
+    const seriesColor = chroma(primaryHex).brighten(0.6).hex(); // Darker series color
+
+    // Update the state with the new color values
+    this.setState((prevState) => ({
+      options: {
+        ...prevState.options,
+        colors: [movieColor, seriesColor] // Update colors for both categories
+      }
+    }));
+  }
+
   render() {
+    const movieColor = this.state.options.colors[0];
+    const seriesColor = this.state.options.colors[1];
+
     return (
       <div>
         <div className="flex justify-center items-center">
           <div className="flex items-center mr-4">
             <span
               className="w-3 h-3 mr-1 rounded-full inline-block"
-              style={{ backgroundColor: "#d01616" }}
+              style={{ backgroundColor: movieColor }}
             ></span>
             <span>Филм</span>
           </div>
           <div className="flex items-center">
             <span
               className="w-3 h-3 mr-1 rounded-full inline-block"
-              style={{ backgroundColor: "#f28a8a" }}
+              style={{ backgroundColor: seriesColor }}
             ></span>
             <span>Сериал</span>
           </div>
