@@ -531,6 +531,7 @@ export const Recommendations: FC<RecommendationsProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [allowHideText, setAllowHideText] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [inTransition, setInTransition] = useState(false);
 
   if (!recommendationList.length) {
     return <div>No recommendations available.</div>;
@@ -553,159 +554,200 @@ export const Recommendations: FC<RecommendationsProps> = ({
   };
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === recommendationList.length - 1 ? 0 : prevIndex + 1
-    );
-    setIsExpanded(false);
+    setInTransition(true); // Start the transition
+
+    // Wait for the fade-out transition to complete (500ms)
+    setTimeout(() => {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === recommendationList.length - 1 ? 0 : prevIndex + 1
+      );
+      setIsExpanded(false);
+      setInTransition(false); // End the transition
+    }, 500); // 500ms delay for fade-out
   };
 
   const handlePrevious = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? recommendationList.length - 1 : prevIndex - 1
-    );
-    setIsExpanded(false);
+    setInTransition(true); // Start the transition
+
+    // Wait for the fade-out transition to complete (500ms)
+    setTimeout(() => {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === 0 ? recommendationList.length - 1 : prevIndex - 1
+      );
+      setIsExpanded(false);
+      setInTransition(false); // End the transition
+    }, 500); // 500ms delay for fade-out
   };
 
   const shouldShowFullPlot =
     isExpanded || (!allowHideText && movie.plot?.length > plotPreviewLength);
 
   return (
-    <div className="relative flex items-center justify-between bg-gray-800 text-white rounded-lg p-8 mt-4 max-w-7xl mx-auto">
-      {/* Left Arrow - Outside the Card */}
-      <button
-        onClick={handlePrevious}
-        className="absolute left-[-120px] top-1/2 transform -translate-y-1/2 text-white text-6xl hover:text-gray-400 transition"
+    <div className="relative flex items-center justify-between">
+      <CSSTransition
+        in={!inTransition}
+        timeout={animationDuration}
+        classNames="arrows"
+        onExited={() => setInTransition(false)}
+        unmountOnExit
       >
-        &lt;
-      </button>
+        <button
+          onClick={handlePrevious}
+          className="absolute left-[-120px] top-1/2 transform -translate-y-1/2 text-white text-6xl hover:text-gray-400 transition"
+        >
+          &lt;
+        </button>
+      </CSSTransition>
+      <CSSTransition
+        in={!inTransition}
+        timeout={animationDuration}
+        classNames="slide"
+        onExited={() => setInTransition(false)}
+        unmountOnExit
+      >
+        <div className="relative flex items-center justify-between bg-gray-800 text-white rounded-lg p-8 mt-4 max-w-7xl mx-auto">
+          <div className="flex w-full items-center">
+            {/* Poster Section */}
+            <div className="flex-shrink-0 mr-8">
+              <img
+                src={movie.poster}
+                alt={`${movie.title_en || "Movie"} Poster`}
+                className="rounded-lg w-96 h-auto"
+              />
+            </div>
 
-      {/* Movie Details Card */}
-      <div className="flex w-full items-center">
-        {/* Poster Section */}
-        <div className="flex-shrink-0 mr-8">
-          <img
-            src={movie.poster}
-            alt={`${movie.title_en || "Movie"} Poster`}
-            className="rounded-lg w-96 h-auto"
-          />
-        </div>
-
-        {/* Details Section */}
-        <div className="flex-grow">
-          {/* Sticky Title and Ratings */}
-          <div className="sticky top-0 bg-gray-800 z-10 pb-4 mb-4">
-            <h2 className="text-3xl font-bold mb-1">
-              {movie.title_bg || "Title Not Available"}
-            </h2>
-            <p className="text-lg font-semibold text-gray-400 mb-2">
-              {movie.title_en || "English Title Not Available"}
-            </p>
-            <p className="text-sm text-gray-500 mb-4">
-              {movie.genre_bg || "Genre Unknown"} |{" "}
-              {movie.year || "Year Unknown"} | Rated: {movie.rated || "N/A"}
-            </p>
-            <div className="flex items-center space-x-8 mb-4">
-              {/* IMDB Rating */}
-              <div className="flex items-center space-x-2">
-                <FaStar className="text-[#FFCC33] w-8 h-8" />
-                <span className="text-[#FFCC33] font-bold text-lg">
-                  {movie.imdbRating || "N/A"}
-                </span>
-              </div>
-              {/* Metascore */}
-              <div className="flex items-center space-x-2">
-                <div
-                  className={`flex items-center justify-center rounded-md text-white ${
-                    parseInt(movie.metascore) >= 60
-                      ? "bg-[#54A72A]"
-                      : parseInt(movie.metascore) >= 40
-                      ? "bg-[#FFCC33]"
-                      : "bg-[#FF0000]"
-                  }`}
-                  style={{ width: "35px", height: "35px" }}
-                >
-                  <span className="text-xl">{movie.metascore || "N/A"}</span>
+            {/* Details Section */}
+            <div className="flex-grow">
+              {/* Sticky Title and Ratings */}
+              <div className="sticky top-0 bg-gray-800 z-10 pb-4 mb-4">
+                <h2 className="text-3xl font-bold mb-1">
+                  {movie.title_bg || "Title Not Available"}
+                </h2>
+                <p className="text-lg font-semibold text-gray-400 mb-2">
+                  {movie.title_en || "English Title Not Available"}
+                </p>
+                <p className="text-sm text-gray-500 mb-4">
+                  {movie.genre_bg || "Genre Unknown"} |{" "}
+                  {movie.year || "Year Unknown"} | Rated: {movie.rated || "N/A"}
+                </p>
+                <div className="flex items-center space-x-8 mb-4">
+                  {/* IMDB Rating */}
+                  <div className="flex items-center space-x-2">
+                    <FaStar className="text-[#FFCC33] w-8 h-8" />
+                    <span className="text-[#FFCC33] font-bold text-lg">
+                      {movie.imdbRating || "N/A"}
+                    </span>
+                  </div>
+                  {/* Metascore */}
+                  <div className="flex items-center space-x-2">
+                    <div
+                      className={`flex items-center justify-center rounded-md text-white ${
+                        parseInt(movie.metascore) >= 60
+                          ? "bg-[#54A72A]"
+                          : parseInt(movie.metascore) >= 40
+                          ? "bg-[#FFCC33]"
+                          : "bg-[#FF0000]"
+                      }`}
+                      style={{ width: "35px", height: "35px" }}
+                    >
+                      <span className="text-xl">
+                        {movie.metascore || "N/A"}
+                      </span>
+                    </div>
+                    <span className="text-white font-semibold">Metascore</span>
+                  </div>
+                  {/* Rotten Tomatoes Rating */}
+                  <div className="flex items-center space-x-2">
+                    <SiRottentomatoes className="text-[#FF0000] w-8 h-8" />
+                    <span className="text-red-400 font-semibold">
+                      {rottenTomatoesRating}
+                    </span>
+                  </div>
                 </div>
-                <span className="text-white font-semibold">Metascore</span>
               </div>
-              {/* Rotten Tomatoes Rating */}
-              <div className="flex items-center space-x-2">
-                <SiRottentomatoes className="text-[#FF0000] w-8 h-8" />
-                <span className="text-red-400 font-semibold">
-                  {rottenTomatoesRating}
-                </span>
-              </div>
-            </div>
-          </div>
 
-          {/* Why We Recommend */}
-          {movie.reason && (
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold mb-2">Why We Recommend</h3>
-              <p className="text-gray-300">{movie.reason}</p>
-            </div>
-          )}
-
-          {/* Plot */}
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-2">Plot</h3>
-            <div
-              className={`transition-all duration-[800ms] ease-in-out overflow-hidden ${
-                isExpanded
-                  ? "max-h-[1000px] opacity-100"
-                  : "max-h-20 opacity-80"
-              }`}
-            >
-              <p className="text-gray-300">
-                {movie.description &&
-                movie.description.length <= plotPreviewLength
-                  ? movie.description
-                  : shouldShowFullPlot
-                  ? movie.description
-                  : `${movie.description?.substring(0, plotPreviewLength)}...`}
-              </p>
-            </div>
-            {movie.description &&
-              movie.description.length > plotPreviewLength && (
-                <button
-                  onClick={toggleExpand}
-                  className="mt-2 text-blue-400 underline hover:text-blue-300 transition"
-                >
-                  {isExpanded ? "Show Less" : "Show More"}
-                </button>
+              {/* Why We Recommend */}
+              {movie.reason && (
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold mb-2">
+                    Why We Recommend
+                  </h3>
+                  <p className="text-gray-300">{movie.reason}</p>
+                </div>
               )}
-          </div>
 
-          {/* Movie Details */}
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-2">Details</h3>
-            <ul className="text-gray-300 space-y-1">
-              <li>
-                <strong>Director:</strong> {movie.director || "Unknown"}
-              </li>
-              <li>
-                <strong>Writers:</strong> {movie.writer || "Unknown"}
-              </li>
-              <li>
-                <strong>Actors:</strong> {movie.actors || "Unknown"}
-              </li>
-              <li>
-                <strong>Awards:</strong> {movie.awards || "None"}
-              </li>
-              <li>
-                <strong>Box Office:</strong> {movie.boxOffice || "N/A"}
-              </li>
-            </ul>
+              {/* Plot */}
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold mb-2">Plot</h3>
+                <div
+                  className={`transition-all duration-[800ms] ease-in-out overflow-hidden ${
+                    isExpanded
+                      ? "max-h-[1000px] opacity-100"
+                      : "max-h-20 opacity-80"
+                  }`}
+                >
+                  <p className="text-gray-300">
+                    {movie.description &&
+                    movie.description.length <= plotPreviewLength
+                      ? movie.description
+                      : shouldShowFullPlot
+                      ? movie.description
+                      : `${movie.description?.substring(
+                          0,
+                          plotPreviewLength
+                        )}...`}
+                  </p>
+                </div>
+                {movie.description &&
+                  movie.description.length > plotPreviewLength && (
+                    <button
+                      onClick={toggleExpand}
+                      className="mt-2 text-blue-400 underline hover:text-blue-300 transition"
+                    >
+                      {isExpanded ? "Show Less" : "Show More"}
+                    </button>
+                  )}
+              </div>
+
+              {/* Movie Details */}
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold mb-2">Details</h3>
+                <ul className="text-gray-300 space-y-1">
+                  <li>
+                    <strong>Director:</strong> {movie.director || "Unknown"}
+                  </li>
+                  <li>
+                    <strong>Writers:</strong> {movie.writer || "Unknown"}
+                  </li>
+                  <li>
+                    <strong>Actors:</strong> {movie.actors || "Unknown"}
+                  </li>
+                  <li>
+                    <strong>Awards:</strong> {movie.awards || "None"}
+                  </li>
+                  <li>
+                    <strong>Box Office:</strong> {movie.boxOffice || "N/A"}
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-
-      <button
-        onClick={handleNext}
-        className="absolute right-[-120px] top-1/2 transform -translate-y-1/2 text-white text-6xl hover:text-gray-400 transition"
+      </CSSTransition>
+      <CSSTransition
+        in={!inTransition}
+        timeout={animationDuration}
+        classNames="arrows"
+        onExited={() => setInTransition(false)}
+        unmountOnExit
       >
-        &gt;
-      </button>
+        <button
+          onClick={handleNext}
+          className="absolute right-[-120px] top-1/2 transform -translate-y-1/2 text-white text-6xl hover:text-gray-400 transition"
+        >
+          &gt;
+        </button>
+      </CSSTransition>
     </div>
   );
 };
