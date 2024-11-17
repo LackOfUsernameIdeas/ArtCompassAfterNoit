@@ -786,16 +786,16 @@ const RecommendationList: FC<RecommendationList> = () => {
     console.log("recommendationList: ", recommendationList);
   }, [recommendationList]);
 
-  // useEffect(() => {
-  //   // TESTING USE EFFECT!!!!!
-  //   setTesting(true);
-  //   setLoading(true);
-  //   fetchFakeMovieDataForTesting(setRecommendationList);
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //     setSubmitted(true);
-  //   }, 1000); // Simulating a 1-second delay
-  // }, []);
+  useEffect(() => {
+    // TESTING USE EFFECT!!!!!
+    setTesting(true);
+    setLoading(true);
+    fetchFakeMovieDataForTesting(setRecommendationList);
+    setTimeout(() => {
+      setLoading(false);
+      setSubmitted(true);
+    }, 1000); // Simulating a 1-second delay
+  }, []);
 
   return (
     <div>

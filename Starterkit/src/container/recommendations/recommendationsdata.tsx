@@ -8,140 +8,212 @@ import React, {
 import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
 import { CSSTransition } from "react-transition-group";
+
 export interface Rating {
   Source: string;
   Value: string;
 }
 
 interface Movie {
-  title: string;
-  bgName: string;
-  description: string;
-  reason: string;
-  year: string;
-  rated: string;
-  released: string;
-  runtime: string;
-  runtimeGoogle: string;
-  genre: string;
-  director: string;
-  writer: string;
-  actors: string;
-  plot: string;
-  language: string;
-  country: string;
-  awards: string;
-  poster: string;
-  ratings: { Source: string; Value: string }[];
-  metascore: string;
-  imdbRating: string;
-  imdbVotes: string;
-  imdbID: string;
-  type: string;
-  boxOffice: string;
+  id: string; // ID of the movie
+  user_id: string; // ID of the user associated with the movie
+  imdbID: string; // IMDb identifier
+  title_en: string; // English title of the movie
+  title_bg: string; // Bulgarian title of the movie
+  genre_en: string; // Genres in English
+  genre_bg: string; // Genres in Bulgarian
+  reason: string; // Reason for recommending the movie
+  description: string; // Description of the movie
+  year: string; // Year of release
+  rated: string; // Age rating
+  released: string; // Release date
+  runtime: string; // Runtime in minutes
+  director: string; // Director's name
+  writer: string; // Writer's name
+  actors: string; // List of actors
+  plot: string; // Plot of the movie
+  language: string; // Languages used in the movie
+  country: string; // Countries involved in production
+  awards: string; // Awards won
+  poster: string; // URL to the poster
+  ratings: { Source: string; Value: string }[]; // Array of rating sources and values
+  metascore: string; // Metascore value
+  imdbRating: string; // IMDb rating
+  imdbVotes: string; // Number of IMDb votes
+  type: string; // Type (e.g., movie)
+  DVD: string; // DVD release info (if available)
+  boxOffice: string; // Box office earnings
+  production: string; // Production studio (if available)
+  website: string; // Official website (if available)
+  totalSeasons: string | null; // Total seasons (if applicable, for series)
+  date: string; // Date of data entry
 }
 
 const fakeMovieData = [
   {
-    title: "Birdman or (The Unexpected Virtue of Ignorance)",
-    bgName: "Бърдмен или неочакваната добродетел на невежеството",
-    description:
-      "Следи забравен актьор, известен с ролята си на популярен супергерой, който се опитва да възстанови кариерата си чрез участие в постановка на Бродуей.",
+    id: "200",
+    user_id: "1",
+    imdbID: "tt3890160",
+    title_en: "Baby Driver",
+    title_bg: "Бейби Драйвър",
+    genre_en: "Action, Crime, Drama",
+    genre_bg: "Екшън, Криминален, Драма",
     reason:
-      "Филмът предлага комплексно разглеждане на идентичността и славата, представено чрез бавноразвиващ се сценарий, който ще отговори на вашата любознателност и стремеж за по-дълбоки истории.",
-    year: "2014",
+      "Филмът предлага бързо темпо и напрежение, което съответства на предпочитанието за динамичност, и съдържа ясни сюжетни линии. Тийнейджърският аспект на героя също го прави подходящ за целевата група.",
+    description:
+      "Млад шофьор, който слуша музика нон-стоп, е принуден да работи за голям престъпник и да участва в обири. aa aaaaa aaa aaaaaaa aaaaa aaaaaaaa aaaaa aaaa aaaaaaa aa aaaaa aaa aaaaaaa aaaaa aaaaaaaa aaaaa aaaaaa aaaaa aaa aaaaaaa aaaaa aaaaaaaa aaaaa aaaaaa aaaaa aaa aaaaaaa aaaaa aaaaaaaa aaaaa aaaaaa aaaaa aaa aaaaaaa aaaaa aaaaaaaa aaaaa aaaaaa aaaaa aaa aaaaaaa aaaaa aaaaaaaa aaaaa aaaaaa aaaaa aaa aaaaaaa aaaaa aaaaaaaa aaaaa aaaaaa aaaaa aaa aaaaaaa aaaaa aaaaaaaa aaaaa aaaaaa aaaaa aaa aaaaaaa aaaaa aaaaaaaa aaaaa aaaaaa aaaaa aaa aaaaaaa aaaaa aaaaaaaa aaaaa aaaa",
+    year: "2017",
     rated: "R",
-    released: "14 Nov 2014",
-    runtime: "119 min",
-    runtimeGoogle: "1ч 59м",
-    genre: "Comedy, Drama",
-    director: "Alejandro G. Iñárritu",
-    writer: "Alejandro G. Iñárritu, Nicolás Giacobone, Alexander Dinelaris",
-    actors: "Michael Keaton, Zach Galifianakis, Edward Norton",
-    plot: "Actor Riggan Thomson, most famous for his role as the comic book superhero Birdman, struggles to reclaim artistic integrity through a daring Broadway production.",
-    language: "English",
-    country: "United States",
-    awards: "Won 4 Oscars. 192 wins & 294 nominations total",
+    released: "28 Jun 2017",
+    runtime: "113 min",
+    director: "Edgar Wright",
+    writer: "Edgar Wright",
+    actors: "Ansel Elgort, Jon Bernthal, Jon Hamm",
+    plot: "Doc forces Baby, a former getaway driver, to partake in a heist, threatening to hurt his girlfriend if he refuses. But the plan goes awry when their arms dealers turn out to be undercover officers.",
+    language: "English, American Sign ",
+    country: "United Kingdom, United States",
+    awards: "Nominated for 3 Oscars. 43 wins & 66 nominations total",
     poster:
-      "https://m.media-amazon.com/images/M/MV5BODAzNDMxMzAxOV5BMl5BanBnXkFtZTgwMDMxMjA4MjE@._V1_SX300.jpg",
+      "https://m.media-amazon.com/images/M/MV5BMjM3MjQ1MzkxNl5BMl5BanBnXkFtZTgwODk1ODgyMjI@._V1_SX300.jpg",
     ratings: [
-      { Source: "Internet Movie Database", Value: "7.7/10" },
-      { Source: "Rotten Tomatoes", Value: "91%" },
-      { Source: "Metacritic", Value: "87/100" }
+      { Source: "Internet Movie Database", Value: "7.5/10" },
+      { Source: "Rotten Tomatoes", Value: "92%" },
+      { Source: "Metacritic", Value: "86/100" }
     ],
-    metascore: "87",
-    imdbRating: "7.7",
-    imdbVotes: "674,508",
-    imdbID: "tt2562232",
+    metascore: "86",
+    imdbRating: "7.5",
+    imdbVotes: "627,620",
     type: "movie",
-    boxOffice: "$42,340,598"
+    DVD: "N/A",
+    boxOffice: "$107,825,862",
+    production: "N/A",
+    website: "N/A",
+    totalSeasons: null,
+    date: "2024-10-31 07:47:48"
   },
   {
-    title: "The Grand Budapest Hotel",
-    bgName: "Гранд Будапеща хотел",
-    description:
-      "История за легендарен консиерж и младия му протеже, които се замесват в кражба на ценна картина и наследствено богатство.",
+    id: "202",
+    user_id: "1",
+    imdbID: "tt1631867",
+    title_en: "Edge of Tomorrow",
+    title_bg: "На края на утрешния ден",
+    genre_en: "Action, Adventure, Sci-Fi",
+    genre_bg: "Екшън, Приключенски, Научна фантастика",
     reason:
-      "Филмът предлага визуално пиршество с уникален хумор и дълбоки тематични послания за приятелството и лоялността.",
+      "Този филм е пълен с екшън и напрежение, подходящ за повереното емоционално състояние, и осигурява ясна, постепенна развръзка на събитията.",
+    description:
+      "Войник е хванат в времеви цикъл, в който трябва многократно да преживява битка с извънземни.",
     year: "2014",
-    rated: "R",
-    released: "28 Mar 2014",
-    runtime: "99 min",
-    runtimeGoogle: "1ч 39м",
-    genre: "Adventure, Comedy, Crime",
-    director: "Wes Anderson",
-    writer: "Stefan Zweig, Wes Anderson, Hugo Guinness",
-    actors: "Ralph Fiennes, F. Murray Abraham, Mathieu Amalric",
-    plot: "A concierge teams up with a lobby boy to protect a priceless painting and unravel a conspiracy at a famed European hotel.",
+    rated: "PG-13",
+    released: "06 Jun 2014",
+    runtime: "113 min",
+    director: "Doug Liman",
+    writer: "Christopher McQuarrie, Jez Butterworth, John-Henry Butterworth",
+    actors: "Tom Cruise, Emily Blunt, Bill Paxton",
+    plot: "A soldier fighting aliens gets to relive the same day over and over again, the day restarting every time he dies.",
     language: "English",
-    country: "United States, Germany",
-    awards: "Won 4 Oscars. 140 wins & 222 nominations total",
-    poster: "https://m.media-amazon.com/images/I/91YaBstiDEL._SX342_.jpg",
+    country: "United States, Canada, India",
+    awards: "11 wins & 38 nominations",
+    poster:
+      "https://m.media-amazon.com/images/M/MV5BMTc5OTk4MTM3M15BMl5BanBnXkFtZTgwODcxNjg3MDE@._V1_SX300.jpg",
     ratings: [
-      { Source: "Internet Movie Database", Value: "8.1/10" },
+      { Source: "Internet Movie Database", Value: "7.9/10" },
       { Source: "Rotten Tomatoes", Value: "91%" },
-      { Source: "Metacritic", Value: "88/100" }
+      { Source: "Metacritic", Value: "71/100" }
     ],
-    metascore: "28",
-    imdbRating: "8.1",
-    imdbVotes: "831,520",
-    imdbID: "tt2278388",
+    metascore: "71",
+    imdbRating: "7.9",
+    imdbVotes: "753,821",
     type: "movie",
-    boxOffice: "$59,302,468"
+    DVD: "N/A",
+    boxOffice: "$100,206,256",
+    production: "N/A",
+    website: "N/A",
+    totalSeasons: null,
+    date: "2024-10-31 07:47:48"
   },
   {
-    title: "Whiplash",
-    bgName: "Камшичен удар",
-    description:
-      "Млад барабанист попада под строгия и манипулативен контрол на легендарен учител, който го изправя на границата на способностите му.",
+    id: "204",
+    user_id: "1",
+    imdbID: "tt1392170",
+    title_en: "The Hunger Games",
+    title_bg: "Игрите на глада",
+    genre_en: "Action, Adventure, Sci-Fi",
+    genre_bg: "Екшън, Приключенски, Научна фантастика",
     reason:
-      "Филмът изследва темите на амбицията и жертвата, подкрепени от впечатляващо актьорско представяне и интензивно развитие.",
-    year: "2014",
-    rated: "R",
-    released: "15 Oct 2014",
-    runtime: "106 min",
-    runtimeGoogle: "1ч 46м",
-    genre: "Drama, Music",
-    director: "Damien Chazelle",
-    writer: "Damien Chazelle",
-    actors: "Miles Teller, J.K. Simmons, Melissa Benoist",
-    plot: "A determined music student strives to achieve greatness under the ruthless instruction of an abusive conductor.",
+      "Сюжетът предлага интензивност и тематика, която е насочена към тийнейджъри, със средно динамично съдържание и сериално разгръщане на основната история.",
+    description:
+      "Катнис Евърдийн участва в смъртоносна арена, където трябва да използва своите умения за оцеляване, за да спечели.",
+    year: "2012",
+    rated: "PG-13",
+    released: "23 Mar 2012",
+    runtime: "142 min",
+    director: "Gary Ross",
+    writer: "Gary Ross, Suzanne Collins, Billy Ray",
+    actors: "Jennifer Lawrence, Josh Hutcherson, Liam Hemsworth",
+    plot: "Katniss Everdeen voluntarily takes her younger sister's place in the Hunger Games: a televised competition in which two teenagers from each of the twelve Districts of Panem are chosen at random to fight to the death.",
     language: "English",
     country: "United States",
-    awards: "Won 3 Oscars. 94 wins & 144 nominations total",
+    awards: "Won 1 BAFTA Award34 wins & 49 nominations total",
     poster:
-      "https://m.media-amazon.com/images/I/51FZj452qJL._SX300_SY300_QL70_FMwebp_.jpg",
+      "https://m.media-amazon.com/images/M/MV5BMWI1OGM4YjQtNmIxNi00YmE2LWJkNTAtY2Q0YjU4NTI5NWQyXkEyXkFqcGc@._V1_SX300.jpg",
     ratings: [
-      { Source: "Internet Movie Database", Value: "8.5/10" },
-      { Source: "Rotten Tomatoes", Value: "94%" },
-      { Source: "Metacritic", Value: "88/100" }
+      { Source: "Internet Movie Database", Value: "7.2/10" },
+      { Source: "Rotten Tomatoes", Value: "84%" },
+      { Source: "Metacritic", Value: "68/100" }
     ],
-    metascore: "59",
-    imdbRating: "8.5",
-    imdbVotes: "797,314",
-    imdbID: "tt2582802",
+    metascore: "68",
+    imdbRating: "7.2",
+    imdbVotes: "1,020,548",
     type: "movie",
-    boxOffice: "$13,092,000"
+    DVD: "N/A",
+    boxOffice: "$408,010,692",
+    production: "N/A",
+    website: "N/A",
+    totalSeasons: null,
+    date: "2024-10-31 07:47:48"
+  },
+  {
+    id: "208",
+    user_id: "1",
+    imdbID: "tt1677720",
+    title_en: "Ready Player One",
+    title_bg: "Играч първи, приготви се",
+    genre_en: "Action, Adventure, Sci-Fi",
+    genre_bg: "Екшън, Приключенски, Научна фантастика",
+    reason:
+      "Този филм предлага вълнуваща комбинация от приключения и научна фантастика, като вкарва зрителите в свят пълен с действие и напрежение. С ясна сюжетна линия, това е перфектен избор, когато разполагате с ограничено време.",
+    description:
+      "Виртуалната реалност е новата норма, докато играчи се съревновават за наследство на изгубено съкровище скрито в играта Оазис.",
+    year: "2018",
+    rated: "PG-13",
+    released: "29 Mar 2018",
+    runtime: "140 min",
+    director: "Steven Spielberg",
+    writer: "Zak Penn, Ernest Cline",
+    actors: "Tye Sheridan, Olivia Cooke, Ben Mendelsohn",
+    plot: "When the creator of a virtual reality called the OASIS dies, he makes a posthumous challenge to all OASIS users to find his Easter Egg, which will give the finder his fortune and control of his world.",
+    language: "English, Japanese",
+    country:
+      "United States, India, Singapore, Canada, United Kingdom, Japan, Australia",
+    awards: "Nominated for 1 Oscar. 11 wins & 57 nominations total",
+    poster:
+      "https://m.media-amazon.com/images/M/MV5BNzVkMTgzODQtMWIwZC00NzE4LTgzZjYtMzAwM2I5OGZhNjE4XkEyXkFqcGc@._V1_SX300.jpg",
+    ratings: [
+      { Source: "Internet Movie Database", Value: "7.4/10" },
+      { Source: "Rotten Tomatoes", Value: "72%" },
+      { Source: "Metacritic", Value: "64/100" }
+    ],
+    metascore: "64",
+    imdbRating: "7.4",
+    imdbVotes: "498,502",
+    type: "movie",
+    DVD: "N/A",
+    boxOffice: "$137,715,350",
+    production: "N/A",
+    website: "N/A",
+    totalSeasons: null,
+    date: "2024-10-31 08:08:19"
   }
 ];
 
@@ -450,7 +522,7 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
 };
 
 interface RecommendationsProps {
-  recommendationList: any[];
+  recommendationList: Movie[];
 }
 
 export const Recommendations: FC<RecommendationsProps> = ({
@@ -466,10 +538,8 @@ export const Recommendations: FC<RecommendationsProps> = ({
 
   const movie = recommendationList[currentIndex];
   const rottenTomatoesRating =
-    movie.ratings?.find(
-      (rating: { Source: string; Value: string }) =>
-        rating.Source === "Rotten Tomatoes"
-    )?.Value || "N/A";
+    movie.ratings?.find((rating) => rating.Source === "Rotten Tomatoes")
+      ?.Value || "N/A";
 
   const plotPreviewLength = 150;
   const animationDuration = 800;
@@ -500,53 +570,55 @@ export const Recommendations: FC<RecommendationsProps> = ({
     isExpanded || (!allowHideText && movie.plot?.length > plotPreviewLength);
 
   return (
-    <div className="relative flex items-center justify-center bg-gray-800 text-white rounded-lg p-8 mt-4 max-w-5xl mx-auto">
-      {/* Left Arrow */}
+    <div className="relative flex items-center justify-between bg-gray-800 text-white rounded-lg p-8 mt-4 max-w-7xl mx-auto">
+      {/* Left Arrow - Outside the Card */}
       <button
         onClick={handlePrevious}
-        className="absolute left-0 transform -translate-x-1/2 bg-gray-700 text-white p-3 rounded-full hover:bg-gray-600 transition"
+        className="absolute left-[-120px] top-1/2 transform -translate-y-1/2 text-white text-6xl hover:text-gray-400 transition"
       >
-        &#8592;
+        &lt;
       </button>
 
       {/* Movie Details Card */}
-      <div className="movie-details flex">
+      <div className="flex w-full items-center">
         {/* Poster Section */}
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 mr-8">
           <img
             src={movie.poster}
-            alt={`${movie.title || "Movie"} Poster`}
-            className="rounded-lg w-64 h-auto"
+            alt={`${movie.title_en || "Movie"} Poster`}
+            className="rounded-lg w-96 h-auto"
           />
         </div>
 
         {/* Details Section */}
-        <div className="flex-grow pl-8 flex flex-col justify-between">
-          <div>
+        <div className="flex-grow">
+          {/* Sticky Title and Ratings */}
+          <div className="sticky top-0 bg-gray-800 z-10 pb-4 mb-4">
             <h2 className="text-3xl font-bold mb-1">
-              {movie.bgName || "Title Not Available"}
+              {movie.title_bg || "Title Not Available"}
             </h2>
-            <p className="text-lg font-semibold text-gray-400">
-              {movie.title || "Английско заглавие"}
+            <p className="text-lg font-semibold text-gray-400 mb-2">
+              {movie.title_en || "English Title Not Available"}
             </p>
             <p className="text-sm text-gray-500 mb-4">
-              {movie.genre || "Genre Unknown"} | {movie.year || "Year Unknown"}{" "}
-              | Rated: {movie.rated || "N/A"}
+              {movie.genre_bg || "Genre Unknown"} |{" "}
+              {movie.year || "Year Unknown"} | Rated: {movie.rated || "N/A"}
             </p>
-
             <div className="flex items-center space-x-8 mb-4">
+              {/* IMDB Rating */}
               <div className="flex items-center space-x-2">
                 <FaStar className="text-[#FFCC33] w-8 h-8" />
                 <span className="text-[#FFCC33] font-bold text-lg">
                   {movie.imdbRating || "N/A"}
                 </span>
               </div>
+              {/* Metascore */}
               <div className="flex items-center space-x-2">
                 <div
                   className={`flex items-center justify-center rounded-md text-white ${
-                    movie.metascore >= 60
+                    parseInt(movie.metascore) >= 60
                       ? "bg-[#54A72A]"
-                      : movie.metascore >= 40
+                      : parseInt(movie.metascore) >= 40
                       ? "bg-[#FFCC33]"
                       : "bg-[#FF0000]"
                   }`}
@@ -556,6 +628,7 @@ export const Recommendations: FC<RecommendationsProps> = ({
                 </div>
                 <span className="text-white font-semibold">Metascore</span>
               </div>
+              {/* Rotten Tomatoes Rating */}
               <div className="flex items-center space-x-2">
                 <SiRottentomatoes className="text-[#FF0000] w-8 h-8" />
                 <span className="text-red-400 font-semibold">
@@ -565,8 +638,17 @@ export const Recommendations: FC<RecommendationsProps> = ({
             </div>
           </div>
 
+          {/* Why We Recommend */}
+          {movie.reason && (
+            <div className="mb-4">
+              <h3 className="text-lg font-semibold mb-2">Why We Recommend</h3>
+              <p className="text-gray-300">{movie.reason}</p>
+            </div>
+          )}
+
+          {/* Plot */}
           <div className="mb-4">
-            <h3 className="text-lg font-semibold">Plot</h3>
+            <h3 className="text-lg font-semibold mb-2">Plot</h3>
             <div
               className={`transition-all duration-[800ms] ease-in-out overflow-hidden ${
                 isExpanded
@@ -575,53 +657,54 @@ export const Recommendations: FC<RecommendationsProps> = ({
               }`}
             >
               <p className="text-gray-300">
-                {shouldShowFullPlot
-                  ? movie.plot
-                  : `${movie.plot?.substring(0, plotPreviewLength)}...`}
+                {movie.description &&
+                movie.description.length <= plotPreviewLength
+                  ? movie.description
+                  : shouldShowFullPlot
+                  ? movie.description
+                  : `${movie.description?.substring(0, plotPreviewLength)}...`}
               </p>
             </div>
-            {movie.plot?.length > plotPreviewLength && (
-              <button
-                onClick={toggleExpand}
-                className="mt-2 text-blue-400 underline hover:text-blue-300 transition"
-              >
-                {isExpanded ? "Show Less" : "Show More"}
-              </button>
-            )}
+            {movie.description &&
+              movie.description.length > plotPreviewLength && (
+                <button
+                  onClick={toggleExpand}
+                  className="mt-2 text-blue-400 underline hover:text-blue-300 transition"
+                >
+                  {isExpanded ? "Show Less" : "Show More"}
+                </button>
+              )}
           </div>
-          {/* Additional Details and Ratings */}
-          <div className="flex">
-            {/* Details */}
-            <div className="flex-1">
-              <h3 className="text-lg font-semibold mb-2">Details</h3>
-              <ul className="text-gray-300 space-y-1">
-                <li>
-                  <strong>Director:</strong> {movie.director || "Unknown"}
-                </li>
-                <li>
-                  <strong>Writers:</strong> {movie.writer || "Unknown"}
-                </li>
-                <li>
-                  <strong>Actors:</strong> {movie.actors || "Unknown"}
-                </li>
-                <li>
-                  <strong>Awards:</strong> {movie.awards || "None"}
-                </li>
-                <li>
-                  <strong>Box Office:</strong> {movie.boxOffice || "N/A"}
-                </li>
-              </ul>
-            </div>
+
+          {/* Movie Details */}
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold mb-2">Details</h3>
+            <ul className="text-gray-300 space-y-1">
+              <li>
+                <strong>Director:</strong> {movie.director || "Unknown"}
+              </li>
+              <li>
+                <strong>Writers:</strong> {movie.writer || "Unknown"}
+              </li>
+              <li>
+                <strong>Actors:</strong> {movie.actors || "Unknown"}
+              </li>
+              <li>
+                <strong>Awards:</strong> {movie.awards || "None"}
+              </li>
+              <li>
+                <strong>Box Office:</strong> {movie.boxOffice || "N/A"}
+              </li>
+            </ul>
           </div>
         </div>
       </div>
 
-      {/* Right Arrow */}
       <button
         onClick={handleNext}
-        className="absolute right-0 transform translate-x-1/2 bg-gray-700 text-white p-3 rounded-full hover:bg-gray-600 transition"
+        className="absolute right-[-120px] top-1/2 transform -translate-y-1/2 text-white text-6xl hover:text-gray-400 transition"
       >
-        &#8594;
+        &gt;
       </button>
     </div>
   );
