@@ -1,25 +1,12 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import { DataType, FilteredTableData } from "../home-types";
+import { DataType, FilteredTableData } from "../../home-types";
 import {
   filterTableData,
   getTotalBarChartPages,
   handleBarChartPageChange,
-  handleTopStatsSortCategory,
-  isActor,
-  isDirector,
-  isWriter,
   paginateBarChartData
-} from "../helper_functions";
-import { useMediaQuery } from "react-responsive";
-import { Link } from "react-router-dom";
-import {
-  CountryBarChart,
-  TopRecommendationsBarChart,
-  Treemap
-} from "./Charts/Charts";
-import TopRecommendationsBarChartComponent from "./TopRecommendationsBarChart";
-import TableComponent from "./TableComponent";
-
+} from "../../helper_functions";
+import { CountryBarChart } from "./Charts";
 interface CountryBarChartComponentProps {
   data: DataType;
 }
