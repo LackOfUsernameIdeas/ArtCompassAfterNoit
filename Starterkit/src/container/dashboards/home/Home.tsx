@@ -297,6 +297,7 @@ const Home: FC<CrmProps> = () => {
             </div>
           </div>
         </div>
+
         <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
           <div className="box custom-box">
             <div className="box-body h-[5.5rem]">
@@ -306,7 +307,8 @@ const Home: FC<CrmProps> = () => {
                     <div className="flex items-center space-x-2">
                       <p
                         className={`mb-0 text-[#8c9097] dark:text-white/50 ${
-                          is1803 && "text-xs"
+                          is1803 &&
+                          "truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs"
                         }`}
                       >
                         {displayedNameAverages}
@@ -314,7 +316,11 @@ const Home: FC<CrmProps> = () => {
                       <div className="hs-dropdown ti-dropdown">
                         <Link
                           to="#"
-                          className="flex items-center px-1 py-0.5 text-xs font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all"
+                          className={`flex items-center ${
+                            is1803
+                              ? "px-1 py-0.5 text-xs"
+                              : "px-0.5 py-0.25 text-[0.70rem]"
+                          } font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all`}
                           onClick={toggleAveragesMenu}
                           aria-expanded={isAveragesMenuOpen ? "true" : "false"}
                         >
