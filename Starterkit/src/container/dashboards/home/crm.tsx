@@ -2,8 +2,6 @@ import { FC, Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   GenrePopularityOverTime,
-  Profitearned,
-  BoxOfficeVsIMDBRating,
   MovieBarChart,
   CountryBarChart,
   MovieProsperityBubbleChart,
@@ -14,7 +12,6 @@ import { DataType, FilteredTableData } from "../home-types";
 import {
   fetchData,
   filterTableData,
-  handleProsperityTableClick,
   isDirector,
   isActor,
   isWriter,
