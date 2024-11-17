@@ -318,12 +318,22 @@ const Home: FC<CrmProps> = () => {
                           onClick={toggleAveragesMenu}
                           aria-expanded={isAveragesMenuOpen ? "true" : "false"}
                         >
-                          Сортирай по
-                          <i
-                            className={`ri-arrow-${
-                              isAveragesMenuOpen ? "up" : "down"
-                            }-s-line align-middle ms-1 inline-block`}
-                          ></i>
+                          {is1441 ? (
+                            <i
+                              className={`ri-arrow-${
+                                isAveragesMenuOpen ? "up" : "down"
+                              }-s-line text-sm`}
+                            ></i>
+                          ) : (
+                            <>
+                              <span>Сортирай по</span>
+                              <i
+                                className={`ri-arrow-${
+                                  isAveragesMenuOpen ? "up" : "down"
+                                }-s-line ml-0.5 text-sm`}
+                              ></i>
+                            </>
+                          )}
                         </Link>
                         <ul
                           className={`hs-dropdown-menu ti-dropdown-menu ${
@@ -391,61 +401,74 @@ const Home: FC<CrmProps> = () => {
             <div className="box-body h-[5.5rem]">
               <div className="flex items-center justify-between">
                 <div className="flex-grow">
-                  <div className="flex flex-wrap items-start">
-                    <div className="flex items-center space-x-2">
-                      <p
-                        className={`mb-0 text-[#8c9097] dark:text-white/50 ${
-                          is1803 && "text-xs"
-                        }`}
+                  <div
+                    className={`flex items-center space-x-${is1803 ? 2 : 1}`}
+                  >
+                    <p
+                      className={`mb-0 text-[#8c9097] dark:text-white/50 ${
+                        is1803 &&
+                        "truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs"
+                      }`}
+                    >
+                      {displayedNameAwards}
+                    </p>
+                    <div className="hs-dropdown ti-dropdown">
+                      <Link
+                        to="#"
+                        className={`flex items-center ${
+                          is1803
+                            ? "px-1 py-0.5 text-xs"
+                            : "px-0.5 py-0.25 text-[0.70rem]"
+                        } font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all`}
+                        onClick={toggleAwardsMenu}
+                        aria-expanded={isAveragesMenuOpen ? "true" : "false"}
                       >
-                        {displayedNameAwards}
-                      </p>
-                      <div className="hs-dropdown ti-dropdown">
-                        <Link
-                          to="#"
-                          className="flex items-center px-1 py-0.5 text-xs font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all"
-                          onClick={toggleAwardsMenu}
-                          aria-expanded={isAveragesMenuOpen ? "true" : "false"}
-                        >
-                          Сортирай по
+                        {is1441 ? (
                           <i
                             className={`ri-arrow-${
                               isAwardsMenuOpen ? "up" : "down"
-                            }-s-line align-middle ms-1 inline-block`}
+                            }-s-line text-sm`}
                           ></i>
-                        </Link>
-                        <ul
-                          className={`hs-dropdown-menu ti-dropdown-menu ${
-                            isAwardsMenuOpen ? "block" : "hidden"
-                          }`}
-                          role="menu"
-                        >
-                          {awardOptions.map(({ label, value }) => (
-                            <li key={label}>
-                              <Link
-                                onClick={() =>
-                                  handleDropdownClickAwards(
-                                    setDisplayedNameAwards,
-                                    setDisplayedValueAwards,
-                                    label,
-                                    value
-                                  )
-                                }
-                                className={`ti-dropdown-item ${
-                                  displayedNameAwards === label ? "active" : ""
-                                } ${
-                                  displayedNameAwards === label
-                                    ? "disabled"
-                                    : ""
-                                }`}
-                                to="#"
-                              >
-                                {label}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                        ) : (
+                          <>
+                            <span>Сортирай по</span>
+                            <i
+                              className={`ri-arrow-${
+                                isAwardsMenuOpen ? "up" : "down"
+                              }-s-line ml-0.5 text-sm`}
+                            ></i>
+                          </>
+                        )}
+                      </Link>
+                      <ul
+                        className={`hs-dropdown-menu ti-dropdown-menu ${
+                          isAwardsMenuOpen ? "block" : "hidden"
+                        }`}
+                        role="menu"
+                      >
+                        {awardOptions.map(({ label, value }) => (
+                          <li key={label}>
+                            <Link
+                              onClick={() =>
+                                handleDropdownClickAwards(
+                                  setDisplayedNameAwards,
+                                  setDisplayedValueAwards,
+                                  label,
+                                  value
+                                )
+                              }
+                              className={`ti-dropdown-item ${
+                                displayedNameAwards === label ? "active" : ""
+                              } ${
+                                displayedNameAwards === label ? "disabled" : ""
+                              }`}
+                              to="#"
+                            >
+                              {label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                   <div className="flex items-center">
