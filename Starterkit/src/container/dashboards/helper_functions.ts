@@ -26,10 +26,8 @@ export const isWriter = (
 
 export const fetchData = async (
   token: string,
-  prosperitySortCategory: string,
   setUserData: React.Dispatch<React.SetStateAction<any>>,
-  setData2: React.Dispatch<React.SetStateAction<any>>,
-  setFilteredTableData: React.Dispatch<React.SetStateAction<FilteredTableData>>
+  setData2: React.Dispatch<React.SetStateAction<any>>
 ) => {
   try {
     const response = await fetch("http://localhost:5000/stats/platform/all", {
@@ -45,7 +43,6 @@ export const fetchData = async (
     // Set user and platform data from the response
     setUserData(data.user); // assuming 'user' is part of the returned data
     setData2(data); // The platform data
-    setFilteredTableData(data[`sorted${prosperitySortCategory}ByProsperity`]);
   } catch (error) {
     console.error("Error fetching data:", error);
   }

@@ -17,8 +17,8 @@ import {
   RecommendationData,
   RoleData,
   WriterData
-} from "../home-types";
-import { parseBoxOffice } from "../helper_functions";
+} from "../../home-types";
+import { parseBoxOffice } from "../../helper_functions";
 import { Link } from "react-router-dom";
 
 //
