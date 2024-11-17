@@ -137,7 +137,7 @@ Background Image
   --body-bg: 240 241 247;
   --primary: 154 17 10;
   --primary-rgb: 154 17 10;
-  --secondary: 35 183 229;
+  --secondary: 217 69 69;
   --warning: 245 184 73;
   --info: 73 182 245;
   --success: 38 191 148;
@@ -19767,7 +19767,11 @@ input[type="color" i]::-webkit-color-swatch {
 }
 
 .input-field {
-  @apply flex glow-effect flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative dark:bg-bodybg border-2 dark:border-white focus:ring-4 focus:ring-[#d94545] focus:border-[#d94545];
+  @apply flex glow-effect flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative dark:bg-bodybg border-2 dark:border-white focus-within:ring-4 focus-within:ring-[#d94545] focus-within:border-[#d94545];
+}
+
+.input-field input:focus {
+  @apply outline-none ring-4 ring-[#d94545] border-[#d94545];
 }
 
 .selected-answer {
@@ -19782,25 +19786,41 @@ input[type="color" i]::-webkit-color-swatch {
   @apply flex flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 bg-[#d52d2d] text-[0.813rem] relative;
 }
 
-.slide-enter {
-  transform: translateX(100%); /* Start from the right */
+.slide-right-enter {
+  transform: translateX(100%);
   opacity: 0;
 }
-
-.slide-enter-active {
-  transform: translateX(0); /* Slide to the normal position */
+.slide-right-enter-active {
+  transform: translateX(0);
   opacity: 1;
   transition: transform 500ms ease-out, opacity 500ms ease-out;
 }
-
-/* Slide-out effect (when exiting) */
-.slide-exit {
-  transform: translateX(0); /* Stay in normal position */
+.slide-right-exit {
+  transform: translateX(0);
   opacity: 1;
 }
+.slide-right-exit-active {
+  transform: translateX(-100%);
+  opacity: 0;
+  transition: transform 500ms ease-in, opacity 500ms ease-in;
+}
 
-.slide-exit-active {
-  transform: translateX(-100%); /* Slide to the left */
+/* Slide from left */
+.slide-left-enter {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+.slide-left-enter-active {
+  transform: translateX(0);
+  opacity: 1;
+  transition: transform 500ms ease-out, opacity 500ms ease-out;
+}
+.slide-left-exit {
+  transform: translateX(0);
+  opacity: 1;
+}
+.slide-left-exit-active {
+  transform: translateX(100%);
   opacity: 0;
   transition: transform 500ms ease-in, opacity 500ms ease-in;
 }
