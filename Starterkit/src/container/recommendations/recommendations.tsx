@@ -786,16 +786,16 @@ const RecommendationList: FC<RecommendationList> = () => {
     console.log("recommendationList: ", recommendationList);
   }, [recommendationList]);
 
-  useEffect(() => {
-    // TESTING USE EFFECT!!!!!
-    setTesting(true);
-    setLoading(true);
-    fetchFakeMovieDataForTesting(setRecommendationList);
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-    }, 1000); // Simulating a 1-second delay
-  }, []);
+  // useEffect(() => {
+  //   // TESTING USE EFFECT!!!!!
+  //   setTesting(true);
+  //   setLoading(true);
+  //   fetchFakeMovieDataForTesting(setRecommendationList);
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //     setSubmitted(true);
+  //   }, 1000); // Simulating a 1-second delay
+  // }, []);
 
   return (
     <div>
@@ -814,15 +814,18 @@ const RecommendationList: FC<RecommendationList> = () => {
           </CSSTransition>
           {!loading && submitted && recommendationList.length > 0 && (
             <div>
-              <Recommendations recommendationList={recommendationList} />
-              <div className="mt-8 flex justify-center">
-                <button
-                  onClick={handleRetakeQuiz}
-                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition"
-                >
-                  Retake Quiz
-                </button>
+              <div className="my-6 text-center">
+                <p className="text-lg text-gray-600">
+                  Искате други препоръки?{" "}
+                  <button
+                    onClick={handleRetakeQuiz}
+                    className="text-primary font-semibold hover:text-secondary transition-colors underline"
+                  >
+                    Повторете въпросника
+                  </button>
+                </p>
               </div>
+              <Recommendations recommendationList={recommendationList} />
             </div>
           )}
         </div>
@@ -872,15 +875,18 @@ const RecommendationList: FC<RecommendationList> = () => {
               unmountOnExit
             >
               <div>
-                <Recommendations recommendationList={recommendationList} />
-                <div className="mt-8 flex justify-center">
-                  <button
-                    onClick={handleRetakeQuiz}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition"
-                  >
-                    Retake Quiz
-                  </button>
+                <div className="my-6 text-center">
+                  <p className="text-lg text-gray-600">
+                    Искате други препоръки?{" "}
+                    <button
+                      onClick={handleRetakeQuiz}
+                      className="text-primary font-semibold hover:text-secondary transition-colors underline"
+                    >
+                      Повторете въпросника
+                    </button>
+                  </p>
                 </div>
+                <Recommendations recommendationList={recommendationList} />
               </div>
             </CSSTransition>
           )}
