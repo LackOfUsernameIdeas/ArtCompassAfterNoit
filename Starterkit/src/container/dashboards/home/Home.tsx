@@ -12,13 +12,13 @@ import {
   handleDropdownClickAwards
 } from "../helper_functions";
 import { useMediaQuery } from "react-responsive";
-import TableComponent from "./Charts/TableComponent";
-import TreemapComponent from "./Charts/TreemapComponent";
-import TopRecommendationsBarChartComponent from "./Charts/TopRecommendationsBarChart";
-import CountryBarChartComponent from "./Charts/CountryBarChartComponent";
-import MovieProsperityBubbleChartComponent from "./Charts/MovieProsperityBubbleChartComponent";
-import GenrePopularityOverTimeComponent from "./Charts/GenrePopularityOverTimeComponent";
-import MovieBarChartComponent from "./Charts/MovieBarChartComponent";
+import TableComponent from "./Statistics/TableComponent";
+import TreemapComponent from "./Statistics/TreemapComponent";
+import TopRecommendationsBarChartComponent from "./Statistics/TopRecommendationsBarChart";
+import CountryBarChartComponent from "./Statistics/CountryBarChartComponent";
+import MovieProsperityBubbleChartComponent from "./Statistics/MovieProsperityBubbleChartComponent";
+import GenrePopularityOverTimeComponent from "./Statistics/GenrePopularityOverTimeComponent";
+import MovieBarChartComponent from "./Statistics/MovieBarChartComponent";
 
 interface CrmProps {}
 
@@ -297,7 +297,6 @@ const Home: FC<CrmProps> = () => {
             </div>
           </div>
         </div>
-
         <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
           <div className="box custom-box">
             <div className="box-body h-[5.5rem]">
