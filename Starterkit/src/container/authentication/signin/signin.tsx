@@ -43,7 +43,7 @@ const Signincover: FC<SignincoverProps> = () => {
         try {
           // Validate the token with the server
           const response = await fetch(
-            "http://localhost:5000/token-validation",
+            `${import.meta.env.VITE_API_BASE_URL}/token-validation`,
             {
               method: "POST",
               headers: {
@@ -124,13 +124,16 @@ const Signincover: FC<SignincoverProps> = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ ...formData, rememberMe })
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/signin`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ ...formData, rememberMe })
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();

@@ -226,7 +226,7 @@ const RecommendationList: FC<RecommendationList> = () => {
         genres.length > 0 ? genres.map((g) => g.bg).join(", ") : null;
 
       const response = await fetch(
-        "http://localhost:5000/save-user-preferences",
+        `${import.meta.env.VITE_API_BASE_URL}/save-user-preferences`,
         {
           method: "POST",
           headers: {
@@ -330,7 +330,7 @@ const RecommendationList: FC<RecommendationList> = () => {
       console.log("Formatted Recommendation:", formattedRecommendation);
 
       const response = await fetch(
-        "http://localhost:5000/save-recommendation",
+        `${import.meta.env.VITE_API_BASE_URL}/save-recommendation`,
         {
           method: "POST",
           headers: {
@@ -588,13 +588,16 @@ const RecommendationList: FC<RecommendationList> = () => {
 
     try {
       // Send POST request to server
-      const response = await fetch("http://localhost:5000/handle-submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          }
         }
-      });
+      );
 
       const data = await response.json();
 

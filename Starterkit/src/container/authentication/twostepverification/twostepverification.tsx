@@ -82,13 +82,16 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
       inputRefs.six.current.value;
 
     try {
-      const response = await fetch("http://localhost:5000/verify-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, verificationCode })
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/verify-email`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ email, verificationCode })
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -126,13 +129,16 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
     console.log(email);
 
     try {
-      const response = await fetch("http://localhost:5000/resend", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email })
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/resend`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ email })
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
