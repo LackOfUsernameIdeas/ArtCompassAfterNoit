@@ -233,144 +233,7 @@ export class GenrePopularityOverTime extends Component<
   }
 }
 
-interface BoxOfficeVsIMDBRatingProps {
-  seriesData: MovieData[];
-}
-
-export class BoxOfficeVsIMDBRating extends Component<
-  BoxOfficeVsIMDBRatingProps,
-  State
-> {
-  constructor(props: BoxOfficeVsIMDBRatingProps) {
-    super(props);
-
-    this.state = {
-      options: {
-        chart: {
-          height: 320,
-          type: "scatter",
-          zoom: {
-            enabled: true,
-            type: "x",
-            autoScaleYaxis: false,
-            zoomedArea: {
-              fill: {
-                color: "#90CAF9",
-                opacity: 0.4
-              },
-              stroke: {
-                color: "#0D47A1",
-                opacity: 0.4,
-                width: 1
-              }
-            }
-          },
-          events: {
-            mounted: (chart: any) => {
-              chart.windowResizeHandler();
-            }
-          }
-        },
-        grid: {
-          borderColor: "#f2f5f7"
-        },
-        colors: ["#be1313"],
-        xaxis: {
-          title: {
-            text: "Приходи от боксофиса (в милиони)"
-          },
-          tickAmount: 10,
-          labels: {
-            formatter: (val: any) => `$${Math.round(val)}M`,
-            style: {
-              colors: "#8c9097",
-              fontSize: "11px",
-              fontWeight: 600
-            }
-          }
-        },
-        yaxis: {
-          title: {
-            text: "IMDb рейтинг"
-          },
-          tickAmount: 7,
-          labels: {
-            style: {
-              colors: "#8c9097",
-              fontSize: "11px",
-              fontWeight: 600
-            }
-          }
-        },
-        tooltip: {
-          shared: false,
-          intersect: true,
-          custom: function ({ seriesIndex, dataPointIndex, w }: any) {
-            // Access the full movie data object directly from the series data
-            const movieData = w.config.series[seriesIndex].data[dataPointIndex];
-
-            if (movieData) {
-              const movieTitleEn = movieData.title_en || "Unknown Movie";
-              const movieTitleBg = movieData.title_bg || "Unknown Movie";
-              const imdbRating =
-                movieData.y !== undefined ? movieData.y : "N/A";
-              const boxOffice =
-                movieData.x !== undefined ? movieData.x * 1e6 : "N/A";
-              const formattedBoxOffice =
-                boxOffice !== "N/A" ? `$${boxOffice.toLocaleString()}` : "N/A";
-
-              return `
-                <div style="padding: 10px;">
-                  <strong>${movieTitleBg} (${movieTitleEn})</strong><br />
-                  IMDb рейтинг: ${imdbRating}/10<br />
-                  Боксофис: ${formattedBoxOffice}
-                </div>
-              `;
-            }
-            return ""; // Return empty if no data found
-          }
-        }
-      },
-      series: []
-    };
-  }
-
-  static getDerivedStateFromProps(
-    nextProps: BoxOfficeVsIMDBRatingProps,
-    prevState: State
-  ) {
-    if (nextProps.seriesData.length > 0) {
-      // Map over the movies to set up series data
-      const seriesData = [
-        {
-          name: "Movies",
-          data: nextProps.seriesData.map((movie) => ({
-            x: parseBoxOffice(movie.boxOffice) / 1e6, // Box Office in millions for x-axis
-            y: movie.imdbRating, // IMDb Rating for y-axis
-            title_en: movie.title_en,
-            title_bg: movie.title_bg
-          }))
-        }
-      ];
-
-      return { ...prevState, series: seriesData };
-    }
-    return null;
-  }
-
-  render() {
-    return (
-      <ReactApexChart
-        options={this.state.options}
-        series={this.state.series}
-        type="scatter"
-        height={320}
-      />
-    );
-  }
-}
-
-export class MovieBarChart extends Component<
+export class MoviesAndSeriesByRatingsChart extends Component<
   { seriesData: MovieData[]; category: string },
   State
 > {
@@ -544,142 +407,6 @@ export class MovieBarChart extends Component<
           <p>No data available</p>
         )}
       </div>
-    );
-  }
-}
-
-interface AverageScoresStackedBarChartProps {
-  averageBoxOfficeAndScores: AverageBoxOfficeAndScores[];
-}
-
-export class AverageScoresStackedBarChart extends Component<
-  AverageScoresStackedBarChartProps,
-  State
-> {
-  constructor(props: AverageScoresStackedBarChartProps) {
-    super(props);
-
-    this.state = {
-      series: [
-        { name: "Average Box Office", data: [null] },
-        { name: "Average Metascore", data: [null] },
-        { name: "Average IMDb Rating", data: [null] },
-        { name: "Average Rotten Tomatoes", data: [null] }
-      ],
-      options: {
-        chart: {
-          type: "bar",
-          height: 320,
-          stacked: true,
-          events: {
-            mounted: (chart: any) => {
-              chart.windowResizeHandler();
-            }
-          }
-        },
-        plotOptions: {
-          bar: {
-            horizontal: true
-          }
-        },
-        stroke: {
-          width: 1,
-          colors: ["#fff"]
-        },
-        colors: ["#845adf", "#23b7e5", "#f5b849", "#38bf94"],
-        grid: {
-          borderColor: "#f2f5f7"
-        },
-        xaxis: {
-          categories: ["Average Scores"],
-          labels: {
-            style: {
-              colors: "#8c9097",
-              fontSize: "11px",
-              fontWeight: 600,
-              cssClass: "apexcharts-xaxis-label"
-            }
-          }
-        },
-        yaxis: {
-          labels: {
-            style: {
-              colors: "#8c9097",
-              fontSize: "11px",
-              fontWeight: 600,
-              cssClass: "apexcharts-yaxis-label"
-            }
-          }
-        },
-        tooltip: {
-          y: {
-            formatter: function (val: number | null) {
-              return val !== null ? val.toString() : ""; // Display only non-null values
-            }
-          }
-        },
-        fill: {
-          opacity: 1
-        },
-        legend: {
-          position: "top",
-          horizontalAlign: "left",
-          offsetX: 40
-        }
-      }
-    };
-  }
-
-  static getDerivedStateFromProps(
-    nextProps: AverageScoresStackedBarChartProps,
-    prevState: State
-  ) {
-    if (
-      !nextProps.averageBoxOfficeAndScores ||
-      nextProps.averageBoxOfficeAndScores.length === 0
-    ) {
-      // If data is not yet available, return early to avoid unnecessary state updates
-      return null;
-    }
-
-    const boxOfficeData = nextProps.averageBoxOfficeAndScores[0];
-    const averageBoxOffice =
-      parseFloat(boxOfficeData.average_box_office.replace(/[^0-9.-]+/g, "")) /
-      1e6;
-    const averageMetascore = parseFloat(boxOfficeData.average_metascore);
-    const averageIMDbRating = parseFloat(boxOfficeData.average_imdb_rating);
-    const averageRottenTomatoes = parseFloat(
-      boxOfficeData.average_rotten_tomatoes.replace("%", "")
-    );
-
-    const updatedSeries = [
-      { name: "Average Box Office (Millions)", data: [averageBoxOffice] },
-      { name: "Average Metascore", data: [averageMetascore] },
-      { name: "Average IMDb Rating", data: [averageIMDbRating] },
-      { name: "Average Rotten Tomatoes (%)", data: [averageRottenTomatoes] }
-    ];
-
-    if (JSON.stringify(updatedSeries) !== JSON.stringify(prevState.series)) {
-      return { series: updatedSeries };
-    }
-    return null;
-  }
-
-  render() {
-    const { averageBoxOfficeAndScores } = this.props;
-
-    // Check if data has been fetched
-    if (!averageBoxOfficeAndScores || averageBoxOfficeAndScores.length === 0) {
-      return <div>Зареждане...</div>;
-    }
-
-    return (
-      <ReactApexChart
-        options={this.state.options}
-        series={this.state.series}
-        type="bar"
-        height={320}
-      />
     );
   }
 }
@@ -878,15 +605,16 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
     </div>
   );
 };
-interface MovieProsperityBubbleChartProps {
+
+interface MoviesByProsperityBubbleChartProps {
   sortedMoviesByProsperity: MovieProsperityData[];
 }
 
-export class MovieProsperityBubbleChart extends Component<
-  MovieProsperityBubbleChartProps,
+export class MoviesByProsperityBubbleChart extends Component<
+  MoviesByProsperityBubbleChartProps,
   State
 > {
-  constructor(props: MovieProsperityBubbleChartProps) {
+  constructor(props: MoviesByProsperityBubbleChartProps) {
     super(props);
 
     this.state = {
@@ -1001,11 +729,11 @@ export class MovieProsperityBubbleChart extends Component<
   }
 
   static getDerivedStateFromProps(
-    nextProps: MovieProsperityBubbleChartProps,
+    nextProps: MoviesByProsperityBubbleChartProps,
     prevState: State
   ) {
     const { sortedMoviesByProsperity } = nextProps;
-    const instance = new MovieProsperityBubbleChart(nextProps);
+    const instance = new MoviesByProsperityBubbleChart(nextProps);
     const genreMap: { [key: string]: any[] } = {};
 
     sortedMoviesByProsperity.forEach((movie) => {
@@ -1061,20 +789,20 @@ export class MovieProsperityBubbleChart extends Component<
   }
 }
 
-interface BasicTreemapProps {
+interface TreemapProps {
   data: RoleData;
   role: string;
 }
 
-interface BasicTreemapState {
+interface TreemapState {
   series: any[];
   options: any;
 }
 
-export class Treemap extends Component<BasicTreemapProps, BasicTreemapState> {
+export class Treemap extends Component<TreemapProps, TreemapState> {
   private observer: MutationObserver | null = null;
 
-  constructor(props: BasicTreemapProps) {
+  constructor(props: TreemapProps) {
     super(props);
 
     const initialColor = updatePrimaryColor();
@@ -1110,8 +838,8 @@ export class Treemap extends Component<BasicTreemapProps, BasicTreemapState> {
 
   // Static method to derive state from props
   static getDerivedStateFromProps(
-    nextProps: BasicTreemapProps,
-    prevState: BasicTreemapState
+    nextProps: TreemapProps,
+    prevState: TreemapState
   ) {
     if (
       nextProps.data !== prevState.series[0].data ||

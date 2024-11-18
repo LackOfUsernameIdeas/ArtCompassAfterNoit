@@ -1,14 +1,14 @@
 import { FC, Fragment } from "react";
 import { DataType } from "../home-types";
 
-import { MovieProsperityBubbleChart } from "./Charts";
+import { MoviesByProsperityBubbleChart } from "./Charts";
 
-interface MovieProsperityBubbleChartComponentProps {
+interface MoviesByProsperityBubbleChartComponentProps {
   data: DataType;
 }
 
-const MovieProsperityBubbleChartComponent: FC<
-  MovieProsperityBubbleChartComponentProps
+const MoviesByProsperityBubbleChartComponent: FC<
+  MoviesByProsperityBubbleChartComponentProps
 > = ({ data }) => {
   return (
     <Fragment>
@@ -21,7 +21,7 @@ const MovieProsperityBubbleChartComponent: FC<
           </div>
           <div className="box-body">
             <div id="bubble-simple">
-              <MovieProsperityBubbleChart
+              <MoviesByProsperityBubbleChart
                 sortedMoviesByProsperity={data.sortedMoviesByProsperity}
               />
             </div>
@@ -32,4 +32,4 @@ const MovieProsperityBubbleChartComponent: FC<
   );
 };
 
-export default MovieProsperityBubbleChartComponent;
+export default MoviesByProsperityBubbleChartComponent;

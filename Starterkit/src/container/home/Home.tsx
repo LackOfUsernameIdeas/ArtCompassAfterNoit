@@ -5,9 +5,9 @@ import TableComponent from "./Statistics/TableComponent";
 import TreemapComponent from "./Statistics/TreemapComponent";
 import TopRecommendationsBarChartComponent from "./Statistics/TopRecommendationsBarChart";
 import CountryBarChartComponent from "./Statistics/CountryBarChartComponent";
-import MovieProsperityBubbleChartComponent from "./Statistics/MovieProsperityBubbleChartComponent";
+import MoviesByProsperityBubbleChartComponent from "./Statistics/MoviesByProsperityBubbleChartComponent";
 import GenrePopularityOverTimeComponent from "./Statistics/GenrePopularityOverTimeComponent";
-import MovieBarChartComponent from "./Statistics/MovieBarChartComponent";
+import MoviesAndSeriesByRatingsChartComponent from "./Statistics/MoviesAndSeriesByRatingsChartComponent";
 import WidgetCards from "./Statistics/WidgetCards";
 
 interface CrmProps {}
@@ -67,9 +67,9 @@ const Home: FC<CrmProps> = () => {
         <WidgetCards data={data} />
         <div className="xxl:col-span-6 col-span-12">
           <div className="xxl:col-span-6 col-span-12">
-            <MovieProsperityBubbleChartComponent data={data} />
+            <MoviesByProsperityBubbleChartComponent data={data} />
             <GenrePopularityOverTimeComponent data={data} />
-            <MovieBarChartComponent data={data} />
+            <MoviesAndSeriesByRatingsChartComponent data={data} />
           </div>
         </div>
         <div className="xxl:col-span-6 col-span-12">

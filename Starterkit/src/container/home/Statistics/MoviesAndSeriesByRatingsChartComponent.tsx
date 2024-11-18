@@ -1,6 +1,6 @@
 import { FC, Fragment, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { MovieBarChart } from "./Charts";
+import { MoviesAndSeriesByRatingsChart } from "./Charts";
 import { DataType } from "../home-types";
 import {
   paginateBarChartData,
@@ -10,18 +10,20 @@ import {
 } from "../helper_functions";
 import { useMediaQuery } from "react-responsive";
 
-interface MovieBarChartComponentProps {
+interface MoviesAndSeriesByRatingsChartComponentProps {
   data: DataType;
 }
 
-const MovieBarChartComponent: FC<MovieBarChartComponentProps> = ({ data }) => {
+const MoviesAndSeriesByRatingsChartComponent: FC<
+  MoviesAndSeriesByRatingsChartComponentProps
+> = ({ data }) => {
   const pageSize = 5; // Размер на страницата (брой елементи на страница)
   const [currentChartPage, setCurrentChartPage] = useState(1); // Текущата страница на графиката
   const [moviesAndSeriesSortCategory, setMoviesAndSeriesSortCategory] =
     useState("IMDb"); // Категория за сортиране (IMDb, Metascore, RottenTomatoes)
 
   // Меморизиране на данните за сериите за графиката на филмите
-  const seriesDataForMovieBarChart = useMemo(() => {
+  const seriesDataForMoviesAndSeriesByRatingsChart = useMemo(() => {
     const sortedData =
       moviesAndSeriesSortCategory === "IMDb"
         ? data.sortedMoviesAndSeriesByIMDbRating // Ако е избрана IMDb, използвай IMDb рейтинги
@@ -150,8 +152,8 @@ const MovieBarChartComponent: FC<MovieBarChartComponentProps> = ({ data }) => {
 
           <div className="box-body h-[21.75rem]">
             <div id="bar-basic">
-              <MovieBarChart
-                seriesData={seriesDataForMovieBarChart}
+              <MoviesAndSeriesByRatingsChart
+                seriesData={seriesDataForMoviesAndSeriesByRatingsChart}
                 category={moviesAndSeriesSortCategory}
               />
             </div>
@@ -251,4 +253,4 @@ const MovieBarChartComponent: FC<MovieBarChartComponentProps> = ({ data }) => {
   );
 };
 
-export default MovieBarChartComponent;
+export default MoviesAndSeriesByRatingsChartComponent;
