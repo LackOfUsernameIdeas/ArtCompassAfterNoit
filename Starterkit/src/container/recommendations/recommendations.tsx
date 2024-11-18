@@ -8,6 +8,8 @@ import {
   Recommendations
 } from "./recommendationsdata";
 import logo_loader from "../../assets/images/brand-logos/logo_loader.png";
+import { useNavigate } from "react-router-dom";
+import { checkTokenValidity } from "../home/helper_functions";
 
 interface RecommendationList {}
 
@@ -789,6 +791,19 @@ const RecommendationList: FC<RecommendationList> = () => {
   //     setSubmitted(true);
   //   }, 1000); // Simulating a 1-second delay
   // }, []);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const validateToken = async () => {
+      const redirectUrl = await checkTokenValidity(); // Проверка на валидността на токена
+      if (redirectUrl) {
+        navigate(redirectUrl); // Пренасочване, ако токенът не е валиден
+      }
+    };
+
+    validateToken();
+  }, [navigate]); // Добавяне на navigate като зависимост
 
   return (
     <div>
