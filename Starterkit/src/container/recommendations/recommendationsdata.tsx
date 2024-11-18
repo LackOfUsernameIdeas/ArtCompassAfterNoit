@@ -293,227 +293,249 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
   }, [currentQuestion, selectedAnswer]);
 
   return (
-    <CSSTransition
-      in={showQuestion}
-      timeout={300}
-      classNames="fade"
-      unmountOnExit
-    >
-      <div className="w-full max-w-3xl px-4 py-8">
-        {/* Question Content */}
-        <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
-          <h2 className="text-xl font-semibold break-words">
-            {currentQuestion.question}
-          </h2>
-          {currentQuestion.description && (
-            <p className="text-sm text-gray-500 mt-2">
-              {currentQuestion.description}
-            </p>
-          )}
+    <div>
+      {recommendationList.length > 0 && !submitted && (
+        <div className="mt-6 text-center">
+          <p className="text-lg text-gray-600">
+            Искате да се върнете при препоръките?{" "}
+            <button
+              onClick={handleViewRecommendations}
+              className="text-primary font-semibold hover:text-secondary transition-colors underline"
+            >
+              Върнете се
+            </button>
+          </p>
         </div>
-        <div className={isBackDisabled ? "my-8" : "mb-2"}>
-          {!isBackDisabled && (
-            <div className="flex justify-start ">
-              <button
-                onClick={handleBack}
-                className="back-button text-blue-600 text-3xl transition-all duration-300 hover:text-blue-800"
-              >
-                &#8592;
-              </button>
-            </div>
-          )}
-        </div>
-        {/* Input or Options */}
-        {currentQuestion.isInput ? (
-          <div className="mb-4">
-            {currentQuestion.setter === setInterests ? (
-              <div>
-                <textarea
-                  className="form-control bg-opacity-70 border-2 rounded-lg p-4 mb-4 text-white glow-effect transition-all duration-300 hover:text-[#d94545]"
-                  placeholder={currentQuestion.placeholder}
-                  value={interests}
-                  onChange={(e) =>
-                    handleInputChange(currentQuestion.setter, e.target.value)
-                  }
-                  rows={4}
-                  maxLength={200}
-                />
-                <div className="flex justify-between">
-                  <div className="flex items-center text-white">
-                    <input
-                      type="checkbox"
-                      className="checkbox"
-                      checked={currentQuestion.value === "Нямам предпочитания"}
-                      onChange={() => {
-                        currentQuestion.setter(
-                          currentQuestion.value === "Нямам предпочитания"
-                            ? ""
-                            : "Нямам предпочитания"
-                        );
-                      }}
-                    />
-                    <label className="ml-2 cursor-pointer hover:text-[#d94545]">
-                      Нямам предпочитания
-                    </label>
-                  </div>
-                  <div className="text-right mt-2">
-                    <small>{`${interests.length} / 200`}</small>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div>
-                <input
-                  type="text"
-                  className="input-field form-control bg-opacity-70 border-2 rounded-lg p-4 mb-4 text-white glow-effect transition-all duration-300 hover:text-[#d94545]"
-                  placeholder={currentQuestion.placeholder}
-                  value={currentQuestion.value}
-                  onChange={(e) =>
-                    handleInputChange(currentQuestion.setter, e.target.value)
-                  }
-                  required
-                />
-                <div className="flex items-center text-white">
-                  <input
-                    type="checkbox"
-                    className="checkbox"
-                    checked={currentQuestion.value === "Нямам предпочитания"}
-                    onChange={() => {
-                      currentQuestion.setter(
-                        currentQuestion.value === "Нямам предпочитания"
-                          ? ""
-                          : "Нямам предпочитания"
-                      );
-                    }}
-                  />
-                  <label className="ml-2 cursor-pointer hover:text-[#d94545]">
-                    Нямам предпочитания
-                  </label>
-                </div>
+      )}
+      <CSSTransition
+        in={showQuestion}
+        timeout={500}
+        classNames="fade"
+        unmountOnExit
+      >
+        <div className="w-full max-w-3xl py-8 px-4">
+          <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
+            <h2 className="text-xl font-semibold break-words">
+              {currentQuestion.question}
+            </h2>
+            {currentQuestion.description && (
+              <p className="text-sm text-gray-500 mt-2">
+                {currentQuestion.description}
+              </p>
+            )}
+          </div>
+          <div className={isBackDisabled ? "my-8" : "mb-2"}>
+            {!isBackDisabled && (
+              <div className="flex justify-start ">
+                <button
+                  onClick={handleBack}
+                  className="back-button text-blue-600 text-3xl transition-all duration-300 hover:text-blue-800"
+                >
+                  &#8592;
+                </button>
               </div>
             )}
           </div>
-        ) : (
-          <div
-            className={`grid gap-4 ${
-              (currentQuestion.options?.length ?? 0) > 6
-                ? "grid-cols-2 md:grid-cols-4"
-                : "grid-cols-1"
-            }`}
-          >
-            {currentQuestion.options?.map((answer: string, index: number) => (
-              <div
-                key={index}
-                className={`${
-                  selectedAnswer && selectedAnswer.includes(answer)
-                    ? "selected-answer"
-                    : "question"
-                } bg-opacity-70 border-2 text-white rounded-lg glow-effect transition-all duration-300 ${
-                  selectedAnswer && selectedAnswer.includes(answer)
-                    ? "transform scale-105"
-                    : "hover:bg-[#d94545] hover:text-white"
-                }`}
-              >
-                <button
-                  className="block w-full m-6 rounded"
-                  onClick={() =>
-                    handleAnswerClick(currentQuestion.setter, answer)
-                  }
-                >
-                  {answer}
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+          {currentQuestion.isInput ? (
+            <div className="mb-4">
+              {currentQuestion.setter === setInterests ? (
+                <div>
+                  <textarea
+                    className="form-control bg-opacity-70 border-2 rounded-lg p-4 mb-4 text-white glow-effect transition-all duration-300 hover:text-[#d94545]"
+                    placeholder={currentQuestion.placeholder}
+                    value={interests}
+                    onChange={(e) => {
+                      // Update the value based on input change
+                      handleInputChange(currentQuestion.setter, e.target.value);
 
-        <div
-          className={`next bg-red-600 bg-opacity-70 text-white rounded-lg p-4 mt-4 transition-all duration-500 ${
-            (selectedAnswer && selectedAnswer.length > 0) ||
-            (currentQuestion.isInput && currentQuestion.value)
-              ? "opacity-100 pointer-events-auto"
-              : "opacity-0 pointer-events-none"
-          }`}
-        >
-          {currentQuestionIndex === totalQuestions - 1 ? (
-            <div>
-              <button
-                onClick={() => {
-                  if (recommendationList.length > 0) {
-                    handleOpenModal();
-                  } else {
-                    handleSubmitTest();
-                  }
-                }}
-                className="block w-full p-2 text-white rounded hover:bg-red-700"
-                disabled={
-                  !(
-                    (selectedAnswer && selectedAnswer.length > 0) ||
-                    currentQuestion.value
-                  )
-                }
-              >
-                Submit
-              </button>
-              {isModalOpen && recommendationList.length > 0 && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                  <div className="question p-6 rounded-lg shadow-lg space-y-4">
-                    <h2 className="text-lg font-semibold">
-                      Are you sure you want to submit the test?
-                    </h2>
-                    <p className="text-sm text-gray-600 italic">
-                      Once submitted, you cannot change your answers.
-                    </p>
-                    <div className="flex justify-end space-x-4">
-                      <button
-                        onClick={handleCloseModal}
-                        className="bg-primary hover:bg-secondary px-4 py-2 bg-gray-300 text-white rounded-lg hover:bg-gray-400"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={() => {
-                          handleSubmitTest();
-                          handleCloseModal();
+                      if (e.target.value.trim() === "") {
+                        setSelectedAnswer([]); // Hide the button if input is empty
+                      } else {
+                        setSelectedAnswer([e.target.value]); // Show the button if input has value
+                      }
+                    }}
+                    rows={4}
+                    maxLength={200}
+                  />
+                  <div className="flex justify-between mx-2">
+                    <label className="flex items-center cursor-pointer hover:text-[#d94545]">
+                      <input
+                        type="checkbox"
+                        className="checkbox"
+                        checked={
+                          currentQuestion.value === "Нямам предпочитания"
+                        }
+                        onChange={() => {
+                          const newValue =
+                            currentQuestion.value === "Нямам предпочитания"
+                              ? ""
+                              : "Нямам предпочитания";
+                          currentQuestion.setter(newValue);
+                          setSelectedAnswer(newValue === "" ? [] : [newValue]);
                         }}
-                        className="bg-primary hover:bg-secondary px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-                      >
-                        Confirm
-                      </button>
+                      />
+                      <span>Нямам предпочитания</span>
+                    </label>
+                    <div className="text-right mt-2">
+                      <small>{`${interests.length} / 200`}</small>
                     </div>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <input
+                    type="text"
+                    className="input-field form-control bg-opacity-70 border-2 rounded-lg p-4 mb-4 text-white glow-effect transition-all duration-300 hover:text-[#d94545]"
+                    placeholder={currentQuestion.placeholder}
+                    value={currentQuestion.value}
+                    onChange={(e) => {
+                      handleInputChange(currentQuestion.setter, e.target.value);
+                      if (e.target.value.trim() === "") {
+                        setSelectedAnswer([]);
+                      } else {
+                        setSelectedAnswer([e.target.value]);
+                      }
+                    }}
+                    required
+                  />
+                  <div className="flex items-center text-white">
+                    <label className="flex items-center ml-2 cursor-pointer hover:text-[#d94545]">
+                      <input
+                        type="checkbox"
+                        className="checkbox"
+                        checked={
+                          currentQuestion.value === "Нямам предпочитания"
+                        }
+                        onChange={() => {
+                          const newValue =
+                            currentQuestion.value === "Нямам предпочитания"
+                              ? ""
+                              : "Нямам предпочитания";
+                          currentQuestion.setter(newValue);
+                          setSelectedAnswer(newValue === "" ? [] : [newValue]);
+                        }}
+                      />
+                      <span className="ml-2">Нямам предпочитания</span>
+                    </label>
                   </div>
                 </div>
               )}
             </div>
           ) : (
-            <button
-              onClick={handleNext}
-              className="block w-full p-2 text-white rounded hover:bg-red-700"
-              disabled={
-                !(
-                  (selectedAnswer && selectedAnswer.length > 0) ||
-                  currentQuestion.value
-                )
-              }
+            <div
+              className={`grid gap-4 ${
+                (currentQuestion.options?.length ?? 0) > 6
+                  ? "grid-cols-2 md:grid-cols-4"
+                  : "grid-cols-1"
+              }`}
             >
-              Next Question
-            </button>
+              {currentQuestion.options?.map((answer: string, index: number) => (
+                <div
+                  key={index}
+                  className={`${
+                    selectedAnswer && selectedAnswer.includes(answer)
+                      ? "selected-answer"
+                      : "question"
+                  } bg-opacity-70 p-4 border-2 text-white rounded-lg glow-effect transition-all duration-300 ${
+                    selectedAnswer && selectedAnswer.includes(answer)
+                      ? "transform scale-105"
+                      : "hover:bg-[#d94545] hover:text-white"
+                  }`}
+                >
+                  <button
+                    className="block w-full p-2 rounded"
+                    onClick={() =>
+                      handleAnswerClick(currentQuestion.setter, answer)
+                    }
+                  >
+                    {answer}
+                  </button>
+                </div>
+              ))}
+            </div>
           )}
-        </div>
-        {recommendationList.length > 0 && !submitted && (
+
           <div
-            className={`absolute top-0 left-0 w-full flex justify-center items-center`}
+            className={`next bg-red-600 bg-opacity-70 text-white rounded-lg p-4 mt-4 transition-all duration-200 ${
+              (selectedAnswer && selectedAnswer.length > 0) ||
+              (currentQuestion.isInput &&
+                typeof currentQuestion.value === "string" &&
+                currentQuestion.value.trim() !== "")
+                ? "opacity-100 pointer-events-auto"
+                : "opacity-0 pointer-events-none"
+            }}`}
           >
-            <button
-              onClick={handleViewRecommendations}
-              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded "
-            >
-              View Recommendations
-            </button>
+            {currentQuestionIndex === totalQuestions - 1 ? (
+              <div>
+                <button
+                  onClick={() => {
+                    if (recommendationList.length > 0) {
+                      handleOpenModal();
+                    } else {
+                      handleSubmitTest();
+                    }
+                  }}
+                  className="block w-full p-2 text-white rounded hover:bg-red-700"
+                  disabled={
+                    !(
+                      (selectedAnswer && selectedAnswer.length > 0) ||
+                      (currentQuestion.value &&
+                        currentQuestion.value.trim() !== "")
+                    )
+                  }
+                >
+                  Изпрати
+                </button>
+                {isModalOpen && recommendationList.length > 0 && (
+                  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="question p-6 rounded-lg shadow-lg space-y-4">
+                      <h2 className="text-lg font-semibold">
+                        Сигурни ли сте, че искате да изпратите въпросника?
+                      </h2>
+                      <p className="text-sm text-gray-600 italic">
+                        След като го изпратите, ще ви се премахнат миналите
+                        препоръчвания и ще бъдат генерирани нови.
+                      </p>
+                      <div className="flex justify-end space-x-4">
+                        <button
+                          onClick={handleCloseModal}
+                          className="bg-primary hover:bg-secondary px-4 py-2 bg-gray-300 text-white rounded-lg hover:bg-gray-400"
+                        >
+                          Отказ
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleSubmitTest();
+                            handleCloseModal();
+                          }}
+                          className="bg-primary hover:bg-secondary px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                        >
+                          Потвърди
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={handleNext}
+                className="block w-full p-2 text-white"
+                disabled={
+                  !(
+                    (selectedAnswer && selectedAnswer.length > 0) ||
+                    (typeof currentQuestion.value === "string" &&
+                      currentQuestion.value.trim() !== "")
+                  )
+                }
+              >
+                Следващ въпрос
+              </button>
+            )}
           </div>
-        )}
-      </div>
-    </CSSTransition>
+        </div>
+      </CSSTransition>
+    </div>
   );
 };
 

@@ -19763,7 +19763,7 @@ input[type="color" i]::-webkit-color-swatch {
 
 /* Remove background color from .question */
 .question {
-  @apply flex flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative dark:bg-bodybg;
+  @apply flex flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative bg-white dark:bg-bodybg;
 }
 
 .input-field {
@@ -19844,4 +19844,40 @@ input[type="color" i]::-webkit-color-swatch {
   transition: opacity 200ms ease-in;
 }
 
+.movie-card {
+  @apply flex flex-col items-center justify-between rounded-lg text-defaulttextcolor text-[0.813rem] relative p-8 max-w-7xl mx-auto;
+  background-color: rgb(var(--body-bg)); /* Normal background color */
+}
+
+.movie-small-details {
+  @apply text-sm text-primary mb-4;
+}
+
+.plot-container {
+  overflow: hidden;
+  transition: max-height 0.8s ease-in-out;
+}
+
+.plot-collapsed {
+  max-height: 6rem; /* Limit to ~100 characters */
+}
+
+.plot-expanded {
+  max-height: 1000px; /* Large enough to show the full plot */
+}
+
+.spinner {
+  width: 80px;  /* Increased size for better visibility */
+  height: 80px; /* Increased size for better visibility */
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 /*# sourceMappingURL=style.css.map */

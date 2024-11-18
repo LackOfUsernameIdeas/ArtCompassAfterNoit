@@ -7,6 +7,7 @@ import {
   Rating,
   Recommendations
 } from "./recommendationsdata";
+import logo_loader from "../../assets/images/brand-logos/logo_loader.png";
 
 interface RecommendationList {}
 
@@ -31,13 +32,11 @@ const RecommendationList: FC<RecommendationList> = () => {
   const [submitCount, setSubmitCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [retake, setRetake] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [recommendationList, setRecommendationList] = useState<any[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showQuestion, setShowQuestion] = useState(true);
   const [selectedAnswer, setSelectedAnswer] = useState<string[] | null>(null);
-  const [showNextButton, setShowNextButton] = useState(false);
   const typeOptions = ["Филм", "Сериал"];
 
   const genreOptions = [
@@ -661,15 +660,6 @@ const RecommendationList: FC<RecommendationList> = () => {
 
   const isBackDisabled = currentQuestionIndex === 0;
 
-  useEffect(() => {
-    if (selectedAnswer && selectedAnswer.length > 0) {
-      const timer = setTimeout(() => setShowNextButton(true), 100);
-      return () => clearTimeout(timer);
-    } else {
-      setShowNextButton(false);
-    }
-  }, [selectedAnswer]);
-
   const handleAnswerClick = (
     setter: React.Dispatch<React.SetStateAction<any>>,
     answer: string
@@ -722,8 +712,6 @@ const RecommendationList: FC<RecommendationList> = () => {
     }, 5000);
   };
 
-  tailChase.register();
-
   useEffect(() => {
     console.log("Updated Form Field Values:", {
       interests,
@@ -759,21 +747,23 @@ const RecommendationList: FC<RecommendationList> = () => {
   const currentQuestion = questions[currentQuestionIndex];
 
   const handleViewRecommendations = () => {
-    setShowQuestion(false);
+    setShowQuestion(false); // Hide Quiz
+    setLoading(true);
     setTimeout(() => {
-      setSubmitted(true);
-    }, 300);
+      setSubmitted(true); // Show Recommendations after a slight delay
+      setLoading(false);
+    }, 500); // Match the transition duration
   };
 
   const handleRetakeQuiz = () => {
-    setLoading(true);
+    setLoading(true); // Start loading spinner
     setTimeout(() => {
-      setCurrentQuestionIndex(0);
-      setSelectedAnswer([]);
-      setSubmitted(false);
-      setShowQuestion(true);
-      setLoading(false);
-    }, 500);
+      setCurrentQuestionIndex(0); // Reset question index
+      setSelectedAnswer([]); // Reset selected answers
+      setSubmitted(false); // Hide recommendations
+      setShowQuestion(true); // Show quiz again
+      setLoading(false); // Hide loading spinner
+    }, 500); // Match the transition duration
   };
 
   useEffect(() => {
@@ -807,9 +797,9 @@ const RecommendationList: FC<RecommendationList> = () => {
             classNames="fade"
             unmountOnExit
           >
-            <div className="fixed inset-0 flex flex-col items-center justify-center text-white p-8 rounded-lg space-y-4">
-              <l-tail-chase size="40" speed="1.75" color="white"></l-tail-chase>
-              <p>Submitting, please wait...</p>
+            <div className="fixed inset-0 flex flex-col items-center justify-center text-white bg-black bg-opacity-50 p-12 rounded-lg space-y-6">
+              <img src={logo_loader} alt="loading" className="spinner" />
+              <p className="text-xl md:text-2xl font-semibold">Зареждане...</p>
             </div>
           </CSSTransition>
           {!loading && submitted && recommendationList.length > 0 && (
@@ -825,25 +815,40 @@ const RecommendationList: FC<RecommendationList> = () => {
                   </button>
                 </p>
               </div>
-              <Recommendations recommendationList={recommendationList} />
+              <CSSTransition
+                in={submitted}
+                timeout={500}
+                classNames="fade"
+                unmountOnExit
+              >
+                <Recommendations recommendationList={recommendationList} />
+              </CSSTransition>
             </div>
           )}
         </div>
       ) : (
         <div className="flex items-center justify-center px-4">
+          {/* Loading Spinner */}
           <CSSTransition
             in={loading}
             timeout={500}
             classNames="fade"
             unmountOnExit
+            key="loading"
           >
-            <div className="fixed inset-0 flex flex-col items-center justify-center text-white p-8 rounded-lg space-y-4">
-              <l-tail-chase size="40" speed="1.75" color="white"></l-tail-chase>
-              <p>Submitting, please wait...</p>
+            <div className="fixed inset-0 flex flex-col items-center justify-center space-y-4">
+              <img src={logo_loader} alt="loading" className="spinner" />
+              <p className="text-xl">Зареждане...</p>
             </div>
           </CSSTransition>
 
-          {!loading && !submitted ? (
+          {/* QuizQuestion Component */}
+          <CSSTransition
+            in={!loading && !submitted}
+            timeout={500}
+            classNames="fade"
+            unmountOnExit
+          >
             <div className="w-full max-w-3xl">
               <QuizQuestion
                 setSelectedAnswer={setSelectedAnswer}
@@ -865,31 +870,30 @@ const RecommendationList: FC<RecommendationList> = () => {
                 submitted={submitted}
               />
             </div>
-          ) : null}
+          </CSSTransition>
 
-          {!loading && submitted && recommendationList.length > 0 && (
-            <CSSTransition
-              in={submitted}
-              timeout={500}
-              classNames="fade"
-              unmountOnExit
-            >
-              <div>
-                <div className="my-6 text-center">
-                  <p className="text-lg text-gray-600">
-                    Искате други препоръки?{" "}
-                    <button
-                      onClick={handleRetakeQuiz}
-                      className="text-primary font-semibold hover:text-secondary transition-colors underline"
-                    >
-                      Повторете въпросника
-                    </button>
-                  </p>
-                </div>
-                <Recommendations recommendationList={recommendationList} />
+          {/* Recommendations Component */}
+          <CSSTransition
+            in={!loading && submitted}
+            timeout={500}
+            classNames="fade"
+            unmountOnExit
+          >
+            <div>
+              <div className="my-6 text-center">
+                <p className="text-lg text-gray-600">
+                  Искате други препоръки?{" "}
+                  <button
+                    onClick={handleRetakeQuiz}
+                    className="text-primary font-semibold hover:text-secondary transition-colors underline"
+                  >
+                    Повторете въпросника
+                  </button>
+                </p>
               </div>
-            </CSSTransition>
-          )}
+              <Recommendations recommendationList={recommendationList} />
+            </div>
+          </CSSTransition>
         </div>
       )}
     </div>
