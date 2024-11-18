@@ -800,9 +800,9 @@ const RecommendationList: FC<RecommendationList> = () => {
             classNames="fade"
             unmountOnExit
           >
-            <div className="fixed inset-0 flex flex-col items-center justify-center text-white bg-black bg-opacity-50 p-12 rounded-lg space-y-6">
+            <div className="fixed inset-0 flex flex-col items-center justify-center space-y-4">
               <img src={logo_loader} alt="loading" className="spinner" />
-              <p className="text-xl md:text-2xl font-semibold">Зареждане...</p>
+              <p className="text-xl">Зареждане...</p>
             </div>
           </CSSTransition>
           {!loading && submitted && recommendationList.length > 0 && (
@@ -852,7 +852,7 @@ const RecommendationList: FC<RecommendationList> = () => {
             classNames="fade"
             unmountOnExit
           >
-            <div className="w-full max-w-3xl">
+            <div className="w-full max-w-4xl">
               <QuizQuestion
                 setSelectedAnswer={setSelectedAnswer}
                 showQuestion={showQuestion}

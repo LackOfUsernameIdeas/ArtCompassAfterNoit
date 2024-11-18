@@ -19740,6 +19740,20 @@ input[type="color" i]::-webkit-color-swatch {
   transition: opacity 500ms, transform 500ms;
 }
 
+.fade-no-transform-enter {
+  opacity: 0;
+}
+.fade-no-transform-enter-active {
+  opacity: 1;
+  transition: opacity 500ms;
+}
+.fade-no-transform-exit {
+  opacity: 1;
+}
+.fade-no-transform-exit-active {
+  opacity: 0;
+  transition: opacity 500ms;
+}
 .glow-effect {
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
 }
@@ -19836,19 +19850,6 @@ input[type="color" i]::-webkit-color-swatch {
   @apply text-sm text-primary mb-4;
 }
 
-.plot-container {
-  overflow: hidden;
-  transition: max-height 0.8s ease-in-out;
-}
-
-.plot-collapsed {
-  max-height: 6rem; /* Limit to ~100 characters */
-}
-
-.plot-expanded {
-  max-height: 1000px; /* Large enough to show the full plot */
-}
-
 .spinner {
   width: 80px; /* Increased size for better visibility */
   height: 80px; /* Increased size for better visibility */
@@ -19863,4 +19864,5 @@ input[type="color" i]::-webkit-color-swatch {
     transform: rotate(360deg);
   }
 }
+
 /*# sourceMappingURL=style.css.map */

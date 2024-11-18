@@ -313,7 +313,7 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
         classNames="fade"
         unmountOnExit
       >
-        <div className="w-full max-w-3xl py-8 px-4">
+        <div className="w-full max-w-4xl py-8 px-4">
           <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
             <h2 className="text-xl font-semibold break-words">
               {currentQuestion.question}
@@ -425,7 +425,7 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
             <div
               className={`grid gap-4 ${
                 (currentQuestion.options?.length ?? 0) > 6
-                  ? "grid-cols-2 md:grid-cols-4"
+                  ? "grid-cols-2 md:grid-cols-5"
                   : "grid-cols-1"
               }`}
             >
@@ -549,25 +549,24 @@ export const Recommendations: FC<RecommendationsProps> = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [inTransition, setInTransition] = useState(false);
   const [direction, setDirection] = useState<"left" | "right">("right");
-
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false); // Track the transition state
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state for full plot
 
   const plotPreviewLength = 110; // Character limit for preview
   const animationDuration = 500; // Duration of animation in milliseconds
 
   // Toggle function for expanding/collapsing
   const toggleExpand = () => {
-    if (isExpanded) {
-      // Start collapsing the plot (with a delayed state change)
-      setIsTransitioning(true); // Begin transition
-      setIsExpanded(false); // Collapse after animation
-      setIsTransitioning(false); // End transition
+    if (!isExpanded) {
+      setIsExpanded(true); // Immediately expand
     } else {
-      // When expanding, we can immediately set isExpanded to true
-      setIsExpanded(true);
+      // Start collapsing the plot with a delay
+      setTimeout(() => {
+        setIsExpanded(false); // Collapse after animation
+      }, 500); // Slight delay to allow animation to start
     }
   };
+
   if (!recommendationList.length) {
     return <div>No recommendations available.</div>;
   }
@@ -586,7 +585,7 @@ export const Recommendations: FC<RecommendationsProps> = ({
       setCurrentIndex((prevIndex) =>
         prevIndex === recommendationList.length - 1 ? 0 : prevIndex + 1
       );
-      setIsExpanded(false);
+      setIsExpanded(false); // Collapse the plot when moving to next
       setInTransition(false); // End the transition
     }, 500); // 500ms delay for fade-out
   };
@@ -600,9 +599,17 @@ export const Recommendations: FC<RecommendationsProps> = ({
       setCurrentIndex((prevIndex) =>
         prevIndex === 0 ? recommendationList.length - 1 : prevIndex - 1
       );
-      setIsExpanded(false);
+      setIsExpanded(false); // Collapse the plot when moving to previous
       setInTransition(false); // End the transition
     }, 500); // 500ms delay for fade-out
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true); // Open the modal with full plot
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false); // Close the modal
   };
 
   return (
@@ -645,12 +652,15 @@ export const Recommendations: FC<RecommendationsProps> = ({
             <div className="flex-grow">
               {/* Sticky Title and Ratings */}
               <div className="sticky top-0 z-10 pb-4 mb-4">
-                <h2 className="text-3xl font-bold mb-1">
+                <a href="#" className="block text-3xl font-bold mb-1">
                   {movie.title_bg || "Заглавие не е налично"}
-                </h2>
-                <p className="text-lg font-semibold text-gray-400 italic mb-2">
+                </a>
+                <a
+                  href="#"
+                  className="block text-lg font-semibold text-gray-400 italic mb-2"
+                >
                   {movie.title_en || "Заглавие на английски не е налично"}
-                </p>
+                </a>
                 <p className="movie-small-details">
                   {movie.genre_bg || "Жанр неизвестен"} |{" "}
                   {movie.year || "Година неизвестна"} | Рейтинг:{" "}
@@ -706,10 +716,10 @@ export const Recommendations: FC<RecommendationsProps> = ({
               <div className="mb-4">
                 <h3 className="text-lg font-semibold mb-2">Сюжет</h3>
                 <div
-                  className={`transition-all duration-[${animationDuration}ms] ease-in-out overflow-hidden`}
+                  className={`overflow-hidden transition-all duration-500 ease-in-out`}
                   style={{
-                    maxHeight: isExpanded ? `100px` : "20px", // Expand or collapse
-                    opacity: isExpanded ? 1 : 0.9 // Slightly reduced opacity when collapsed
+                    maxHeight: isExpanded ? "400px" : "20px", // Smooth expand/collapse effect
+                    opacity: isExpanded ? 0.9 : 0.7 // Fade in/out effect
                   }}
                 >
                   <p className="text-gray-300 italic">
@@ -726,10 +736,10 @@ export const Recommendations: FC<RecommendationsProps> = ({
                 {movie.description &&
                   movie.description.length > plotPreviewLength && (
                     <button
-                      onClick={toggleExpand}
-                      className="mt-2 text-blue-400 underline hover:text-blue-300 transition"
+                      onClick={openModal} // Open modal instead of expanding plot
+                      className="mt-2 text-blue-400 underline"
                     >
-                      {isExpanded ? "Покажи по-малко" : "Покажи пълен сюжет"}
+                      Пълен сюжет
                     </button>
                   )}
               </div>
@@ -779,6 +789,28 @@ export const Recommendations: FC<RecommendationsProps> = ({
         >
           &gt;
         </button>
+      </CSSTransition>
+      <CSSTransition
+        in={isModalOpen}
+        timeout={300}
+        classNames="fade-no-transform"
+        unmountOnExit
+      >
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-black bg-opacity-70 z-40"></div>
+          <div className="question p-6 rounded-lg shadow-lg bg-white w-full max-w-lg space-y-4 z-50">
+            <h2 className="text-lg font-semibold">Пълен сюжет</h2>
+            <p className="text-sm italic">{movie.description}</p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={closeModal}
+                className="bg-primary text-white rounded-lg px-4 py-2 hover:bg-secondary transform transition-transform duration-200 hover:scale-105"
+              >
+                Затвори
+              </button>
+            </div>
+          </div>
+        </div>
       </CSSTransition>
     </div>
   );
