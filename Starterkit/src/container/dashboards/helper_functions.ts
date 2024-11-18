@@ -143,24 +143,14 @@ export const getTotalBarChartPages = (
   return Math.ceil(totalItems / pageSize);
 };
 
-export const handleDropdownClickAwards = (
-  setDisplayedNameAwards: React.Dispatch<React.SetStateAction<string>>,
-  setDisplayedValueAwards: React.Dispatch<React.SetStateAction<number>>,
+export const handleDropdownClick = (
+  setName: React.Dispatch<React.SetStateAction<string>>,
+  setValue: React.Dispatch<React.SetStateAction<number>>,
   name: string,
   value: number
 ) => {
-  setDisplayedNameAwards(name);
-  setDisplayedValueAwards(value);
-};
-
-export const handleDropdownClickAverages = (
-  setDisplayedNameAverages: React.Dispatch<React.SetStateAction<string>>,
-  setDisplayedValueAverages: React.Dispatch<React.SetStateAction<number>>,
-  name: string,
-  value: number
-) => {
-  setDisplayedNameAverages(name);
-  setDisplayedValueAverages(value);
+  setName(name);
+  setValue(value);
 };
 
 export const handleProsperityTableClick = (

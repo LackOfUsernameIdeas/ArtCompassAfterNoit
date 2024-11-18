@@ -1,9 +1,6 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { DataType } from "../../home-types";
-import {
-  handleDropdownClickAverages,
-  handleDropdownClickAwards
-} from "../../helper_functions";
+import { handleDropdownClick } from "../../helper_functions";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 
@@ -217,7 +214,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                           <li key={label}>
                             <Link
                               onClick={() =>
-                                handleDropdownClickAverages(
+                                handleDropdownClick(
                                   setDisplayedNameAverages,
                                   setDisplayedValueAverages,
                                   label,
@@ -318,7 +315,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                         <li key={label}>
                           <Link
                             onClick={() =>
-                              handleDropdownClickAwards(
+                              handleDropdownClick(
                                 setDisplayedNameAwards,
                                 setDisplayedValueAwards,
                                 label,
