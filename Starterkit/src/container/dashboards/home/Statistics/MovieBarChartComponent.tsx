@@ -3,9 +3,6 @@ import { Link } from "react-router-dom";
 import { MovieBarChart } from "./Charts";
 import { DataType } from "../../home-types";
 import {
-  fetchData,
-  generateHeatmapSeriesData,
-  generateScatterSeriesData,
   paginateBarChartData,
   getTotalBarChartPages,
   handleBarChartPageChange,
@@ -17,43 +14,7 @@ interface MovieBarChartComponentProps {
   data: DataType;
 }
 
-const MovieBarChartComponent: FC<MovieBarChartComponentProps> = () => {
-  // States for holding fetched data
-  const [data, setData] = useState<DataType>({
-    usersCount: [],
-    topRecommendations: [],
-    topGenres: [],
-    genrePopularityOverTime: {},
-    topActors: [],
-    topDirectors: [],
-    topWriters: [],
-    oscarsByMovie: [],
-    totalAwardsByMovieOrSeries: [],
-    totalAwards: [],
-    sortedDirectorsByProsperity: [],
-    sortedActorsByProsperity: [],
-    sortedWritersByProsperity: [],
-    sortedMoviesByProsperity: [],
-    sortedMoviesAndSeriesByMetascore: [],
-    sortedMoviesAndSeriesByIMDbRating: [],
-    sortedMoviesAndSeriesByRottenTomatoesRating: [],
-    averageBoxOfficeAndScores: [],
-    topCountries: []
-  });
-
-  const [displayedNameAwards, setDisplayedNameAwards] = useState(
-    "Общ брой спечелени награди"
-  );
-  const [displayedValueAverages, setDisplayedValueAverages] =
-    useState<number>(0);
-  const [displayedNameAverages, setDisplayedNameAverages] =
-    useState("Среден Боксофис");
-
-  const [isAveragesMenuOpen, setIsAveragesMenuOpen] = useState(false);
-  const [isAwardsMenuOpen, setIsAwardsMenuOpen] = useState(false);
-
-  const [displayedValueAwards, setDisplayedValueAwards] = useState<number>(0);
-
+const MovieBarChartComponent: FC<MovieBarChartComponentProps> = ({ data }) => {
   const pageSize = 5; // Number of entries per page for the chartaa
   const [currentChartPage, setCurrentChartPage] = useState(1); // Current page for the chart
   const [seriesDataForMovieBarChart, setSeriesDataForMovieBarChart] = useState<
@@ -62,40 +23,6 @@ const MovieBarChartComponent: FC<MovieBarChartComponentProps> = () => {
 
   const [moviesAndSeriesSortCategory, setMoviesAndSeriesSortCategory] =
     useState("IMDb");
-
-  // User data state
-  const [userData, setUserData] = useState({
-    id: 0,
-    first_name: "",
-    last_name: "",
-    email: ""
-  });
-
-  // Data fetching for user and platform stats (combined into one useEffect)
-  useEffect(() => {
-    const token =
-      localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
-    if (token) {
-      fetchData(token, setUserData, setData);
-      console.log("fetching");
-    }
-  }, []);
-
-  useEffect(() => {
-    if (
-      data.totalAwards.length > 0 &&
-      data.averageBoxOfficeAndScores.length > 0
-    ) {
-      setDisplayedValueAwards(data.totalAwards[0].total_awards_wins);
-      setDisplayedValueAverages(
-        data.averageBoxOfficeAndScores[0].average_box_office
-      );
-      console.log(
-        "BAR CHART RECOMMENDATIONS SHIT ---->",
-        data.topRecommendations
-      );
-    }
-  }, [data]);
 
   // Updated useEffect to sort data based on selected category
   useEffect(() => {
@@ -115,51 +42,6 @@ const MovieBarChartComponent: FC<MovieBarChartComponentProps> = () => {
     setSeriesDataForMovieBarChart(paginatedDataForMovieBarChart);
   }, [currentChartPage, moviesAndSeriesSortCategory, data]);
 
-  // Generate the seriesData for heatmap
-  const seriesDataForHeatmap = generateHeatmapSeriesData(
-    data.genrePopularityOverTime
-  );
-  const seriesDataForScatterChart = generateScatterSeriesData(
-    data.sortedMoviesByProsperity
-  );
-
-  const awardOptions = [
-    {
-      label: "Общ брой спечелени награди",
-      value: data.totalAwards?.[0]?.total_awards_wins || 0
-    },
-    {
-      label: "Общ брой номинации за награди",
-      value: data.totalAwards?.[0]?.total_awards_nominations || 0
-    },
-    {
-      label: "Общ брой спечелени Оскари",
-      value: data.totalAwards?.[0]?.total_oscar_wins || 0
-    },
-    {
-      label: "Общ брой номинации за Оскари",
-      value: data.totalAwards?.[0]?.total_oscar_nominations || 0
-    }
-  ];
-
-  const averagesOptions = [
-    {
-      label: "Среден Боксофис",
-      value: data.averageBoxOfficeAndScores?.[0]?.average_box_office || 0
-    },
-    {
-      label: "Среден Метаскор",
-      value: data.averageBoxOfficeAndScores?.[0]?.average_metascore || 0
-    },
-    {
-      label: "Среден IMDb Рейтинг",
-      value: data.averageBoxOfficeAndScores?.[0]?.average_imdb_rating || 0
-    },
-    {
-      label: "Среден Rotten Tomatoes Рейтинг",
-      value: data.averageBoxOfficeAndScores?.[0]?.average_rotten_tomatoes || 0
-    }
-  ];
   // Total number of pages for pagination
   const totalChartPages = getTotalBarChartPages(
     data.sortedMoviesAndSeriesByIMDbRating.length,
@@ -186,16 +68,6 @@ const MovieBarChartComponent: FC<MovieBarChartComponentProps> = () => {
     );
   };
 
-  const toggleAwardsMenu = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    setIsAwardsMenuOpen((prev) => !prev);
-  };
-
-  const toggleAveragesMenu = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    setIsAveragesMenuOpen((prev) => !prev);
-  };
-
   const moviesAndSeriesCategoryDisplayNames: Record<
     "IMDb" | "Metascore" | "RottenTomatoes",
     string
@@ -205,13 +77,10 @@ const MovieBarChartComponent: FC<MovieBarChartComponentProps> = () => {
     RottenTomatoes: "Rotten Tomatoes Рейтинг"
   };
 
-  const is1803 = useMediaQuery({ query: "(max-width: 1803px)" });
-  const is1441 = useMediaQuery({ query: "(max-width: 1441px)" });
   const is1461 = useMediaQuery({ query: "(max-width: 1461px)" });
   const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
   const is1675 = useMediaQuery({ query: "(max-width: 1675px)" });
 
-  console.log("seriesDataForScatterChart: ", seriesDataForScatterChart);
   return (
     <Fragment>
       <div className="xl:col-span-6 col-span-12">

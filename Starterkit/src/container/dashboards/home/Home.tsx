@@ -1,17 +1,6 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { DataType } from "../home-types";
-import {
-  fetchData,
-  generateHeatmapSeriesData,
-  generateScatterSeriesData,
-  paginateBarChartData,
-  getTotalBarChartPages,
-  handleBarChartPageChange,
-  handleDropdownClickAverages,
-  handleDropdownClickAwards
-} from "../helper_functions";
-import { useMediaQuery } from "react-responsive";
+import { fetchData } from "../helper_functions";
 import TableComponent from "./Statistics/TableComponent";
 import TreemapComponent from "./Statistics/TreemapComponent";
 import TopRecommendationsBarChartComponent from "./Statistics/TopRecommendationsBarChart";
@@ -47,15 +36,6 @@ const Home: FC<CrmProps> = () => {
     topCountries: []
   });
 
-  const pageSize = 5; // Number of entries per page for the chartaa
-  const [currentChartPage, setCurrentChartPage] = useState(1); // Current page for the chart
-  const [seriesDataForMovieBarChart, setSeriesDataForMovieBarChart] = useState<
-    any[]
-  >([]);
-
-  const [moviesAndSeriesSortCategory, setMoviesAndSeriesSortCategory] =
-    useState("IMDb");
-
   // User data state
   const [userData, setUserData] = useState({
     id: 0,
@@ -74,111 +54,6 @@ const Home: FC<CrmProps> = () => {
     }
   }, []);
 
-  // Updated useEffect to sort data based on selected category
-  useEffect(() => {
-    const sortedData =
-      moviesAndSeriesSortCategory === "IMDb"
-        ? data.sortedMoviesAndSeriesByIMDbRating
-        : moviesAndSeriesSortCategory === "Metascore"
-        ? data.sortedMoviesAndSeriesByMetascore
-        : data.sortedMoviesAndSeriesByRottenTomatoesRating;
-
-    const paginatedDataForMovieBarChart = paginateBarChartData(
-      sortedData,
-      currentChartPage,
-      pageSize,
-      moviesAndSeriesSortCategory
-    );
-    setSeriesDataForMovieBarChart(paginatedDataForMovieBarChart);
-  }, [currentChartPage, moviesAndSeriesSortCategory, data]);
-
-  // Generate the seriesData for heatmap
-  const seriesDataForHeatmap = generateHeatmapSeriesData(
-    data.genrePopularityOverTime
-  );
-  const seriesDataForScatterChart = generateScatterSeriesData(
-    data.sortedMoviesByProsperity
-  );
-
-  const awardOptions = [
-    {
-      label: "Общ брой спечелени награди",
-      value: data.totalAwards?.[0]?.total_awards_wins || 0
-    },
-    {
-      label: "Общ брой номинации за награди",
-      value: data.totalAwards?.[0]?.total_awards_nominations || 0
-    },
-    {
-      label: "Общ брой спечелени Оскари",
-      value: data.totalAwards?.[0]?.total_oscar_wins || 0
-    },
-    {
-      label: "Общ брой номинации за Оскари",
-      value: data.totalAwards?.[0]?.total_oscar_nominations || 0
-    }
-  ];
-
-  const averagesOptions = [
-    {
-      label: "Среден Боксофис",
-      value: data.averageBoxOfficeAndScores?.[0]?.average_box_office || 0
-    },
-    {
-      label: "Среден Метаскор",
-      value: data.averageBoxOfficeAndScores?.[0]?.average_metascore || 0
-    },
-    {
-      label: "Среден IMDb Рейтинг",
-      value: data.averageBoxOfficeAndScores?.[0]?.average_imdb_rating || 0
-    },
-    {
-      label: "Среден Rotten Tomatoes Рейтинг",
-      value: data.averageBoxOfficeAndScores?.[0]?.average_rotten_tomatoes || 0
-    }
-  ];
-  // Total number of pages for pagination
-  const totalChartPages = getTotalBarChartPages(
-    data.sortedMoviesAndSeriesByIMDbRating.length,
-    pageSize
-  );
-
-  const handlePrevChartPage = () => {
-    handleBarChartPageChange(
-      "prev",
-      currentChartPage,
-      pageSize,
-      data.sortedMoviesAndSeriesByIMDbRating.length,
-      setCurrentChartPage
-    );
-  };
-
-  const handleNextChartPage = () => {
-    handleBarChartPageChange(
-      "next",
-      currentChartPage,
-      pageSize,
-      data.sortedMoviesAndSeriesByIMDbRating.length,
-      setCurrentChartPage
-    );
-  };
-
-  const moviesAndSeriesCategoryDisplayNames: Record<
-    "IMDb" | "Metascore" | "RottenTomatoes",
-    string
-  > = {
-    IMDb: "IMDb Рейтинг",
-    Metascore: "Метаскор",
-    RottenTomatoes: "Rotten Tomatoes Рейтинг"
-  };
-
-  const is1803 = useMediaQuery({ query: "(max-width: 1803px)" });
-  const is1441 = useMediaQuery({ query: "(max-width: 1441px)" });
-  const is1461 = useMediaQuery({ query: "(max-width: 1461px)" });
-  const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
-  const is1675 = useMediaQuery({ query: "(max-width: 1675px)" });
-
-  console.log("seriesDataForScatterChart: ", seriesDataForScatterChart);
   return (
     <Fragment>
       <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">

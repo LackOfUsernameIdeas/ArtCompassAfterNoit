@@ -2,12 +2,9 @@ import { FC, Fragment, useEffect, useState } from "react";
 import { DataType, FilteredTableData } from "../../home-types";
 import {
   filterTableData,
-  getTotalBarChartPages,
-  handleBarChartPageChange,
   isActor,
   isDirector,
-  isWriter,
-  paginateBarChartData
+  isWriter
 } from "../../helper_functions";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
@@ -17,21 +14,15 @@ interface TableComponentProps {
 }
 
 const TableComponent: FC<TableComponentProps> = ({ data }) => {
-  console.log("data: ", data);
   const [prosperitySortCategory, setProsperitySortCategory] =
     useState("Directors");
 
-  const [topStatsSortCategory, setTopStatsSortCategory] = useState("Actors");
-  const [seriesDataForTopStatsBarChart, setSeriesDataForTopStatsChart] =
-    useState<any[]>([]);
   const [filteredTableData, setFilteredTableData] = useState<FilteredTableData>(
     []
   );
   const [currentTableItems, setCurrentTableItems] = useState<FilteredTableData>(
     []
   );
-  const pageSize = 5; // Number of entries per page for the charts
-  const [currentTopChartPage, setCurrentTopChartPage] = useState(1); // Current page for the chart
   const [currentTablePage, setCurrentTablePage] = useState(1);
   const itemsPerTablePage = 5;
 
@@ -46,11 +37,6 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
 
   const totalItems = filteredTableData.length;
   const totalTablePages = Math.ceil(totalItems / itemsPerTablePage);
-
-  const totalTopChartPages = getTotalBarChartPages(
-    data.topRecommendations.length,
-    pageSize
-  );
 
   // Watch for changes in `data` and update filtered table data accordingly
   useEffect(() => {
@@ -70,15 +56,6 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
     setCurrentTableItems(newItems);
   }, [currentTablePage, prosperitySortCategory, filteredTableData]);
 
-  useEffect(() => {
-    const paginatedDataForTopStats = paginateBarChartData(
-      data.topRecommendations,
-      currentTopChartPage,
-      pageSize
-    );
-    setSeriesDataForTopStatsChart(paginatedDataForTopStats);
-  }, [currentTopChartPage, topStatsSortCategory, data]);
-
   const handleCategoryChange = (category: string) => {
     // Switch the filtered data based on the selected category
     setFilteredTableData(data[`sorted${category}ByProsperity`]);
@@ -96,26 +73,6 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
     if (currentTablePage < totalTablePages) {
       setCurrentTablePage((prev) => prev + 1);
     }
-  };
-
-  const handlePrevTopChartPage = () => {
-    handleBarChartPageChange(
-      "prev",
-      currentTopChartPage,
-      pageSize,
-      data.topRecommendations.length,
-      setCurrentTopChartPage
-    );
-  };
-
-  const handleNextTopChartPage = () => {
-    handleBarChartPageChange(
-      "next",
-      currentTopChartPage,
-      pageSize,
-      data.topRecommendations.length,
-      setCurrentTopChartPage
-    );
   };
 
   const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
