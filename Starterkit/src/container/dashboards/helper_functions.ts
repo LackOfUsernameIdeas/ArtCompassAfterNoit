@@ -12,34 +12,6 @@ import {
   MovieData
 } from "./home-types";
 
-/**
- * Енумерация за роли в платформата.
- *
- * @enum {string}
- * @property {string} Director - Роля за режисьор.
- * @property {string} Actor - Роля за актьор.
- * @property {string} Writer - Роля за сценарист.
- */
-enum Roles {
-  Director = "director",
-  Actor = "actor",
-  Writer = "writer"
-}
-
-/**
- * Енумерация за категориите оценки на филмите.
- *
- * @enum {string}
- * @property {string} IMDb - IMDb рейтинг.
- * @property {string} Metascore - Metascore рейтинг.
- * @property {string} RottenTomatoes - Рейтинг от Rotten Tomatoes.
- */
-enum RatingCategory {
-  IMDb = "IMDb",
-  Metascore = "Metascore",
-  RottenTomatoes = "RottenTomatoes"
-}
-
 // ==============================
 // Type Guards
 // ==============================
@@ -127,13 +99,13 @@ export const filterTableData = (
 ): FilteredTableData => {
   let newItems: FilteredTableData = [];
   switch (prosperitySortCategory) {
-    case Roles.Director:
+    case "Directors":
       newItems = filteredTableData.filter((item) => "director" in item);
       break;
-    case Roles.Actor:
+    case "Actors":
       newItems = filteredTableData.filter((item) => "actor" in item);
       break;
-    case Roles.Writer:
+    case "Writers":
       newItems = filteredTableData.filter((item) => "writer" in item);
       break;
     default:
@@ -176,10 +148,9 @@ const sortByCategory = (
   category: string
 ): MovieData[] => {
   const sorters: { [key: string]: (a: MovieData, b: MovieData) => number } = {
-    [RatingCategory.IMDb]: (a, b) => b.imdbRating - a.imdbRating,
-    [RatingCategory.Metascore]: (a, b) => b.metascore - a.metascore,
-    [RatingCategory.RottenTomatoes]: (a, b) =>
-      b.rottenTomatoes - a.rottenTomatoes
+    IMDb: (a, b) => b.imdbRating - a.imdbRating,
+    Metascore: (a, b) => b.metascore - a.metascore,
+    RottenTomatoes: (a, b) => b.rottenTomatoes - a.rottenTomatoes
   };
   return sorters[category] ? seriesData.sort(sorters[category]) : seriesData;
 };
