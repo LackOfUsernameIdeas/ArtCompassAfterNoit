@@ -105,7 +105,7 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                     className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
                       category === prosperitySortCategory
                         ? "ti-btn-primary-full text-white"
-                        : "text-[#CC3333] bg-[#be1313] bg-opacity-10"
+                        : "text-[#E74581] dark:text-[#CC3333] bg-[#AF0B48] dark:bg-[#9A110A] bg-opacity-10 dark:bg-opacity-10"
                     } ${
                       index === 0
                         ? "rounded-l-md"

@@ -12,7 +12,7 @@ function App() {
   const [MyclassName, setMyClass] = useState("");
 
   const Bodyclickk = () => {
-    if (localStorage.getItem("ynexverticalstyles") == "icontext") {
+    if (localStorage.getItem("cineverticalstyles") == "icontext") {
       setMyClass("");
     }
     if (window.innerWidth > 992) {

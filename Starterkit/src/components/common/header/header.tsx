@@ -31,15 +31,15 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
         darkBg: "",
         inputBorder: ""
       });
-      localStorage.setItem("ynexlighttheme", "light");
-      localStorage.removeItem("ynexdarktheme");
-      localStorage.removeItem("ynexMenu");
-      localStorage.removeItem("ynexHeader");
+      localStorage.setItem("cinelighttheme", "light");
+      localStorage.removeItem("cinedarktheme");
+      localStorage.removeItem("cineMenu");
+      localStorage.removeItem("cineHeader");
     } else {
-      localStorage.setItem("ynexdarktheme", "dark");
-      localStorage.removeItem("ynexlighttheme");
-      localStorage.removeItem("ynexMenu");
-      localStorage.removeItem("ynexHeader");
+      localStorage.setItem("cinedarktheme", "dark");
+      localStorage.removeItem("cinelighttheme");
+      localStorage.removeItem("cineMenu");
+      localStorage.removeItem("cineHeader");
     }
   };
 
