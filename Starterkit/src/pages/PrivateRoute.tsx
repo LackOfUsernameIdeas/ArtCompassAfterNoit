@@ -42,12 +42,6 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
     };
 
     validateToken();
-
-    // Set an interval to validate the token periodically (every 2 hours)
-    const intervalId = setInterval(validateToken, 7200000); // 7200000ms = 2 hours
-
-    // Clean up the interval when the component unmounts
-    return () => clearInterval(intervalId);
   }, [token]);
 
   if (isValid === null) {

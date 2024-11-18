@@ -1,6 +1,6 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { DataType, UserData } from "./home-types";
-import { fetchData } from "./helper_functions";
+import { checkTokenValidity, fetchData } from "./helper_functions";
 import TableComponent from "./Statistics/TableComponent";
 import TreemapComponent from "./Statistics/TreemapComponent";
 import TopRecommendationsBarChartComponent from "./Statistics/TopRecommendationsBarChart";
@@ -9,6 +9,7 @@ import MoviesByProsperityBubbleChartComponent from "./Statistics/MoviesByProsper
 import GenrePopularityOverTimeComponent from "./Statistics/GenrePopularityOverTimeComponent";
 import MoviesAndSeriesByRatingsChartComponent from "./Statistics/MoviesAndSeriesByRatingsChartComponent";
 import WidgetCards from "./Statistics/WidgetCards";
+import { useNavigate } from "react-router-dom";
 
 interface CrmProps {}
 
@@ -43,6 +44,19 @@ const Home: FC<CrmProps> = () => {
     last_name: "", // Фамилия на потребителя
     email: "" // Имейл на потребителя
   });
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const validateToken = async () => {
+      const redirectUrl = await checkTokenValidity(); // Проверка на валидността на токена
+      if (redirectUrl) {
+        navigate(redirectUrl); // Пренасочване, ако токенът не е валиден
+      }
+    };
+
+    validateToken();
+  }, [navigate]); // Добавяне на navigate като зависимост
 
   // Извличане на данни за потребителя и статистики за платформата (комбинирано в едно useEffect)
   useEffect(() => {
