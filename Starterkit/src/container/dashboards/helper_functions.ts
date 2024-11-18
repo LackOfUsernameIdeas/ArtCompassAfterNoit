@@ -27,24 +27,27 @@ export const isWriter = (
 export const fetchData = async (
   token: string,
   setUserData: React.Dispatch<React.SetStateAction<any>>,
-  setData2: React.Dispatch<React.SetStateAction<any>>
+  setData: React.Dispatch<React.SetStateAction<any>>
 ) => {
   try {
-    const response = await fetch("http://localhost:5000/stats/platform/all", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/stats/platform/all`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
       }
-    });
+    );
     if (!response.ok) throw new Error("Failed to fetch data");
     const data = await response.json();
 
-    // Set user and platform data from the response
-    setUserData(data.user); // assuming 'user' is part of the returned data
-    setData2(data); // The platform data
+    setUserData(data.user);
+    setData(data);
   } catch (error) {
     console.error("Error fetching data:", error);
+    throw error;
   }
 };
 
@@ -172,21 +175,6 @@ export const handleTopStatsSortCategory = (
   setTopStatsSortCategory: React.Dispatch<React.SetStateAction<string>>
 ) => {
   setTopStatsSortCategory(category);
-};
-
-// Filter data based on name matching
-export const myFunction = (
-  idx: string,
-  Dealsstatistics: any[],
-  setData: React.Dispatch<React.SetStateAction<any[]>>
-) => {
-  let filteredData = Dealsstatistics.filter((data) => {
-    if (data.name[0] === " ") {
-      data.name = data.name.trim();
-    }
-    return data.name.toLowerCase().includes(idx.toLowerCase());
-  });
-  setData(filteredData);
 };
 
 export const generateHeatmapSeriesData = (
