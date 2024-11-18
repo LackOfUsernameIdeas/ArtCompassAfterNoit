@@ -85,13 +85,11 @@ export const fetchData = async (
 };
 
 /**
- * Проверява валидността на токена за удостоверяване.
+ * Проверява дали токенът, съхранен в localStorage или sessionStorage, е валиден,
+ * и връща URL за пренасочване, ако токенът не е валиден.
  *
  * @async
  * @function checkTokenValidity
- * @description Проверява дали токенът, съхранен в localStorage или sessionStorage, е валиден,
- * и връща URL за пренасочване, ако токенът не е валиден.
- *
  * @returns {Promise<string | null>} - Връща URL за пренасочване или null, ако токенът е валиден.
  * @throws {Error} - Хвърля грешка, ако заявката за проверка на токена е неуспешна.
  */
