@@ -1,5 +1,6 @@
-// helper_functions.ts
-
+// ==============================
+// Импортиране на типове и интерфейси
+// ==============================
 import {
   FilteredTableData,
   DirectorData,
@@ -11,24 +12,82 @@ import {
   MovieData
 } from "./home-types";
 
-// Type guards for filtering
-export const isDirector = (
-  item: DirectorData | ActorData | WriterData
-): item is DirectorData => "director" in item;
+/**
+ * Енумерация за роли в платформата.
+ *
+ * @enum {string}
+ * @property {string} Director - Роля за режисьор.
+ * @property {string} Actor - Роля за актьор.
+ * @property {string} Writer - Роля за сценарист.
+ */
+enum Roles {
+  Director = "director",
+  Actor = "actor",
+  Writer = "writer"
+}
 
-export const isActor = (
-  item: DirectorData | ActorData | WriterData
-): item is ActorData => "actor" in item;
+/**
+ * Енумерация за категориите оценки на филмите.
+ *
+ * @enum {string}
+ * @property {string} IMDb - IMDb рейтинг.
+ * @property {string} Metascore - Metascore рейтинг.
+ * @property {string} RottenTomatoes - Рейтинг от Rotten Tomatoes.
+ */
+enum RatingCategory {
+  IMDb = "IMDb",
+  Metascore = "Metascore",
+  RottenTomatoes = "RottenTomatoes"
+}
 
-export const isWriter = (
-  item: DirectorData | ActorData | WriterData
-): item is WriterData => "writer" in item;
+// ==============================
+// Type Guards
+// ==============================
 
+/**
+ * Проверява дали даден обект е от тип DirectorData.
+ *
+ * @param {any} item - Обектът за проверка.
+ * @returns {boolean} - Вярно, ако обектът е DirectorData.
+ */
+export const isDirector = (item: any): item is DirectorData =>
+  item && "director" in item;
+
+/**
+ * Проверява дали даден обект е от тип ActorData.
+ *
+ * @param {any} item - Обектът за проверка.
+ * @returns {boolean} - Вярно, ако обектът е ActorData.
+ */
+export const isActor = (item: any): item is ActorData =>
+  item && "actor" in item;
+
+/**
+ * Проверява дали даден обект е от тип WriterData.
+ *
+ * @param {any} item - Обектът за проверка.
+ * @returns {boolean} - Вярно, ако обектът е WriterData.
+ */
+export const isWriter = (item: any): item is WriterData =>
+  item && "writer" in item;
+
+// ==============================
+// Функции за работа с данни
+// ==============================
+
+/**
+ * Извлича данни от API за платформата и ги запазва в състоянието.
+ *
+ * @param {string} token - Токен за удостоверяване.
+ * @param {React.Dispatch<React.SetStateAction<any>>} setUserData - Функция за задаване на потребителски данни.
+ * @param {React.Dispatch<React.SetStateAction<any>>} setData - Функция за задаване на общи данни.
+ * @throws {Error} - Хвърля грешка, ако заявката е неуспешна.
+ */
 export const fetchData = async (
   token: string,
   setUserData: React.Dispatch<React.SetStateAction<any>>,
   setData: React.Dispatch<React.SetStateAction<any>>
-) => {
+): Promise<void> => {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_API_BASE_URL}/stats/platform/all`,
@@ -51,6 +110,15 @@ export const fetchData = async (
   }
 };
 
+/**
+ * Филтрира данни за таблица според категорията и връща определена страница.
+ *
+ * @param {FilteredTableData} filteredTableData - Данни за филтриране.
+ * @param {string} prosperitySortCategory - Категория за сортиране.
+ * @param {number} currentTablePage - Номер на текущата страница.
+ * @param {number} itemsPerTablePage - Брой елементи на страница.
+ * @returns {FilteredTableData} - Филтрирани и странирани данни.
+ */
 export const filterTableData = (
   filteredTableData: FilteredTableData,
   prosperitySortCategory: string,
@@ -59,13 +127,13 @@ export const filterTableData = (
 ): FilteredTableData => {
   let newItems: FilteredTableData = [];
   switch (prosperitySortCategory) {
-    case "Directors":
+    case Roles.Director:
       newItems = filteredTableData.filter((item) => "director" in item);
       break;
-    case "Actors":
+    case Roles.Actor:
       newItems = filteredTableData.filter((item) => "actor" in item);
       break;
-    case "Writers":
+    case Roles.Writer:
       newItems = filteredTableData.filter((item) => "writer" in item);
       break;
     default:
@@ -77,6 +145,14 @@ export const filterTableData = (
   );
 };
 
+/**
+ * Пагинира данни за таблица.
+ *
+ * @param {FilteredTableData} filteredTableData - Филтрираните данни.
+ * @param {number} currentTablePage - Текуща страница.
+ * @param {number} itemsPerTablePage - Брой елементи на страница.
+ * @returns {FilteredTableData} - Пагинирани данни.
+ */
 export const paginateData = (
   filteredTableData: FilteredTableData,
   currentTablePage: number,
@@ -88,18 +164,35 @@ export const paginateData = (
   );
 };
 
+/**
+ * Сортира данни за филми/сериали по категория.
+ *
+ * @param {MovieData[]} seriesData - Списък с данни за филми/сериали.
+ * @param {string} category - Категория за сортиране (IMDb, Metascore, Rotten Tomatoes).
+ * @returns {MovieData[]} - Сортирани данни.
+ */
 const sortByCategory = (
   seriesData: MovieData[],
   category: string
 ): MovieData[] => {
-  return category === "IMDb"
-    ? seriesData.sort((a, b) => b.imdbRating - a.imdbRating)
-    : category === "Metascore"
-    ? seriesData.sort((a, b) => b.metascore - a.metascore)
-    : seriesData.sort((a, b) => b.rottenTomatoes - a.rottenTomatoes);
+  const sorters: { [key: string]: (a: MovieData, b: MovieData) => number } = {
+    [RatingCategory.IMDb]: (a, b) => b.imdbRating - a.imdbRating,
+    [RatingCategory.Metascore]: (a, b) => b.metascore - a.metascore,
+    [RatingCategory.RottenTomatoes]: (a, b) =>
+      b.rottenTomatoes - a.rottenTomatoes
+  };
+  return sorters[category] ? seriesData.sort(sorters[category]) : seriesData;
 };
 
-// Function to paginate data for the bar chart after sorting by rating
+/**
+ * Пагинира сортирани данни за бар-чарт.
+ *
+ * @param {MovieData[]} seriesData - Списък с данни за филми/сериали.
+ * @param {number} currentPage - Текуща страница.
+ * @param {number} pageSize - Брой елементи на страница.
+ * @param {string} [category] - Категория за сортиране.
+ * @returns {MovieData[]} - Пагинирани и сортирани данни.
+ */
 export const paginateBarChartData = (
   seriesData: MovieData[],
   currentPage: number,
@@ -109,14 +202,19 @@ export const paginateBarChartData = (
   const sortedData = category
     ? sortByCategory(seriesData, category)
     : seriesData;
-
-  // Now paginate the sorted data
   const start = (currentPage - 1) * pageSize;
-  const end = start + pageSize;
-  return sortedData.slice(start, end);
+  return sortedData.slice(start, start + pageSize);
 };
 
-// Function to handle page change, keeping the logic for next/prev buttons intact
+/**
+ * Променя текущата страница на бар-чарт при навигация.
+ *
+ * @param {"next" | "prev"} direction - Посока (next или prev).
+ * @param {number} currentPage - Текуща страница.
+ * @param {number} pageSize - Брой елементи на страница.
+ * @param {number} totalItems - Общ брой елементи.
+ * @param {React.Dispatch<React.SetStateAction<number>>} setCurrentPage - Функция за задаване на текуща страница.
+ */
 export const handleBarChartPageChange = (
   direction: "next" | "prev",
   currentPage: number,
@@ -125,27 +223,136 @@ export const handleBarChartPageChange = (
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>
 ) => {
   const totalPages = Math.ceil(totalItems / pageSize);
-  let newPage = currentPage;
-
-  if (direction === "next" && newPage < totalPages) {
-    // Ensure you don't exceed totalPages
-    newPage++;
-  } else if (direction === "prev" && newPage > 1) {
-    // Ensure you don't go below 1
-    newPage--;
-  }
-
+  const newPage =
+    direction === "next"
+      ? Math.min(currentPage + 1, totalPages)
+      : Math.max(currentPage - 1, 1);
   setCurrentPage(newPage);
 };
 
-// Helper function to get the total pages for the bar chart
+/**
+ * Изчислява общия брой страници за бар-чарт.
+ *
+ * @param {number} totalItems - Общ брой елементи.
+ * @param {number} pageSize - Брой елементи на страница.
+ * @returns {number} - Общ брой страници.
+ */
 export const getTotalBarChartPages = (
   totalItems: number,
   pageSize: number
-): number => {
-  return Math.ceil(totalItems / pageSize);
+): number => Math.ceil(totalItems / pageSize);
+
+/**
+ * Генерира данни за heatmap.
+ *
+ * @param {GenrePopularityData} data - Данни за популярност на жанровете.
+ * @returns {HeatmapData} - Данни за heatmap.
+ */
+export const generateHeatmapSeriesData = (
+  data: GenrePopularityData
+): HeatmapData => {
+  const years = Object.keys(data);
+  const genreNames = new Set<string>();
+
+  years.forEach((year) => {
+    Object.keys(data[year]).forEach((genreKey) =>
+      genreNames.add(data[year][genreKey].genre_bg)
+    );
+  });
+
+  return [...genreNames].map((genreBg) => ({
+    name: genreBg,
+    data: years.map((year) => {
+      const genre = Object.values(data[year]).find(
+        (item) => item.genre_bg === genreBg
+      );
+      return { x: year, y: genre ? genre.genre_count : 0 };
+    })
+  }));
 };
 
+/**
+ * Генерира данни за scatter plot.
+ *
+ * @param {MovieProsperityData[]} movies - Данни за просперитет на филми.
+ * @returns {MovieData[]} - Данни за scatter plot.
+ */
+export const generateScatterSeriesData = (
+  movies: MovieProsperityData[]
+): MovieData[] =>
+  movies.map((movie) => ({
+    title: movie.title_bg,
+    title_bg: movie.title_bg,
+    title_en: movie.title_en,
+    boxOffice: parseBoxOffice(movie.total_box_office),
+    imdbRating: parseFloat(movie.imdbRating),
+    metascore: parseFloat(movie.metascore),
+    rottenTomatoes: parseFloat(movie.rotten_tomatoes)
+  }));
+
+/**
+ * Преобразува стойност на приходи в число.
+ *
+ * @param {string | number} value - Стойност на приходи.
+ * @returns {number} - Числова стойност.
+ */
+export function parseBoxOffice(value: string | number): number {
+  return typeof value === "string"
+    ? parseFloat(value.replace(/[\$,]/g, ""))
+    : value;
+}
+
+// ==============================
+// Handle функции
+// ==============================
+
+/**
+ * Задава категория за сортиране на таблицата за просперитет.
+ *
+ * @param {string} category - Избраната категория.
+ * @param {React.Dispatch<React.SetStateAction<string>>} setProsperitySortCategory - Функция за задаване на категорията.
+ */
+export const handleProsperityTableClick = (
+  category: string,
+  setProsperitySortCategory: React.Dispatch<React.SetStateAction<string>>
+) => {
+  setProsperitySortCategory(category);
+};
+
+/**
+ * Задава категория за сортиране на секция "Филми и сериали".
+ *
+ * @param {string} category - Избраната категория.
+ * @param {React.Dispatch<React.SetStateAction<string>>} setMoviesAndSeriesSortCategory - Функция за задаване на категорията.
+ */
+export const handleMoviesAndSeriesSortCategory = (
+  category: string,
+  setMoviesAndSeriesSortCategory: React.Dispatch<React.SetStateAction<string>>
+) => {
+  setMoviesAndSeriesSortCategory(category);
+};
+
+/**
+ * Задава категория за сортиране на топ статистики.
+ *
+ * @param {string} category - Избраната категория.
+ * @param {React.Dispatch<React.SetStateAction<string>>} setTopStatsSortCategory - Функция за задаване на категорията.
+ */
+export const handleTopStatsSortCategory = (
+  category: string,
+  setTopStatsSortCategory: React.Dispatch<React.SetStateAction<string>>
+) => {
+  setTopStatsSortCategory(category);
+};
+
+/**
+ * Обработва избор от dropdown меню.
+ *
+ * @param {React.Dispatch<React.SetStateAction<string>>} setName - Функция за задаване на име.
+ * @param {React.Dispatch<React.SetStateAction<number>>} setValue - Функция за задаване на стойност.
+ * @param {string} name - Избраното име.
+ * @param {number} value - Избраната стойност.
+ */
 export const handleDropdownClick = (
   setName: React.Dispatch<React.SetStateAction<string>>,
   setValue: React.Dispatch<React.SetStateAction<number>>,
@@ -155,96 +362,3 @@ export const handleDropdownClick = (
   setName(name);
   setValue(value);
 };
-
-export const handleProsperityTableClick = (
-  category: string,
-  setProsperitySortCategory: React.Dispatch<React.SetStateAction<string>>
-) => {
-  setProsperitySortCategory(category);
-};
-
-export const handleMoviesAndSeriesSortCategory = (
-  category: string,
-  setMoviesAndSeriesSortCategory: React.Dispatch<React.SetStateAction<string>>
-) => {
-  setMoviesAndSeriesSortCategory(category);
-};
-
-export const handleTopStatsSortCategory = (
-  category: string,
-  setTopStatsSortCategory: React.Dispatch<React.SetStateAction<string>>
-) => {
-  setTopStatsSortCategory(category);
-};
-
-export const generateHeatmapSeriesData = (
-  data: GenrePopularityData
-): HeatmapData => {
-  const years = Object.keys(data); // Get the list of years
-  const genreNames = new Set<string>(); // To store unique genre names
-
-  // Collect all unique genre names across all years
-  years.forEach((year) => {
-    const genresInYear = Object.keys(data[year]);
-
-    genresInYear.forEach((genreKey) => {
-      const genreData = data[year][genreKey];
-      genreNames.add(genreData.genre_bg);
-    });
-  });
-
-  // Create the series data for each genre (using genre_bg as the genre name)
-  const series = [...genreNames].map((genreBg) => {
-    const seriesData = years.map((year) => {
-      const genreData = data[year];
-      const genre = Object.values(genreData).find(
-        (item) => item.genre_bg === genreBg
-      );
-
-      return {
-        x: year,
-        y: genre ? genre.genre_count : 0
-      };
-    });
-
-    return {
-      name: genreBg,
-      data: seriesData
-    };
-  });
-
-  return series;
-};
-
-export const generateScatterSeriesData = (
-  movies: MovieProsperityData[]
-): MovieData[] => {
-  return movies.map((movie) => {
-    // Parse IMDb rating
-    const imdbRating = parseFloat(movie.imdbRating);
-    const metascore = parseFloat(movie.metascore);
-    const rottenTomatoes = parseFloat(movie.rotten_tomatoes);
-
-    // Clean the box office string and parse it as a number
-    const boxOffice = parseInt(
-      movie.total_box_office.replace(/[^0-9.-]+/g, "") // Remove non-numeric characters (e.g., $, commas)
-    );
-
-    return {
-      title: movie.title_bg,
-      title_bg: movie.title_bg,
-      title_en: movie.title_en,
-      boxOffice: boxOffice,
-      imdbRating: imdbRating,
-      metascore: metascore,
-      rottenTomatoes: rottenTomatoes
-    };
-  });
-};
-
-export function parseBoxOffice(value: string | number): number {
-  if (typeof value === "string") {
-    return parseFloat(value.replace(/[\$,]/g, ""));
-  }
-  return value;
-}
