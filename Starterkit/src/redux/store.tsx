@@ -1,14 +1,13 @@
 import reducer from "./reducer";
 import thunk from "redux-thunk";
-import {  configureStore } from "@reduxjs/toolkit";
-import { Middleware } from "redux"; // Import Middleware type
+import { configureStore } from "@reduxjs/toolkit";
+import { Middleware } from "redux";
 
-const middleware: Middleware[] = [thunk]; // Define an array of middleware
+const middleware: Middleware[] = [thunk];
 
 const store = configureStore({
   reducer: reducer,
-  middleware: middleware, // Pass the middleware array
+  middleware: middleware
 });
 
 export default store;
-
