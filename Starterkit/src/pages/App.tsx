@@ -1,5 +1,4 @@
 import { Fragment, useEffect, useState } from "react";
-import Loader from "../components/common/loader/loader";
 import Footer from "../components/common/footer/footer";
 import Sidebar from "../components/common/sidebar/sidebar";
 import Switcher from "../components/common/switcher/switcher";
@@ -29,7 +28,6 @@ function App() {
   }, []);
   return (
     <Fragment>
-      <Loader />
       <Provider store={store}>
         <HelmetProvider>
           <Helmet
