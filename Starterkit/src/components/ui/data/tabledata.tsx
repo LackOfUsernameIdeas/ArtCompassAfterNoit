@@ -37,7 +37,7 @@ export const tabledata1 = `<div className="table-responsive">
 </tr>
 </tbody>
 </table>
-</div>`
+</div>`;
 
 export const tabledata2 = `<div className="table-responsive">
 <table className="table whitespace-nowrap table-bordered min-w-full">
@@ -69,7 +69,7 @@ key={Math.random()}><th scope="row">
   </i></Link></div></td></tr>))}
   </tbody>
   </table>
-  </div>`
+  </div>`;
 
 export const tabledata3 = `<div className="box-body">
 <div className="table-responsive">
@@ -124,7 +124,7 @@ Booked</span>
  </tbody>
  </table>
  </div>
- </div>`
+ </div>`;
 
 export const tabledata4 = `<div className="box-body">
 <div className="table-responsive">
@@ -181,7 +181,7 @@ border-success/10">
 </tbody>
 </table>
 </div>
-</div>`
+</div>`;
 
 export const tabledata5 = `<div className="box-body">
 <div className="table-responsive">
@@ -231,7 +231,7 @@ table-bordered table-bordered-warning min-w-full">
   </tbody>
   </table>
   </div>
-  </div>`
+  </div>`;
 
 export const tabledata6 = `<div className="table-responsive">
 <table className="table whitespace-nowrap table-borderless 
@@ -273,7 +273,7 @@ text-white">Pending</span></td>
 </tr>
 </tbody>
 </table>
-</div>`
+</div>`;
 
 export const tabledata7 = `<div className="table-responsive">
 <table className="table whitespace-nowrap min-w-full ">
@@ -312,7 +312,7 @@ className="text-success">14.42%<iclassName="ri-arrow-up-fill ms-1">
 </i></Link></td><td>192/2456</td></tr>
 </tbody>
 </table>
-</div>`
+</div>`;
 
 export const tabledata8 = `<div className="table-responsive">
 <table className="table whitespace-nowrap ti-striped-table min-w-full">
@@ -331,7 +331,7 @@ type="button" className="ti-btn !py-1 !px-2 !text-[0.75rem]
  </i>Download</button></td></tr>))}
  </tbody>
  </table>
- </div>`
+ </div>`;
 
 export const tabledata9 = `<div className="table-responsive">
 <table className="table whitespace-nowrap table-striped-columns
@@ -348,7 +348,7 @@ ti-btn-danger-full btn-wave"><i className="ri-download-2-line
 align-middle me-2 inline-block"></i>Delete</button></td>
 </tr>))}</tbody>
 </table>
-</div>`
+</div>`;
 
 export const tabledata10 = `<div className="table-responsive">
 <table className="table whitespace-nowrap table-primary
@@ -368,7 +368,7 @@ export const tabledata10 = `<div className="table-responsive">
  </tr>))}
  </tbody>
  </table>
- </div>`
+ </div>`;
 
 export const tabledata11 = `<div className="table-responsive">
 <table className="table whitespace-nowrap table-secondary
@@ -385,7 +385,7 @@ export const tabledata11 = `<div className="table-responsive">
  {idx.text1}</td><td>{idx.text2}</td><td>
  {idx.text3}</td></tr>))}</tbody>
  </table>
-</div>`
+</div>`;
 
 export const tabledata12 = `  <div className="table-responsive">
 <table className="table whitespace-nowrap table-warning 
@@ -400,7 +400,7 @@ className="text-start">{idx.id}</th><td>{idx.text1}
 </td><td>{idx.text2}</td><td>{idx.text3}</td></tr>))}
 </tbody>
 </table>
-</div>`
+</div>`;
 
 export const tabledata13 = `<div className="table-responsive">
 <table className="table whitespace-nowrap table-danger  
@@ -417,7 +417,7 @@ export const tabledata13 = `<div className="table-responsive">
  </tr>))}
  </tbody>
  </table>
- </div>`
+ </div>`;
 
 export const tabledata14 = `<div className="table-responsive">
 <table className="table whitespace-nowrap table-dark 
@@ -435,7 +435,7 @@ className="text-start">#</th>
      {idx.text1}</td><td>{idx.text2}</td><td>
      {idx.text3}</td></tr>))}</tbody>
      </table>
-</div>`
+</div>`;
 
 export const tabledata15 = `<div className="table-responsive">
 <table className="table whitespace-nowrap table-success 
@@ -450,7 +450,7 @@ table-striped  !rounded-none min-w-full">
 className="text-start">{idx.id}</th><td>
 {idx.text1}</td><td>{idx.text2}</td><td>
 {idx.text3}</td></tr>))}</tbody></table>
-</div>`
+</div>`;
 
 export const tabledata16 = `<div className="table-responsive">
 <table className="table whitespace-nowrap table-hover min-w-full 
@@ -570,7 +570,7 @@ aria-valuenow="52" aria-valuemin="0"aria-valuemax="100">
 </tr>
 </tbody>
 </table>
-</div>`
+</div>`;
 
 export const tabledata17 = `<div className="table-responsive">
 <table className="table whitespace-nowrap ti-striped-table
@@ -644,7 +644,7 @@ export const tabledata17 = `<div className="table-responsive">
  </tr>
  </tbody>
  </table>
- </div>`
+ </div>`;
 
 export const tabledata18 = `<div className="table-responsive">
 <table className="table whitespace-nowrap min-w-full">
@@ -729,7 +729,7 @@ className="ti-btn ti-btn-sm ti-btn-info !rounded-full">
   </tr>
   </tbody>
   </table>
-  </div>`
+  </div>`;
 
 export const tabledata19 = `<div className="table-responsive">
 <table className="table whitespace-nowrap min-w-full">
@@ -749,7 +749,7 @@ className={&#96;ti-btn !py-1 !px-2 !text-[0.75rem] ti-btn-&#36;{idx.color}&#96;}
 </tr>))}
 </tbody>
 </table>
-</div>`
+</div>`;
 
 export const tabledata20 = `<div className="table-responsive">
 <table className="table whitespace-nowrap min-w-full">
@@ -771,7 +771,7 @@ className={&#96;ti-btn !py-1 !px-2 !text-[0.75rem] ti-btn-&#36;{idx.color}&#96;}
 </td></tr>))}
 </tbody>
 </table>
-</div>`
+</div>`;
 
 export const tabledata21 = `<div className="table-responsive">
 <table className="table whitespace-nowrap min-w-full">
@@ -793,7 +793,7 @@ className={&#96;ti-btn !py-1 !px-2 !text-[0.75rem] ti-btn-&#36;{idx.color}&#96;}
 {idx.btn}</button></td></tr>))}
 </tbody>
 </table>
-</div>`
+</div>`;
 
 export const tabledata22 = `<div className="table-responsive">
 <table className="table whitespace-nowrap min-w-full">
@@ -814,7 +814,7 @@ className={&#96;ti-btn !py-1 !px-2 !text-[0.75rem] ti-btn-&#36;{idx.color}&#96;}
 {idx.btn}</button></td></tr>))}
 </tbody>
 </table>
-</div>`
+</div>`;
 
 export const tabledata23 = `<div className="table-responsive">
 <table className="table whitespace-nowrap min-w-full">
@@ -835,7 +835,7 @@ className={&#96;ti-btn !py-1 !px-2 !text-[0.75rem] ti-btn-&#36;{idx.color}&#96;}
 </tr>))}
 </tbody>
 </table>
-</div>`
+</div>`;
 
 export const tabledata24 = `<div className="table-responsive">
 <table className="table whitespace-nowrap min-w-full">
@@ -873,7 +873,7 @@ export const tabledata24 = `<div className="table-responsive">
 </tr>
 </tfoot>
 </table>
-</div>`
+</div>`;
 
 export const tabledata25 = `<div className="table-responsive">
 <table className="table whitespace-nowrap 
@@ -910,7 +910,7 @@ min-w-full caption-bottom">
 </tr>
 </tbody>
 </table>
-</div>`
+</div>`;
 
 export const tabledata26 = `<div className="table-responsive">
 <table className="table whitespace-nowrap caption-top">
@@ -931,7 +931,7 @@ export const tabledata26 = `<div className="table-responsive">
 </tr>
 </tbody>
 </table>
-</div>`
+</div>`;
 
 export const tabledata27 = `<div className="table-responsive">
 <table className="table whitespace-nowrap min-w-full">
@@ -970,7 +970,7 @@ Successful</span>
 Pending</span></td></tr>
 </tbody>
 </table>
-</div>`
+</div>`;
 
 export const tabledata28 = `<div className="table-responsive">
 <table className="table whitespace-nowrap table-sm min-w-full">
@@ -1080,7 +1080,7 @@ id="checkebox-sm4" /><label className="form-check-label"
  </tr>
  </tbody>
  </table>
- </div>`
+ </div>`;
 
 export const tabledata29 = `<div className="table-responsive">
 <table className="table whitespace-nowrap min-w-full">
@@ -1098,7 +1098,7 @@ export const tabledata29 = `<div className="table-responsive">
     </td><td>{idx.quantity}</td><td>{idx.price}</td></tr>))}
     </tbody>
     </table>
-    </div>`
+    </div>`;
 
 export const tabledata30 = `<div className="table-responsive">
 <table className="table whitespace-nowrap table-striped 
@@ -1152,7 +1152,7 @@ table-bordered min-w-full"><thead><tr className="border-b
  </tr>
  </tbody>
  </table>
- </div>`
+ </div>`;
 
 export const tabledata31 = `<div className="table-responsive">
 <table className="table whitespace-nowrap min-w-full">
@@ -1323,7 +1323,7 @@ id="checkboxNoLabel13" value="" aria-label="..." /></th>
     </tr>
     </tbody>
     </table>
-    </div>`
+    </div>`;
 
 export const tabledata32 = `<div className="table-responsive">
 <table className="table align-middle min-w-full">
@@ -1355,4 +1355,4 @@ fromthetable</td><td className="align-top">This cell is aligned to the top.
  </tr>
  </tbody>
  </table>
- </div>`
+ </div>`;

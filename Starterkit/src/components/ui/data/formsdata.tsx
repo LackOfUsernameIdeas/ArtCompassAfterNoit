@@ -196,7 +196,7 @@ export const input5 = `  <form>
         me out</label>
 </div>
 <button type="submit" className="ti-btn ti-btn-primary-full">Submit</button>
-</form>`
+</form>`;
 export const input6 = `<label <label htmlFor="inputPassword5" className="form-label">Password</label>
 <input type="password" id="inputPassword5" className="form-control"
     aria-describedby="passwordHelpBlock">
@@ -205,7 +205,7 @@ export const input6 = `<label <label htmlFor="inputPassword5" className="form-la
     numbers,
     and
     must not contain spaces, special characters, or emoji.
-</div>`
+</div>`;
 export const input7 = `<div className="sm:grid grid-cols-12 gap-4 items-center">
 <div className="xxl:col-span-1 col-span-2">
     <label htmlFor="inputPassword6" className="col-form-label">Password</label>
@@ -219,7 +219,7 @@ export const input7 = `<div className="sm:grid grid-cols-12 gap-4 items-center">
         Must be 8-20 characters long.
     </span>
 </div>
-</div>`
+</div>`;
 export const input8 = `<form>
 <fieldset disabled>
     <legend className="text-2xl">Disabled fieldset example</legend>
@@ -247,8 +247,7 @@ export const input8 = `<form>
     </div>
     <button type="submit" className="ti-btn ti-btn-primary-full opacity-[0.6]">Submit</button>
 </fieldset>
-</form>>`
-
+</form>>`;
 
 //Checks & Radios
 
@@ -264,7 +263,7 @@ export const radio1 = `<div className="form-check">
 <label className="form-check-label" htmlFor="flexCheckChecked">
     Checked checkbox
 </label>
-</div>`
+</div>`;
 
 export const radio2 = `<div className="form-check">
 <input className="form-check-input" type="checkbox" defaultValue="" id="flexCheckDisabled"
@@ -279,7 +278,7 @@ export const radio2 = `<div className="form-check">
 <label className="form-check-label" htmlFor="flexCheckCheckedDisabled">
     Disabled checked checkbox
 </label>
-</div>`
+</div>`;
 
 export const radio3 = `<div className="form-check">
 <input className="form-check-input" type="radio" name="flexRadioDefault"
@@ -294,7 +293,7 @@ export const radio3 = `<div className="form-check">
 <label className="form-check-label" htmlFor="flexRadioDefault2">
     Default checked radio
 </label>
-</div>`
+</div>`;
 
 export const radio4 = `<div className="form-check">
 <input className="form-check-input" type="radio" name="flexRadioDisabled"
@@ -309,7 +308,7 @@ export const radio4 = `<div className="form-check">
 <label className="form-check-label" htmlFor="flexRadioCheckedDisabled">
     Disabled checked radio
 </label>
-</div>`
+</div>`;
 
 export const radio5 = `<div className="form-check">
 <input className="form-check-input" type="checkbox" defaultValue="" id="defaultCheck1">
@@ -337,9 +336,9 @@ export const radio5 = `<div className="form-check">
 <label className="form-check-label" htmlFor="exampleRadios3">
     Disabled radio
 </label>
-</div>`
+</div>`;
 
-export const radio6 =`<div className="form-check form-switch">
+export const radio6 = `<div className="form-check form-switch">
 <input className="form-check-input" type="checkbox" role="switch"
     id="flexSwitchCheckDefault">
 <label className="form-check-label" htmlFor="flexSwitchCheckDefault">Default switch
@@ -382,7 +381,7 @@ export const radio7 = `<div className="form-check">
 <label className="form-check-label" htmlFor="checkebox-lg">
     Large
 </label>
-</div>`
+</div>`;
 
 export const radio8 = `<div className="form-check">
 <input className="form-check-input" type="radio" name="Radio" id="Radio-sm">
@@ -401,7 +400,7 @@ export const radio8 = `<div className="form-check">
 <label className="form-check-label" htmlFor="Radio-lg">
     Large
 </label>
-</div>`
+</div>`;
 
 export const radio9 = `<div className="form-check form-check-inline">
 <input className="form-check-input" type="checkbox" id="inlineCheckbox1"
@@ -432,7 +431,7 @@ export const radio9 = `<div className="form-check form-check-inline">
 <input className="form-check-input" type="radio" name="inlineRadioOptions"
     id="inlineRadio3" defaultValue="option3" disabled>
 <label className="form-check-label" htmlFor="inlineRadio3">3 (disabled)</label>
-</div>`
+</div>`;
 
 export const radio10 = `<div className="form-check form-check-reverse mb-4">
 <input className="form-check-input" type="checkbox" defaultValue=""
@@ -455,7 +454,7 @@ export const radio10 = `<div className="form-check form-check-reverse mb-4">
 <label className="form-check-label" htmlFor="flexSwitchCheckReverse">Reverse
     switch
     checkbox input</label>
-</div>`
+</div>`;
 
 export const radio11 = `<div className="grid grid-cols-12 gap-y-1">
 <div className="xl:col-span-4 col-span-12">
@@ -498,7 +497,7 @@ export const radio11 = `<div className="grid grid-cols-12 gap-y-1">
         <span></span>
     </div>
 </div>
-</div>`
+</div>`;
 
 export const radio12 = `<div className="grid grid-cols-12 gap-y-1">
 <div className="xl:col-span-4 col-span-12">
@@ -549,7 +548,7 @@ export const radio12 = `<div className="grid grid-cols-12 gap-y-1">
         <label htmlFor="toggleswitchDark" className="label-dark"></label><span className="ms-3">Dark</span>
     </div>
 </div>
-</div>`
+</div>`;
 
 export const radio13 = `<div className="flex items-center flex-wrap mb-4">
 <div className=""> <p className="text-muted m-0">Small size toggle switch <code>toggle-sm</code></p></div>
@@ -568,7 +567,7 @@ export const radio13 = `<div className="flex items-center flex-wrap mb-4">
 <div className="toggle toggle-lg toggle-success on mb-0">
     <span></span>
 </div>
-</div>`
+</div>`;
 
 export const radio14 = `<div className="flex items-center flex-wrap mb-4">
 <div className=""><p className="text-muted m-0">Small size toggle switch <code>toggle-sm</code></p></div>
@@ -590,22 +589,23 @@ export const radio14 = `<div className="flex items-center flex-wrap mb-4">
     <input id="size-lg" name="toggleswitchsize" type="checkbox" defaultChecked>
     <label htmlFor="size-lg" className="label-success mb-2"></label>
 </div>
-</div>`
+</div>`;
 
 //Range Sliders
 
-export const range1 = `<input type="range" className="form-range" id="customRange1">`
+export const range1 = `<input type="range" className="form-range" id="customRange1">`;
 
-export const range2 = `<input type="range" className="form-range" id="disabledRange" disabled>`
+export const range2 = `<input type="range" className="form-range" id="disabledRange" disabled>`;
 
-export const range3 = ` <input type="range" className="form-range" min="0" max="5" id="customRange2">`
+export const range3 = ` <input type="range" className="form-range" min="0" max="5" id="customRange2">`;
 
-export const range4 ='<input type="range" className="form-range" min="0" max="5" step="0.5" id="customRange3">';
+export const range4 =
+  '<input type="range" className="form-range" min="0" max="5" step="0.5" id="customRange3">';
 
 //Color Picker
 
 export const color1 = `<input type="color" className="form-control form-control-color border-0"
-id="exampleColorInput" defaultValue="#136ad0" title="Choose your color">`
+id="exampleColorInput" defaultValue="#136ad0" title="Choose your color">`;
 
 // Form-Layouts
 
@@ -625,7 +625,7 @@ export const layout1 = `  <div className="mb-4">
     Accept Policy
 </label>
 </div>
-<button className="ti-btn ti-btn-primary-full" type="submit">Submit</button>`
+<button className="ti-btn ti-btn-primary-full" type="submit">Submit</button>`;
 
 export const layout2 = ` <form>
 <div className="grid grid-cols-12 mb-4">
@@ -671,7 +671,7 @@ export const layout2 = ` <form>
     </div>
 </div>
 <button type="submit" className="ti-btn ti-btn-primary-full">Sign in</button>
-</form>`
+</form>`;
 
 export const layout3 = `  <div className="mb-4">
 <label htmlFor="form-text1" className="form-label text-[.875rem] text-black">Enter name</label>
@@ -695,7 +695,7 @@ export const layout3 = `  <div className="mb-4">
     Accept Policy
 </label>
 </div>
-<button className="ti-btn ti-btn-primary-full !mb-0 mt-4" type="submit">Submit</button>`
+<button className="ti-btn ti-btn-primary-full !mb-0 mt-4" type="submit">Submit</button>`;
 
 export const layout4 = `<form>
 <div className="grid grid-cols-12 mb-4">
@@ -801,7 +801,7 @@ export const layout4 = `<form>
                     </div>
                 </div>
                 <button type="submit" className="ti-btn ti-btn-primary-full">Sign in</button>
-            </form>`
+            </form>`;
 
 export const layout5 = ` <form className="sm:grid grid-cols-4 gap-4 items-center">
 <div className="mb-4 sm:mb-0 input-group">
@@ -823,7 +823,7 @@ export const layout5 = ` <form className="sm:grid grid-cols-4 gap-4 items-center
     </label>
 </div>
 <button type="submit" className="ti-btn ti-btn-primary-full !mb-0 mt-4">Submit</button>
-</form>`
+</form>`;
 
 export const layout6 = ` <div className="grid grid-cols-12 gap-4">
 <div className="sm:col-span-7 col-span-12">
@@ -838,7 +838,7 @@ export const layout6 = ` <div className="grid grid-cols-12 gap-4">
     <input type="text" className="form-control" placeholder="Zip"
         aria-label="Zip">
 </div>
-</div>`
+</div>`;
 
 export const layout7 = `  <div className="mb-4">
 <label htmlFor="formGroupExampleInput" className="form-label">Example label</label>
@@ -849,7 +849,7 @@ export const layout7 = `  <div className="mb-4">
 <label htmlFor="formGroupExampleInput2" className="form-label">Another label</label>
 <input type="text" className="form-control" id="formGroupExampleInput2"
     placeholder="Another input placeholder">
-</div>`
+</div>`;
 
 export const layout8 = ` <div className="grid grid-cols-12 mb-4">
 <label htmlFor="colFormLabelSm"
@@ -877,7 +877,7 @@ export const layout8 = ` <div className="grid grid-cols-12 mb-4">
 Auto sizing
 Show Code
 Jane Doe
-`
+`;
 
 export const layout9 = ` <form className="sm:grid grid-cols-12 block gap-y-2 gap-x-4 items-center mb-4">
 <div className="col-span-12 mb-4 sm:mb-0">
@@ -957,7 +957,7 @@ classes.</span>
 <div className="sm:col-span-3 col-span-12">
     <button type="submit" className="ti-btn ti-btn-primary-full">Submit</button>
 </div>
-</form>`
+</form>`;
 
 export const layout10 = `<div className="grid grid-cols-12 sm:gap-x-6 sm:gap-y-4">
 <div className="md:col-span-6 col-span-12 mb-4">
@@ -1062,7 +1062,7 @@ export const layout10 = `<div className="grid grid-cols-12 sm:gap-x-6 sm:gap-y-4
 <div className="md:col-span-12 col-span-12">
     <button type="submit" className="ti-btn ti-btn-primary-full !mb-0">Sign in</button>
 </div>
-</div>`
+</div>`;
 
 export const layout11 = `<form className="grid grid-cols-12 gap-4 mt-0">
 <div className="md:col-span-6 col-span-12">
@@ -1119,4 +1119,4 @@ export const layout11 = `<form className="grid grid-cols-12 gap-4 mt-0">
 <div className="col-span-12">
     <button type="submit" className="ti-btn ti-btn-primary-full">Sign in</button>
 </div>
-</form>`
+</form>`;

@@ -27,7 +27,7 @@ export const accordion1 = `
         </div>
       </div>
     </div>
-`
+`;
 
 export const accordion2 = `<div className="hs-accordion-group">
 <div className="hs-accordion accordion-item  overflow-hidden !border-b-0" id="hs-basic-with-arrow-heading-one">
@@ -151,7 +151,7 @@ export const accordion2 = `<div className="hs-accordion-group">
     </div>
   </div>
 </div>
-</div>`
+</div>`;
 
 export const accordion3 = `<div className="hs-accordion-group"><div className="hs-accordion accordion-item  overflow-hidden !border-b-0" id="hs-basic-with-title-and-arrow-stretched-heading-one">
 <button className="hs-accordion-toggle accordion-button hs-accordion-active:text-primary 
@@ -172,7 +172,7 @@ Accordion #1<svg className="hs-accordion-active:hidden hs-accordion-active:text-
      These classes control the overall appearance, as well as the showing and hiding via CSS transitions.</p>
      </div>
      </div>
-     </div>`
+     </div>`;
 
 export const accordion4 = `<div className="hs-accordion-group"><div className="hs-accordion active overflow-hidden bg-white dark:bg-bodybg border -mt-px first:rounded-t-sm last:rounded-b-sm dark:bg-bgdark dark:border-white/10" id="hs-accordion-heading-1">
 <button className="hs-accordion-toggle hs-accordion-active:text-primary hs-accordion-active:bg-primary/10 group py-4 px-5 inline-flex items-center justify-between gap-x-3 w-full font-semibold text-start text-gray-800 transition hover:text-gray-500 dark:hs-accordion-active:text-primary dark:text-gray-200 dark:hover:text-white/80" aria-controls="hs-accordion-collapse-1" type="button">Accordion #1 <svg  className="hs-accordion-active:hidden hs-accordion-active:text-primary hs-accordion-active:group-hover:text-primary block w-3 h-3 text-gray-600 group-hover:text-gray-500 dark:text-[#8c9097] dark:text-white/50"  width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -180,7 +180,7 @@ export const accordion4 = `<div className="hs-accordion-group"><div className="h
 <div id="hs-accordion-collapse-1" className="hs-accordion-content w-full overflow-hidden transition-[height] duration-300" aria-labelledby="hs-accordion-heading-1"> <p className="text-gray-800 dark:text-gray-200 py-4 px-5">  
 <em>This is the third items accordion body.</em> It is hidden by default, until the collapse  plugin adds the appropriate classes
  that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions.
- </p></div></div></div>`
+ </p></div></div></div>`;
 
 export const accordion5 = `<div className="hs-accordion-group">
 <div className="hs-accordion active overflow-hidden bg-white dark:bg-bodybg border
@@ -210,7 +210,7 @@ export const accordion5 = `<div className="hs-accordion-group">
        <p className="text-gray-800 dark:text-gray-200 py-4 px-5"><em>This is the third items accordion body.
        </em> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to
         style each element. These classes control the  overall appearance, as well as the showing and hiding 
-        via CSS transitions.</p></div></div>`
+        via CSS transitions.</p></div></div>`;
 
 export const accordion6 = `<div className="hs-accordion-group">
 <div className="hs-accordion active overflow-hidden bg-white dark:bg-bodybg border -mt-px first:rounded-t-sm last:rounded-b-sm dark:bg-bgdark dark:border-white/10" id="hs-primary-heading-1">
@@ -297,7 +297,7 @@ export const accordion6 = `<div className="hs-accordion-group">
     </p>
   </div>
 </div>
-</div>`
+</div>`;
 
 export const accordion7 = `<div className="hs-accordion-group">
 <div className="hs-accordion active overflow-hidden bg-white dark:bg-bodybg border -mt-px first:rounded-t-sm last:rounded-b-sm dark:bg-bgdark dark:border-white/10" id="hs-secondary-heading-1">
@@ -384,7 +384,7 @@ export const accordion7 = `<div className="hs-accordion-group">
     </p>
   </div>
 </div>
-</div>`
+</div>`;
 
 export const accordion8 = `<div className="accordion accordion-border-primary accordions-items-seperate"
 id="accordionprimaryborderExample">
@@ -486,7 +486,7 @@ id="accordionprimaryborderExample">
         </div>
     </div>
 </div>
-</div>`
+</div>`;
 
 export const accordion9 = `<div className="accordion accordion-border-success accordions-items-seperate"
 id="accordionsuccessborderExample">
@@ -588,9 +588,9 @@ id="accordionsuccessborderExample">
         </div>
     </div>
 </div>
-</div>`
+</div>`;
 
-export const accordion10 =`<div className="accordion accordionicon-left accordions-items-seperate"
+export const accordion10 = `<div className="accordion accordionicon-left accordions-items-seperate"
 id="accordioniconLeftExample">
 <div className="hs-accordion-group">
     <div className="hs-accordion  accordion-item" id="hs-basic-heading21">
@@ -690,9 +690,9 @@ id="accordioniconLeftExample">
         </div>
     </div>
 </div>
-</div>`
+</div>`;
 
-export const accordion11 =`<div className="accordion customized-accordion accordions-items-seperate"
+export const accordion11 = `<div className="accordion customized-accordion accordions-items-seperate"
 id="customizedAccordion">
 <div className="hs-accordion-group">
     <div className="hs-accordion  accordion-item custom-accordion-primary" id="hs-basic-heading31">
@@ -792,11 +792,11 @@ id="customizedAccordion">
         </div>
     </div>
 </div>
-</div>`
+</div>`;
 
 //Modals & Closes
 
-export const modal1 =`<a href="#" className="hs-dropdown-toggle ti-btn ti-btn-primary-full" data-hs-overlay="#todo-compose">Launch demo modal
+export const modal1 = `<a href="#" className="hs-dropdown-toggle ti-btn ti-btn-primary-full" data-hs-overlay="#todo-compose">Launch demo modal
 </a>
 <div id="todo-compose" className="hs-overlay hidden ti-modal">
     <div className="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
@@ -821,9 +821,9 @@ export const modal1 =`<a href="#" className="hs-dropdown-toggle ti-btn ti-btn-pr
         </div>
         </div>
     </div>
-</div>`
+</div>`;
 
-export const modal2 =`<a href="#" className="hs-dropdown-toggle ti-btn ti-btn-primary-full " data-hs-overlay="#staticBackdrop">Launch static backdrop modal
+export const modal2 = `<a href="#" className="hs-dropdown-toggle ti-btn ti-btn-primary-full " data-hs-overlay="#staticBackdrop">Launch static backdrop modal
 </a>
 <div id="staticBackdrop" className="hs-overlay hidden ti-modal  [--overlay-backdrop:static]">
     <div className="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out">
@@ -851,9 +851,9 @@ export const modal2 =`<a href="#" className="hs-dropdown-toggle ti-btn ti-btn-pr
         </div>
         </div>
     </div>
-</div>`
+</div>`;
 
-export const modal3 =`<a href="#" className="hs-dropdown-toggle ti-btn ti-btn-primary-full"
+export const modal3 = `<a href="#" className="hs-dropdown-toggle ti-btn ti-btn-primary-full"
  data-hs-overlay="#exampleModalScrollable"> Scrolling long content
 </a>
 <div id="exampleModalScrollable" className="hs-overlay hidden ti-modal">
@@ -910,9 +910,9 @@ export const modal3 =`<a href="#" className="hs-dropdown-toggle ti-btn ti-btn-pr
         </div>
         </div>
     </div>
-</div>`
+</div>`;
 
-export const modal4 =`<button type="button" className="hs-dropdown-toggle ti-btn ti-btn-primary-full" data-hs-overlay="#hs-vertically-centered-modal">
+export const modal4 = `<button type="button" className="hs-dropdown-toggle ti-btn ti-btn-primary-full" data-hs-overlay="#hs-vertically-centered-modal">
 Vertically centered modal
 </button>
 <div id="hs-vertically-centered-modal" className="hs-overlay hidden ti-modal">
@@ -945,7 +945,7 @@ Vertically centered modal
     </div>
   </div>
 </div>
-</div>`
+</div>`;
 
 export const modal5 = `<button type="button" className="hs-dropdown-toggle ti-btn ti-btn-primary-full" data-hs-overlay="#hs-vertically-centered-scrollable-modal">
 Vertically centered scrollable modal
@@ -1000,7 +1000,7 @@ Vertically centered scrollable modal
     </div>
   </div>
 </div>
-</div>`
+</div>`;
 
 export const modal6 = `<button type="button" className="hs-dropdown-toggle ti-btn ti-btn-primary-full" data-hs-overlay="#exampleModalScrollable4">
 Launch demo modal
@@ -1075,7 +1075,7 @@ Launch demo modal
     </div>
   </div>
 </div>
-</div>`
+</div>`;
 
 export const modal7 = ` <button type="button" className="hs-dropdown-toggle ti-btn ti-btn-primary-full" data-hs-overlay="#exampleModalgrid">
 Launch demo modal
@@ -1116,7 +1116,7 @@ Launch demo modal
     </div>
   </div>
 </div>
-</div>`
+</div>`;
 
 export const modal8 = `<button type="button" className="hs-dropdown-toggle ti-btn ti-btn-primary-full" data-hs-overlay="#hs-toggle-between-modals-first-modal">
 Open first modal
@@ -1174,8 +1174,7 @@ Open first modal
     </div>
   </div>
 </div>
-</div>`
-
+</div>`;
 
 export const modal9 = ` <button type="button" className="hs-dropdown-toggle ti-btn ti-btn-primary-full" data-hs-overlay="#hs-extralarge-modal">
 Extra Large modal
@@ -1263,7 +1262,7 @@ small modal
     </div>
 </div>
 </div>
-</div>`
+</div>`;
 
 export const modal10 = ` <button type="button" className="m-1 ms-0 ti-btn ti-btn-primary-full" data-hs-overlay="#hs-full-screen-modal">
 Full screen
@@ -1444,22 +1443,22 @@ Full screen below xxl
     </div>
 </div>
 </div>
-</div>`
+</div>`;
 
 export const modal11 = ` <button type="button" className="hs-dropdown-toggle !text-[1.5rem] !font-medium text-[#8c9097] dark:text-white/50 hover:text-defaulttextcolor" data-hs-overlay="#formmodalmdo">
 <span className="sr-only">Close</span>
 <i className="ri-close-line"></i>
-</button>`
+</button>`;
 
 export const modal12 = `  <button type="button" className="hs-dropdown-toggle !text-[1.5rem] !font-medium text-[#8c9097] dark:text-white/50/25 pointer-events-none" data-hs-overlay="#formmodalmdo">
 <span className="sr-only">Close</span>
 <i className="ri-close-line"></i>
-</button>`
+</button>`;
 
 export const modal13 = `  <button type="button" className="hs-dropdown-toggle !text-[1.5rem] !font-medium text-[#8c9097] dark:text-white/50/25 pointer-events-none" data-hs-overlay="#formmodalmdo">
 <span className="sr-only">Close</span>
 <i className="ri-close-line"></i>
-</button>`
+</button>`;
 
 //OffCanvas
 
@@ -1666,7 +1665,7 @@ Button
         </ul>
       </div>
 </div>
-</div>`
+</div>`;
 
 export const offcanvas2 = `  <button type="button" className="m-1 ms-0 ti-btn ti-btn-primary-full" data-hs-overlay="#hs-overlay-body-scrolling">
 Enable body scrolling
@@ -1871,7 +1870,7 @@ Enable body scrolling
     </ul>
   </div>
 </div>
-</div>`
+</div>`;
 
 export const offcanvas3 = `
 <button type="button" className="m-1 ms-0 ti-btn ti-btn-primary-full" data-hs-overlay="#hs-overlay-backdrop-default">
@@ -2078,8 +2077,7 @@ Enable backdrop
      </ul>
    </div>
 </div>
-</div>`
-
+</div>`;
 
 export const offcanvas4 = `
 <button type="button" className="m-1 ms-0 ti-btn ti-btn-primary-full" data-hs-overlay="#hs-overlay-backdrop-with-scrolling">
@@ -2286,7 +2284,7 @@ export const offcanvas4 = `
         </ul>
       </div>
   </div>
-</div>`
+</div>`;
 
 export const offcanvas5 = ` <button type="button" className="ti-btn ti-btn-primary-full" data-hs-overlay="#hs-overlay-top">
 Toggle top offcanvas
@@ -2536,4 +2534,4 @@ Toggle bottom offcanvas
     ...
     </p>
 </div>
-</div>`
+</div>`;
