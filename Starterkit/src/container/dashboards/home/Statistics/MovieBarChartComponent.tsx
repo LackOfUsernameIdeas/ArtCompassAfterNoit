@@ -1,4 +1,4 @@
-import { FC, Fragment, useEffect, useState } from "react";
+import { FC, Fragment, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { MovieBarChart } from "./Charts";
 import { DataType } from "../../home-types";
@@ -15,42 +15,41 @@ interface MovieBarChartComponentProps {
 }
 
 const MovieBarChartComponent: FC<MovieBarChartComponentProps> = ({ data }) => {
-  const pageSize = 5; // Number of entries per page for the chartaa
-  const [currentChartPage, setCurrentChartPage] = useState(1); // Current page for the chart
-  const [seriesDataForMovieBarChart, setSeriesDataForMovieBarChart] = useState<
-    any[]
-  >([]);
-
+  const pageSize = 5; // Размер на страницата (брой елементи на страница)
+  const [currentChartPage, setCurrentChartPage] = useState(1); // Текущата страница на графиката
   const [moviesAndSeriesSortCategory, setMoviesAndSeriesSortCategory] =
-    useState("IMDb");
+    useState("IMDb"); // Категория за сортиране (IMDb, Metascore, RottenTomatoes)
 
-  // Updated useEffect to sort data based on selected category
-  useEffect(() => {
+  // Меморизиране на данните за сериите за графиката на филмите
+  const seriesDataForMovieBarChart = useMemo(() => {
     const sortedData =
       moviesAndSeriesSortCategory === "IMDb"
-        ? data.sortedMoviesAndSeriesByIMDbRating
+        ? data.sortedMoviesAndSeriesByIMDbRating // Ако е избрана IMDb, използвай IMDb рейтинги
         : moviesAndSeriesSortCategory === "Metascore"
-        ? data.sortedMoviesAndSeriesByMetascore
-        : data.sortedMoviesAndSeriesByRottenTomatoesRating;
+        ? data.sortedMoviesAndSeriesByMetascore // Ако е избран Metascore, използвай Metascore
+        : data.sortedMoviesAndSeriesByRottenTomatoesRating; // Ако е избран RottenTomatoes, използвай Rotten Tomatoes рейтинг
 
-    const paginatedDataForMovieBarChart = paginateBarChartData(
+    // Връщаме данни с пагинация
+    return paginateBarChartData(
       sortedData,
       currentChartPage,
       pageSize,
       moviesAndSeriesSortCategory
     );
-    setSeriesDataForMovieBarChart(paginatedDataForMovieBarChart);
   }, [currentChartPage, moviesAndSeriesSortCategory, data]);
 
-  // Total number of pages for pagination
-  const totalChartPages = getTotalBarChartPages(
-    data.sortedMoviesAndSeriesByIMDbRating.length,
-    pageSize
-  );
+  // Меморизиране на общия брой страници на графиката
+  const totalChartPages = useMemo(() => {
+    return getTotalBarChartPages(
+      data.sortedMoviesAndSeriesByIMDbRating.length, // Използваме дължината на IMDb рейтингите
+      pageSize
+    );
+  }, [data.sortedMoviesAndSeriesByIMDbRating.length, pageSize]);
 
+  // Обработчици за пагинация (предишна и следваща страница)
   const handlePrevChartPage = () => {
     handleBarChartPageChange(
-      "prev",
+      "prev", // Преминаване на предишната страница
       currentChartPage,
       pageSize,
       data.sortedMoviesAndSeriesByIMDbRating.length,
@@ -60,7 +59,7 @@ const MovieBarChartComponent: FC<MovieBarChartComponentProps> = ({ data }) => {
 
   const handleNextChartPage = () => {
     handleBarChartPageChange(
-      "next",
+      "next", // Преминаване на следващата страница
       currentChartPage,
       pageSize,
       data.sortedMoviesAndSeriesByIMDbRating.length,
@@ -68,6 +67,7 @@ const MovieBarChartComponent: FC<MovieBarChartComponentProps> = ({ data }) => {
     );
   };
 
+  // Мапинг на имената за категорията на рейтингите
   const moviesAndSeriesCategoryDisplayNames: Record<
     "IMDb" | "Metascore" | "RottenTomatoes",
     string
@@ -77,6 +77,7 @@ const MovieBarChartComponent: FC<MovieBarChartComponentProps> = ({ data }) => {
     RottenTomatoes: "Rotten Tomatoes Рейтинг"
   };
 
+  // Отзивчиви точки за прекъсване
   const is1461 = useMediaQuery({ query: "(max-width: 1461px)" });
   const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
   const is1675 = useMediaQuery({ query: "(max-width: 1675px)" });

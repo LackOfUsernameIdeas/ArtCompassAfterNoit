@@ -1,5 +1,5 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import { DataType } from "../../home-types";
+import { DataType, MovieData, RecommendationData } from "../../home-types";
 import {
   getTotalBarChartPages,
   handleBarChartPageChange,
@@ -16,11 +16,12 @@ interface TopRecommendationsBarChartComponentProps {
 const TopRecommendationsBarChartComponent: FC<
   TopRecommendationsBarChartComponentProps
 > = ({ data }) => {
-  const [seriesDataForTopStatsBarChart, setSeriesDataForTopStatsChart] =
-    useState<any[]>([]);
+  const [seriesDataForTopStatsChart, setSeriesDataForTopStatsChart] = useState<
+    (MovieData | RecommendationData)[]
+  >([]);
 
   const pageSize = 5;
-  const [currentTopChartPage, setCurrentTopChartPage] = useState(1); // Current page for the chart
+  const [currentTopChartPage, setCurrentTopChartPage] = useState(1);
 
   const totalTopChartPages = getTotalBarChartPages(
     data.topRecommendations.length,
@@ -69,7 +70,7 @@ const TopRecommendationsBarChartComponent: FC<
             <div className="box-body h-[22rem]">
               <div id="donut-simple">
                 <TopRecommendationsBarChart
-                  seriesData={seriesDataForTopStatsBarChart}
+                  seriesData={seriesDataForTopStatsChart}
                 />
               </div>
             </div>

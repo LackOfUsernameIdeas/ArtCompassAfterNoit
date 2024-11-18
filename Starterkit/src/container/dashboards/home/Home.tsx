@@ -13,46 +13,46 @@ import WidgetCards from "./Statistics/WidgetCards";
 interface CrmProps {}
 
 const Home: FC<CrmProps> = () => {
-  // States for holding fetched data
+  // Състояния за задържане на извлечени данни
   const [data, setData] = useState<DataType>({
-    usersCount: [],
-    topRecommendations: [],
-    topGenres: [],
-    genrePopularityOverTime: {},
-    topActors: [],
-    topDirectors: [],
-    topWriters: [],
-    oscarsByMovie: [],
-    totalAwardsByMovieOrSeries: [],
-    totalAwards: [],
-    sortedDirectorsByProsperity: [],
-    sortedActorsByProsperity: [],
-    sortedWritersByProsperity: [],
-    sortedMoviesByProsperity: [],
-    sortedMoviesAndSeriesByMetascore: [],
-    sortedMoviesAndSeriesByIMDbRating: [],
-    sortedMoviesAndSeriesByRottenTomatoesRating: [],
-    averageBoxOfficeAndScores: [],
-    topCountries: []
+    usersCount: [], // Броя на потребителите
+    topRecommendations: [], // Топ препоръки
+    topGenres: [], // Топ жанрове
+    genrePopularityOverTime: {}, // Популярност на жанровете през времето
+    topActors: [], // Топ актьори
+    topDirectors: [], // Топ режисьори
+    topWriters: [], // Топ сценаристи
+    oscarsByMovie: [], // Оскари по филми
+    totalAwardsByMovieOrSeries: [], // Общо награди по филми или сериали
+    totalAwards: [], // Общо награди
+    sortedDirectorsByProsperity: [], // Режисьори, сортирани по процъфтяване
+    sortedActorsByProsperity: [], // Актьори, сортирани по процъфтяване
+    sortedWritersByProsperity: [], // Сценаристи, сортирани по процъфтяване
+    sortedMoviesByProsperity: [], // Филми, сортирани по процъфтяване
+    sortedMoviesAndSeriesByMetascore: [], // Филми и сериали, сортирани по Metascore
+    sortedMoviesAndSeriesByIMDbRating: [], // Филми и сериали, сортирани по IMDb рейтинг
+    sortedMoviesAndSeriesByRottenTomatoesRating: [], // Филми и сериали, сортирани по Rotten Tomatoes рейтинг
+    averageBoxOfficeAndScores: [], // Среден боксофис и оценки
+    topCountries: [] // Топ държави
   });
 
-  // User data state
+  // Състояние за потребителски данни
   const [userData, setUserData] = useState<UserData>({
-    id: 0,
-    first_name: "",
-    last_name: "",
-    email: ""
+    id: 0, // ID на потребителя
+    first_name: "", // Име на потребителя
+    last_name: "", // Фамилия на потребителя
+    email: "" // Имейл на потребителя
   });
 
-  // Data fetching for user and platform stats (combined into one useEffect)
+  // Извличане на данни за потребителя и статистики за платформата (комбинирано в едно useEffect)
   useEffect(() => {
     const token =
-      localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+      localStorage.getItem("authToken") || sessionStorage.getItem("authToken"); // Вземане на токен от localStorage или sessionStorage
     if (token) {
-      fetchData(token, setUserData, setData);
-      console.log("fetching");
+      fetchData(token, setUserData, setData); // Извличане на данни с помощта на fetchData функцията
+      console.log("fetching"); // Лог за следене на извличането на данни
     }
-  }, []);
+  }, []); // Празен масив като зависимост, за да се извика само веднъж при рендиране на компонента
 
   return (
     <Fragment>

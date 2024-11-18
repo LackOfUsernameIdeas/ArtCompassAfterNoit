@@ -1,5 +1,5 @@
 import { FC, Fragment, useState } from "react";
-import { DataType } from "../../home-types";
+import { Category, DataType } from "../../home-types";
 import { handleTopStatsSortCategory } from "../../helper_functions";
 import { Treemap } from "./Charts";
 interface TreemapComponentProps {
@@ -7,15 +7,26 @@ interface TreemapComponentProps {
 }
 
 const TreemapComponent: FC<TreemapComponentProps> = ({ data }) => {
-  const [topStatsSortCategory, setTopStatsSortCategory] = useState("Actors");
+  const [topStatsSortCategory, setTopStatsSortCategory] =
+    useState<Category>("Actors");
 
-  const tableCategoryDisplayNames: Record<
-    "Directors" | "Actors" | "Writers",
-    string
-  > = {
+  const tableCategoryDisplayNames: Record<Category, string> = {
     Directors: "Режисьори",
     Actors: "Актьори",
     Writers: "Сценаристи"
+  };
+
+  const getTreemapDataToUse = () => {
+    switch (topStatsSortCategory) {
+      case "Actors":
+        return data.topActors;
+      case "Directors":
+        return data.topDirectors;
+      case "Writers":
+        return data.topWriters;
+      default:
+        return [];
+    }
   };
 
   return (
@@ -37,48 +48,44 @@ const TreemapComponent: FC<TreemapComponentProps> = ({ data }) => {
                 role="group"
                 aria-label="Sort By"
               >
-                {["Actors", "Directors", "Writers"].map((category, index) => (
-                  <button
-                    key={category}
-                    type="button"
-                    className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
-                      category === topStatsSortCategory
-                        ? "ti-btn-primary-full text-white"
-                        : "text-[#CC3333] bg-[#be1313] bg-opacity-10"
-                    } ${
-                      index === 0
-                        ? "rounded-l-md"
-                        : index === 2
-                        ? "rounded-r-md"
-                        : ""
-                    }`}
-                    onClick={() =>
-                      handleTopStatsSortCategory(
-                        category,
-                        setTopStatsSortCategory
-                      )
-                    }
-                  >
-                    {
-                      tableCategoryDisplayNames[
-                        category as keyof typeof tableCategoryDisplayNames
-                      ]
-                    }
-                  </button>
-                ))}
+                {(["Actors", "Directors", "Writers"] as Category[]).map(
+                  (category, index) => (
+                    <button
+                      key={category}
+                      type="button"
+                      className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
+                        category === topStatsSortCategory
+                          ? "ti-btn-primary-full text-white"
+                          : "text-[#CC3333] bg-[#be1313] bg-opacity-10"
+                      } ${
+                        index === 0
+                          ? "rounded-l-md"
+                          : index === 2
+                          ? "rounded-r-md"
+                          : ""
+                      }`}
+                      onClick={() =>
+                        handleTopStatsSortCategory(
+                          category,
+                          setTopStatsSortCategory
+                        )
+                      }
+                    >
+                      {
+                        tableCategoryDisplayNames[
+                          category as keyof typeof tableCategoryDisplayNames
+                        ]
+                      }
+                    </button>
+                  )
+                )}
               </div>
             </div>
           </div>
           <div className="box-body flex justify-center items-center">
             <div id="treemap-basic" className="w-full">
               <Treemap
-                data={
-                  topStatsSortCategory === "Actors"
-                    ? data.topActors
-                    : topStatsSortCategory === "Directors"
-                    ? data.topDirectors
-                    : data.topWriters
-                }
+                data={getTreemapDataToUse()}
                 role={topStatsSortCategory}
               />
             </div>

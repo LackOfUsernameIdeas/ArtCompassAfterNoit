@@ -1211,7 +1211,7 @@ export class Treemap extends Component<BasicTreemapProps, BasicTreemapState> {
 }
 
 export class TopRecommendationsBarChart extends Component<
-  { seriesData: RecommendationData[] },
+  { seriesData: RecommendationData[] | MovieData[] },
   State
 > {
   private observer: MutationObserver | null = null;

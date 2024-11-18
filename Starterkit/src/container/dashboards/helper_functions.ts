@@ -9,7 +9,9 @@ import {
   GenrePopularityData,
   HeatmapData,
   MovieProsperityData,
-  MovieData
+  MovieData,
+  RecommendationData,
+  Category
 } from "./home-types";
 
 // ==============================
@@ -158,22 +160,27 @@ const sortByCategory = (
 /**
  * Пагинира сортирани данни за бар-чарт.
  *
- * @param {MovieData[]} seriesData - Списък с данни за филми/сериали.
+ * @param {MovieData[] | RecommendationData[]} seriesData - Списък с данни за филми/сериали.
  * @param {number} currentPage - Текуща страница.
  * @param {number} pageSize - Брой елементи на страница.
  * @param {string} [category] - Категория за сортиране.
- * @returns {MovieData[]} - Пагинирани и сортирани данни.
+ * @returns {MovieData[] | RecommendationData[]} - Пагинирани и сортирани данни.
  */
 export const paginateBarChartData = (
-  seriesData: MovieData[],
+  seriesData: (MovieData | RecommendationData)[], // Union of MovieData and RecommendationData
   currentPage: number,
   pageSize: number,
   category?: string
-): MovieData[] => {
+): (MovieData | RecommendationData)[] => {
+  // Return type is also a union
   const sortedData = category
     ? sortByCategory(seriesData, category)
     : seriesData;
   const start = (currentPage - 1) * pageSize;
+  console.log(
+    "sortedData.slice(start, start + pageSize);: ",
+    sortedData.slice(start, start + pageSize)
+  );
   return sortedData.slice(start, start + pageSize);
 };
 
@@ -310,8 +317,8 @@ export const handleMoviesAndSeriesSortCategory = (
  * @param {React.Dispatch<React.SetStateAction<string>>} setTopStatsSortCategory - Функция за задаване на категорията.
  */
 export const handleTopStatsSortCategory = (
-  category: string,
-  setTopStatsSortCategory: React.Dispatch<React.SetStateAction<string>>
+  category: Category,
+  setTopStatsSortCategory: React.Dispatch<React.SetStateAction<Category>>
 ) => {
   setTopStatsSortCategory(category);
 };

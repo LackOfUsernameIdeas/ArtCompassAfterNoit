@@ -1,5 +1,5 @@
-import { FC, Fragment, useEffect, useState } from "react";
-import { DataType, FilteredTableData } from "../../home-types";
+import { FC, Fragment, useEffect, useState, useMemo } from "react";
+import { Category, DataType, FilteredTableData } from "../../home-types";
 import {
   filterTableData,
   isActor,
@@ -15,21 +15,15 @@ interface TableComponentProps {
 
 const TableComponent: FC<TableComponentProps> = ({ data }) => {
   const [prosperitySortCategory, setProsperitySortCategory] =
-    useState("Directors");
+    useState<Category>("Directors");
 
   const [filteredTableData, setFilteredTableData] = useState<FilteredTableData>(
-    []
-  );
-  const [currentTableItems, setCurrentTableItems] = useState<FilteredTableData>(
     []
   );
   const [currentTablePage, setCurrentTablePage] = useState(1);
   const itemsPerTablePage = 5;
 
-  const tableCategoryDisplayNames: Record<
-    "Directors" | "Actors" | "Writers",
-    string
-  > = {
+  const tableCategoryDisplayNames: Record<Category, string> = {
     Directors: "Режисьори",
     Actors: "Актьори",
     Writers: "Сценаристи"
@@ -38,31 +32,32 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
   const totalItems = filteredTableData.length;
   const totalTablePages = Math.ceil(totalItems / itemsPerTablePage);
 
-  // Watch for changes in `data` and update filtered table data accordingly
+  // Следи за промени в `data` и актуализира филтрираните данни в таблицата съответно
   useEffect(() => {
     const initialFilteredData =
       data[`sorted${prosperitySortCategory}ByProsperity`];
     setFilteredTableData(initialFilteredData);
   }, [data, prosperitySortCategory]);
 
-  // Fetch filtered table data based on category
-  useEffect(() => {
-    const newItems = filterTableData(
-      filteredTableData,
-      prosperitySortCategory,
-      currentTablePage,
-      itemsPerTablePage
-    );
-    setCurrentTableItems(newItems);
-  }, [currentTablePage, prosperitySortCategory, filteredTableData]);
+  // Използва useMemo за запаметяване на изчисляването на филтрираните данни
+  const memoizedFilteredData = useMemo(
+    () =>
+      filterTableData(
+        filteredTableData,
+        prosperitySortCategory,
+        currentTablePage,
+        itemsPerTablePage
+      ),
+    [filteredTableData, prosperitySortCategory, currentTablePage]
+  );
 
-  const handleCategoryChange = (category: string) => {
-    // Switch the filtered data based on the selected category
+  const handleCategoryChange = (category: Category) => {
+    // Превключва филтрираните данни в зависимост от избраната категория
     setFilteredTableData(data[`sorted${category}ByProsperity`]);
     setProsperitySortCategory(category);
   };
 
-  // Handle Previous Page Logic
+  // Обработка на логиката за предишна страница
   const handlePrevTablePage = () => {
     if (currentTablePage > 1) {
       setCurrentTablePage((prev) => prev - 1);
@@ -73,6 +68,13 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
     if (currentTablePage < totalTablePages) {
       setCurrentTablePage((prev) => prev + 1);
     }
+  };
+
+  const getCategoryName = (item: FilteredTableData[number]) => {
+    if (isDirector(item)) return item.director_bg;
+    if (isActor(item)) return item.actor_bg;
+    if (isWriter(item)) return item.writer_bg;
+    return "";
   };
 
   const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
@@ -111,7 +113,7 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                         ? "rounded-r-md"
                         : ""
                     }`}
-                    onClick={() => handleCategoryChange(category)} // Change this line
+                    onClick={() => handleCategoryChange(category as Category)}
                   >
                     {
                       tableCategoryDisplayNames[
@@ -168,21 +170,13 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentTableItems.map((item, index) => (
+                  {memoizedFilteredData.map((item, index) => (
                     <tr
                       key={index}
                       className="border border-inherit border-solid hover:bg-gray-100 dark:border-defaultborder/10 dark:hover:bg-light"
                     >
                       <td>{(currentTablePage - 1) * 5 + index + 1}</td>
-                      <td>
-                        {isDirector(item)
-                          ? item.director_bg
-                          : isActor(item)
-                          ? item.actor_bg
-                          : isWriter(item)
-                          ? item.writer_bg
-                          : ""}
-                      </td>
+                      <td>{getCategoryName(item)}</td>
                       <td>{item.prosperityScore}</td>
                       <td>{item.avg_imdb_rating}</td>
                       <td>{item.total_box_office}</td>
@@ -226,7 +220,7 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                       className={`page-item ${
                         currentTablePage === 1 ? "disabled" : ""
                       }`}
-                      style={{ marginRight: "0.25rem" }} // Adjust space between items
+                      style={{ marginRight: "0.25rem" }}
                     >
                       <Link
                         className="page-link"
@@ -245,9 +239,11 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                       <li
                         key={index}
                         className={`page-item ${
-                          currentTablePage === index + 1 ? "active" : ""
+                          index + 1 === currentTablePage ? "active" : ""
                         }`}
-                        style={{ marginRight: "0.25rem" }} // Adjust space between items
+                        style={{
+                          marginRight: "0.25rem"
+                        }}
                       >
                         <Link
                           className="page-link"
@@ -267,7 +263,7 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                       className={`page-item ${
                         currentTablePage === totalTablePages ? "disabled" : ""
                       }`}
-                      style={{ marginRight: "0.25rem" }} // Adjust space between items
+                      style={{ marginLeft: "0.25rem" }}
                     >
                       <Link
                         className="page-link"
