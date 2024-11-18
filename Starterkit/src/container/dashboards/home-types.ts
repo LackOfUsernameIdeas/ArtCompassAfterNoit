@@ -40,6 +40,13 @@ export type UsersCountData = {
   user_count: number;
 };
 
+export interface UserData {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+}
+
 export type DataType = {
   usersCount: UsersCountData[];
   topRecommendations: any[];

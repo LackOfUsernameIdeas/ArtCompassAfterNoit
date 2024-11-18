@@ -187,22 +187,14 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                         onClick={toggleAveragesMenu}
                         aria-expanded={isAveragesMenuOpen ? "true" : "false"}
                       >
-                        {is1441 ? (
-                          <i
-                            className={`ri-arrow-${
-                              isAveragesMenuOpen ? "up" : "down"
-                            }-s-line text-sm`}
-                          ></i>
-                        ) : (
-                          <>
-                            <span>Сортирай по</span>
-                            <i
-                              className={`ri-arrow-${
-                                isAveragesMenuOpen ? "up" : "down"
-                              }-s-line ml-0.5 text-sm`}
-                            ></i>
-                          </>
-                        )}
+                        <span className={`${is1441 && "hidden"}`}>
+                          Сортирай по
+                        </span>
+                        <i
+                          className={`ri-arrow-${
+                            isAveragesMenuOpen ? "up" : "down"
+                          }-s-line ${!is1441 && "ml-0.5"} text-sm`}
+                        ></i>
                       </Link>
                       <ul
                         className={`hs-dropdown-menu ti-dropdown-menu ${
@@ -286,24 +278,16 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                           : "px-0.5 py-0.25 text-[0.70rem]"
                       } font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all`}
                       onClick={toggleAwardsMenu}
-                      aria-expanded={isAveragesMenuOpen ? "true" : "false"}
+                      aria-expanded={isAwardsMenuOpen ? "true" : "false"}
                     >
-                      {is1441 ? (
-                        <i
-                          className={`ri-arrow-${
-                            isAwardsMenuOpen ? "up" : "down"
-                          }-s-line text-sm`}
-                        ></i>
-                      ) : (
-                        <>
-                          <span>Сортирай по</span>
-                          <i
-                            className={`ri-arrow-${
-                              isAwardsMenuOpen ? "up" : "down"
-                            }-s-line ml-0.5 text-sm`}
-                          ></i>
-                        </>
-                      )}
+                      <span className={`${is1441 && "hidden"}`}>
+                        Сортирай по
+                      </span>
+                      <i
+                        className={`ri-arrow-${
+                          isAwardsMenuOpen ? "up" : "down"
+                        }-s-line ${!is1441 && "ml-0.5"} text-sm`}
+                      ></i>
                     </Link>
                     <ul
                       className={`hs-dropdown-menu ti-dropdown-menu ${

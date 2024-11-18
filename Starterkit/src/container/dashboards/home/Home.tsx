@@ -1,5 +1,5 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import { DataType } from "../home-types";
+import { DataType, UserData } from "../home-types";
 import { fetchData } from "../helper_functions";
 import TableComponent from "./Statistics/TableComponent";
 import TreemapComponent from "./Statistics/TreemapComponent";
@@ -37,7 +37,7 @@ const Home: FC<CrmProps> = () => {
   });
 
   // User data state
-  const [userData, setUserData] = useState({
+  const [userData, setUserData] = useState<UserData>({
     id: 0,
     first_name: "",
     last_name: "",
