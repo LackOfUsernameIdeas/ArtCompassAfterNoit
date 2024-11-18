@@ -183,7 +183,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                           is1803
                             ? "px-1 py-0.5 text-xs"
                             : "px-0.5 py-0.25 text-[0.70rem]"
-                        } font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all`}
+                        } font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all max-h-[1.125rem]`}
                         onClick={toggleAveragesMenu}
                         aria-expanded={isAveragesMenuOpen ? "true" : "false"}
                       >
@@ -276,7 +276,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                         is1803
                           ? "px-1 py-0.5 text-xs"
                           : "px-0.5 py-0.25 text-[0.70rem]"
-                      } font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all`}
+                      } font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all max-h-[1.125rem]`}
                       onClick={toggleAwardsMenu}
                       aria-expanded={isAwardsMenuOpen ? "true" : "false"}
                     >
