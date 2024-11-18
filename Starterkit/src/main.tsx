@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import App from "./pages/App.tsx";
 import Signincover from "./container/authentication/signin/signin.tsx";
-import Authenticationlayout from "./pages/authenticationlayout.tsx";
+import Authenticationlayout from "./pages/AuthenticationRoute.tsx";
 import Resetcover from "./container/authentication/resetpassword/resetpassword.tsx";
 import Signupcover from "./container/authentication/signup/signup.tsx";
 import Twostepcover from "./container/authentication/twostepverification/twostepverification.tsx";

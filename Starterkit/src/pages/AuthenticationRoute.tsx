@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import store from "../redux/store";
 import Authenticationswitcher from "../components/common/switcher/authenticationswitcher";
 
-function Authenticationlayout() {
+function AuthenticationRoute() {
   useEffect(() => {
     import("preline");
   }, []);
@@ -25,4 +25,4 @@ function Authenticationlayout() {
   );
 }
 
-export default Authenticationlayout;
+export default AuthenticationRoute;
