@@ -11,7 +11,7 @@ import Test from "./container/recommendations/recommendations.tsx";
 import "./index.scss";
 import ResetRequest from "./container/authentication/resetpassword/resetrequest.tsx";
 import PrivateRoute from "./pages/PrivateRoute.tsx";
-import Home from "./container/dashboards/home/Home.tsx";
+import Home from "./container/home/Home.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.Fragment>

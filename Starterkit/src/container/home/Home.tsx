@@ -1,6 +1,6 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import { DataType, UserData } from "../home-types";
-import { fetchData } from "../helper_functions";
+import { DataType, UserData } from "./home-types";
+import { fetchData } from "./helper_functions";
 import TableComponent from "./Statistics/TableComponent";
 import TreemapComponent from "./Statistics/TreemapComponent";
 import TopRecommendationsBarChartComponent from "./Statistics/TopRecommendationsBarChart";

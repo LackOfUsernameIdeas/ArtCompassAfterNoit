@@ -1,10 +1,10 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import { DataType, MovieData, RecommendationData } from "../../home-types";
+import { DataType, MovieData, RecommendationData } from "../home-types";
 import {
   getTotalBarChartPages,
   handleBarChartPageChange,
   paginateBarChartData
-} from "../../helper_functions";
+} from "../helper_functions";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { TopRecommendationsBarChart } from "./Charts";

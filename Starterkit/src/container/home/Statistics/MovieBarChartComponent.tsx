@@ -1,13 +1,13 @@
 import { FC, Fragment, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { MovieBarChart } from "./Charts";
-import { DataType } from "../../home-types";
+import { DataType } from "../home-types";
 import {
   paginateBarChartData,
   getTotalBarChartPages,
   handleBarChartPageChange,
   handleMoviesAndSeriesSortCategory
-} from "../../helper_functions";
+} from "../helper_functions";
 import { useMediaQuery } from "react-responsive";
 
 interface MovieBarChartComponentProps {

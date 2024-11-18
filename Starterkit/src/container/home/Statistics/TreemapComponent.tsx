@@ -1,6 +1,6 @@
 import { FC, Fragment, useState } from "react";
-import { Category, DataType } from "../../home-types";
-import { handleTopStatsSortCategory } from "../../helper_functions";
+import { Category, DataType } from "../home-types";
+import { handleTopStatsSortCategory } from "../helper_functions";
 import { Treemap } from "./Charts";
 interface TreemapComponentProps {
   data: DataType;

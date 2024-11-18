@@ -1,6 +1,6 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import { DataType } from "../../home-types";
-import { handleDropdownClick } from "../../helper_functions";
+import { DataType } from "../home-types";
+import { handleDropdownClick } from "../helper_functions";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 

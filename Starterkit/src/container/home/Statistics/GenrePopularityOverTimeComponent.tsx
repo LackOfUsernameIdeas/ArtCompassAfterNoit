@@ -1,6 +1,6 @@
 import { FC, Fragment } from "react";
-import { DataType } from "../../home-types";
-import { generateHeatmapSeriesData } from "../../helper_functions";
+import { DataType } from "../home-types";
+import { generateHeatmapSeriesData } from "../helper_functions";
 import { GenrePopularityOverTime } from "./Charts";
 
 interface GenrePopularityOverTimeComponentProps {
