@@ -25,9 +25,9 @@ const FadeInWrapper: React.FC<FadeInWrapperProps> = ({ children }) => {
         clearTimeout(timeoutId);
       };
     }
-  }, [isFirstLoad]); // Run effect only once during the first load
+  }, [location.key]); // Run effect only once during the first load
 
-  const duration = 500; // Smooth transition duration in milliseconds
+  const duration = 300; // Smooth transition duration in milliseconds
   const defaultStyle = {
     opacity: 0,
     transform: "translateY(10px)", // Subtle vertical movement for smoothness
@@ -46,7 +46,7 @@ const FadeInWrapper: React.FC<FadeInWrapperProps> = ({ children }) => {
       {/* Circle loader while the page is loading */}
       <Transition
         in={!isPageLoaded}
-        timeout={500}
+        timeout={duration}
         classNames="fade"
         unmountOnExit
       >

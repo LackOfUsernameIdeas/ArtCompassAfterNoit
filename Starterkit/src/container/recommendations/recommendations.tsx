@@ -10,6 +10,7 @@ import {
 import logo_loader from "../../assets/images/brand-logos/logo_loader.png";
 import { useNavigate } from "react-router-dom";
 import { checkTokenValidity } from "../home/helper_functions";
+import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 
 interface RecommendationList {}
 
@@ -806,116 +807,117 @@ const RecommendationList: FC<RecommendationList> = () => {
   }, [navigate]); // Добавяне на navigate като зависимост
 
   return (
-    <div>
-      {testing ? (
-        <div className="flex items-center justify-center px-4">
-          <CSSTransition
-            in={loading}
-            timeout={500}
-            classNames="fade"
-            unmountOnExit
-          >
-            <div className="fixed inset-0 flex flex-col items-center justify-center space-y-4">
-              <img src={logo_loader} alt="loading" className="spinner" />
-              <p className="text-xl">Зареждане...</p>
-            </div>
-          </CSSTransition>
-          {!loading && submitted && recommendationList.length > 0 && (
-            <div>
-              <div className="my-6 text-center">
-                <p className="text-lg text-gray-600">
-                  Искате други препоръки?{" "}
-                  <button
-                    onClick={handleRetakeQuiz}
-                    className="text-primary font-semibold hover:text-secondary transition-colors underline"
-                  >
-                    Повторете въпросника
-                  </button>
-                </p>
+    <FadeInWrapper>
+      <div>
+        {testing ? (
+          <div className="flex items-center justify-center px-4">
+            <CSSTransition
+              in={loading}
+              timeout={500}
+              classNames="fade"
+              unmountOnExit
+            >
+              <div className="fixed inset-0 flex flex-col items-center justify-center space-y-4">
+                <img src={logo_loader} alt="loading" className="spinner" />
+                <p className="text-xl">Зареждане...</p>
               </div>
-              <CSSTransition
-                in={submitted}
-                timeout={500}
-                classNames="fade"
-                unmountOnExit
-              >
+            </CSSTransition>
+            {!loading && submitted && recommendationList.length > 0 && (
+              <div>
+                <div className="my-6 text-center">
+                  <p className="text-lg text-gray-600">
+                    Искате други препоръки?{" "}
+                    <button
+                      onClick={handleRetakeQuiz}
+                      className="text-primary font-semibold hover:text-secondary transition-colors underline"
+                    >
+                      Повторете въпросника
+                    </button>
+                  </p>
+                </div>
+                <CSSTransition
+                  in={submitted}
+                  timeout={500}
+                  classNames="fade"
+                  unmountOnExit
+                >
+                  <Recommendations recommendationList={recommendationList} />
+                </CSSTransition>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center px-4">
+            {/* Loading Spinner */}
+            <CSSTransition
+              in={loading}
+              timeout={500}
+              classNames="fade"
+              unmountOnExit
+              key="loading"
+            >
+              <div className="fixed inset-0 flex flex-col items-center justify-center space-y-4">
+                <img src={logo_loader} alt="loading" className="spinner" />
+                <p className="text-xl">Зареждане...</p>
+              </div>
+            </CSSTransition>
+
+            {/* QuizQuestion Component */}
+            <CSSTransition
+              in={!loading && !submitted}
+              timeout={500}
+              classNames="fade"
+              unmountOnExit
+            >
+              <div className="w-full max-w-4xl">
+                <QuizQuestion
+                  setSelectedAnswer={setSelectedAnswer}
+                  showQuestion={showQuestion}
+                  currentQuestion={currentQuestion}
+                  currentQuestionIndex={currentQuestionIndex}
+                  totalQuestions={questions.length}
+                  selectedAnswer={selectedAnswer}
+                  interests={interests}
+                  handleInputChange={handleInputChange}
+                  handleAnswerClick={handleAnswerClick}
+                  handleNext={handleNext}
+                  handleBack={handleBack}
+                  isBackDisabled={isBackDisabled}
+                  handleSubmitTest={handleSubmitTest}
+                  setInterests={setInterests}
+                  recommendationList={recommendationList}
+                  handleViewRecommendations={handleViewRecommendations}
+                  submitted={submitted}
+                />
+              </div>
+            </CSSTransition>
+
+            {/* Recommendations Component */}
+            <CSSTransition
+              in={!loading && submitted}
+              timeout={500}
+              classNames="fade"
+              unmountOnExit
+            >
+              <div>
+                <div className="my-6 text-center">
+                  <p className="text-lg text-gray-600">
+                    Искате други препоръки?{" "}
+                    <button
+                      onClick={handleRetakeQuiz}
+                      className="text-primary font-semibold hover:text-secondary transition-colors underline"
+                    >
+                      Повторете въпросника
+                    </button>
+                  </p>
+                </div>
                 <Recommendations recommendationList={recommendationList} />
-              </CSSTransition>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="flex items-center justify-center px-4">
-          {/* Loading Spinner */}
-          <CSSTransition
-            in={loading}
-            timeout={500}
-            classNames="fade"
-            unmountOnExit
-            key="loading"
-          >
-            <div className="fixed inset-0 flex flex-col items-center justify-center space-y-4">
-              <img src={logo_loader} alt="loading" className="spinner" />
-              <p className="text-xl">Зареждане...</p>
-            </div>
-          </CSSTransition>
-
-          {/* QuizQuestion Component */}
-          <CSSTransition
-            in={!loading && !submitted}
-            timeout={500}
-            classNames="fade"
-            unmountOnExit
-          >
-            <div className="w-full max-w-4xl">
-              <QuizQuestion
-                setSelectedAnswer={setSelectedAnswer}
-                showQuestion={showQuestion}
-                currentQuestion={currentQuestion}
-                currentQuestionIndex={currentQuestionIndex}
-                totalQuestions={questions.length}
-                selectedAnswer={selectedAnswer}
-                interests={interests}
-                handleInputChange={handleInputChange}
-                handleAnswerClick={handleAnswerClick}
-                handleNext={handleNext}
-                handleBack={handleBack}
-                isBackDisabled={isBackDisabled}
-                handleSubmitTest={handleSubmitTest}
-                setInterests={setInterests}
-                recommendationList={recommendationList}
-                handleViewRecommendations={handleViewRecommendations}
-                submitted={submitted}
-              />
-            </div>
-          </CSSTransition>
-
-          {/* Recommendations Component */}
-          <CSSTransition
-            in={!loading && submitted}
-            timeout={500}
-            classNames="fade"
-            unmountOnExit
-          >
-            <div>
-              <div className="my-6 text-center">
-                <p className="text-lg text-gray-600">
-                  Искате други препоръки?{" "}
-                  <button
-                    onClick={handleRetakeQuiz}
-                    className="text-primary font-semibold hover:text-secondary transition-colors underline"
-                  >
-                    Повторете въпросника
-                  </button>
-                </p>
               </div>
-              <Recommendations recommendationList={recommendationList} />
-            </div>
-          </CSSTransition>
-        </div>
-      )}
-    </div>
-
+            </CSSTransition>
+          </div>
+        )}
+      </div>
+    </FadeInWrapper>
     // <Fragment>
     //   <div className="flex flex-col items-center justify-start min-h-screen pt-20 page-header-breadcrumb">
     //     <div className="grid grid-cols-16 gap-1">
