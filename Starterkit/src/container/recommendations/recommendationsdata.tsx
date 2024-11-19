@@ -237,7 +237,7 @@ interface QuizQuestionProps {
   handleNext: () => void; // Function to move to the next question
   handleBack: () => void;
   isBackDisabled: boolean;
-  handleSubmitTest: () => void; // Function to submit the quiz
+  handleSubmit: () => Promise<void>; // Function to submit the quiz
   setInterests: Dispatch<SetStateAction<string>>;
   recommendationList: any[];
   handleViewRecommendations: () => void;
@@ -257,7 +257,7 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
   handleNext,
   handleBack,
   isBackDisabled,
-  handleSubmitTest,
+  handleSubmit,
   setInterests,
   recommendationList,
   handleViewRecommendations,
@@ -472,7 +472,7 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
                     if (recommendationList.length > 0) {
                       handleOpenModal();
                     } else {
-                      handleSubmitTest();
+                      handleSubmit();
                     }
                   }}
                   className="block w-full p-2 text-white rounded hover:bg-red-700"
@@ -505,7 +505,7 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
                         </button>
                         <button
                           onClick={() => {
-                            handleSubmitTest();
+                            handleSubmit();
                             handleCloseModal();
                           }}
                           className="bg-primary hover:bg-secondary px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"

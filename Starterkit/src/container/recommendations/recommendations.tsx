@@ -563,7 +563,7 @@ const RecommendationList: FC<RecommendationList> = () => {
   };
   console.log(submitCount);
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async () => {
     if (submitCount >= 20) {
       alert("Достигнахте максималния брой предложения! :(");
       return;
@@ -587,8 +587,6 @@ const RecommendationList: FC<RecommendationList> = () => {
 
     const date = new Date().toISOString();
 
-    event.preventDefault();
-
     try {
       // Send POST request to server
       const response = await fetch(
@@ -606,8 +604,8 @@ const RecommendationList: FC<RecommendationList> = () => {
 
       if (response.status === 200) {
         // Handle success
-        generateMovieRecommendations(date);
-        saveUserPreferences(date);
+        await generateMovieRecommendations(date);
+        await saveUserPreferences(date);
         setSubmitCount((prevCount) => prevCount + 1);
         setIsModalOpen(true);
       } else {
@@ -883,7 +881,7 @@ const RecommendationList: FC<RecommendationList> = () => {
                   handleNext={handleNext}
                   handleBack={handleBack}
                   isBackDisabled={isBackDisabled}
-                  handleSubmitTest={handleSubmitTest}
+                  handleSubmit={handleSubmit}
                   setInterests={setInterests}
                   recommendationList={recommendationList}
                   handleViewRecommendations={handleViewRecommendations}
