@@ -19755,12 +19755,16 @@ input[type="color" i]::-webkit-color-swatch {
   transition: opacity 500ms;
 }
 .glow-effect {
+  box-shadow: 0 0 6px rgb(var(--secondary))
+}
+
+.dark .glow-effect {
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
 }
 
 /* Remove background color from .question */
 .question {
-  @apply flex flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative bg-white dark:bg-bodybg;
+  @apply flex flex-col rounded-md border-2 border-[#d94545] dark:border-white text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative bg-white dark:bg-bodybg;
 }
 
 .input-field {
@@ -19772,7 +19776,7 @@ input[type="color" i]::-webkit-color-swatch {
 }
 
 .selected-answer {
-  @apply flex flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 bg-[#d94545] text-[0.813rem] relative;
+  @apply flex flex-col rounded-md text-white dark:text-defaulttextcolor/70 bg-[#d94545] text-[0.813rem] relative;
 }
 
 .checkbox {

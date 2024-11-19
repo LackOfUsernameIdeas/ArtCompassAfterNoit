@@ -436,7 +436,7 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
                     selectedAnswer && selectedAnswer.includes(answer)
                       ? "selected-answer"
                       : "question"
-                  } bg-opacity-70 p-4 border-2 text-white rounded-lg glow-effect transition-all duration-300 ${
+                  } bg-opacity-70 p-4 text-white rounded-lg glow-effect transition-all duration-300 ${
                     selectedAnswer && selectedAnswer.includes(answer)
                       ? "transform scale-105"
                       : "hover:bg-[#d94545] hover:text-white"
@@ -623,7 +623,7 @@ export const Recommendations: FC<RecommendationsProps> = ({
       >
         <button
           onClick={handlePrevious}
-          className="absolute left-[-120px] top-1/2 transform -translate-y-1/2 text-white text-6xl hover:text-gray-400 transition"
+          className="absolute left-[-120px] top-1/2 transform -translate-y-1/2 dark:text-white text-black text-6xl dark:hover:text-gray-400 hover:text-black hover:text-opacity-60 transition"
         >
           &lt;
         </button>
@@ -657,7 +657,7 @@ export const Recommendations: FC<RecommendationsProps> = ({
                 </a>
                 <a
                   href="#"
-                  className="block text-lg font-semibold text-gray-400 italic mb-2"
+                  className="block text-lg font-semibold text-opacity-60 italic mb-2"
                 >
                   {movie.title_en || "Заглавие на английски не е налично"}
                 </a>
@@ -669,8 +669,8 @@ export const Recommendations: FC<RecommendationsProps> = ({
                 <div className="flex items-center space-x-8 mb-4">
                   {/* IMDB Rating */}
                   <div className="flex items-center space-x-2">
-                    <FaStar className="text-[#FFCC33] w-8 h-8" />
-                    <span className="text-[#FFCC33] font-bold text-lg">
+                    <FaStar className="dark:text-[#FFCC33] text-[#bf9413] w-8 h-8" />
+                    <span className="dark:text-[#FFCC33] text-[#bf9413] font-bold text-lg">
                       {movie.imdbRating || "N/A"}
                     </span>
                   </div>
@@ -708,7 +708,7 @@ export const Recommendations: FC<RecommendationsProps> = ({
                   <h3 className="text-lg font-semibold mb-2">
                     Защо препоръчваме {movie.title_bg}?
                   </h3>
-                  <p className="text-gray-300 italic">{movie.reason}</p>
+                  <p className="text-opacity-80 italic">{movie.reason}</p>
                 </div>
               )}
 
@@ -722,7 +722,7 @@ export const Recommendations: FC<RecommendationsProps> = ({
                     opacity: isExpanded ? 0.9 : 0.7 // Fade in/out effect
                   }}
                 >
-                  <p className="text-gray-300 italic">
+                  <p className="text-opacity-80 italic">
                     {isExpanded
                       ? movie.description
                       : `${movie.description.substring(
@@ -737,7 +737,7 @@ export const Recommendations: FC<RecommendationsProps> = ({
                   movie.description.length > plotPreviewLength && (
                     <button
                       onClick={openModal} // Open modal instead of expanding plot
-                      className="mt-2 text-blue-400 underline"
+                      className="mt-2 underline"
                     >
                       Пълен сюжет
                     </button>
@@ -749,7 +749,7 @@ export const Recommendations: FC<RecommendationsProps> = ({
                 <h3 className="text-lg font-semibold mb-2">
                   Допълнителна информация
                 </h3>
-                <ul className="text-gray-300 space-y-1">
+                <ul className="text-opacity-80 space-y-1">
                   <li>
                     <strong className="text-primary">Режисьор:</strong>{" "}
                     {movie.director || "Неизвестен"}
@@ -785,7 +785,7 @@ export const Recommendations: FC<RecommendationsProps> = ({
       >
         <button
           onClick={handleNext}
-          className="absolute right-[-120px] top-1/2 transform -translate-y-1/2 text-white text-6xl hover:text-gray-400 transition"
+          className="absolute right-[-120px] top-1/2 transform -translate-y-1/2 dark:text-white text-black text-6xl dark:hover:text-gray-400 hover:text-black hover:text-opacity-60 transition"
         >
           &gt;
         </button>
