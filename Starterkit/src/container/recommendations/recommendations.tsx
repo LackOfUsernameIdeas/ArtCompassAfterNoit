@@ -6,7 +6,7 @@ import {
   QuizQuestion,
   Rating,
   Recommendations
-} from "./recommendationsdata";
+} from "./Recommendationsdata";
 import logo_loader from "../../assets/images/brand-logos/logo_loader.png";
 import { useNavigate } from "react-router-dom";
 import { checkTokenValidity } from "../home/helper_functions";
