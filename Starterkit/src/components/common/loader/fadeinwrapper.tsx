@@ -27,7 +27,7 @@ const FadeInWrapper: React.FC<FadeInWrapperProps> = ({ children }) => {
     }
   }, [location.key]); // Run effect only once during the first load
 
-  const duration = 300; // Smooth transition duration in milliseconds
+  const duration = 100; // Smooth transition duration in milliseconds
   const defaultStyle = {
     opacity: 0,
     transform: "translateY(10px)", // Subtle vertical movement for smoothness
