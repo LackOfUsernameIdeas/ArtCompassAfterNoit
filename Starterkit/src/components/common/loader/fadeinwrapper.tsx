@@ -1,6 +1,7 @@
 import React, { useEffect, useState, ReactNode } from "react";
 import { useLocation } from "react-router-dom";
-import { Transition } from "react-transition-group";
+import { Transition } from "react-transition-group"; // Import CSSTransition from 'react-transition-group'
+import LogoLoader from "../../../assets/images/brand-logos/logo_loader.png";
 
 interface FadeInWrapperProps {
   children: ReactNode;
@@ -8,21 +9,23 @@ interface FadeInWrapperProps {
 
 const FadeInWrapper: React.FC<FadeInWrapperProps> = ({ children }) => {
   const [isPageLoaded, setIsPageLoaded] = useState(false);
+  const [isFirstLoad, setIsFirstLoad] = useState(true); // Track if it's the first load
   const location = useLocation();
 
   useEffect(() => {
-    // Simulating the page load delay with a setTimeout
-    const delay = 100; // Slightly longer delay to avoid abrupt visibility
-    const timeoutId = setTimeout(() => {
-      setIsPageLoaded(true);
-    }, delay);
+    // Simulate initial page load only
+    if (isFirstLoad) {
+      const delay = 100; // Slightly longer delay to avoid abrupt visibility
+      const timeoutId = setTimeout(() => {
+        setIsPageLoaded(true);
+        setIsFirstLoad(false); // After the first load, don't trigger again
+      }, delay);
 
-    // Clear the timeout on component unmount
-    return () => {
-      clearTimeout(timeoutId);
-      setIsPageLoaded(false); // Reset state for the next transition
-    };
-  }, [location.key]); // Trigger effect on route change
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }
+  }, [isFirstLoad]); // Run effect only once during the first load
 
   const duration = 500; // Smooth transition duration in milliseconds
   const defaultStyle = {
@@ -39,18 +42,32 @@ const FadeInWrapper: React.FC<FadeInWrapperProps> = ({ children }) => {
   };
 
   return (
-    <Transition in={isPageLoaded} timeout={duration}>
-      {(state) => (
-        <div
-          style={{
-            ...defaultStyle,
-            ...transitionStyles[state]
-          }}
-        >
-          {children}
+    <>
+      {/* Circle loader while the page is loading */}
+      <Transition
+        in={!isPageLoaded}
+        timeout={500}
+        classNames="fade"
+        unmountOnExit
+      >
+        <div className="fixed inset-0 flex flex-col items-center justify-center space-y-4">
+          <img src={LogoLoader} alt="loading" className="spinner" />
+          <p className="text-xl">Зареждане...</p>
         </div>
-      )}
-    </Transition>
+      </Transition>
+      <Transition in={isPageLoaded} timeout={duration}>
+        {(state) => (
+          <div
+            style={{
+              ...defaultStyle,
+              ...transitionStyles[state]
+            }}
+          >
+            {children}
+          </div>
+        )}
+      </Transition>
+    </>
   );
 };
 
