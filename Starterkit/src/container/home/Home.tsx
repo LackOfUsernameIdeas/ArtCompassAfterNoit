@@ -10,6 +10,7 @@ import GenrePopularityOverTimeComponent from "./Statistics/GenrePopularityOverTi
 import MoviesAndSeriesByRatingsChartComponent from "./Statistics/MoviesAndSeriesByRatingsChartComponent";
 import WidgetCards from "./Statistics/WidgetCards";
 import { useNavigate } from "react-router-dom";
+import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 
 interface CrmProps {}
 
@@ -70,31 +71,33 @@ const Home: FC<CrmProps> = () => {
 
   return (
     <Fragment>
-      <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">
-        <div>
-          <p className="font-semibold text-[1.125rem] text-defaulttextcolor dark:text-defaulttextcolor/70 !mb-0 ">
-            Здравейте, {userData.first_name} {userData.last_name}!
-          </p>
-        </div>
-      </div>
-      <div className="grid grid-cols-12 gap-x-6">
-        <WidgetCards data={data} />
-        <div className="xxl:col-span-6 col-span-12">
-          <div className="xxl:col-span-6 col-span-12">
-            <MoviesByProsperityBubbleChartComponent data={data} />
-            <GenrePopularityOverTimeComponent data={data} />
-            <MoviesAndSeriesByRatingsChartComponent data={data} />
+      <FadeInWrapper>
+        <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">
+          <div>
+            <p className="font-semibold text-[1.125rem] text-defaulttextcolor dark:text-defaulttextcolor/70 !mb-0 ">
+              Здравейте, {userData.first_name} {userData.last_name}!
+            </p>
           </div>
         </div>
-        <div className="xxl:col-span-6 col-span-12">
-          <TableComponent data={data} />
-          <TopRecommendationsBarChartComponent data={data} />
-          <TreemapComponent data={data} />
-          <CountryBarChartComponent data={data} />
+        <div className="grid grid-cols-12 gap-x-6">
+          <WidgetCards data={data} />
+          <div className="xxl:col-span-6 col-span-12">
+            <div className="xxl:col-span-6 col-span-12">
+              <MoviesByProsperityBubbleChartComponent data={data} />
+              <GenrePopularityOverTimeComponent data={data} />
+              <MoviesAndSeriesByRatingsChartComponent data={data} />
+            </div>
+          </div>
+          <div className="xxl:col-span-6 col-span-12">
+            <TableComponent data={data} />
+            <TopRecommendationsBarChartComponent data={data} />
+            <TreemapComponent data={data} />
+            <CountryBarChartComponent data={data} />
+          </div>
         </div>
-      </div>
-      <div className="grid grid-cols-12 gap-x-6"></div>
-      <div className="transition fixed inset-0 z-50 bg-gray-900 bg-opacity-50 dark:bg-opacity-80 opacity-0 hidden"></div>
+        <div className="grid grid-cols-12 gap-x-6"></div>
+        <div className="transition fixed inset-0 z-50 bg-gray-900 bg-opacity-50 dark:bg-opacity-80 opacity-0 hidden"></div>
+      </FadeInWrapper>
     </Fragment>
   );
 };
