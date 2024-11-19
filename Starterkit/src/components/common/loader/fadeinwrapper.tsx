@@ -1,6 +1,6 @@
 import React, { useEffect, useState, ReactNode } from "react";
+import { CSSTransition } from "react-transition-group";
 import { useLocation } from "react-router-dom";
-import { Transition } from "react-transition-group"; // Import CSSTransition from 'react-transition-group'
 import LogoLoader from "../../../assets/images/brand-logos/logo_loader.png";
 
 interface FadeInWrapperProps {
@@ -13,40 +13,25 @@ const FadeInWrapper: React.FC<FadeInWrapperProps> = ({ children }) => {
   const location = useLocation();
 
   useEffect(() => {
-    // Simulate initial page load only
     if (isFirstLoad) {
-      const delay = 100; // Slightly longer delay to avoid abrupt visibility
+      const delay = 100; // Delay before showing content
       const timeoutId = setTimeout(() => {
         setIsPageLoaded(true);
-        setIsFirstLoad(false); // After the first load, don't trigger again
+        setIsFirstLoad(false); // Mark as no longer first load
       }, delay);
 
       return () => {
         clearTimeout(timeoutId);
       };
     }
-  }, [location.key]); // Run effect only once during the first load
-
-  const duration = 100; // Smooth transition duration in milliseconds
-  const defaultStyle = {
-    opacity: 0,
-    transform: "translateY(10px)", // Subtle vertical movement for smoothness
-    transition: `opacity ${duration}ms ease-out, transform ${duration}ms ease-out`
-  };
-
-  const transitionStyles: { [state: string]: React.CSSProperties } = {
-    entering: { opacity: 0, transform: "translateY(10px)" },
-    entered: { opacity: 1, transform: "translateY(0)" },
-    exiting: { opacity: 0, transform: "translateY(10px)" },
-    exited: { opacity: 0, transform: "translateY(10px)" }
-  };
+  }, [location.key]);
 
   return (
     <>
-      {/* Circle loader while the page is loading */}
-      <Transition
+      {/* Loader with "fade" class transition */}
+      <CSSTransition
         in={!isPageLoaded}
-        timeout={duration}
+        timeout={600} // Match CSS transition duration
         classNames="fade"
         unmountOnExit
       >
@@ -54,19 +39,17 @@ const FadeInWrapper: React.FC<FadeInWrapperProps> = ({ children }) => {
           <img src={LogoLoader} alt="loading" className="spinner" />
           <p className="text-xl">Зареждане...</p>
         </div>
-      </Transition>
-      <Transition in={isPageLoaded} timeout={duration}>
-        {(state) => (
-          <div
-            style={{
-              ...defaultStyle,
-              ...transitionStyles[state]
-            }}
-          >
-            {children}
-          </div>
-        )}
-      </Transition>
+      </CSSTransition>
+
+      {/* Children with "fade-no-transform" class transition */}
+      <CSSTransition
+        in={isPageLoaded}
+        timeout={600} // Match CSS transition duration
+        classNames="fade-no-transform"
+        unmountOnExit
+      >
+        <div>{children}</div>
+      </CSSTransition>
     </>
   );
 };
