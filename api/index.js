@@ -48,10 +48,10 @@ const transporter = nodemailer.createTransport({
 app.post("/signup", (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
-  db.checkEmailExists(email, (err, results) => {
+  db.checkEmailExists(email, (err, result) => {
     if (err) return res.status(500).json({ error: "Database query error" });
 
-    if (results.length > 0) {
+    if (result.length > 0) {
       return res
         .status(400)
         .json({ error: "Профил с този имейл вече съществува." });
@@ -219,14 +219,14 @@ app.post("/verify-email", (req, res) => {
 app.post("/signin", (req, res) => {
   const { email, password, rememberMe } = req.body;
 
-  db.findUserByEmail(email, (err, results) => {
+  db.findUserByEmail(email, (err, result) => {
     if (err) return res.status(400).json({ error: err.message });
-    if (results.length === 0)
+    if (result.length === 0)
       return res
         .status(400)
         .json({ error: "Не съществува потребител с този имейл адрес!" });
 
-    const user = results[0];
+    const user = result[0];
     const isMatch = bcrypt.compareSync(password, user.password);
     if (!isMatch)
       return res
@@ -244,14 +244,14 @@ app.post("/signin", (req, res) => {
 app.post("/password-reset-request", (req, res) => {
   const { email } = req.body;
 
-  db.findUserByEmail(email, (err, results) => {
+  db.findUserByEmail(email, (err, result) => {
     if (err) return res.status(400).json({ error: err.message });
-    if (results.length === 0)
+    if (result.length === 0)
       return res
         .status(400)
         .json({ error: "Не съществува потребител с този имейл адрес!" });
 
-    const user = results[0];
+    const user = result[0];
     const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, {
       expiresIn: "15m"
     });
@@ -321,14 +321,14 @@ app.get("/user-data", (req, res) => {
 
     const userId = decoded.id;
 
-    db.getUserById(userId, (err, results) => {
+    db.getUserById(userId, (err, result) => {
       if (err) return res.status(500).json({ error: "Database query error" });
-      if (results.length === 0)
+      if (result.length === 0)
         return res
           .status(404)
           .json({ error: "Не съществува потребител с този имейл адрес!" });
 
-      const user = results[0];
+      const user = result[0];
       res.json(user);
     });
   });
@@ -515,13 +515,13 @@ app.get("/stats/platform/average-scores", (req, res) => {
 
 // Вземане на данни за най-препоръчвани филми/сериали в платформата
 app.get("/stats/platform/top-recommendations-with-all-data", (req, res) => {
-  db.getTopRecommendations((err, results) => {
+  db.getTopRecommendations((err, result) => {
     if (err) {
       return res
         .status(500)
         .json({ error: "Error fetching top recommendations" });
     }
-    res.json({ topRecs: results });
+    res.json(result);
   });
 });
 
@@ -529,11 +529,11 @@ app.get("/stats/platform/top-recommendations-with-all-data", (req, res) => {
 app.get("/stats/platform/top-countries", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
 
-  db.getTopCountries(limit, (err, results) => {
+  db.getTopCountries(limit, (err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top countries" });
     }
-    res.json({ topRecs: results });
+    res.json(result);
   });
 });
 
@@ -541,23 +541,23 @@ app.get("/stats/platform/top-countries", async (req, res) => {
 app.get("/stats/platform/top-genres", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
 
-  db.getTopGenres(limit, (err, results) => {
+  db.getTopGenres(limit, (err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top genres" });
     }
-    res.json({ topRecs: results });
+    res.json(result);
   });
 });
 
 // Вземане на данни за най-популярни жанрове във времето в платформата
 app.get("/stats/platform/genre-popularity-over-time", async (req, res) => {
-  db.getGenrePopularityOverTime((err, results) => {
+  db.getGenrePopularityOverTime((err, result) => {
     if (err) {
       return res
         .status(500)
         .json({ error: "Error fetching genre popularity over time" });
     }
-    res.json(results);
+    res.json(result);
   });
 });
 
@@ -565,11 +565,11 @@ app.get("/stats/platform/genre-popularity-over-time", async (req, res) => {
 app.get("/stats/platform/top-actors", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
 
-  db.getTopActors(limit, (err, results) => {
+  db.getTopActors(limit, (err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top actors" });
     }
-    res.json({ topRecs: results });
+    res.json(result);
   });
 });
 
@@ -577,11 +577,11 @@ app.get("/stats/platform/top-actors", async (req, res) => {
 app.get("/stats/platform/top-directors", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
 
-  db.getTopDirectors(limit, (err, results) => {
+  db.getTopDirectors(limit, (err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top directors" });
     }
-    res.json({ topRecs: results });
+    res.json(result);
   });
 });
 
@@ -589,83 +589,83 @@ app.get("/stats/platform/top-directors", async (req, res) => {
 app.get("/stats/platform/top-writers", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
 
-  db.getTopWriters(limit, (err, results) => {
+  db.getTopWriters(limit, (err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top writers" });
     }
-    res.json({ topRecs: results });
+    res.json(result);
   });
 });
 
 // Вземане на данни за награди оскар за всеки филм/сериал в платформата
 app.get("/stats/platform/oscars-by-movie", async (req, res) => {
-  db.getOscarsByMovie((err, results) => {
+  db.getOscarsByMovie((err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching oscars" });
     }
-    res.json({ oscars: results });
+    res.json(result);
   });
 });
 
 // Вземане на данни за всички награди за всеки филм/сериал в платформата
 app.get("/stats/platform/total-awards-by-movie", async (req, res) => {
-  db.getTotalAwardsByMovieOrSeries((err, results) => {
+  db.getTotalAwardsByMovieOrSeries((err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching total awards" });
     }
-    res.json({ totalAwards: results });
+    res.json(result);
   });
 });
 
 // Вземане на данни за общ брой на награди в платформата
 app.get("/stats/platform/total-awards", async (req, res) => {
-  db.getTotalAwardsCount((err, results) => {
+  db.getTotalAwardsCount((err, result) => {
     if (err) {
       return res
         .status(500)
         .json({ error: "Error fetching total awards count" });
     }
-    res.json({ totalAwards: results });
+    res.json(result);
   });
 });
 
 // Вземане на данни за филмови режисьори в платформата, сортирани по успешност
 app.get("/stats/platform/sorted-directors-by-prosperity", async (req, res) => {
-  db.getSortedDirectorsByProsperity((err, results) => {
+  db.getSortedDirectorsByProsperity((err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching sorted directors" });
     }
-    res.json({ directors: results });
+    res.json(result);
   });
 });
 
 // Вземане на данни за актьори в платформата, сортирани по успешност
 app.get("/stats/platform/sorted-actors-by-prosperity", async (req, res) => {
-  db.getSortedActorsByProsperity((err, results) => {
+  db.getSortedActorsByProsperity((err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching sorted actors" });
     }
-    res.json({ actors: results });
+    res.json(result);
   });
 });
 
 // Вземане на данни за сценаристи в платформата, сортирани по успешност
 app.get("/stats/platform/sorted-writers-by-prosperity", async (req, res) => {
-  db.getSortedWritersByProsperity((err, results) => {
+  db.getSortedWritersByProsperity((err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching sorted writers" });
     }
-    res.json({ writers: results });
+    res.json(result);
   });
 });
 
 // Вземане на данни за филми в платформата, сортирани по успешност
 app.get("/stats/platform/sorted-movies-by-prosperity", async (req, res) => {
-  db.getSortedMoviesByProsperity((err, results) => {
+  db.getSortedMoviesByProsperity((err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching sorted movies" });
     }
-    res.json({ movies: results });
+    res.json(result);
   });
 });
 
@@ -675,13 +675,13 @@ app.get(
   async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
 
-    db.getTopMoviesAndSeriesByMetascore(limit, (err, results) => {
+    db.getTopMoviesAndSeriesByMetascore(limit, (err, result) => {
       if (err) {
         return res
           .status(500)
           .json({ error: "Error fetching sorted movies by meta score" });
       }
-      res.json({ movies: results });
+      res.json(result);
     });
   }
 );
@@ -692,13 +692,13 @@ app.get(
   async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
 
-    db.getTopMoviesAndSeriesByIMDbRating(limit, (err, results) => {
+    db.getTopMoviesAndSeriesByIMDbRating(limit, (err, result) => {
       if (err) {
         return res
           .status(500)
           .json({ error: "Error fetching sorted movies by IMDb rating" });
       }
-      res.json({ entries: results });
+      res.json(result);
     });
   }
 );
@@ -709,13 +709,13 @@ app.get(
   async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
 
-    db.getTopMoviesAndSeriesByRottenTomatoesRating(limit, (err, results) => {
+    db.getTopMoviesAndSeriesByRottenTomatoesRating(limit, (err, result) => {
       if (err) {
         return res.status(500).json({
           error: "Error fetching sorted movies by rotten tomatoes rating"
         });
       }
-      res.json({ entries: results });
+      res.json(result);
     });
   }
 );
@@ -737,14 +737,14 @@ app.get("/stats/platform/all", async (req, res) => {
       const userId = decoded.id;
 
       // Proceed with fetching user data
-      db.getUserById(userId, (err, results) => {
+      db.getUserById(userId, (err, result) => {
         if (err) return res.status(500).json({ error: "Database query error" });
-        if (results.length === 0) {
+        if (result.length === 0) {
           return res.status(404).json({ error: "User not found!" });
         }
 
         // User data fetched successfully
-        const user = results[0];
+        const user = result[0];
 
         // User is authenticated, now fetch platform statistics
         const limit = parseInt(req.query.limit) || 10;
@@ -752,99 +752,99 @@ app.get("/stats/platform/all", async (req, res) => {
         // Run all queries in parallel
         Promise.all([
           new Promise((resolve, reject) =>
-            db.getUsersCount((err, results) =>
-              err ? reject(err) : resolve(results)
+            db.getUsersCount((err, result) =>
+              err ? reject(err) : resolve(result)
             )
           ),
           new Promise((resolve, reject) =>
-            db.getTopRecommendations((err, results) =>
-              err ? reject(err) : resolve(results)
+            db.getTopRecommendations((err, result) =>
+              err ? reject(err) : resolve(result)
             )
           ),
           new Promise((resolve, reject) =>
-            db.getTopGenres(limit, (err, results) =>
-              err ? reject(err) : resolve(results)
+            db.getTopGenres(limit, (err, result) =>
+              err ? reject(err) : resolve(result)
             )
           ),
           new Promise((resolve, reject) =>
-            db.getGenrePopularityOverTime((err, results) =>
-              err ? reject(err) : resolve(results)
+            db.getGenrePopularityOverTime((err, result) =>
+              err ? reject(err) : resolve(result)
             )
           ),
           new Promise((resolve, reject) =>
-            db.getTopActors(limit, (err, results) =>
-              err ? reject(err) : resolve(results)
+            db.getTopActors(limit, (err, result) =>
+              err ? reject(err) : resolve(result)
             )
           ),
           new Promise((resolve, reject) =>
-            db.getTopDirectors(limit, (err, results) =>
-              err ? reject(err) : resolve(results)
+            db.getTopDirectors(limit, (err, result) =>
+              err ? reject(err) : resolve(result)
             )
           ),
           new Promise((resolve, reject) =>
-            db.getTopWriters(limit, (err, results) =>
-              err ? reject(err) : resolve(results)
+            db.getTopWriters(limit, (err, result) =>
+              err ? reject(err) : resolve(result)
             )
           ),
           new Promise((resolve, reject) =>
-            db.getOscarsByMovie((err, results) =>
-              err ? reject(err) : resolve(results)
+            db.getOscarsByMovie((err, result) =>
+              err ? reject(err) : resolve(result)
             )
           ),
           new Promise((resolve, reject) =>
-            db.getTotalAwardsByMovieOrSeries((err, results) =>
-              err ? reject(err) : resolve(results)
+            db.getTotalAwardsByMovieOrSeries((err, result) =>
+              err ? reject(err) : resolve(result)
             )
           ),
           new Promise((resolve, reject) =>
-            db.getTotalAwardsCount((err, results) =>
-              err ? reject(err) : resolve(results)
+            db.getTotalAwardsCount((err, result) =>
+              err ? reject(err) : resolve(result)
             )
           ),
           new Promise((resolve, reject) =>
-            db.getSortedDirectorsByProsperity((err, results) =>
-              err ? reject(err) : resolve(results)
+            db.getSortedDirectorsByProsperity((err, result) =>
+              err ? reject(err) : resolve(result)
             )
           ),
           new Promise((resolve, reject) =>
-            db.getSortedActorsByProsperity((err, results) =>
-              err ? reject(err) : resolve(results)
+            db.getSortedActorsByProsperity((err, result) =>
+              err ? reject(err) : resolve(result)
             )
           ),
           new Promise((resolve, reject) =>
-            db.getSortedWritersByProsperity((err, results) =>
-              err ? reject(err) : resolve(results)
+            db.getSortedWritersByProsperity((err, result) =>
+              err ? reject(err) : resolve(result)
             )
           ),
           new Promise((resolve, reject) =>
-            db.getSortedMoviesByProsperity((err, results) =>
-              err ? reject(err) : resolve(results)
+            db.getSortedMoviesByProsperity((err, result) =>
+              err ? reject(err) : resolve(result)
             )
           ),
           new Promise((resolve, reject) =>
-            db.getTopMoviesAndSeriesByMetascore(limit, (err, results) =>
-              err ? reject(err) : resolve(results)
+            db.getTopMoviesAndSeriesByMetascore(limit, (err, result) =>
+              err ? reject(err) : resolve(result)
             )
           ),
           new Promise((resolve, reject) =>
-            db.getTopMoviesAndSeriesByIMDbRating(limit, (err, results) =>
-              err ? reject(err) : resolve(results)
+            db.getTopMoviesAndSeriesByIMDbRating(limit, (err, result) =>
+              err ? reject(err) : resolve(result)
             )
           ),
           new Promise((resolve, reject) =>
             db.getTopMoviesAndSeriesByRottenTomatoesRating(
               limit,
-              (err, results) => (err ? reject(err) : resolve(results))
+              (err, result) => (err ? reject(err) : resolve(result))
             )
           ),
           new Promise((resolve, reject) =>
-            db.getAverageBoxOfficeAndScores((err, results) =>
-              err ? reject(err) : resolve(results)
+            db.getAverageBoxOfficeAndScores((err, result) =>
+              err ? reject(err) : resolve(result)
             )
           ),
           new Promise((resolve, reject) =>
-            db.getTopCountries(limit, (err, results) =>
-              err ? reject(err) : resolve(results)
+            db.getTopCountries(limit, (err, result) =>
+              err ? reject(err) : resolve(result)
             )
           )
         ])

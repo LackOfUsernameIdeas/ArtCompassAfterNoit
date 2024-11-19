@@ -11,7 +11,8 @@ import {
   MovieProsperityData,
   MovieData,
   RecommendationData,
-  Category
+  Category,
+  DataType
 } from "./home-types";
 
 // ==============================
@@ -63,23 +64,95 @@ export const fetchData = async (
   setData: React.Dispatch<React.SetStateAction<any>>
 ): Promise<void> => {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/stats/platform/all`,
+    // Fetch user data independently
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/user-data`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then((res) => res.json())
+      .then((userData) => setUserData(userData)) // Set userData independently here
+      .catch((error) => console.error("Error fetching user data:", error));
+
+    // Fetch statistics data independently
+    const endpoints = [
+      { key: "usersCount", endpoint: "/stats/platform/users-count" },
       {
+        key: "topRecommendations",
+        endpoint: "/stats/platform/top-recommendations-with-all-data"
+      },
+      { key: "topGenres", endpoint: "/stats/platform/top-genres" },
+      {
+        key: "genrePopularityOverTime",
+        endpoint: "/stats/platform/genre-popularity-over-time"
+      },
+      { key: "topActors", endpoint: "/stats/platform/top-actors" },
+      {
+        key: "averageBoxOfficeAndScores",
+        endpoint: "/stats/platform/average-scores"
+      },
+      { key: "topCountries", endpoint: "/stats/platform/top-countries" },
+      { key: "topDirectors", endpoint: "/stats/platform/top-directors" },
+      { key: "topWriters", endpoint: "/stats/platform/top-writers" },
+      { key: "oscarsByMovie", endpoint: "/stats/platform/oscars-by-movie" },
+      {
+        key: "totalAwardsByMovieOrSeries",
+        endpoint: "/stats/platform/total-awards-by-movie"
+      },
+      { key: "totalAwards", endpoint: "/stats/platform/total-awards" },
+      {
+        key: "sortedDirectorsByProsperity",
+        endpoint: "/stats/platform/sorted-directors-by-prosperity"
+      },
+      {
+        key: "sortedActorsByProsperity",
+        endpoint: "/stats/platform/sorted-actors-by-prosperity"
+      },
+      {
+        key: "sortedWritersByProsperity",
+        endpoint: "/stats/platform/sorted-writers-by-prosperity"
+      },
+      {
+        key: "sortedMoviesByProsperity",
+        endpoint: "/stats/platform/sorted-movies-by-prosperity"
+      },
+      {
+        key: "sortedMoviesAndSeriesByMetascore",
+        endpoint: "/stats/platform/sorted-movies-and-series-by-metascore"
+      },
+      {
+        key: "sortedMoviesAndSeriesByIMDbRating",
+        endpoint: "/stats/platform/sorted-movies-and-series-by-imdb-rating"
+      },
+      {
+        key: "sortedMoviesAndSeriesByRottenTomatoesRating",
+        endpoint:
+          "/stats/platform/sorted-movies-and-series-by-rotten-tomatoes-rating"
+      }
+    ];
+
+    // Loop over each endpoint, fetch data, and update state independently
+    endpoints.forEach(({ key, endpoint }) => {
+      fetch(`${import.meta.env.VITE_API_BASE_URL}${endpoint}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         }
-      }
-    );
-    if (!response.ok) throw new Error("Failed to fetch data");
-    const data = await response.json();
-
-    setUserData(data.user);
-    setData(data);
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setData((prevState: DataType) => ({
+            ...prevState,
+            [key]: data
+          }));
+        })
+        .catch((error) => console.error(`Error fetching ${key}:`, error));
+    });
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error in fetchData:", error);
     throw error;
   }
 };
@@ -228,10 +301,7 @@ export const paginateBarChartData = (
     ? sortByCategory(seriesData, category)
     : seriesData;
   const start = (currentPage - 1) * pageSize;
-  console.log(
-    "sortedData.slice(start, start + pageSize);: ",
-    sortedData.slice(start, start + pageSize)
-  );
+
   return sortedData.slice(start, start + pageSize);
 };
 
