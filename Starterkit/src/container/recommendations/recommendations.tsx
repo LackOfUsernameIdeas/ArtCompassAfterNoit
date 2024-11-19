@@ -802,7 +802,7 @@ const RecommendationList: FC<RecommendationList> = () => {
     };
 
     validateToken();
-  }, [navigate]); // Добавяне на navigate като зависимост
+  }, []); // Добавяне на navigate като зависимост
 
   return (
     <FadeInWrapper>
