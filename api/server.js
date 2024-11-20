@@ -16,32 +16,37 @@ require("dotenv").config();
 const whitelist = ["http://localhost:5174", "https://cinecompass.noit.eu"];
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow local dev and hosted domain, deny others
     if (!origin || whitelist.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: false, //true for hosting
-  optionSuccessStatus: 200
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  optionSuccessStatus: 204
 };
 
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // Handle preflight requests
 
 let verificationCodes = {};
 
+const SECRET_KEY = "1a2b3c4d5e6f7g8h9i0jklmnopqrstuvwxyz123456";
+const EMAIL_USER = "no-reply@cinecompass-api.noit.eu";
+const EMAIL_PASS = "Noit_2025";
+
 // Create a transporter object using SMTP transport
 const transporter = nodemailer.createTransport({
-  service: "gmail", // or any other email service
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
+  host: "cinecompass-api.noit.eu", // Replace with your cPanel mail server
+  port: 587, // Use 465 for SSL or 587 for TLS
+  secure: false, // true for SSL (port 465), false for TLS (port 587)
   auth: {
-    user: process.env.EMAIL_USER, // Your email address
-    pass: process.env.EMAIL_PASS // Your email password
+    user: EMAIL_USER, // Your email address
+    pass: EMAIL_PASS // Your email password
   },
-  debug: true
+  debug: true // Optional, logs SMTP communication for troubleshooting
 });
 
 // Signup Route
@@ -57,40 +62,45 @@ app.post("/signup", (req, res) => {
         .json({ error: "Профил с този имейл вече съществува." });
     }
 
-    // Генерира код за потвърждение
+    // Generate a verification code
     const verificationCode = crypto.randomInt(100000, 999999).toString();
 
-    // Съхранява временно кода
+    // Temporarily store the code
     verificationCodes[email] = {
       code: verificationCode,
       firstName,
       lastName,
       password, // Store the password temporarily
-      expiresAt: Date.now() + 15 * 60 * 1000 // Задава 15 минути валидност
+      expiresAt: Date.now() + 15 * 60 * 1000 // Set 15 minutes validity
     };
 
-    // Изпраща код за потвърждение по имейл
+    // Send the verification code via email
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: `CineCompass <${EMAIL_USER}>`, // Friendly sender name
       to: email,
-      subject: "Шестцифрен код за потвърждение от ИМЕ_НА_ПРОЕКТА",
+      subject: "Шестцифрен код за потвърждение от CineCompass",
       html: `
-      <div style="text-align: center; background-color: rgba(244, 211, 139, 0.5); margin: 2% 3%; padding: 3% 1%; border: 4px dotted rgb(178, 50, 0); border-radius: 20px">
-        <h2>Благодарим Ви за регистрацията в <span style="color: rgb(178, 50, 0); font-weight: 600;">🕮</span>ИМЕ_НА_ПРОЕКТА<span style="color: rgb(178, 50, 0); font-weight: 600;">🕮</span></h2>
+        <div style="text-align: center; background-color: rgba(244, 211, 139, 0.5); margin: 2% 3%; padding: 3% 1%; border: 4px dotted rgb(178, 50, 0); border-radius: 20px">
+          <h2>Благодарим Ви за регистрацията в CineCompass</h2>
           <hr style="border: 0.5px solid rgb(178, 50, 0); width: 18%; margin-top: 6%; margin-bottom: 4%"></hr>
-        <p>Вашият шестцифрен код е <strong style="font-size: 20px; color: rgb(178, 50, 0)">${verificationCode}</strong>.</p>
-      </div>
-      <div>
-        <p style="border-radius: 5px; background-color: rgba(178, 50, 0, 0.2); text-align: center; font-size: 13px; margin: 5% 25% 0% 25%">Не сте поискали код? Игнорирайте този имейл.</p>
-      </div>`
+          <p>Вашият шестцифрен код е <strong style="font-size: 20px; color: rgb(178, 50, 0)">${verificationCode}</strong>.</p>
+        </div>
+        <div>
+          <p style="border-radius: 5px; background-color: rgba(178, 50, 0, 0.2); text-align: center; font-size: 13px; margin: 5% 25% 0% 25%">Не сте поискали код? Игнорирайте този имейл.</p>
+        </div>`
     };
 
+    console.log("transporting");
     transporter.sendMail(mailOptions, (error, info) => {
-      if (error)
+      if (error) {
+        console.log("error: ", error);
         return res
           .status(500)
           .json({ error: "Не успяхме да изпратим имейл! :(" });
-      res.json({ message: "Кодът за потвърждение е изпратен на вашия имейл!" });
+      }
+      res.json({
+        message: "Кодът за потвърждение е изпратен на вашия имейл!"
+      });
     });
   });
 });
@@ -106,7 +116,7 @@ app.post("/handle-submit", (req, res) => {
   }
 
   // Verify and decode the token
-  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) {
       return res.status(401).json({ error: "Invalid token" });
     }
@@ -154,7 +164,7 @@ app.post("/resend", (req, res) => {
 
   // Изпраща нов код за потвърждение по имейл
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: EMAIL_USER,
     to: email,
     subject: "Нов шестцифрен код за потвърждение от ИМЕ_НА_ПРОЕКТА",
     html: `
@@ -233,7 +243,7 @@ app.post("/signin", (req, res) => {
         .status(400)
         .json({ error: "Въведената парола е грешна или непълна!" });
 
-    const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, {
+    const token = jwt.sign({ id: user.id }, SECRET_KEY, {
       expiresIn: rememberMe ? "7d" : "2h"
     });
     res.json({ message: "Успешно влизане!", token });
@@ -252,15 +262,15 @@ app.post("/password-reset-request", (req, res) => {
         .json({ error: "Не съществува потребител с този имейл адрес!" });
 
     const user = result[0];
-    const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, {
+    const token = jwt.sign({ id: user.id }, SECRET_KEY, {
       expiresIn: "15m"
     });
 
     // Create a reset link
-    const resetLink = `http://localhost:5174/resetpassword/resetcover/${token}`;
+    const resetLink = `https://cinecompass.noit.eu/resetpassword/resetcover/${token}`;
 
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: EMAIL_USER,
       to: email,
       subject: "Промяна на паролата за ИМЕ_НА_ПРОЕКТА",
       html: `<p>Натиснете <a href="${resetLink}">тук</a>, за да промените паролата си.</p>`
@@ -282,7 +292,7 @@ app.post("/password-reset-request", (req, res) => {
 app.post("/password-reset", (req, res) => {
   const { token, newPassword } = req.body;
 
-  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) return res.status(400).json({ error: "Invalid or expired token" });
 
     const userId = decoded.id;
@@ -302,7 +312,7 @@ app.post("/password-reset", (req, res) => {
 app.post("/token-validation", (req, res) => {
   const { token } = req.body;
 
-  jwt.verify(token, process.env.SECRET_KEY, (err) => {
+  jwt.verify(token, SECRET_KEY, (err) => {
     if (err) return res.json({ valid: false });
     res.json({ valid: true });
   });
@@ -316,7 +326,7 @@ app.get("/user-data", (req, res) => {
     return res.status(401).json({ error: "Token not provided" });
   }
 
-  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
 
     const userId = decoded.id;
@@ -355,7 +365,7 @@ app.post("/save-user-preferences", (req, res) => {
   } = req.body;
 
   // Verify the token to get the user ID
-  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) {
       console.log(err);
       return res.status(401).json({ error: "Invalid token" });
@@ -446,7 +456,7 @@ app.post("/save-recommendation", (req, res) => {
     date
   } = req.body;
 
-  jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
     const userId = decoded.id;
     db.saveRecommendation(
@@ -482,6 +492,19 @@ app.post("/save-recommendation", (req, res) => {
       totalSeasons,
       date,
       (err, result) => {
+        console.log(
+          "title_en: \n" +
+            title_en +
+            "\n" +
+            "title_bg: \n" +
+            title_bg +
+            "\n" +
+            "genre_en: \n" +
+            genre_en +
+            "\n" +
+            "genre_bg: \n" +
+            genre_bg
+        );
         if (err) {
           return res.status(500).json({ error: err.message });
         }
@@ -731,7 +754,7 @@ app.get("/stats/platform/all", async (req, res) => {
     }
 
     // Verify the token
-    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+    jwt.verify(token, SECRET_KEY, (err, decoded) => {
       if (err) return res.status(401).json({ error: "Invalid token" });
 
       const userId = decoded.id;

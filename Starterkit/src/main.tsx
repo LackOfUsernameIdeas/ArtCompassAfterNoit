@@ -7,7 +7,7 @@ import Authenticationlayout from "./pages/AuthenticationRoute.tsx";
 import Resetcover from "./container/authentication/resetpassword/Resetpassword.tsx";
 import Signupcover from "./container/authentication/signup/Signup.tsx";
 import Twostepcover from "./container/authentication/twostepverification/Twostepverification.tsx";
-import Test from "./container/recommendations/Recommendations.tsx";
+import Test from "./container/recommendations/recommendations.tsx";
 import "./index.scss";
 import ResetRequest from "./container/authentication/resetpassword/Resetrequest.tsx";
 import PrivateRoute from "./pages/PrivateRoute.tsx";
