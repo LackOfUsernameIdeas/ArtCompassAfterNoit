@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 require("dotenv").config();
 
-const whitelist = ["http://localhost:5174"];
+const whitelist = ["http://localhost:5174", "https://cinecompass.noit.eu"];
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow local dev and hosted domain, deny others
