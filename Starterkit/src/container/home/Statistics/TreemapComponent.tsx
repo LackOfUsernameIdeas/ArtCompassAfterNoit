@@ -35,12 +35,12 @@ const TreemapComponent: FC<TreemapComponentProps> = ({ data }) => {
         <div className="box custom-box h-[30rem]">
           <div className="box-header justify-between">
             <div className="box-title">
+              Най-често препоръчвани{" "}
               {
                 tableCategoryDisplayNames[
                   topStatsSortCategory as keyof typeof tableCategoryDisplayNames
                 ]
-              }{" "}
-              по бройка
+              }
             </div>
             <div className="flex flex-wrap gap-2">
               <div

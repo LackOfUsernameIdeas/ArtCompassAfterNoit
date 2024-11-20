@@ -9,12 +9,12 @@ import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { TopRecommendationsBarChart } from "./Charts";
 
-interface TopRecommendationsBarChartComponentProps {
+interface TopMovieRecommendationsChartComponentProps {
   data: DataType;
 }
 
-const TopRecommendationsBarChartComponent: FC<
-  TopRecommendationsBarChartComponentProps
+const TopMovieRecommendationsChartComponent: FC<
+  TopMovieRecommendationsChartComponentProps
 > = ({ data }) => {
   const [seriesDataForTopStatsChart, setSeriesDataForTopStatsChart] = useState<
     (MovieData | RecommendationData)[]
@@ -65,7 +65,7 @@ const TopRecommendationsBarChartComponent: FC<
         <div className="xl:col-span-6 col-span-12">
           <div className="box custom-box">
             <div className="custom-box-header">
-              <div className="box-title">Най-често препоръчвани филми</div>
+              <div className="box-title">Най-често препоръчвани Филми</div>
             </div>
             <div className="box-body h-[22rem]">
               <div id="donut-simple">
@@ -174,4 +174,4 @@ const TopRecommendationsBarChartComponent: FC<
   );
 };
 
-export default TopRecommendationsBarChartComponent;
+export default TopMovieRecommendationsChartComponent;

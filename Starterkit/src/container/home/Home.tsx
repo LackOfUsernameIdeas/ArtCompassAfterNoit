@@ -3,7 +3,7 @@ import { DataType, UserData } from "./home-types";
 import { checkTokenValidity, fetchData } from "./helper_functions";
 import TableComponent from "./Statistics/TableComponent";
 import TreemapComponent from "./Statistics/TreemapComponent";
-import TopRecommendationsBarChartComponent from "./Statistics/TopRecommendationsBarChart";
+import TopMovieRecommendationsChartComponent from "./Statistics/TopMovieRecommendationsChartComponent";
 import CountryBarChartComponent from "./Statistics/CountryBarChartComponent";
 import MoviesByProsperityBubbleChartComponent from "./Statistics/MoviesByProsperityBubbleChartComponent";
 import GenrePopularityOverTimeComponent from "./Statistics/GenrePopularityOverTimeComponent";
@@ -90,7 +90,7 @@ const Home: FC<CrmProps> = () => {
           </div>
           <div className="xxl:col-span-6 col-span-12">
             <TableComponent data={data} />
-            <TopRecommendationsBarChartComponent data={data} />
+            <TopMovieRecommendationsChartComponent data={data} />
             <TreemapComponent data={data} />
             <CountryBarChartComponent data={data} />
           </div>
