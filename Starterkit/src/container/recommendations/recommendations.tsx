@@ -71,28 +71,22 @@ const RecommendationList: FC<RecommendationList> = () => {
     "Развълнуван/-на",
     "Любопитен/-на",
     "Тъжен/-на",
-    "Изплашен/-на",
     "Щастлив/-а",
     "Спокоен/-йна",
     "Разочарован/-на",
     "Уморен/-на",
     "Нервен/-на",
-    "Уверен/-на",
     "Разгневен/-на",
     "Стресиран/-на",
-    "Съсредоточен/-на",
-    "Благодарен/-на",
     "Носталгичен/-на",
     "Безразличен/-на",
     "Оптимистичен/-на",
     "Песимистичен/-на",
-    "Празен/-на",
     "Весел/-а",
     "Смутен/-на",
     "Озадачен/-на",
     "Разревожен/-на",
-    "Вдъхновен/-на",
-    "Досаден/-на"
+    "Вдъхновен/-на"
   ];
 
   const timeAvailabilityOptions = [
@@ -221,12 +215,40 @@ const RecommendationList: FC<RecommendationList> = () => {
     localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
   const openAIKey = import.meta.env.VITE_OPENAI_API_KEY;
 
+  console.log("genres: ", genres);
+  console.log(
+    "genresEN",
+    genres.length > 0 ? genres.map((g) => g.en).join(", ") : null
+  );
+  console.log(
+    "genresBG",
+    genres.length > 0 ? genres.map((g) => g.bg).join(", ") : null
+  );
+
   const saveUserPreferences = async (date: string) => {
     try {
       const preferredGenresEn =
         genres.length > 0 ? genres.map((g) => g.en).join(", ") : null;
       const preferredGenresBg =
         genres.length > 0 ? genres.map((g) => g.bg).join(", ") : null;
+
+      console.log("preferences: ", {
+        token: token,
+        preferred_genres_en: preferredGenresEn,
+        preferred_genres_bg: preferredGenresBg,
+        mood: Array.isArray(moods) ? moods.join(", ") : null,
+        timeAvailability,
+        preferred_age: age,
+        preferred_type: type,
+        preferred_actors: actors,
+        preferred_directors: directors,
+        preferred_countries: countries,
+        preferred_pacing: pacing,
+        preferred_depth: depth,
+        preferred_target_group: targetGroup,
+        interests: interests || null,
+        date: date
+      });
 
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/save-user-preferences`,

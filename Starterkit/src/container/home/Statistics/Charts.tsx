@@ -4,7 +4,6 @@ import chroma from "chroma-js";
 
 import {
   ActorData,
-  AverageBoxOfficeAndScores,
   CountryData,
   DirectorData,
   MovieData,
@@ -13,7 +12,6 @@ import {
   RoleData,
   WriterData
 } from "../home-types";
-import { parseBoxOffice } from "../helper_functions";
 import { Link } from "react-router-dom";
 
 export function generateData(count: any, yrange: any) {

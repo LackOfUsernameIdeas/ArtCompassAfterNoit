@@ -90,7 +90,7 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                   prosperitySortCategory as keyof typeof tableCategoryDisplayNames
                 ]
               }{" "}
-              по просперитет
+              по Просперитет
             </div>
             <div className="flex flex-wrap gap-2">
               <div

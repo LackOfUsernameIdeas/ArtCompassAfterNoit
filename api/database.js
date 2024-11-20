@@ -1,17 +1,10 @@
 // database.js
 const mysql = require("mysql2");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
-
+const dbOpts = require("./config.js").dbOpts;
+const dbOptsLocal = require("./config.js").dbOptsLocal;
 require("dotenv").config();
 
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "", // Default password for XAMPP
-  database: "_project_name_"
-});
+const db = mysql.createConnection(dbOptsLocal);
 
 db.connect((err) => {
   if (err) throw err;
@@ -42,7 +35,7 @@ async function translate(entry) {
 
 // Function to reset the request count daily
 const checkAndResetRequestsDaily = (userRequests) => {
-  const currentDate = new Date().toISOString().split('T')[0]; // Get the current date in 'YYYY-MM-DD' format
+  const currentDate = new Date().toISOString().split("T")[0]; // Get the current date in 'YYYY-MM-DD' format
 
   // Initialize resetDate if it doesn't exist
   if (!userRequests.resetDate) {
