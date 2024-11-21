@@ -1,12 +1,7 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { tailChase } from "ldrs";
-import {
-  fetchFakeMovieDataForTesting,
-  QuizQuestion,
-  Rating,
-  Recommendations
-} from "./Recommendationsdata";
+import { QuizQuestion, Rating, Recommendations } from "./Recommendationsdata";
 import logo_loader from "../../assets/images/brand-logos/logo_loader.png";
 import { useNavigate } from "react-router-dom";
 import { checkTokenValidity } from "../home/helper_functions";
@@ -214,16 +209,6 @@ const RecommendationList: FC<RecommendationList> = () => {
   const token =
     localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
   const openAIKey = import.meta.env.VITE_OPENAI_API_KEY;
-
-  console.log("genres: ", genres);
-  console.log(
-    "genresEN",
-    genres.length > 0 ? genres.map((g) => g.en).join(", ") : null
-  );
-  console.log(
-    "genresBG",
-    genres.length > 0 ? genres.map((g) => g.bg).join(", ") : null
-  );
 
   const saveUserPreferences = async (date: string) => {
     try {
@@ -749,7 +734,6 @@ const RecommendationList: FC<RecommendationList> = () => {
     setShowQuestion(false);
 
     setTimeout(() => {
-      fetchFakeMovieDataForTesting(setRecommendationList);
       setLoading(false);
     }, 5000);
   };

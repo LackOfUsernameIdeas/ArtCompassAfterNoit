@@ -20,14 +20,37 @@ export interface Rating {
   Value: string;
 }
 
+async function translate(entry: string) {
+  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bg&dt=t&q=${encodeURIComponent(
+    entry
+  )}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    // Flatten the response array to get only the translated text
+    const flattenedTranslation = data[0]
+      .map((item: [string]) => item[0])
+      .join(" ");
+
+    // Replace multiple spaces with a single space and trim the result
+    const mergedTranslation = flattenedTranslation.replace(/\s+/g, " ").trim();
+    // Return the cleaned translation
+    return mergedTranslation;
+  } catch (error) {
+    console.error(`Error translating entry: ${entry}`, error);
+    return entry;
+  }
+}
+
 interface Movie {
   id: string; // ID of the movie
   user_id: string; // ID of the user associated with the movie
   imdbID: string; // IMDb identifier
-  title_en: string; // English title of the movie
-  title_bg: string; // Bulgarian title of the movie
-  genre_en: string; // Genres in English
-  genre_bg: string; // Genres in Bulgarian
+  title: string; // English title of the movie
+  bgName: string; // Bulgarian title of the movie
+  genre: string; // Genres in English
   reason: string; // Reason for recommending the movie
   description: string; // Description of the movie
   year: string; // Year of release
@@ -222,12 +245,6 @@ const fakeMovieData = [
     date: "2024-10-31 08:08:19"
   }
 ];
-
-export const fetchFakeMovieDataForTesting = (
-  setter: React.Dispatch<React.SetStateAction<Movie[]>>
-) => {
-  setter((prevData) => [...prevData, ...fakeMovieData]);
-};
 
 interface QuizQuestionProps {
   setSelectedAnswer: Dispatch<SetStateAction<string[] | null>>;
@@ -617,21 +634,12 @@ export const Recommendations: FC<RecommendationsProps> = ({
   const [direction, setDirection] = useState<"left" | "right">("right");
   const [isExpanded, setIsExpanded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state for full plot
+  const [translatedDirector, setTranslatedDirector] = useState<string>("");
+  const [translatedWriters, setTranslatedWriters] = useState<string>("");
+  const [translatedActors, setTranslatedActors] = useState<string>("");
 
   const plotPreviewLength = 110; // Character limit for preview
   const animationDuration = 500; // Duration of animation in milliseconds
-
-  // Toggle function for expanding/collapsing
-  const toggleExpand = () => {
-    if (!isExpanded) {
-      setIsExpanded(true); // Immediately expand
-    } else {
-      // Start collapsing the plot with a delay
-      setTimeout(() => {
-        setIsExpanded(false); // Collapse after animation
-      }, 500); // Slight delay to allow animation to start
-    }
-  };
 
   if (!recommendationList.length) {
     return <div>No recommendations available.</div>;
@@ -678,6 +686,36 @@ export const Recommendations: FC<RecommendationsProps> = ({
     setIsModalOpen(false); // Close the modal
   };
 
+  // Translate the director when the component mounts or when movie.director changes
+  useEffect(() => {
+    async function fetchDirectorTranslation() {
+      const translated = await translate(movie.director);
+      setTranslatedDirector(translated);
+    }
+
+    fetchDirectorTranslation();
+  }, [movie.director]);
+
+  // Translate the writer when the component mounts or when movie.writer changes
+  useEffect(() => {
+    async function fetchWriterTranslation() {
+      const translated = await translate(movie.writer);
+      setTranslatedWriters(translated);
+    }
+
+    fetchWriterTranslation();
+  }, [movie.writer]);
+
+  // Translate the actors when the component mounts or when movie.actors changes
+  useEffect(() => {
+    async function fetchActorsTranslation() {
+      const translated = await translate(movie.actors);
+      setTranslatedActors(translated);
+    }
+
+    fetchActorsTranslation();
+  }, [movie.actors]);
+
   return (
     <div className="relative flex items-center justify-between">
       <CSSTransition
@@ -709,7 +747,7 @@ export const Recommendations: FC<RecommendationsProps> = ({
             <div className="flex-shrink-0 mr-8">
               <img
                 src={movie.poster}
-                alt={`${movie.title_bg || "Movie"} Poster`}
+                alt={`${movie.bgName || "Movie"} Poster`}
                 className="rounded-lg w-96 h-auto"
               />
             </div>
@@ -719,16 +757,16 @@ export const Recommendations: FC<RecommendationsProps> = ({
               {/* Sticky Title and Ratings */}
               <div className="sticky top-0 z-10 pb-4 mb-4">
                 <a href="#" className="block text-3xl font-bold mb-1">
-                  {movie.title_bg || "Заглавие не е налично"}
+                  {movie.bgName || "Заглавие не е налично"}
                 </a>
                 <a
                   href="#"
                   className="block text-lg font-semibold text-opacity-60 italic mb-2"
                 >
-                  {movie.title_en || "Заглавие на английски не е налично"}
+                  {movie.title || "Заглавие на английски не е налично"}
                 </a>
                 <p className="movie-small-details">
-                  {movie.genre_bg || "Жанр неизвестен"} |{" "}
+                  {movie.genre || "Жанр неизвестен"} |{" "}
                   {movie.year || "Година неизвестна"} | Рейтинг:{" "}
                   {movie.rated || "N/A"}
                 </p>
@@ -772,7 +810,7 @@ export const Recommendations: FC<RecommendationsProps> = ({
               {movie.reason && (
                 <div className="mb-4">
                   <h3 className="text-lg font-semibold mb-2">
-                    Защо препоръчваме {movie.title_bg}?
+                    Защо препоръчваме {movie.bgName}?
                   </h3>
                   <p className="text-opacity-80 italic">{movie.reason}</p>
                 </div>
@@ -818,15 +856,15 @@ export const Recommendations: FC<RecommendationsProps> = ({
                 <ul className="text-opacity-80 space-y-1">
                   <li>
                     <strong className="text-primary">Режисьор:</strong>{" "}
-                    {movie.director || "Неизвестен"}
+                    {translatedDirector || "Неизвестен"}
                   </li>
                   <li>
                     <strong className="text-primary">Сценаристи:</strong>{" "}
-                    {movie.writer || "Неизвестени"}
+                    {translatedWriters || "Неизвестени"}
                   </li>
                   <li>
                     <strong className="text-primary">Актьори:</strong>{" "}
-                    {movie.actors || "Неизвестени"}
+                    {translatedActors || "Неизвестени"}
                   </li>
                   <li>
                     <strong className="text-primary">Награди:</strong>{" "}
