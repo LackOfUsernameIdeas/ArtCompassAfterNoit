@@ -76,12 +76,12 @@ app.post("/signup", (req, res) => {
 
     // Send the verification code via email
     const mailOptions = {
-      from: `CineCompass <${EMAIL_USER}>`, // Friendly sender name
+      from: EMAIL_USER,
       to: email,
-      subject: "Шестцифрен код за потвърждение от CineCompass",
+      subject: "Шестцифрен код за потвърждение от Кино Компас",
       html: `
         <div style="text-align: center; background-color: rgba(244, 211, 139, 0.5); margin: 2% 3%; padding: 3% 1%; border: 4px dotted rgb(178, 50, 0); border-radius: 20px">
-          <h2>Благодарим Ви за регистрацията в CineCompass</h2>
+          <h2>Благодарим Ви за регистрацията в Кино Компас!</h2>
           <hr style="border: 0.5px solid rgb(178, 50, 0); width: 18%; margin-top: 6%; margin-bottom: 4%"></hr>
           <p>Вашият шестцифрен код е <strong style="font-size: 20px; color: rgb(178, 50, 0)">${verificationCode}</strong>.</p>
         </div>
@@ -166,7 +166,7 @@ app.post("/resend", (req, res) => {
   const mailOptions = {
     from: EMAIL_USER,
     to: email,
-    subject: "Нов шестцифрен код за потвърждение от ИМЕ_НА_ПРОЕКТА",
+    subject: "Нов шестцифрен код за потвърждение от Кино Компас",
     html: `
       <div style="text-align: center; background-color: rgba(244, 211, 139, 0.5); margin: 2% 3%; padding: 3% 1%; border: 4px dotted rgb(178, 50, 0); border-radius: 20px">
         <p>Вашият шестцифрен код е <strong style="font-size: 20px; color: rgb(178, 50, 0)">${verificationCode}</strong>.</p>
@@ -272,7 +272,7 @@ app.post("/password-reset-request", (req, res) => {
     const mailOptions = {
       from: EMAIL_USER,
       to: email,
-      subject: "Промяна на паролата за ИМЕ_НА_ПРОЕКТА",
+      subject: "Промяна на паролата за Кино Компас",
       html: `<p>Натиснете <a href="${resetLink}">тук</a>, за да промените паролата си.</p>`
     };
 

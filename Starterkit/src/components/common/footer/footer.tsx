@@ -2,6 +2,7 @@ import { FC, Fragment } from "react";
 
 import gradientDark from "../../../assets/images/media/backgrounds/layered-peaks-haikei-dark.svg";
 import gradientLight from "../../../assets/images/media/backgrounds/layered-peaks-haikei-light.svg";
+import techStack from "../../../assets/images/brand-logos/tech_stack.png";
 
 const Footer: FC = () => (
   <Fragment>
@@ -30,15 +31,7 @@ const Footer: FC = () => (
                 <span className="footer-brand-name-compass">КОМПАС</span>
               </div>
               <ul className="footer-links">
-                <li>
-                  <a
-                    href="https://edusoft.fmi.uni-sofia.bg/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    НОИТ 2025
-                  </a>
-                </li>
+                <li>НЕТИТ „Джон Атанасов” 2024</li>
                 <li>Калоян Костадинов</li>
                 <li>Мария Малчева</li>
                 <li>
@@ -97,8 +90,8 @@ const Footer: FC = () => (
 
             <div className="footer-column tech-stack">
               <img
-                src="path/to/your/techStackImage.jpg"
-                alt="Tech Stack"
+                src={techStack}
+                alt="Основни технологии"
                 className="tech-stack-image"
               />
             </div>
