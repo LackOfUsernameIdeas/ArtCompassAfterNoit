@@ -10,6 +10,11 @@ import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
 import { CSSTransition } from "react-transition-group";
 
+interface Genre {
+  en: string;
+  bg: string;
+}
+
 export interface Rating {
   Source: string;
   Value: string;
@@ -274,24 +279,49 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
   };
 
   useEffect(() => {
-    // Check if the current question value is different from the current selected answer
-    if (
-      currentQuestion?.value &&
-      JSON.stringify(selectedAnswer) !==
-        JSON.stringify(
-          Array.isArray(currentQuestion.value)
-            ? currentQuestion.value
-            : [currentQuestion.value]
-        )
-    ) {
-      setSelectedAnswer(
-        Array.isArray(currentQuestion.value)
+    // Only update if the selected answer is different from the current question value
+    if (currentQuestion?.value) {
+      // If the options are genres, only set the 'bg' properties
+      if (
+        Array.isArray(currentQuestion.options) &&
+        currentQuestion.options.every(isGenreOption) // Assuming `isGenreOption` verifies genre objects
+      ) {
+        // Check if selectedAnswer needs to be updated to avoid unnecessary re-renders
+        const genreBgValues = Array.isArray(currentQuestion.value)
+          ? currentQuestion.value.map(
+              (value: { en: string; bg: string }) => value.bg
+            )
+          : [
+              currentQuestion.value,
+              currentQuestion.options.find(
+                (option: { en: string; bg: string }) =>
+                  option.en === currentQuestion.value
+              )?.bg || currentQuestion.value
+            ];
+
+        // Only set the selectedAnswer if it has changed
+        if (JSON.stringify(genreBgValues) !== JSON.stringify(selectedAnswer)) {
+          console.log("genreBgValues: ", genreBgValues);
+          setSelectedAnswer(genreBgValues); // Set only the 'bg' properties
+        }
+      } else {
+        // For other questions, set the value as is (no mapping needed)
+        const newValue = Array.isArray(currentQuestion.value)
           ? currentQuestion.value
-          : [currentQuestion.value]
-      );
+          : [currentQuestion.value];
+
+        // Only set the selectedAnswer if it has changed
+        if (JSON.stringify(newValue) !== JSON.stringify(selectedAnswer)) {
+          setSelectedAnswer(newValue);
+        }
+      }
     }
   }, [currentQuestion, selectedAnswer]);
-
+  function isGenreOption(option: any): option is Genre {
+    return (
+      option && typeof option.en === "string" && typeof option.bg === "string"
+    );
+  }
   return (
     <div>
       {recommendationList.length > 0 && !submitted && (
@@ -429,29 +459,65 @@ export const QuizQuestion: FC<QuizQuestionProps> = ({
                   : "grid-cols-1"
               }`}
             >
-              {currentQuestion.options?.map((answer: string, index: number) => (
-                <div
-                  key={index}
-                  className={`${
-                    selectedAnswer && selectedAnswer.includes(answer)
-                      ? "selected-answer"
-                      : "question"
-                  } bg-opacity-70 p-4 text-white rounded-lg glow-effect transition-all duration-300 ${
-                    selectedAnswer && selectedAnswer.includes(answer)
-                      ? "transform scale-105"
-                      : "hover:bg-[#d94545] hover:text-white"
-                  }`}
-                >
-                  <button
-                    className="block w-full p-2 rounded"
-                    onClick={() =>
-                      handleAnswerClick(currentQuestion.setter, answer)
-                    }
-                  >
-                    {answer}
-                  </button>
-                </div>
-              ))}
+              {currentQuestion.options?.map((option: any, index: number) => {
+                // Check if the question is specifically about genres (objects with en and bg properties)
+                if (
+                  Array.isArray(currentQuestion.options) &&
+                  currentQuestion.options.every(isGenreOption)
+                ) {
+                  // Here we assume 'option' is of type { en: string; bg: string } for genres
+                  return (
+                    <div
+                      key={index}
+                      className={`${
+                        selectedAnswer && selectedAnswer.includes(option.bg)
+                          ? "selected-answer"
+                          : "question"
+                      } bg-opacity-70 p-4 text-white rounded-lg glow-effect transition-all duration-300 ${
+                        selectedAnswer && selectedAnswer.includes(option.bg)
+                          ? "transform scale-105"
+                          : "hover:bg-[#d94545] hover:text-white"
+                      }`}
+                    >
+                      <button
+                        className="block w-full p-2 rounded"
+                        onClick={
+                          () =>
+                            handleAnswerClick(currentQuestion.setter, option.bg) // Pass the full genre object
+                        }
+                      >
+                        {option.bg} {/* Display the Bulgarian name */}
+                      </button>
+                    </div>
+                  );
+                } else {
+                  // Handle regular questions (strings or string arrays)
+                  return (
+                    <div
+                      key={index}
+                      className={`${
+                        selectedAnswer && selectedAnswer.includes(option)
+                          ? "selected-answer"
+                          : "question"
+                      } bg-opacity-70 p-4 text-white rounded-lg glow-effect transition-all duration-300 ${
+                        selectedAnswer && selectedAnswer.includes(option)
+                          ? "transform scale-105"
+                          : "hover:bg-[#d94545] hover:text-white"
+                      }`}
+                    >
+                      <button
+                        className="block w-full p-2 rounded"
+                        onClick={
+                          () =>
+                            handleAnswerClick(currentQuestion.setter, option) // Pass the answer string
+                        }
+                      >
+                        {option}
+                      </button>
+                    </div>
+                  );
+                }
+              })}
             </div>
           )}
 

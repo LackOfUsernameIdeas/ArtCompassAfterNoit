@@ -136,7 +136,7 @@ const RecommendationList: FC<RecommendationList> = () => {
     },
     {
       question: "Кои жанрове Ви се гледат в момента?",
-      options: genreOptions.map((g) => g.bg),
+      options: genreOptions,
       isMultipleChoice: true,
       value: genres,
       setter: setGenres
@@ -626,8 +626,8 @@ const RecommendationList: FC<RecommendationList> = () => {
 
       if (response.status === 200) {
         // Handle success
-        await generateMovieRecommendations(date);
         await saveUserPreferences(date);
+        await generateMovieRecommendations(date);
         setSubmitCount((prevCount) => prevCount + 1);
         setIsModalOpen(true);
       } else {
@@ -685,22 +685,38 @@ const RecommendationList: FC<RecommendationList> = () => {
   };
 
   const isBackDisabled = currentQuestionIndex === 0;
+  const currentQuestion = questions[currentQuestionIndex];
 
   const handleAnswerClick = (
     setter: React.Dispatch<React.SetStateAction<any>>,
     answer: string
   ) => {
     if (currentQuestion.isMultipleChoice) {
-      setSelectedAnswer((prev) => {
-        const updatedAnswers = prev
-          ? prev.includes(answer)
-            ? prev.filter((item) => item !== answer)
-            : [...prev, answer]
-          : [answer];
-        console.log("Updated Answer Selection1:", updatedAnswers);
-        setter(updatedAnswers); // Set the updated answers directly
-        return updatedAnswers; // Return updated state for `selectedAnswer`
-      });
+      if (currentQuestion.setter === setGenres) {
+        const selectedGenre = genreOptions.find((genre) => genre.bg === answer);
+
+        if (selectedGenre) {
+          // Toggle the genre in the `selectedGenres` state
+          toggleGenre(selectedGenre);
+
+          console.log("Updated Answer Selection (Genres):", selectedGenre.bg);
+
+          return selectedAnswer;
+        }
+
+        return selectedAnswer; // Return previous state if no genre is found
+      } else {
+        setSelectedAnswer((prev) => {
+          const updatedAnswers = prev
+            ? prev.includes(answer)
+              ? prev.filter((item) => item !== answer)
+              : [...prev, answer]
+            : [answer];
+          console.log("Updated Answer Selection1:", updatedAnswers);
+          setter(updatedAnswers); // Set the updated answers directly
+          return updatedAnswers; // Return updated state for `selectedAnswer`
+        });
+      }
     } else {
       setter(answer);
       setSelectedAnswer([answer]);
@@ -769,8 +785,6 @@ const RecommendationList: FC<RecommendationList> = () => {
   useEffect(() => {
     setSelectedAnswer(null);
   }, [currentQuestionIndex]);
-
-  const currentQuestion = questions[currentQuestionIndex];
 
   const handleViewRecommendations = () => {
     setShowQuestion(false); // Hide Quiz
