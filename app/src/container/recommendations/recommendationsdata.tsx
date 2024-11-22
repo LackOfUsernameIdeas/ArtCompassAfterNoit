@@ -637,7 +637,8 @@ export const Recommendations: FC<RecommendationsProps> = ({
   const [translatedDirector, setTranslatedDirector] = useState<string>("");
   const [translatedWriters, setTranslatedWriters] = useState<string>("");
   const [translatedActors, setTranslatedActors] = useState<string>("");
-
+  const [translatedAwards, setTranslatedAwards] = useState<string>("");
+  const [translatedGenres, setTranslatedGenres] = useState<string>("");
   const plotPreviewLength = 110; // Character limit for preview
   const animationDuration = 500; // Duration of animation in milliseconds
 
@@ -715,6 +716,24 @@ export const Recommendations: FC<RecommendationsProps> = ({
 
     fetchActorsTranslation();
   }, [movie.actors]);
+
+  useEffect(() => {
+    async function fetchAwardsTranslation() {
+      const translated = await translate(movie.awards);
+      setTranslatedAwards(translated);
+    }
+
+    fetchAwardsTranslation();
+  }, [movie.awards]);
+
+  useEffect(() => {
+    async function fetchGenresTranslation() {
+      const translated = await translate(movie.genre);
+      setTranslatedGenres(translated);
+    }
+
+    fetchGenresTranslation();
+  }, [movie.genre]);
 
   return (
     <div className="relative flex items-center justify-between">
@@ -868,7 +887,9 @@ export const Recommendations: FC<RecommendationsProps> = ({
                   </li>
                   <li>
                     <strong className="text-primary">Награди:</strong>{" "}
-                    {movie.awards || "Няма"}
+                    {translatedAwards && translatedAwards !== "N/A"
+                      ? translatedAwards
+                      : "Няма"}
                   </li>
                   <li>
                     <strong className="text-primary">Боксофис:</strong>{" "}

@@ -7,7 +7,7 @@ import Authenticationlayout from "./pages/AuthenticationRoute.tsx";
 import Resetcover from "./container/authentication/resetpassword/Resetpassword.tsx";
 import Signupcover from "./container/authentication/signup/Signup.tsx";
 import Twostepcover from "./container/authentication/twostepverification/Twostepverification.tsx";
-import Test from "./container/recommendations/recommendations.tsx";
+import Recommendations from "./container/recommendations/Recommendations.tsx";
 import "./index.scss";
 import ResetRequest from "./container/authentication/resetpassword/Resetrequest.tsx";
 import PrivateRoute from "./pages/PrivateRoute.tsx";
@@ -31,7 +31,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             {/* Default route */}
             <Route path="" element={<Navigate to="home" />} />
             <Route path="home" element={<Home />} />
-            <Route path="recommendations" element={<Test />} />
+            <Route path="recommendations" element={<Recommendations />} />
             <Route path="contact" element={<Contact />} />
           </Route>
 
