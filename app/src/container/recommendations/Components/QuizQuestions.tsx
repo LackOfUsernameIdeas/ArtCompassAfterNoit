@@ -20,7 +20,7 @@ import {
   pacingOptions,
   depthOptions,
   targetGroupOptions
-} from "../recommendationsdata";
+} from "../recommendations-data";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { ViewRecommendations } from "./ViewRecommendations";
 

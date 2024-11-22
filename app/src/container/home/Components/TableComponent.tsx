@@ -8,6 +8,7 @@ import {
 } from "../helper_functions";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
+import { tableCategoryDisplayNames } from "../home-data";
 
 interface TableComponentProps {
   data: DataType;
@@ -22,12 +23,6 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
   );
   const [currentTablePage, setCurrentTablePage] = useState(1);
   const itemsPerTablePage = 5;
-
-  const tableCategoryDisplayNames: Record<Category, string> = {
-    Directors: "Режисьори",
-    Actors: "Актьори",
-    Writers: "Сценаристи"
-  };
 
   const totalItems = filteredTableData.length;
   const totalTablePages = Math.ceil(totalItems / itemsPerTablePage);

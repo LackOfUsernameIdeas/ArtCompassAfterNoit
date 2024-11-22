@@ -9,6 +9,7 @@ import {
   handleMoviesAndSeriesSortCategory
 } from "../helper_functions";
 import { useMediaQuery } from "react-responsive";
+import { moviesAndSeriesCategoryDisplayNames } from "../home-data";
 
 interface MoviesAndSeriesByRatingsChartComponentProps {
   data: DataType;
@@ -67,16 +68,6 @@ const MoviesAndSeriesByRatingsChartComponent: FC<
       data.sortedMoviesAndSeriesByIMDbRating.length,
       setCurrentChartPage
     );
-  };
-
-  // Мапинг на имената за категорията на рейтингите
-  const moviesAndSeriesCategoryDisplayNames: Record<
-    "IMDb" | "Metascore" | "RottenTomatoes",
-    string
-  > = {
-    IMDb: "IMDb Рейтинг",
-    Metascore: "Метаскор",
-    RottenTomatoes: "Rotten Tomatoes Рейтинг"
   };
 
   // Отзивчиви точки за прекъсване

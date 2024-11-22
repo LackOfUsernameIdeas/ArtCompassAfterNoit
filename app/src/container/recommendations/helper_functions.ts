@@ -1,5 +1,5 @@
 import { Genre, Question, UserPreferences } from "./recommendations-types";
-import { genreOptions, openAIKey } from "./recommendationsdata";
+import { genreOptions, openAIKey } from "./recommendations-data";
 
 export async function translate(entry: string) {
   const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bg&dt=t&q=${encodeURIComponent(
