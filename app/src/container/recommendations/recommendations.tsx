@@ -1,7 +1,6 @@
-import { FC, Fragment, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { CSSTransition } from "react-transition-group";
-import { tailChase } from "ldrs";
-import { QuizQuestion, Rating, Recommendations } from "./Recommendationsdata";
+import { QuizQuestion, Recommendations } from "./Recommendationsdata";
 import logo_loader from "../../assets/images/brand-logos/logo_loader.png";
 import { useNavigate } from "react-router-dom";
 import { checkTokenValidity } from "../home/helper_functions";
@@ -10,10 +9,6 @@ import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 interface RecommendationList {}
 
 const RecommendationList: FC<RecommendationList> = () => {
-  //FOR TESTING ONLY
-  const [testing, setTesting] = useState(false);
-  //FOR TESTING ONLY
-
   const [type, setType] = useState("");
   const [genres, setGenres] = useState<{ en: string; bg: string }[]>([]);
   const [moods, setMoods] = useState<string[]>([]);
@@ -30,7 +25,6 @@ const RecommendationList: FC<RecommendationList> = () => {
   const [submitCount, setSubmitCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [recommendationList, setRecommendationList] = useState<any[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showQuestion, setShowQuestion] = useState(true);
@@ -121,7 +115,6 @@ const RecommendationList: FC<RecommendationList> = () => {
     "Възрастни над 65"
   ];
 
-  // Add this array of questions at the top of the component
   const questions = [
     {
       question: "Какво търсите - филм или сериал?",
@@ -278,18 +271,15 @@ const RecommendationList: FC<RecommendationList> = () => {
     date: string
   ) => {
     try {
-      // Check if the recommendation object is valid
       if (!recommendation || typeof recommendation !== "object") {
         console.warn("No valid recommendation data found.");
-        return; // Exit if the recommendation object is invalid
+        return;
       }
 
-      // Split the genre string into an array
       const genresEn = recommendation.genre
         ? recommendation.genre.split(", ")
         : null;
 
-      // Translate genres from English to Bulgarian using the genreOptions array
       const genresBg = genresEn.map((genre: string) => {
         const matchedGenre = genreOptions.find(
           (option) => option.en.trim() === genre.trim()
@@ -297,10 +287,9 @@ const RecommendationList: FC<RecommendationList> = () => {
         return matchedGenre ? matchedGenre.bg : null;
       });
 
-      // Compare and decide which data to use (Google first, then OMDb)
-      const runtime = recommendation.runtimeGoogle || recommendation.runtime; // Use Google runtime if available, otherwise OMDb
+      const runtime = recommendation.runtimeGoogle || recommendation.runtime;
       const imdbRating =
-        recommendation.imdbRatingGoogle || recommendation.imdbRating; // Use Google IMDb rating if available, otherwise OMDb
+        recommendation.imdbRatingGoogle || recommendation.imdbRating;
 
       const formattedRecommendation = {
         token,
@@ -336,7 +325,6 @@ const RecommendationList: FC<RecommendationList> = () => {
         date: date
       };
 
-      // Log the formatted recommendation for debugging
       console.log("Formatted Recommendation:", formattedRecommendation);
 
       const response = await fetch(
@@ -346,7 +334,7 @@ const RecommendationList: FC<RecommendationList> = () => {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify(formattedRecommendation) // Send the formatted recommendation directly
+          body: JSON.stringify(formattedRecommendation)
         }
       );
 
@@ -417,13 +405,13 @@ const RecommendationList: FC<RecommendationList> = () => {
         }
       );
 
-      const responseData = await response.json(); // Get the JSON response
+      const responseData = await response.json();
       const responseJson = responseData.choices[0].message.content;
       const unescapedData = responseJson
         .replace(/^```json([\s\S]*?)```$/, "$1")
         .replace(/^```JSON([\s\S]*?)```$/, "$1")
         .replace(/^```([\s\S]*?)```$/, "$1")
-        .replace(/^'|'$/g, "") // Remove single quotes at the beginning and end
+        .replace(/^'|'$/g, "")
         .trim();
       console.log("unescapedData: ", unescapedData);
       const escapedData = decodeURIComponent(unescapedData);
@@ -432,16 +420,13 @@ const RecommendationList: FC<RecommendationList> = () => {
       console.log("recommendations: ", recommendations);
 
       for (const movieTitle in recommendations) {
-        const movieName = movieTitle; // Use the movie title as the search term
-
-        // Step 3: Fetch IMDb ID via Google Custom Search API
+        const movieName = movieTitle;
 
         // 27427e59e17b74763, AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA
         // e59ceff412ebc4313, AIzaSyDqUez1TEmLSgZAvIaMkWfsq9rSm0kDjIw
         let imdbData;
 
         try {
-          // First attempt with the primary key and cx
           let imdbResponse = await fetch(
             `https://customsearch.googleapis.com/customsearch/v1?key=AIzaSyDqUez1TEmLSgZAvIaMkWfsq9rSm0kDjIw&cx=e59ceff412ebc4313&q=${encodeURIComponent(
               movieName
@@ -449,7 +434,6 @@ const RecommendationList: FC<RecommendationList> = () => {
           );
           imdbData = await imdbResponse.json();
 
-          // Retry with secondary key and cx if the first response is invalid
           if (
             !imdbResponse.ok ||
             imdbResponse.status === 429 ||
@@ -464,10 +448,9 @@ const RecommendationList: FC<RecommendationList> = () => {
           }
         } catch (error) {
           console.error("Error fetching IMDb data:", error);
-          continue; // Skip this movie if both requests fail
+          continue;
         }
 
-        // Step 4: Extract the IMDb link from the search results
         if (Array.isArray(imdbData.items)) {
           const imdbItem = imdbData.items.find((item: { link: string }) =>
             item.link.includes("imdb.com/title/")
@@ -475,9 +458,8 @@ const RecommendationList: FC<RecommendationList> = () => {
 
           if (imdbItem) {
             const imdbUrl = imdbItem.link;
-            const imdbId = imdbUrl.match(/title\/(tt\d+)\//)?.[1]; // Extract IMDb ID from the URL
+            const imdbId = imdbUrl.match(/title\/(tt\d+)\//)?.[1];
 
-            // Extract IMDb Rating and Runtime from the metadata (from `metatags`)
             const imdbRating = imdbItem.pagemap.metatags
               ? imdbItem.pagemap.metatags[0]["twitter:title"]?.match(
                   /⭐ ([\d.]+)/
@@ -486,7 +468,7 @@ const RecommendationList: FC<RecommendationList> = () => {
             const runtime = imdbItem.pagemap.metatags
               ? imdbItem.pagemap.metatags[0]["og:description"]?.match(
                   /(\d{1,2}h \d{1,2}m|\d{1,2}h|\d{1,3}m)/
-                )?.[1] // Match runtime patterns like 2h 30m, 2h, or 90m
+                )?.[1]
               : null;
 
             const translatedRuntime = runtime
@@ -515,7 +497,6 @@ const RecommendationList: FC<RecommendationList> = () => {
                 )}`
               );
 
-              // Combine OMDb data and OpenAI data into a single object
               const recommendationData = {
                 title: omdbData.Title,
                 bgName: recommendations[movieTitle].bgName,
@@ -525,7 +506,7 @@ const RecommendationList: FC<RecommendationList> = () => {
                 rated: omdbData.Rated,
                 released: omdbData.Released,
                 runtime: omdbData.Runtime,
-                runtimeGoogle: translatedRuntime, // Store Runtime from Google
+                runtimeGoogle: translatedRuntime,
                 genre: omdbData.Genre,
                 director: omdbData.Director,
                 writer: omdbData.Writer,
@@ -538,7 +519,7 @@ const RecommendationList: FC<RecommendationList> = () => {
                 ratings: omdbData.Ratings,
                 metascore: omdbData.Metascore,
                 imdbRating: omdbData.imdbRating,
-                imdbRatingGoogle: imdbRating, // Store IMDb Rating from Google
+                imdbRatingGoogle: imdbRating,
                 imdbVotes: omdbData.imdbVotes,
                 imdbID: omdbData.imdbID,
                 type: omdbData.Type,
@@ -563,7 +544,6 @@ const RecommendationList: FC<RecommendationList> = () => {
           // TO DO: Да се измисли какво да се прави ако не се намери филма/сериала
         }
       }
-      // Process the API response (e.g., display the recommended movies)
     } catch (error) {
       console.error("Error generating recommendations:", error);
     }
@@ -595,7 +575,6 @@ const RecommendationList: FC<RecommendationList> = () => {
     const date = new Date().toISOString();
 
     try {
-      // Send POST request to server
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
         {
@@ -610,13 +589,10 @@ const RecommendationList: FC<RecommendationList> = () => {
       const data = await response.json();
 
       if (response.status === 200) {
-        // Handle success
         await saveUserPreferences(date);
         await generateMovieRecommendations(date);
         setSubmitCount((prevCount) => prevCount + 1);
-        setIsModalOpen(true);
       } else {
-        // Handle error (e.g., exceeding max requests)
         alert(data.error || "Something went wrong.");
       }
       setLoading(false);
@@ -627,25 +603,11 @@ const RecommendationList: FC<RecommendationList> = () => {
     }
   };
 
-  const closeModal = () => setIsModalOpen(false);
-
-  const handleSeeMore = (movie: any) => {
-    alert(`More details for ${movie.title}`);
-  };
-
   const toggleGenre = (genre: { en: string; bg: string }) => {
     setGenres((prevGenres) =>
       prevGenres.find((g) => g.en === genre.en)
         ? prevGenres.filter((g) => g.en !== genre.en)
         : [...prevGenres, genre]
-    );
-  };
-
-  const toggleMood = (mood: string) => {
-    setMoods((prevMoods) =>
-      prevMoods.includes(mood)
-        ? prevMoods.filter((m) => m !== mood)
-        : [...prevMoods, mood]
     );
   };
 
@@ -681,7 +643,6 @@ const RecommendationList: FC<RecommendationList> = () => {
         const selectedGenre = genreOptions.find((genre) => genre.bg === answer);
 
         if (selectedGenre) {
-          // Toggle the genre in the `selectedGenres` state
           toggleGenre(selectedGenre);
 
           console.log("Updated Answer Selection (Genres):", selectedGenre.bg);
@@ -689,7 +650,7 @@ const RecommendationList: FC<RecommendationList> = () => {
           return selectedAnswer;
         }
 
-        return selectedAnswer; // Return previous state if no genre is found
+        return selectedAnswer;
       } else {
         setSelectedAnswer((prev) => {
           const updatedAnswers = prev
@@ -698,8 +659,8 @@ const RecommendationList: FC<RecommendationList> = () => {
               : [...prev, answer]
             : [answer];
           console.log("Updated Answer Selection1:", updatedAnswers);
-          setter(updatedAnswers); // Set the updated answers directly
-          return updatedAnswers; // Return updated state for `selectedAnswer`
+          setter(updatedAnswers);
+          return updatedAnswers;
         });
       }
     } else {
@@ -771,23 +732,23 @@ const RecommendationList: FC<RecommendationList> = () => {
   }, [currentQuestionIndex]);
 
   const handleViewRecommendations = () => {
-    setShowQuestion(false); // Hide Quiz
+    setShowQuestion(false);
     setLoading(true);
     setTimeout(() => {
-      setSubmitted(true); // Show Recommendations after a slight delay
+      setSubmitted(true);
       setLoading(false);
-    }, 500); // Match the transition duration
+    }, 500);
   };
 
   const handleRetakeQuiz = () => {
-    setLoading(true); // Start loading spinner
+    setLoading(true);
     setTimeout(() => {
-      setCurrentQuestionIndex(0); // Reset question index
-      setSelectedAnswer([]); // Reset selected answers
-      setSubmitted(false); // Hide recommendations
-      setShowQuestion(true); // Show quiz again
-      setLoading(false); // Hide loading spinner
-    }, 500); // Match the transition duration
+      setCurrentQuestionIndex(0);
+      setSelectedAnswer([]);
+      setSubmitted(false);
+      setShowQuestion(true);
+      setLoading(false);
+    }, 500);
   };
 
   useEffect(() => {
@@ -799,17 +760,6 @@ const RecommendationList: FC<RecommendationList> = () => {
   useEffect(() => {
     console.log("recommendationList: ", recommendationList);
   }, [recommendationList]);
-
-  // useEffect(() => {
-  //   // TESTING USE EFFECT!!!!!
-  //   setTesting(true);
-  //   setLoading(true);
-  //   fetchFakeMovieDataForTesting(setRecommendationList);
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //     setSubmitted(true);
-  //   }, 1000); // Simulating a 1-second delay
-  // }, []);
 
   const navigate = useNavigate();
 
@@ -827,434 +777,73 @@ const RecommendationList: FC<RecommendationList> = () => {
   return (
     <FadeInWrapper>
       <div>
-        {testing ? (
-          <div className="flex items-center justify-center px-4">
-            <CSSTransition
-              in={loading}
-              timeout={500}
-              classNames="fade"
-              unmountOnExit
-            >
-              <div className="fixed inset-0 flex flex-col items-center justify-center space-y-4">
-                <img src={logo_loader} alt="loading" className="spinner" />
-                <p className="text-xl">Зареждане...</p>
-              </div>
-            </CSSTransition>
-            {!loading && submitted && recommendationList.length > 0 && (
-              <div>
-                <div className="my-6 text-center">
-                  <p className="text-lg text-gray-600">
-                    Искате други препоръки?{" "}
-                    <button
-                      onClick={handleRetakeQuiz}
-                      className="text-primary font-semibold hover:text-secondary transition-colors underline"
-                    >
-                      Повторете въпросника
-                    </button>
-                  </p>
-                </div>
-                <CSSTransition
-                  in={submitted}
-                  timeout={500}
-                  classNames="fade"
-                  unmountOnExit
-                >
-                  <Recommendations recommendationList={recommendationList} />
-                </CSSTransition>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="flex items-center justify-center px-4">
-            {/* Loading Spinner */}
-            <CSSTransition
-              in={loading}
-              timeout={500}
-              classNames="fade"
-              unmountOnExit
-              key="loading"
-            >
-              <div className="fixed inset-0 flex flex-col items-center justify-center space-y-4">
-                <img src={logo_loader} alt="loading" className="spinner" />
-                <p className="text-xl">Зареждане...</p>
-              </div>
-            </CSSTransition>
+        <div className="flex items-center justify-center px-4">
+          <CSSTransition
+            in={loading}
+            timeout={500}
+            classNames="fade"
+            unmountOnExit
+            key="loading"
+          >
+            <div className="fixed inset-0 flex flex-col items-center justify-center space-y-4">
+              <img src={logo_loader} alt="loading" className="spinner" />
+              <p className="text-xl">Зареждане...</p>
+            </div>
+          </CSSTransition>
 
-            {/* QuizQuestion Component */}
-            <CSSTransition
-              in={!loading && !submitted}
-              timeout={500}
-              classNames="fade"
-              unmountOnExit
-            >
-              <div className="w-full max-w-4xl">
-                <QuizQuestion
-                  setSelectedAnswer={setSelectedAnswer}
-                  showQuestion={showQuestion}
-                  currentQuestion={currentQuestion}
-                  currentQuestionIndex={currentQuestionIndex}
-                  totalQuestions={questions.length}
-                  selectedAnswer={selectedAnswer}
-                  interests={interests}
-                  handleInputChange={handleInputChange}
-                  handleAnswerClick={handleAnswerClick}
-                  handleNext={handleNext}
-                  handleBack={handleBack}
-                  isBackDisabled={isBackDisabled}
-                  handleSubmit={handleSubmit}
-                  setInterests={setInterests}
-                  recommendationList={recommendationList}
-                  handleViewRecommendations={handleViewRecommendations}
-                  submitted={submitted}
-                />
-              </div>
-            </CSSTransition>
+          <CSSTransition
+            in={!loading && !submitted}
+            timeout={500}
+            classNames="fade"
+            unmountOnExit
+          >
+            <div className="w-full max-w-4xl">
+              <QuizQuestion
+                setSelectedAnswer={setSelectedAnswer}
+                showQuestion={showQuestion}
+                currentQuestion={currentQuestion}
+                currentQuestionIndex={currentQuestionIndex}
+                totalQuestions={questions.length}
+                selectedAnswer={selectedAnswer}
+                interests={interests}
+                handleInputChange={handleInputChange}
+                handleAnswerClick={handleAnswerClick}
+                handleNext={handleNext}
+                handleBack={handleBack}
+                isBackDisabled={isBackDisabled}
+                handleSubmit={handleSubmit}
+                setInterests={setInterests}
+                recommendationList={recommendationList}
+                handleViewRecommendations={handleViewRecommendations}
+                submitted={submitted}
+              />
+            </div>
+          </CSSTransition>
 
-            {/* Recommendations Component */}
-            <CSSTransition
-              in={!loading && submitted}
-              timeout={500}
-              classNames="fade"
-              unmountOnExit
-            >
-              <div>
-                <div className="my-6 text-center">
-                  <p className="text-lg text-gray-600">
-                    Искате други препоръки?{" "}
-                    <button
-                      onClick={handleRetakeQuiz}
-                      className="text-primary font-semibold hover:text-secondary transition-colors underline"
-                    >
-                      Повторете въпросника
-                    </button>
-                  </p>
-                </div>
-                <Recommendations recommendationList={recommendationList} />
+          <CSSTransition
+            in={!loading && submitted}
+            timeout={500}
+            classNames="fade"
+            unmountOnExit
+          >
+            <div>
+              <div className="my-6 text-center">
+                <p className="text-lg text-gray-600">
+                  Искате други препоръки?{" "}
+                  <button
+                    onClick={handleRetakeQuiz}
+                    className="text-primary font-semibold hover:text-secondary transition-colors underline"
+                  >
+                    Повторете въпросника
+                  </button>
+                </p>
               </div>
-            </CSSTransition>
-          </div>
-        )}
+              <Recommendations recommendationList={recommendationList} />
+            </div>
+          </CSSTransition>
+        </div>
       </div>
     </FadeInWrapper>
-    // <Fragment>
-    //   <div className="flex flex-col items-center justify-start min-h-screen pt-20 page-header-breadcrumb">
-    //     <div className="grid grid-cols-16 gap-1">
-    //       <div className="xl:col-span-6 col-span-16">
-    //         <div className="mb-4">
-    //           <h6 className="">Какво търсите - филм или сериал?</h6>
-    //           <div className="">
-    //             <select
-    //               id="type"
-    //               className="form-control"
-    //               value={type}
-    //               onChange={(e) => setType(e.target.value)}
-    //               required
-    //             >
-    //               {typeOptions.map((option) => (
-    //                 <option key={option} value={option}>
-    //                   {option}
-    //                 </option>
-    //               ))}
-    //             </select>
-    //           </div>
-    //         </div>
-    //         <div className="mb-4">
-    //           <h6 className="">Кои жанрове Ви се гледат в момента?</h6>
-    //           <div className="multiCh MChitem">
-    //             {genreOptions.map((genre) => (
-    //               <div key={genre.en}>
-    //                 <label>
-    //                   <input
-    //                     type="checkbox"
-    //                     value={genre.en}
-    //                     checked={
-    //                       genres.find((g) => g.en === genre.en) !== undefined
-    //                     }
-    //                     onChange={() => toggleGenre(genre)}
-    //                     required
-    //                   />
-    //                   {genre.bg}
-    //                 </label>
-    //               </div>
-    //             ))}
-    //           </div>
-    //         </div>
-    //         <div className="mb-4">
-    //           <h6 className="">Как се чувствате в момента?</h6>
-    //           <div className="multiCh MChitem">
-    //             {moodOptions.map((mood) => (
-    //               <div key={mood}>
-    //                 <label>
-    //                   <input
-    //                     type="checkbox"
-    //                     value={mood}
-    //                     checked={moods.includes(mood)}
-    //                     onChange={() => toggleMood(mood)}
-    //                     required
-    //                   />
-    //                   {mood}
-    //                 </label>
-    //               </div>
-    //             ))}
-    //           </div>
-    //         </div>
-    //         <div className="mb-4">
-    //           <label htmlFor="timeAvailability" className="form-label">
-    //             С какво време за гледане разполагате?
-    //           </label>
-    //           <select
-    //             id="timeAvailability"
-    //             className="form-control"
-    //             value={timeAvailability}
-    //             onChange={(e) => setTimeAvailability(e.target.value)}
-    //             required
-    //           >
-    //             <option value="" disabled>
-    //               Изберете време
-    //             </option>
-    //             {timeAvailabilityOptions.map((option) => (
-    //               <option key={option} value={option}>
-    //                 {option}
-    //               </option>
-    //             ))}
-    //           </select>
-    //         </div>
-    //         <div className="mb-4">
-    //           <label htmlFor="age" className="form-label">
-    //             Колко стар предпочитате да бъде филма/сериала?
-    //           </label>
-    //           <select
-    //             id="age"
-    //             className="form-control"
-    //             value={age}
-    //             onChange={(e) => setAge(e.target.value)}
-    //             required
-    //           >
-    //             <option value="" disabled>
-    //               Изберете възраст
-    //             </option>
-    //             {ageOptions.map((option) => (
-    //               <option key={option} value={option}>
-    //                 {option}
-    //               </option>
-    //             ))}
-    //           </select>
-    //         </div>
-    //         <div className="mb-4">
-    //           <label htmlFor="formGroupExampleInput2" className="form-label">
-    //             Кои са вашите любими актьори?
-    //           </label>
-    //           <input
-    //             type="text"
-    //             className="form-control"
-    //             placeholder="Пример: Брад Пит, Леонардо ди Каприо, Ема Уотсън"
-    //             value={actors}
-    //             onChange={(e) => setActors(e.target.value)}
-    //             required
-    //           />
-    //           <label>
-    //             <input
-    //               type="checkbox"
-    //               checked={actors === "Нямам предпочитания"}
-    //               onChange={() => {
-    //                 setActors(
-    //                   actors === "Нямам предпочитания"
-    //                     ? ""
-    //                     : "Нямам предпочитания"
-    //                 );
-    //               }}
-    //               required
-    //             />
-    //             Нямам предпочитания
-    //           </label>
-    //         </div>
-    //         <div className="mb-4">
-    //           <label htmlFor="formGroupExampleInput2" className="form-label">
-    //             Кои филмови режисьори предпочитате?
-    //           </label>
-    //           <input
-    //             type="text"
-    //             className="form-control"
-    //             id="formGroupExampleInput2"
-    //             placeholder="Пример: Дъфър брадърс, Стивън Спилбърг, Джеки Чан"
-    //             value={directors}
-    //             onChange={(e) => setDirectors(e.target.value)}
-    //             required
-    //           />
-    //           <label>
-    //             <input
-    //               type="checkbox"
-    //               checked={directors === "Нямам предпочитания"}
-    //               onChange={() => {
-    //                 setDirectors(
-    //                   directors === "Нямам предпочитания"
-    //                     ? ""
-    //                     : "Нямам предпочитания"
-    //                 );
-    //               }}
-    //               required
-    //             />
-    //             Нямам предпочитания
-    //           </label>
-    //         </div>
-    //         <div className="mb-4">
-    //           <label htmlFor="formGroupExampleInput2" className="form-label">
-    //             От кои страни предпочитате да е филмът/сериалът?
-    //           </label>
-    //           <input
-    //             type="text"
-    //             className="form-control"
-    //             id="formGroupExampleInput2"
-    //             placeholder="Пример: България, САЩ"
-    //             value={countries}
-    //             onChange={(e) => setCountries(e.target.value)}
-    //             required
-    //           />
-    //           <label>
-    //             <input
-    //               type="checkbox"
-    //               checked={countries === "Нямам предпочитания"}
-    //               onChange={() => {
-    //                 setCountries(
-    //                   countries === "Нямам предпочитания"
-    //                     ? ""
-    //                     : "Нямам предпочитания"
-    //                 );
-    //               }}
-    //               required
-    //             />
-    //             Нямам предпочитания
-    //           </label>
-    //         </div>
-    //         <div className="mb-4">
-    //           <label htmlFor="pacing" className="form-label">
-    //             Филми/Сериали с каква бързина на развитие на сюжетното действие
-    //             предпочитате?
-    //           </label>
-    //           <select
-    //             id="pacing"
-    //             className="form-control"
-    //             value={pacing}
-    //             onChange={(e) => setPacing(e.target.value)}
-    //             required
-    //           >
-    //             <option value="" disabled>
-    //               Изберете бързина на развитие
-    //             </option>
-    //             {pacingOptions.map((option) => (
-    //               <option key={option} value={option}>
-    //                 {option}
-    //               </option>
-    //             ))}
-    //           </select>
-    //         </div>
-    //         <div className="mb-4">
-    //           <label htmlFor="depth" className="form-label">
-    //             Филми/Сериали с какво ниво на задълбочаване харесвате?
-    //           </label>
-    //           <select
-    //             id="depth"
-    //             className="form-control"
-    //             value={depth}
-    //             onChange={(e) => setDepth(e.target.value)}
-    //             required
-    //           >
-    //             <option value="" disabled>
-    //               Изберете ниво на задълбочаване
-    //             </option>
-    //             {depthOptions.map((option) => (
-    //               <option key={option} value={option}>
-    //                 {option}
-    //               </option>
-    //             ))}
-    //           </select>
-    //         </div>
-    //         <div className="mb-4">
-    //           <label htmlFor="targetGroup" className="form-label">
-    //             Каква е вашата целева група?
-    //           </label>
-    //           <select
-    //             id="targetGroup"
-    //             className="form-control"
-    //             value={targetGroup}
-    //             onChange={(e) => setTargetGroup(e.target.value)}
-    //             required
-    //           >
-    //             <option value="" disabled>
-    //               Изберете целева група
-    //             </option>
-    //             {targetGroupOptions.map((option) => (
-    //               <option key={option} value={option}>
-    //                 {option}
-    //               </option>
-    //             ))}
-    //           </select>
-    //         </div>
-    //         <div className="mb-4">
-    //           <label htmlFor="formGroupExampleInput2" className="form-label">
-    //             Какви теми ви интересуват?
-    //           </label>
-    //           <div className="form-text">
-    //             Предпочитате филм/сериал, който засяга определена историческа
-    //             епоха, държава или дори представя история по действителен
-    //             случай? Интересуват ви филми, в които се разследва мистерия или
-    //             социален проблем, или такива, в които животни играят важна роля?
-    //             А какво ще кажете за филми, свързани с пътешествия и изследване
-    //             на света, или пък разкази за въображаеми светове? Дайте
-    //             описание. Можете също така да споделите примери за
-    //             филми/сериали, които предпочитате.
-    //           </div>
-    //           <textarea
-    //             className="form-control"
-    //             id="formGroupExampleInput2"
-    //             placeholder="Опишете темите, които ви интересуват"
-    //             value={interests}
-    //             onChange={(e) => setInterests(e.target.value)}
-    //             rows={4}
-    //             maxLength={200}
-    //           />
-    //           <div className="text-right mt-2">
-    //             <small>{`${interests.length} / 200`}</small>
-    //           </div>
-    //         </div>
-
-    //         <div>
-    //           <div className="ti-btn-list space-x-2 rtl:space-x-reverse mt-4">
-    //             <button
-    //               type="button"
-    //               className={`ti-btn ti-btn-primary-gradient ti-btn-wave`}
-    //               onClick={handleSubmit}
-    //             >
-    //               Submit
-    //             </button>
-    //           </div>
-    //           {/* Modal */}
-    //           {isModalOpen && (
-    //             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    //               <div className="bg-red rounded-lg p-6 max-w-md w-full relative overflow-y-auto max-h-80">
-    //                 <button
-    //                   className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
-    //                   onClick={closeModal}
-    //                 >
-    //                   ✕
-    //                 </button>
-    //                 <div className="text-center">
-    //                   <h2 className="text-xl font-semibold mb-4">
-    //                     Нашите предложения:
-    //                   </h2>
-    //                   {/* Content goes here; this will be scrollable if it exceeds max height */}
-    //                   <p>
-    //                     Your generated recommendations will be displayed here...
-    //                   </p>
-    //                 </div>
-    //               </div>
-    //             </div>
-    //           )}
-    //         </div>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </Fragment>
   );
 };
 
