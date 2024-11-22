@@ -1,14 +1,14 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { DataType, UserData } from "./home-types";
 import { checkTokenValidity, fetchData } from "./helper_functions";
-import TableComponent from "./Statistics/TableComponent";
-import TreemapComponent from "./Statistics/TreemapComponent";
-import TopRecommendationsChartComponent from "./Statistics/TopRecommendationsChartComponent";
-import CountryBarChartComponent from "./Statistics/CountryBarChartComponent";
-import MoviesByProsperityBubbleChartComponent from "./Statistics/MoviesByProsperityBubbleChartComponent";
-import GenrePopularityOverTimeComponent from "./Statistics/GenrePopularityOverTimeComponent";
-import MoviesAndSeriesByRatingsChartComponent from "./Statistics/MoviesAndSeriesByRatingsChartComponent";
-import WidgetCards from "./Statistics/WidgetCards";
+import TableComponent from "./Components/TableComponent";
+import TreemapComponent from "./Components/TreemapComponent";
+import TopRecommendationsChartComponent from "./Components/TopRecommendationsChartComponent";
+import CountryBarChartComponent from "./Components/CountryBarChartComponent";
+import MoviesByProsperityBubbleChartComponent from "./Components/MoviesByProsperityBubbleChartComponent";
+import GenrePopularityOverTimeComponent from "./Components/GenrePopularityOverTimeComponent";
+import MoviesAndSeriesByRatingsChartComponent from "./Components/MoviesAndSeriesByRatingsChartComponent";
+import WidgetCards from "./Components/WidgetCards";
 import { useNavigate } from "react-router-dom";
 import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 
