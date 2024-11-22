@@ -66,7 +66,7 @@ const TopRecommendationsChartComponent: FC<
           <div className="box custom-box">
             <div className="custom-box-header">
               <div className="box-title">
-                Най-често препоръчвани Филми и Сериали
+                Най-често препоръчвани филми и сериали
               </div>
             </div>
             <div className="box-body h-[22rem]">
