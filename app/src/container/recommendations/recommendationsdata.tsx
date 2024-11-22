@@ -785,7 +785,7 @@ export const Recommendations: FC<RecommendationsProps> = ({
                   {movie.title || "Заглавие на английски не е налично"}
                 </a>
                 <p className="movie-small-details">
-                  {movie.genre || "Жанр неизвестен"} |{" "}
+                  {translatedGenres || "Жанр неизвестен"} |{" "}
                   {movie.year || "Година неизвестна"} | Рейтинг:{" "}
                   {movie.rated || "N/A"}
                 </p>
