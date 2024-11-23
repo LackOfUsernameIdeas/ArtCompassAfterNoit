@@ -120,7 +120,7 @@ Background Image
   --body-bg: 240 241 247;
   --primary: 154 17 10;
   --primary-rgb: 154 17 10;
-  --secondary: 217 69 69;
+  --secondary: 193 46 23;
   --warning: 245 184 73;
   --info: 73 182 245;
   --success: 38 191 148;
@@ -19787,7 +19787,7 @@ input[type="color" i]::-webkit-color-swatch {
 }
 
 .next {
-  @apply flex flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 bg-primary text-[0.813rem] relative;
+  @apply flex flex-col rounded-md bg-primary text-[0.813rem] relative;
 }
 
 .slide-right-enter {
