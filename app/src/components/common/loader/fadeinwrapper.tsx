@@ -1,6 +1,7 @@
 import React, { useEffect, useState, ReactNode } from "react";
 import { CSSTransition } from "react-transition-group";
 import { useLocation } from "react-router-dom";
+import Loader from "../loader/Loader";
 
 interface FadeInWrapperProps {
   children: ReactNode;
@@ -8,28 +9,39 @@ interface FadeInWrapperProps {
 
 const FadeInWrapper: React.FC<FadeInWrapperProps> = ({ children }) => {
   const [isPageLoaded, setIsPageLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
   const location = useLocation();
 
   useEffect(() => {
-    // Simulating the page load delay with a setTimeout
-    const delay = 1;
     const timeoutId = setTimeout(() => {
+      setLoading(false);
       setIsPageLoaded(true);
-    }, delay);
+    }, 100);
 
-    // Clear the timeout on component unmount
     return () => clearTimeout(timeoutId);
-  }, [location.key]); // Trigger effect on route change
+  }, [location.key]);
 
   return (
-    <CSSTransition
-      in={isPageLoaded}
-      timeout={600} // Match CSS transition duration
-      classNames="fade"
-      unmountOnExit
-    >
-      <div>{children}</div>
-    </CSSTransition>
+    <>
+      <CSSTransition
+        in={loading}
+        timeout={500}
+        classNames="fade"
+        unmountOnExit
+        key="loading"
+      >
+        <Loader />
+      </CSSTransition>
+
+      <CSSTransition
+        in={isPageLoaded}
+        timeout={600}
+        classNames="fade"
+        unmountOnExit
+      >
+        <div>{children}</div>
+      </CSSTransition>
+    </>
   );
 };
 

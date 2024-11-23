@@ -1,9 +1,9 @@
 import { FC, useEffect, useState } from "react";
-import logo_loader from "../../../assets/images/brand-logos/logo_loader.png";
 import { CSSTransition } from "react-transition-group";
 import { RecommendationsList } from "./RecommendationsList";
 import { QuizQuestions } from "./QuizQuestions";
 import { handleRetakeQuiz } from "../helper_functions";
+import Loader from "../../../components/common/loader/Loader";
 
 export const Quiz: FC = () => {
   const [loading, setLoading] = useState(false);
@@ -24,10 +24,7 @@ export const Quiz: FC = () => {
         unmountOnExit
         key="loading"
       >
-        <div className="fixed inset-0 flex flex-col items-center justify-center space-y-4">
-          <img src={logo_loader} alt="loading" className="spinner" />
-          <p className="text-xl">Зареждане...</p>
-        </div>
+        <Loader />
       </CSSTransition>
 
       <CSSTransition
