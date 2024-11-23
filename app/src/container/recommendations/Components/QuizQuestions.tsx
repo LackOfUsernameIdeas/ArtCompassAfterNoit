@@ -2,15 +2,13 @@ import { FC, useEffect, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { Genre, QuizQuestionProps } from "../recommendations-types";
 import {
-  generateMovieRecommendations,
-  saveUserPreferences,
   handleAnswerClick,
   handleInputChange,
-  handleViewRecommendations,
   handleBack,
   handleNext,
   isGenreOption,
-  handleSubmit
+  handleSubmit,
+  getMarginClass
 } from "../helper_functions";
 import {
   ageOptions,
@@ -229,7 +227,11 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
         classNames="fade"
         unmountOnExit
       >
-        <div className="w-full max-w-4xl py-8 px-4">
+        <div
+          className={`w-full max-w-4xl py-8 px-4 ${
+            window.innerWidth >= 640 ? getMarginClass(currentQuestion) : ""
+          }`}
+        >
           <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
             <h2 className="text-xl font-semibold break-words">
               {currentQuestion.question}
