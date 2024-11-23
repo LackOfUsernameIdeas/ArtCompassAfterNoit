@@ -169,6 +169,42 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
     setIsModalOpen(true);
   };
 
+  const handleClick = () => {
+    if (
+      !(
+        (selectedAnswer && selectedAnswer.length > 0) ||
+        (currentQuestion.isInput &&
+          typeof currentQuestion.value === "string" &&
+          currentQuestion.value.trim() !== "")
+      )
+    ) {
+      return;
+    }
+
+    if (currentQuestionIndex === totalQuestions - 1) {
+      if (alreadyHasRecommendations) {
+        handleOpenModal();
+      } else {
+        handleSubmit(
+          setLoading,
+          setSubmitted,
+          setSubmitCount,
+          setRecommendationList,
+          userPreferences,
+          token,
+          submitCount
+        );
+      }
+    } else {
+      handleNext(
+        setSelectedAnswer,
+        setShowQuestion,
+        setCurrentQuestionIndex,
+        questions
+      );
+    }
+  };
+
   useEffect(() => {
     if (currentQuestion?.value) {
       if (
@@ -361,31 +397,23 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                   return (
                     <div
                       key={index}
+                      onClick={() =>
+                        handleAnswerClick(
+                          currentQuestion.setter,
+                          option.bg,
+                          setGenres,
+                          currentQuestion,
+                          selectedAnswer,
+                          setSelectedAnswer
+                        )
+                      }
                       className={`${
                         selectedAnswer && selectedAnswer.includes(option.bg)
-                          ? "selected-answer"
-                          : "question"
-                      } bg-opacity-70 p-4 text-white rounded-lg glow-effect transition-all duration-300 ${
-                        selectedAnswer && selectedAnswer.includes(option.bg)
-                          ? "transform scale-105"
-                          : "hover:bg-[#d94545] hover:text-white"
-                      }`}
+                          ? "selected-answer transform scale-105"
+                          : "question hover:bg-[#d94545] hover:text-white"
+                      } bg-opacity-70 p-6 text-white rounded-lg glow-effect transition-all duration-300 cursor-pointer flex justify-center items-center`}
                     >
-                      <button
-                        className="block w-full p-2 rounded"
-                        onClick={() =>
-                          handleAnswerClick(
-                            currentQuestion.setter,
-                            option.bg,
-                            setGenres,
-                            currentQuestion,
-                            selectedAnswer,
-                            setSelectedAnswer
-                          )
-                        }
-                      >
-                        {option.bg}
-                      </button>
+                      {option.bg}
                     </div>
                   );
                 } else {
@@ -417,79 +445,32 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
           )}
 
           <div
-            className={`next glow-next bg-red-600 bg-opacity-70 text-white rounded-lg p-4 mt-4 transition-all duration-200 ${
+            onClick={handleClick}
+            className={`next glow-next bg-red-600 bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center transition-all duration-200 ${
               (selectedAnswer && selectedAnswer.length > 0) ||
               (currentQuestion.isInput &&
                 typeof currentQuestion.value === "string" &&
                 currentQuestion.value.trim() !== "")
-                ? "opacity-100 pointer-events-auto"
+                ? "opacity-100 pointer-events-auto cursor-pointer"
                 : "opacity-0 pointer-events-none"
-            }}`}
+            }`}
           >
-            {currentQuestionIndex === totalQuestions - 1 ? (
-              <div>
-                <button
-                  onClick={() => {
-                    if (alreadyHasRecommendations) {
-                      handleOpenModal();
-                    } else {
-                      handleSubmit(
-                        setLoading,
-                        setSubmitted,
-                        setSubmitCount,
-                        setRecommendationList,
-                        userPreferences,
-                        token,
-                        submitCount
-                      );
-                    }
-                  }}
-                  className="block w-full p-2 text-white rounded hover:bg-red-700"
-                  disabled={
-                    !(
-                      (selectedAnswer && selectedAnswer.length > 0) ||
-                      (typeof currentQuestion.value === "string" &&
-                        currentQuestion.value.trim() !== "")
-                    )
-                  }
-                >
-                  Изпрати
-                </button>
-                {isModalOpen && alreadyHasRecommendations && (
-                  <ConfirmationModal
-                    setIsModalOpen={setIsModalOpen}
-                    setLoading={setLoading}
-                    setSubmitted={setSubmitted}
-                    handleSubmit={handleSubmit}
-                    setRecommendationList={setRecommendationList}
-                    setSubmitCount={setSubmitCount}
-                    userPreferences={userPreferences}
-                    token={token}
-                    submitCount={submitCount}
-                  />
-                )}
-              </div>
-            ) : (
-              <button
-                onClick={() =>
-                  handleNext(
-                    setSelectedAnswer,
-                    setShowQuestion,
-                    setCurrentQuestionIndex,
-                    questions
-                  )
-                }
-                className="block w-full p-2 text-white"
-                disabled={
-                  !(
-                    (selectedAnswer && selectedAnswer.length > 0) ||
-                    (typeof currentQuestion.value === "string" &&
-                      currentQuestion.value.trim() !== "")
-                  )
-                }
-              >
-                Следващ въпрос
-              </button>
+            {currentQuestionIndex === totalQuestions - 1
+              ? "Изпрати"
+              : "Следващ въпрос"}
+
+            {isModalOpen && alreadyHasRecommendations && (
+              <ConfirmationModal
+                setIsModalOpen={setIsModalOpen}
+                setLoading={setLoading}
+                setSubmitted={setSubmitted}
+                handleSubmit={handleSubmit}
+                setRecommendationList={setRecommendationList}
+                setSubmitCount={setSubmitCount}
+                userPreferences={userPreferences}
+                token={token}
+                submitCount={submitCount}
+              />
             )}
           </div>
         </div>
