@@ -18,7 +18,7 @@ const Recommendations: FC<RecommendationsProps> = () => {
     };
 
     validateToken();
-  }, []); // Добавяне на navigate като зависимост
+  }, [navigate]); // Добавяне на navigate като зависимост
 
   return (
     <FadeInWrapper>

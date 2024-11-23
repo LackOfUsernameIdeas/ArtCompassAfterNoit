@@ -44,10 +44,6 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
     validateToken();
   }, [token]);
 
-  if (isValid === null) {
-    return <div>Loading...</div>; // Render a loading state while token validation is in progress
-  }
-
   return isValid ? children : <Navigate to="/signin" />;
 };
 
