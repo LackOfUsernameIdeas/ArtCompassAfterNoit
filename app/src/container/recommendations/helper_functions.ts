@@ -117,6 +117,39 @@ export const saveUserPreferences = async (
   }
 };
 
+const fetchIMDbDataWithFailover = async (movieName: string) => {
+  const engines = [
+    { key: "AIzaSyAUOQzjNbBnGSBVvCZkWqHX7uebGZRY0lg", cx: "244222e4658f44b78" },
+    { key: "AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA", cx: "27427e59e17b74763" },
+    { key: "AIzaSyDqUez1TEmLSgZAvIaMkWfsq9rSm0kDjIw", cx: "e59ceff412ebc4313" }
+  ];
+
+  for (let engine of engines) {
+    try {
+      const response = await fetch(
+        `https://customsearch.googleapis.com/customsearch/v1?key=${
+          engine.key
+        }&cx=${engine.cx}&q=${encodeURIComponent(movieName)}`
+      );
+      const data = await response.json();
+
+      if (response.ok && !data.error && data.items) {
+        console.log(
+          `Fetched IMDb data successfully using engine: ${engine.cx}`
+        );
+        return data;
+      } else {
+        console.log(`Engine ${engine.cx} failed. Trying next...`);
+      }
+    } catch (error) {
+      console.error(`Error fetching data with engine ${engine.cx}:`, error);
+    }
+  }
+  throw new Error(
+    `Failed to fetch IMDb data for "${movieName}" using all engines.`
+  );
+};
+
 export const generateMovieRecommendations = async (
   date: string,
   userPreferences: UserPreferences,
@@ -155,35 +188,36 @@ export const generateMovieRecommendations = async (
           {
             role: "user",
             content: `Препоръчай ми 5 ${typeText} за гледане, които ЗАДЪЛЖИТЕЛНО да съвпадат с моите вкусове и предпочитания, а именно:
-                Любими жанрове: ${genres.map((genre) => genre.bg)}.
-                Емоционално състояние в този момент: ${moods}.
-                Разполагаемо свободно време за гледане: ${timeAvailability}.
-                Възрастта на ${typeText} задължително да бъде: ${age}
-                Любими актьори: ${actors}.
-                Любими филмови режисьори: ${directors}.
-                Теми, които ме интересуват: ${interests}.
-                Филмите/сериалите могат да бъдат от следните страни: ${countries}.
-                Темпото (бързината) на филмите/сериалите предпочитам да бъде: ${pacing}.
-                Предпочитам филмите/сериалите да са: ${depth}.
-                Целевата група е: ${targetGroup}.
-                Дай информация за всеки отделен филм/сериал по отделно защо той е подходящ за мен.
-                Задължително искам имената на филмите/сериалите да бъдат абсолютно точно както са официално на български език – така, както са известни сред публиката в България. 
-                Не се допуска буквален превод на заглавията от английски, ако официалното българско заглавие се различава от буквалния превод. 
-                Не препоръчвай 18+ филми/сериали.
-                Форматирай своя response във валиден JSON формат по този начин:
-                {
-                  "Официално име на ${typeText} на английски, както е прието да бъде": {
-                    "bgName": "Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод",
-                    "description": "Описание на ${typeText}",
-                    "reason": "Защо този филм/сериал е подходящ за мен?"
-                  },
-                  "Официално име на ${typeText} на английски, както е прието да бъде": {
-                    "bgName": "Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод",
-                    "description": "Описание на ${typeText}",
-                    "reason": "Защо този филм/сериал е подходящ за мен?"
-                  },
-                  // ...additional movies
-                }. Не добавяй излишни кавички(внимавай кога ползваш единични и кога двойни), думи или скоби, JSON формата трябва да е валиден за JavaScript JSON.parse() функцията.`
+                  Любими жанрове: ${genres.map((genre) => genre.bg)}.
+                  Емоционално състояние в този момент: ${moods}.
+                  Разполагаемо свободно време за гледане: ${timeAvailability}.
+                  Възрастта на ${typeText} задължително да бъде: ${age}
+                  Любими актьори: ${actors}.
+                  Любими филмови режисьори: ${directors}.
+                  Теми, които ме интересуват: ${interests}.
+                  Филмите/сериалите могат да бъдат от следните страни: ${countries}.
+                  Темпото (бързината) на филмите/сериалите предпочитам да бъде: ${pacing}.
+                  Предпочитам филмите/сериалите да са: ${depth}.
+                  Целевата група е: ${targetGroup}.
+                  Дай информация за всеки отделен филм/сериал по отделно защо той е подходящ за мен.
+                  Задължително искам имената на филмите/сериалите да бъдат абсолютно точно както са официално на български език – така, както са известни сред публиката в България.
+                  Не се допуска буквален превод на заглавията от английски, ако официалното българско заглавие се различава от буквалния превод.
+                  Не препоръчвай 18+ филми/сериали.
+                  Форматирай своя response във валиден JSON формат по този начин:
+                  {
+                    "Официално име на ${typeText} на английски, както е прието да бъде": {
+                      "bgName": "Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод",
+                      "description": "Описание на ${typeText}",
+                      "reason": "Защо този филм/сериал е подходящ за мен?"
+                    },
+                    "Официално име на ${typeText} на английски, както е прието да бъде": {
+                      "bgName": "Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод",
+                      "description": "Описание на ${typeText}",
+                      "reason": "Защо този филм/сериал е подходящ за мен?"
+                    },
+                    // ...additional movies
+                  }. Не добавяй излишни думи или скоби. Увери се, че всички данни са правилно "escape-нати", за да не предизвикат грешки в JSON формата. 
+                  JSON формата трябва да е валиден за JavaScript JSON.parse() функцията.`
           }
         ]
       })
@@ -198,38 +232,15 @@ export const generateMovieRecommendations = async (
       .replace(/^'|'$/g, "")
       .trim();
     console.log("unescapedData: ", unescapedData);
-    const escapedData = decodeURIComponent(unescapedData);
-    console.log("escapedData: ", escapedData);
-    const recommendations = JSON.parse(escapedData);
+    const decodedData = decodeURIComponent(unescapedData);
+    console.log("decodedData: ", decodedData);
+    const recommendations = JSON.parse(decodedData);
     console.log("recommendations: ", recommendations);
 
     for (const movieTitle in recommendations) {
       const movieName = movieTitle;
 
-      // 27427e59e17b74763, AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA
-      // e59ceff412ebc4313, AIzaSyDqUez1TEmLSgZAvIaMkWfsq9rSm0kDjIw
-      let imdbData;
-
-      try {
-        let imdbResponse = await fetch(
-          `https://customsearch.googleapis.com/customsearch/v1?key=AIzaSyDqUez1TEmLSgZAvIaMkWfsq9rSm0kDjIw&cx=e59ceff412ebc4313&q=${encodeURIComponent(
-            movieName
-          )}`
-        );
-        imdbData = await imdbResponse.json();
-
-        if (!imdbResponse.ok || imdbResponse.status === 429 || imdbData.error) {
-          imdbResponse = await fetch(
-            `https://customsearch.googleapis.com/customsearch/v1?key=AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA&cx=27427e59e17b74763&q=${encodeURIComponent(
-              movieName
-            )}`
-          );
-          imdbData = await imdbResponse.json();
-        }
-      } catch (error) {
-        console.error("Error fetching IMDb data:", error);
-        continue;
-      }
+      const imdbData = await fetchIMDbDataWithFailover(movieName);
 
       if (Array.isArray(imdbData.items)) {
         const imdbItem = imdbData.items.find((item: { link: string }) =>
