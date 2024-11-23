@@ -465,6 +465,7 @@ export const handleSubmit = async (
     const data = await response.json();
 
     if (response.status === 200) {
+      setRecommendationList([]);
       await saveUserPreferences(date, userPreferences, token);
       await generateMovieRecommendations(
         date,

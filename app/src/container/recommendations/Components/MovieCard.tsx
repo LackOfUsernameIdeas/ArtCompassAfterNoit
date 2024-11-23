@@ -116,7 +116,15 @@ export const MovieCard: FC<MovieCardProps> = ({
                   }`}
                   style={{ width: "35px", height: "35px" }}
                 >
-                  <span className="text-xl">{movie.metascore || "N/A"}</span>
+                  <span
+                    className={`${
+                      movie.metascore === "N/A" || !movie.metascore
+                        ? "text-sm"
+                        : "text-xl"
+                    }`}
+                  >
+                    {movie.metascore || "N/A"}
+                  </span>
                 </div>
                 <span className="font-semibold">Метаскор</span>
               </div>
@@ -140,17 +148,11 @@ export const MovieCard: FC<MovieCardProps> = ({
 
           <div className="mb-4">
             <h3 className="text-lg font-semibold mb-2">Сюжет</h3>
-            <div
-              className={`overflow-hidden transition-all duration-500 ease-in-out`}
-              style={{
-                maxHeight: isExpanded ? "400px" : "20px",
-                opacity: isExpanded ? 0.9 : 0.7
-              }}
-            >
+            <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[20px] opacity-70">
               <p className="text-opacity-80 italic">
-                {isExpanded
-                  ? movie.description
-                  : `${movie.description.substring(0, plotPreviewLength)}...`}
+                {movie.description.length > plotPreviewLength
+                  ? `${movie.description.substring(0, plotPreviewLength)}...`
+                  : movie.description}
               </p>
             </div>
 
@@ -169,15 +171,21 @@ export const MovieCard: FC<MovieCardProps> = ({
             <ul className="text-opacity-80 space-y-1">
               <li>
                 <strong className="text-primary">Режисьор:</strong>{" "}
-                {translatedDirector || "Неизвестен"}
+                {translatedDirector && translatedDirector !== "N/A"
+                  ? translatedDirector
+                  : "Неизвестен"}
               </li>
               <li>
                 <strong className="text-primary">Сценаристи:</strong>{" "}
-                {translatedWriters || "Неизвестени"}
+                {translatedWriters && translatedWriters !== "N/A"
+                  ? translatedWriters
+                  : "Неизвестни"}
               </li>
               <li>
                 <strong className="text-primary">Актьори:</strong>{" "}
-                {translatedActors || "Неизвестени"}
+                {translatedActors && translatedActors !== "N/A"
+                  ? translatedActors
+                  : "Неизвестни"}
               </li>
               <li>
                 <strong className="text-primary">Награди:</strong>{" "}

@@ -78,7 +78,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       setter: setTimeAvailability
     },
     {
-      question: "Колко стар предпочитате да бъде филма/сериала?",
+      question: "Изберете приблизително време на създаване на филма/сериала?",
       options: ageOptions,
       value: age,
       setter: setAge
@@ -252,7 +252,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                       questions
                     )
                   }
-                  className="back-button text-blue-600 text-3xl transition-all duration-300 hover:text-blue-800"
+                  className="back-button text-secondary dark:text-white hover:opacity-70 text-3xl transition-all duration-300 "
                 >
                   &#8592;
                 </button>
@@ -321,7 +321,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                     required
                   />
                   <div className="flex items-center text-white">
-                    <label className="flex items-center ml-2 cursor-pointer hover:text-[#d94545]">
+                    <label className="flex items-center ml-2 cursor-pointer text-secondary dark:text-white hover:text-secondary">
                       <input
                         type="checkbox"
                         className="checkbox"
@@ -390,31 +390,23 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                   return (
                     <div
                       key={index}
+                      onClick={() =>
+                        handleAnswerClick(
+                          currentQuestion.setter,
+                          option,
+                          setGenres,
+                          currentQuestion,
+                          selectedAnswer,
+                          setSelectedAnswer
+                        )
+                      }
                       className={`${
                         selectedAnswer && selectedAnswer.includes(option)
-                          ? "selected-answer"
-                          : "question"
-                      } bg-opacity-70 p-4 text-white rounded-lg glow-effect transition-all duration-300 ${
-                        selectedAnswer && selectedAnswer.includes(option)
-                          ? "transform scale-105"
-                          : "hover:bg-[#d94545] hover:text-white"
-                      }`}
+                          ? "selected-answer transform scale-105"
+                          : "question hover:bg-[#d94545] hover:text-white"
+                      } bg-opacity-70 p-6 text-white rounded-lg glow-effect transition-all duration-300 cursor-pointer flex justify-center items-center`}
                     >
-                      <button
-                        className="block w-full p-2 rounded"
-                        onClick={() =>
-                          handleAnswerClick(
-                            currentQuestion.setter,
-                            option,
-                            setGenres,
-                            currentQuestion,
-                            selectedAnswer,
-                            setSelectedAnswer
-                          )
-                        }
-                      >
-                        {option}
-                      </button>
+                      {option}
                     </div>
                   );
                 }
@@ -423,7 +415,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
           )}
 
           <div
-            className={`next bg-red-600 bg-opacity-70 text-white rounded-lg p-4 mt-4 transition-all duration-200 ${
+            className={`next glow-next bg-red-600 bg-opacity-70 text-white rounded-lg p-4 mt-4 transition-all duration-200 ${
               (selectedAnswer && selectedAnswer.length > 0) ||
               (currentQuestion.isInput &&
                 typeof currentQuestion.value === "string" &&
