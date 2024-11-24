@@ -933,7 +933,7 @@ const getSortedActorsByProsperity = (callback) => {
   db.query(query, async (err, results) => {
     if (err) return callback(err);
 
-    // Calculate prosperity scores
+    // Изчисляване на резултатите за просперитет
     const weights = {
       total_wins: 0.3,
       total_nominations: 0.25,
@@ -943,7 +943,7 @@ const getSortedActorsByProsperity = (callback) => {
       avg_rotten_tomatoes: 0.1
     };
 
-    // Find maximum box office value to normalize
+    // Намиране на максималната стойност на бокс офис, за да се нормализира
     const maxBoxOffice = Math.max(
       ...results.map((actor) => {
         const totalBoxOffice =
@@ -953,20 +953,20 @@ const getSortedActorsByProsperity = (callback) => {
     );
 
     const actorsWithProsperity = results.map((actor) => {
-      const totalWins = actor.total_wins || 0; // Ensure no null values
+      const totalWins = actor.total_wins || 0; // Уверете се, че няма null стойности
       const totalNominations = actor.total_nominations || 0;
 
-      // Parse and normalize the box office value
+      // Парсиране и нормализиране на стойността на бокс офис
       const totalBoxOffice =
         parseFloat(actor.total_box_office.replace(/[$,]/g, "")) || 0;
 
-      // Normalize the box office value to a scale of 0-1
+      // Нормализиране на стойността на бокс офис в мащаб 0-1
       const normalizedBoxOffice = maxBoxOffice
         ? totalBoxOffice / maxBoxOffice
         : 0;
 
       const avgIMDbRating = actor.avg_imdb_rating || 0;
-      const avgMetascore = actor.avg_metascore || 0; // Add metascore
+      const avgMetascore = actor.avg_metascore || 0; // Добавяне на metascore
       const avgRottenTomatoes = actor.avg_rotten_tomatoes
         ? parseFloat(actor.avg_rotten_tomatoes.replace("%", "")) / 100
         : 0;
@@ -985,7 +985,7 @@ const getSortedActorsByProsperity = (callback) => {
       };
     });
 
-    // Translate each actor's name
+    // Превеждане на имената на всеки актьор
     const translatedResults = await Promise.all(
       actorsWithProsperity.map(async (row) => {
         const translatedActor = await translate(row.actor);
@@ -1103,9 +1103,8 @@ const getSortedWritersByProsperity = (callback) => {
   ORDER BY 
       avg_imdb_rating DESC;`;
 
-  // Optional: Uncomment this part if you want to ensure more than 1 unique movie
   // HAVING
-  // COUNT(DISTINCT um.imdbID) > 1  -- Ensure more than 1 unique movie
+  // COUNT(DISTINCT um.imdbID) > 1
   db.query(query, async (err, results) => {
     if (err) return callback(err);
 
@@ -1298,7 +1297,7 @@ const getSortedMoviesByProsperity = (callback) => {
   db.query(query, (err, results) => {
     if (err) return callback(err);
 
-    // Calculate prosperity scores
+    // Изчисляване на просперитета на филмите
     const weights = {
       total_wins: 0.3,
       total_nominations: 0.25,
@@ -1308,7 +1307,7 @@ const getSortedMoviesByProsperity = (callback) => {
       avg_rotten_tomatoes: 0.1
     };
 
-    // Find maximum box office value to normalize
+    // Намиране на максималната стойност на бокс офис, за да се нормализира
     const maxBoxOffice = Math.max(
       ...results.map((movie) => {
         const totalBoxOffice =
@@ -1318,25 +1317,25 @@ const getSortedMoviesByProsperity = (callback) => {
     );
 
     const moviesWithProsperity = results.map((movie) => {
-      const totalWins = movie.total_wins || 0; // Ensure no null values
+      const totalWins = movie.total_wins || 0; // Осигуряване, че няма null стойности
       const totalNominations = movie.total_nominations || 0;
 
-      // Parse and normalize the box office value
+      // Парсиране и нормализиране на стойността на бокс офис
       const totalBoxOffice =
         parseFloat(movie.total_box_office.replace(/[$,]/g, "")) || 0;
 
-      // Normalize the box office value to a scale of 0-1
+      // Нормализиране на стойността на бокс офис в мащаб 0-1
       const normalizedBoxOffice = maxBoxOffice
         ? totalBoxOffice / maxBoxOffice
         : 0;
 
       const avgIMDbRating = movie.imdbRating || 0;
-      const avgMetascore = movie.metascore || 0; // Add metascore
+      const avgMetascore = movie.metascore || 0; // Добавяне на метаоценка
       const avgRottenTomatoes = movie.avg_rotten_tomatoes
         ? parseFloat(movie.avg_rotten_tomatoes.replace("%", "")) / 100
         : 0;
 
-      // Calculate prosperity score using weighted values
+      // Изчисляване на просперитета чрез тежести на стойностите
       const prosperityScore =
         totalWins * weights.total_wins +
         totalNominations * weights.total_nominations +
@@ -1347,11 +1346,11 @@ const getSortedMoviesByProsperity = (callback) => {
 
       return {
         ...movie,
-        prosperityScore: Number(prosperityScore.toFixed(2)) // Round to two decimal places
+        prosperityScore: Number(prosperityScore.toFixed(2)) // Округляване до два десетични знака
       };
     });
 
-    // Sort by prosperity score
+    // Сортиране по просперитет
     moviesWithProsperity.sort((a, b) => b.prosperityScore - a.prosperityScore);
 
     callback(null, moviesWithProsperity);
