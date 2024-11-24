@@ -7,7 +7,6 @@ import { translate } from "../helper_functions";
 export const MovieCard: FC<MovieCardProps> = ({
   recommendationList,
   currentIndex,
-  isExpanded,
   openModal
 }) => {
   const [translatedDirector, setTranslatedDirector] = useState<string>("");
