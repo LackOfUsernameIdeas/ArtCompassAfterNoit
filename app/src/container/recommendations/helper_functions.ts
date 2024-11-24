@@ -319,7 +319,7 @@ export const generateMovieRecommendations = async (
 
           if (imdbId) {
             const omdbResponse = await fetch(
-              `http://www.omdbapi.com/?apikey=89cbf31c&i=${imdbId}&plot=full`
+              `https://www.omdbapi.com/?apikey=89cbf31c&i=${imdbId}&plot=full`
             );
             const omdbData = await omdbResponse.json();
 
