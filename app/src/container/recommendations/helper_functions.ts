@@ -1,6 +1,16 @@
 import { Genre, Question, UserPreferences } from "./recommendations-types";
 import { genreOptions, openAIKey } from "./recommendations-data";
 
+/**
+ * Превежда текста от английски на български, като използва Google Translate API.
+ * Ако заявката за превод е неуспешна, се връща оригиналният текст.
+ *
+ * @async
+ * @function translate
+ * @param {string} entry - Текстът, който трябва да бъде преведен.
+ * @returns {Promise<string>} - Преведеният текст на български език.
+ * @throws {Error} - Хвърля грешка, ако не успее да преведе текста.
+ */
 export async function translate(entry: string) {
   const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bg&dt=t&q=${encodeURIComponent(
     entry
@@ -22,6 +32,18 @@ export async function translate(entry: string) {
   }
 }
 
+/**
+ * Записва предпочитанията на потребителя в базата данни чрез POST заявка.
+ * Ако не успее да запише предпочитанията, се хвърля грешка.
+ *
+ * @async
+ * @function saveUserPreferences
+ * @param {string} date - Датата на записа на предпочитанията.
+ * @param {Object} userPreferences - Обект с предпочитанията на потребителя.
+ * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
+ * @returns {Promise<void>} - Няма връщан резултат, но хвърля грешка при неуспех.
+ * @throws {Error} - Хвърля грешка, ако заявката не е успешна.
+ */
 export const saveUserPreferences = async (
   date: string,
   userPreferences: {
@@ -117,6 +139,16 @@ export const saveUserPreferences = async (
   }
 };
 
+/**
+ * Извлича данни за филм от IMDb чрез няколко различни търсачки в случай на неуспех.
+ * Ако не успее да извлече данни от всички търсачки, хвърля грешка.
+ *
+ * @async
+ * @function fetchIMDbDataWithFailover
+ * @param {string} movieName - Името на филма, за който се извличат данни.
+ * @returns {Promise<Object>} - Връща обект с данни от IMDb за филма.
+ * @throws {Error} - Хвърля грешка, ако не успее да извлече данни от всички търсачки.
+ */
 const fetchIMDbDataWithFailover = async (movieName: string) => {
   const engines = [
     { key: "AIzaSyAUOQzjNbBnGSBVvCZkWqHX7uebGZRY0lg", cx: "244222e4658f44b78" },
@@ -150,6 +182,20 @@ const fetchIMDbDataWithFailover = async (movieName: string) => {
   );
 };
 
+/**
+ * Генерира препоръки за филми или сериали, базирани на предпочитанията на потребителя,
+ * като използва OpenAI API за създаване на списък с препоръки.
+ * Връща списък с препоръки в JSON формат.
+ *
+ * @async
+ * @function generateMovieRecommendations
+ * @param {string} date - Датата на генерирането на препоръките.
+ * @param {UserPreferences} userPreferences - Преференциите на потребителя за филми/сериали.
+ * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за задаване на препоръките в компонент.
+ * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
+ * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките.
+ * @throws {Error} - Хвърля грешка, ако заявката за препоръки е неуспешна.
+ */
 export const generateMovieRecommendations = async (
   date: string,
   userPreferences: UserPreferences,
@@ -325,7 +371,6 @@ export const generateMovieRecommendations = async (
             console.log(`IMDb ID not found for ${movieName}`);
           }
         }
-        // TO DO: Да се измисли какво да се прави ако не се намери филма/сериала
       }
     }
   } catch (error) {
@@ -333,6 +378,19 @@ export const generateMovieRecommendations = async (
   }
 };
 
+/**
+ * Записва препоръка за филм или сериал в базата данни.
+ * Препоръката съдържа подробности за филма/сериала като заглавие, жанр, рейтинг и други.
+ * След успешното записване, препоръката се изпраща в сървъра.
+ *
+ * @async
+ * @function saveRecommendationToDatabase
+ * @param {any} recommendation - Обект, съдържащ данни за препоръчания филм или сериал.
+ * @param {string} date - Дата на генерирането на препоръката.
+ * @param {string | null} token - Токенът на потребителя за аутентификация.
+ * @returns {Promise<void>} - Няма връщан резултат, но извършва записване на препоръката.
+ * @throws {Error} - Хвърля грешка, ако не може да се запази препоръката в базата данни.
+ */
 export const saveRecommendationToDatabase = async (
   recommendation: any,
   date: string,
@@ -417,6 +475,22 @@ export const saveRecommendationToDatabase = async (
   }
 };
 
+/**
+ * Обработва изпращането на потребителски данни за генериране на препоръки.
+ * Извършва валидация на полетата, изпраща заявка до сървъра и обновява списъка с препоръки.
+ *
+ * @async
+ * @function handleSubmit
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} setLoading - Функция за задаване на статус на зареждане.
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitted - Функция за задаване на статус за подадена заявка.
+ * @param {React.Dispatch<React.SetStateAction<number>>} setSubmitCount - Функция за актуализиране на броя на подадените заявки.
+ * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за актуализиране на списъка с препоръки.
+ * @param {UserPreferences} userPreferences - Преференции на потребителя за филми/сериали.
+ * @param {string | null} token - Токенът за аутентификация на потребителя.
+ * @param {number} submitCount - Броят на подадените заявки.
+ * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките и записва данни.
+ * @throws {Error} - Хвърля грешка, ако не може да се обработи заявката.
+ */
 export const handleSubmit = async (
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
@@ -425,7 +499,7 @@ export const handleSubmit = async (
   userPreferences: UserPreferences,
   token: string | null,
   submitCount: number
-) => {
+): Promise<void> => {
   if (submitCount >= 20) {
     alert("Достигнахте максималния брой предложения! :(");
     return;
@@ -496,10 +570,19 @@ export const handleSubmit = async (
   }
 };
 
+/**
+ * Превключва състоянието на жанр в списъка на избраните жанрове.
+ * Ако жанрът е вече в списъка, го премахва; ако не е, го добавя.
+ *
+ * @function toggleGenre
+ * @param {Genre} genre - Жанрът, който трябва да бъде добавен или премахнат.
+ * @param {React.Dispatch<React.SetStateAction<Genre[]>>} setGenres - Функцията за актуализиране на списъка с избрани жанрове.
+ * @returns {void} - Няма връщан резултат, но актуализира състоянието на жанровете.
+ */
 export const toggleGenre = (
   genre: Genre,
   setGenres: React.Dispatch<React.SetStateAction<Genre[]>>
-) => {
+): void => {
   setGenres((prevGenres) =>
     prevGenres.find((g) => g.en === genre.en)
       ? prevGenres.filter((g) => g.en !== genre.en)
@@ -507,12 +590,34 @@ export const toggleGenre = (
   );
 };
 
+/**
+ * Проверява дали дадена опция е жанр, базирайки се на наличието на определени свойства в обекта.
+ * Връща `true`, ако обектът има свойства `en` и `bg` със стойности от тип "string".
+ *
+ * @function isGenreOption
+ * @param {any} option - Опцията, която трябва да бъде проверена.
+ * @returns {boolean} - Връща `true`, ако опцията е жанр, в противен случай `false`.
+ */
 export function isGenreOption(option: any): option is Genre {
   return (
     option && typeof option.en === "string" && typeof option.bg === "string"
   );
 }
 
+/**
+ * Обработва избора на отговор от потребителя в зависимост от типа на въпроса (множество или един отговор).
+ * Актуализира състоянието на отговорите и жанровете в компонента.
+ *
+ * @async
+ * @function handleAnswerClick
+ * @param {React.Dispatch<React.SetStateAction<any>>} setter - Функцията за актуализиране на отговорите в компонента.
+ * @param {string} answer - Избраният отговор от потребителя.
+ * @param {React.Dispatch<React.SetStateAction<Genre[]>>} setGenres - Функцията за актуализиране на избраните жанрове.
+ * @param {Question} currentQuestion - Текущият въпрос, с неговите свойства.
+ * @param {string[] | null} selectedAnswer - Съществуващият избран отговор.
+ * @param {React.Dispatch<React.SetStateAction<string[] | null>>} setSelectedAnswer - Функцията за актуализиране на състоянието на избраните отговори.
+ * @returns {void} - Няма връщан резултат, но актуализира състоянието.
+ */
 export const handleAnswerClick = (
   setter: React.Dispatch<React.SetStateAction<any>>,
   answer: string,
@@ -554,6 +659,13 @@ export const handleAnswerClick = (
   }
 };
 
+/**
+ * Връща CSS клас, който задава марж в зависимост от броя на опциите за текущия въпрос.
+ *
+ * @function getMarginClass
+ * @param {Question} question - Текущият въпрос, съдържащ информация за опциите.
+ * @returns {string} - Строка с CSS клас, който определя маржа за въпроса.
+ */
 export const getMarginClass = (question: Question): string => {
   if (question.isInput) {
     return question.description ? "mt-[5rem]" : "mt-[9rem]";
@@ -579,6 +691,15 @@ export const getMarginClass = (question: Question): string => {
   }
 };
 
+/**
+ * Обработва промяната на стойността в текстовото поле.
+ * Актуализира състоянието на полето с новата стойност.
+ *
+ * @function handleInputChange
+ * @param {React.Dispatch<React.SetStateAction<any>>} setter - Функцията за актуализиране на състоянието на стойността.
+ * @param {string} value - Новата стойност, въведена в полето.
+ * @returns {void} - Няма връщан резултат, но актуализира стойността в състоянието.
+ */
 export const handleInputChange = (
   setter: React.Dispatch<React.SetStateAction<any>>,
   value: string
@@ -587,6 +708,16 @@ export const handleInputChange = (
   console.log("Updated Field Value:", value);
 };
 
+/**
+ * Обработва показването на препоръки, като скрива въпроса и показва индикатор за зареждане.
+ * След време показва резултата от подадените отговори.
+ *
+ * @function handleViewRecommendations
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} setShowQuestion - Функцията за скриване на въпроса.
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} setLoading - Функцията за показване на индикатора за зареждане.
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitted - Функцията за показване на резултата.
+ * @returns {void} - Няма връщан резултат, но актуализира състоянието на компонента.
+ */
 export const handleViewRecommendations = (
   setShowQuestion: React.Dispatch<React.SetStateAction<boolean>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
@@ -601,6 +732,17 @@ export const handleViewRecommendations = (
   }, 500);
 };
 
+/**
+ * Обработва преминаването към следващия въпрос в анкета/въпросник.
+ * Актуализира индекса на текущия въпрос и показва новия въпрос.
+ *
+ * @function handleNext
+ * @param {React.Dispatch<React.SetStateAction<string[] | null>>} setSelectedAnswer - Функцията за изчистване на избраните отговори.
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} setShowQuestion - Функцията за показване на следващия въпрос.
+ * @param {React.Dispatch<React.SetStateAction<number>>} setCurrentQuestionIndex - Функцията за актуализиране на индекса на текущия въпрос.
+ * @param {any[]} questions - Массив от въпроси за анкета.
+ * @returns {void} - Няма връщан резултат, но актуализира състоянието на въпросите.
+ */
 export const handleNext = (
   setSelectedAnswer: React.Dispatch<React.SetStateAction<string[] | null>>,
   setShowQuestion: React.Dispatch<React.SetStateAction<boolean>>,
@@ -615,6 +757,17 @@ export const handleNext = (
   }, 300);
 };
 
+/**
+ * Обработва връщането към предишния въпрос в анкета/въпросник.
+ * Актуализира индекса на текущия въпрос и показва предишния въпрос.
+ *
+ * @function handleBack
+ * @param {React.Dispatch<React.SetStateAction<string[] | null>>} setSelectedAnswer - Функцията за изчистване на избраните отговори.
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} setShowQuestion - Функцията за показване на предишния въпрос.
+ * @param {React.Dispatch<React.SetStateAction<number>>} setCurrentQuestionIndex - Функцията за актуализиране на индекса на текущия въпрос.
+ * @param {any[]} questions - Массив от въпроси за анкета.
+ * @returns {void} - Няма връщан резултат, но актуализира състоянието на въпросите.
+ */
 export const handleBack = (
   setSelectedAnswer: React.Dispatch<React.SetStateAction<string[] | null>>,
   setShowQuestion: React.Dispatch<React.SetStateAction<boolean>>,
@@ -631,6 +784,14 @@ export const handleBack = (
   }, 300);
 };
 
+/**
+ * Обработва започването на нова анкета, като нулира състоянието на отговорите и резултатите.
+ *
+ * @function handleRetakeQuiz
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} setLoading - Функцията за показване на индикатора за зареждане.
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitted - Функцията за нулиране на състоянието на резултата.
+ * @returns {void} - Няма връщан резултат, но актуализира състоянието на компонентите.
+ */
 export const handleRetakeQuiz = (
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>
