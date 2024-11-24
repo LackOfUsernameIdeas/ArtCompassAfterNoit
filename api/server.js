@@ -37,24 +37,28 @@ const SECRET_KEY = "1a2b3c4d5e6f7g8h9i0jklmnopqrstuvwxyz123456";
 const EMAIL_USER = "no-reply@cinecompass-api.noit.eu";
 const EMAIL_PASS = "Noit_2025";
 
-// Create a transporter object using SMTP transport
+// Създаване на транспортерен обект с използване на SMTP транспорт
 const transporter = nodemailer.createTransport({
-  host: "cinecompass-api.noit.eu", // Replace with your cPanel mail server
-  port: 587, // Use 465 for SSL or 587 for TLS
-  secure: false, // true for SSL (port 465), false for TLS (port 587)
+  host: "cinecompass-api.noit.eu", // Заменете с вашия cPanel mail сървър
+  port: 587, // Използвайте 465 за SSL или 587 за TLS
+  secure: false, // true за SSL (порт 465), false за TLS (порт 587)
   auth: {
-    user: EMAIL_USER, // Your email address
-    pass: EMAIL_PASS // Your email password
+    user: EMAIL_USER, // Вашият имейл адрес
+    pass: EMAIL_PASS // Вашата имейл парола
   },
-  debug: true // Optional, logs SMTP communication for troubleshooting
+  debug: true // По избор, логва SMTP комуникацията за откриване на проблеми
 });
 
-// Signup Route
+// Рут за регистрация
 app.post("/signup", (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
+  // Проверка дали имейлът вече съществува в базата данни
   db.checkEmailExists(email, (err, result) => {
-    if (err) return res.status(500).json({ error: "Database query error" });
+    if (err)
+      return res
+        .status(500)
+        .json({ error: "Грешка при заявката към базата данни" });
 
     if (result.length > 0) {
       return res
@@ -62,19 +66,19 @@ app.post("/signup", (req, res) => {
         .json({ error: "Профил с този имейл вече съществува." });
     }
 
-    // Generate a verification code
+    // Генериране на код за потвърждение
     const verificationCode = crypto.randomInt(100000, 999999).toString();
 
-    // Temporarily store the code
+    // Временно съхранение на кода
     verificationCodes[email] = {
       code: verificationCode,
       firstName,
       lastName,
-      password, // Store the password temporarily
-      expiresAt: Date.now() + 15 * 60 * 1000 // Set 15 minutes validity
+      password, // Временно съхранение на паролата
+      expiresAt: Date.now() + 15 * 60 * 1000 // Задаване на валидност от 15 минути
     };
 
-    // Send the verification code via email
+    // Изпращане на кода за потвърждение по имейл
     const mailOptions = {
       from: EMAIL_USER,
       to: email,
@@ -90,10 +94,11 @@ app.post("/signup", (req, res) => {
         </div>`
     };
 
-    console.log("transporting");
+    console.log("Транспортиране");
+    // Изпращане на имейла с кода за потвърждение
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        console.log("error: ", error);
+        console.log("грешка: ", error);
         return res
           .status(500)
           .json({ error: "Не успяхме да изпратим имейл! :(" });
@@ -115,40 +120,39 @@ app.post("/handle-submit", (req, res) => {
     return res.status(401).json({ error: "No token provided" });
   }
 
-  // Verify and decode the token
+  // Верификация и декодиране на токена
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) {
       return res.status(401).json({ error: "Invalid token" });
     }
 
-    const userId = decoded.id; // Extract userId from the decoded token
+    const userId = decoded.id; // Вземане на потребителско ID
 
-    // Ensure the request count is reset daily
-    db.checkAndResetRequestsDaily(userRequests); // Pass userRequests to the function
+    // Алгоритъм за отстраняване на спам от заявки
+    db.checkAndResetRequestsDaily(userRequests);
 
-    // If the user doesn't have any data yet, initialize them
+    // Ако потребителят все още няма данни, те се инициализират
     if (!userRequests[userId]) {
       userRequests[userId] = { count: 0, lastRequestTime: new Date() };
     }
 
-    // Check if the user has exceeded the max number of requests for today
+    // Проверка дали потребителя е минал лимита си от заявки
     if (userRequests[userId].count >= MAX_REQUESTS_PER_DAY) {
       return res.status(400).json({
         error: "You have exceeded the maximum request limit for today!"
       });
     }
 
-    // Proceed with handling the request
+    // Следене на броя на заявки
     userRequests[userId].count += 1;
     userRequests[userId].lastRequestTime = new Date();
 
-    // Your logic for handling the submit goes here
     console.log("userRequests: ", userRequests);
     res.json({ message: "Request handled successfully!" });
   });
 });
 
-// Resend Route
+// Препращане на код, ако не е получен такъв
 app.post("/resend", (req, res) => {
   const { email } = req.body;
 
@@ -186,7 +190,7 @@ app.post("/resend", (req, res) => {
   });
 });
 
-// Verification Route
+// Верификация на имейл
 app.post("/verify-email", (req, res) => {
   const { email, verificationCode } = req.body;
 
@@ -206,7 +210,6 @@ app.post("/verify-email", (req, res) => {
     return res.status(400).json({ error: "Невалиден код за потвърждение." });
   }
 
-  // Proceed with user registration
   const salt = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync(storedData.password, salt);
 
@@ -225,7 +228,7 @@ app.post("/verify-email", (req, res) => {
   );
 });
 
-// Sign in Route
+// Влизане в профил
 app.post("/signin", (req, res) => {
   const { email, password, rememberMe } = req.body;
 
@@ -250,7 +253,7 @@ app.post("/signin", (req, res) => {
   });
 });
 
-// Password Reset Request Route
+// Страница за заявяване на смяна на паролата
 app.post("/password-reset-request", (req, res) => {
   const { email } = req.body;
 
@@ -288,7 +291,7 @@ app.post("/password-reset-request", (req, res) => {
   });
 });
 
-// Password Reset Route
+// Смяна на паролата
 app.post("/password-reset", (req, res) => {
   const { token, newPassword } = req.body;
 
@@ -318,9 +321,9 @@ app.post("/token-validation", (req, res) => {
   });
 });
 
-// Get User Data Route
+// Взимане на основна потребителска информация
 app.get("/user-data", (req, res) => {
-  const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
+  const token = req.headers.authorization?.split(" ")[1]; // Взимане на токен от authorization header-а
 
   if (!token) {
     return res.status(401).json({ error: "Token not provided" });
@@ -344,7 +347,7 @@ app.get("/user-data", (req, res) => {
   });
 });
 
-// Save User Preferences Route
+// Запазване на потребителските предпочитания
 app.post("/save-user-preferences", (req, res) => {
   const {
     token,
@@ -364,7 +367,7 @@ app.post("/save-user-preferences", (req, res) => {
     date
   } = req.body;
 
-  // Verify the token to get the user ID
+  // Верификация на токена и вземане на потребителското ID
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) {
       console.log(err);
@@ -391,7 +394,6 @@ app.post("/save-user-preferences", (req, res) => {
       interests,
       date
     );
-    // Save user preferences to the database
     db.saveUserPreferences(
       userId,
       preferred_genres_en,
@@ -420,7 +422,7 @@ app.post("/save-user-preferences", (req, res) => {
   });
 });
 
-// Save Recommendation
+// Запазване на препоръка
 app.post("/save-recommendation", (req, res) => {
   const {
     token,
@@ -742,193 +744,6 @@ app.get(
     });
   }
 );
-
-// Общ endpoint за статистики на началната страница в платформата
-app.get("/stats/platform/all", async (req, res) => {
-  try {
-    // Extract token from Authorization header
-    const token = req.headers.authorization?.split(" ")[1]; // Bearer <token>
-
-    if (!token) {
-      return res.status(401).json({ error: "Token not provided" });
-    }
-
-    // Verify the token
-    jwt.verify(token, SECRET_KEY, (err, decoded) => {
-      if (err) return res.status(401).json({ error: "Invalid token" });
-
-      const userId = decoded.id;
-
-      // Proceed with fetching user data
-      db.getUserById(userId, (err, result) => {
-        if (err) return res.status(500).json({ error: "Database query error" });
-        if (result.length === 0) {
-          return res.status(404).json({ error: "User not found!" });
-        }
-
-        // User data fetched successfully
-        const user = result[0];
-
-        // User is authenticated, now fetch platform statistics
-        const limit = parseInt(req.query.limit) || 10;
-
-        // Run all queries in parallel
-        Promise.all([
-          new Promise((resolve, reject) =>
-            db.getUsersCount((err, result) =>
-              err ? reject(err) : resolve(result)
-            )
-          ),
-          new Promise((resolve, reject) =>
-            db.getTopRecommendations((err, result) =>
-              err ? reject(err) : resolve(result)
-            )
-          ),
-          new Promise((resolve, reject) =>
-            db.getTopGenres(limit, (err, result) =>
-              err ? reject(err) : resolve(result)
-            )
-          ),
-          new Promise((resolve, reject) =>
-            db.getGenrePopularityOverTime((err, result) =>
-              err ? reject(err) : resolve(result)
-            )
-          ),
-          new Promise((resolve, reject) =>
-            db.getTopActors(limit, (err, result) =>
-              err ? reject(err) : resolve(result)
-            )
-          ),
-          new Promise((resolve, reject) =>
-            db.getTopDirectors(limit, (err, result) =>
-              err ? reject(err) : resolve(result)
-            )
-          ),
-          new Promise((resolve, reject) =>
-            db.getTopWriters(limit, (err, result) =>
-              err ? reject(err) : resolve(result)
-            )
-          ),
-          new Promise((resolve, reject) =>
-            db.getOscarsByMovie((err, result) =>
-              err ? reject(err) : resolve(result)
-            )
-          ),
-          new Promise((resolve, reject) =>
-            db.getTotalAwardsByMovieOrSeries((err, result) =>
-              err ? reject(err) : resolve(result)
-            )
-          ),
-          new Promise((resolve, reject) =>
-            db.getTotalAwardsCount((err, result) =>
-              err ? reject(err) : resolve(result)
-            )
-          ),
-          new Promise((resolve, reject) =>
-            db.getSortedDirectorsByProsperity((err, result) =>
-              err ? reject(err) : resolve(result)
-            )
-          ),
-          new Promise((resolve, reject) =>
-            db.getSortedActorsByProsperity((err, result) =>
-              err ? reject(err) : resolve(result)
-            )
-          ),
-          new Promise((resolve, reject) =>
-            db.getSortedWritersByProsperity((err, result) =>
-              err ? reject(err) : resolve(result)
-            )
-          ),
-          new Promise((resolve, reject) =>
-            db.getSortedMoviesByProsperity((err, result) =>
-              err ? reject(err) : resolve(result)
-            )
-          ),
-          new Promise((resolve, reject) =>
-            db.getTopMoviesAndSeriesByMetascore(limit, (err, result) =>
-              err ? reject(err) : resolve(result)
-            )
-          ),
-          new Promise((resolve, reject) =>
-            db.getTopMoviesAndSeriesByIMDbRating(limit, (err, result) =>
-              err ? reject(err) : resolve(result)
-            )
-          ),
-          new Promise((resolve, reject) =>
-            db.getTopMoviesAndSeriesByRottenTomatoesRating(
-              limit,
-              (err, result) => (err ? reject(err) : resolve(result))
-            )
-          ),
-          new Promise((resolve, reject) =>
-            db.getAverageBoxOfficeAndScores((err, result) =>
-              err ? reject(err) : resolve(result)
-            )
-          ),
-          new Promise((resolve, reject) =>
-            db.getTopCountries(limit, (err, result) =>
-              err ? reject(err) : resolve(result)
-            )
-          )
-        ])
-          .then(
-            ([
-              usersCount,
-              topRecommendations,
-              topGenres,
-              genrePopularityOverTime,
-              topActors,
-              topDirectors,
-              topWriters,
-              oscarsByMovie,
-              totalAwardsByMovieOrSeries,
-              totalAwards,
-              sortedDirectorsByProsperity,
-              sortedActorsByProsperity,
-              sortedWritersByProsperity,
-              sortedMoviesByProsperity,
-              sortedMoviesAndSeriesByMetascore,
-              sortedMoviesAndSeriesByIMDbRating,
-              sortedMoviesAndSeriesByRottenTomatoesRating,
-              averageBoxOfficeAndScores,
-              topCountries
-            ]) => {
-              // Return the statistics in the response
-              res.json({
-                user,
-                usersCount,
-                topRecommendations,
-                topGenres,
-                genrePopularityOverTime,
-                topActors,
-                topDirectors,
-                topWriters,
-                oscarsByMovie,
-                totalAwardsByMovieOrSeries,
-                totalAwards,
-                sortedDirectorsByProsperity,
-                sortedActorsByProsperity,
-                sortedWritersByProsperity,
-                sortedMoviesByProsperity,
-                sortedMoviesAndSeriesByMetascore,
-                sortedMoviesAndSeriesByIMDbRating,
-                sortedMoviesAndSeriesByRottenTomatoesRating,
-                averageBoxOfficeAndScores,
-                topCountries
-              });
-            }
-          )
-          .catch((error) => {
-            res
-              .status(500)
-              .json({ error: "Error fetching data", details: error.message });
-          });
-      });
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Unexpected error", details: error.message });
-  }
-});
 
 // Start server
 app.listen(5000, () => {

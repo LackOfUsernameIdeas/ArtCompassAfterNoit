@@ -3,12 +3,12 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import logo from "../../../assets/images/brand-logos/logo-large.png";
 import logoPink from "../../../assets/images/brand-logos/logo-large-pink.png";
 
-// Import Swiper styles
+// Импортиране на стиловете за Swiper
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
-// import required modules
+// Импортиране на необходимите модули за Swiper
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -41,7 +41,7 @@ const Signincover: FC<SignincoverProps> = () => {
 
       if (token) {
         try {
-          // Validate the token with the server
+          // Валидация на token-а със сървъра
           const response = await fetch(
             `${import.meta.env.VITE_API_BASE_URL}/token-validation`,
             {
@@ -60,23 +60,18 @@ const Signincover: FC<SignincoverProps> = () => {
           const result = await response.json();
 
           if (result.valid) {
-            // Redirect to the app if the token is valid
             navigate(`${import.meta.env.BASE_URL}app/home`);
           } else {
-            // Token is invalid, you might want to handle this scenario
             console.log("Invalid token");
-            // Optionally, clear token and redirect to login page
             localStorage.removeItem("authToken");
             sessionStorage.removeItem("authToken");
             navigate("/signin");
           }
         } catch (error) {
           console.error("Error validating token:", error);
-          // Handle error (e.g., redirect to login page)
           navigate("/signin");
         }
       } else {
-        // No token found, redirect to login page
         navigate("/signin");
       }
     };
@@ -93,7 +88,7 @@ const Signincover: FC<SignincoverProps> = () => {
 
     setEmptyFields((prevState) => ({
       ...prevState,
-      [id]: false // Reset field error when typing
+      [id]: false
     }));
   };
 
@@ -150,7 +145,6 @@ const Signincover: FC<SignincoverProps> = () => {
         }
       ]);
 
-      // Store token in local storage if remember me is checked
       if (rememberMe) {
         localStorage.setItem("authToken", data.token);
       } else {
@@ -171,20 +165,31 @@ const Signincover: FC<SignincoverProps> = () => {
 
   return (
     <Fragment>
+      {/* Заглавие на страницата за правилна SEO оптимизация */}
       <Helmet>
         <body className="bg-white dark:!bg-bodybg"></body>
       </Helmet>
+
+      {/* Основна структура на страницата с оформени колони */}
       <div className="grid grid-cols-12 authentication mx-0 text-defaulttextcolor text-defaultsize">
+        {/* Колона за формата за вход */}
         <div className="xxl:col-span-7 xl:col-span-7 lg:col-span-12 col-span-12">
+          {/* Центриране на съдържанието */}
           <div className="flex justify-center items-center h-full">
+            {/* Празна колона за подравняване */}
             <div className="xxl:col-span-3 xl:col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-2"></div>
             <div className="xxl:col-span-6 xl:col-span-6 lg:col-span-6 md:col-span-6 sm:col-span-8 col-span-12">
               <div className="p-[3rem]">
+                {/* Заглавие за вход */}
                 <p className="h5 font-semibold mb-2">Имате профил?</p>
+                {/* Инструкция за попълване на данни */}
                 <p className="mb-4 text-[#8c9097] dark:text-white/50 opacity-[0.7] font-normal">
                   Попълнете Вашите имейл и парола, за да влезете в профила си!
                 </p>
+
+                {/* Формуляр за вход */}
                 <div className="form-wrapper max-w-lg mx-auto">
+                  {/* Известия за грешки или успех */}
                   {alerts.map((alert, idx) => (
                     <div
                       className={`alert alert-${alert.color} flex items-center`}
@@ -200,6 +205,7 @@ const Signincover: FC<SignincoverProps> = () => {
                         alignItems: "center"
                       }}
                     >
+                      {/* Икона за известие */}
                       <div
                         style={{
                           marginRight: "0.5rem",
@@ -209,13 +215,17 @@ const Signincover: FC<SignincoverProps> = () => {
                       >
                         {alert.icon}
                       </div>
+                      {/* Текст на известието */}
                       <div style={{ lineHeight: "1.2" }}>
                         <b>{alert.message}</b>
                       </div>
                     </div>
                   ))}
+
+                  {/* Формуляр за въвеждане на данни */}
                   <form onSubmit={handleSubmit}>
                     <div className="grid grid-cols-12 gap-y-4">
+                      {/* Поле за имейл */}
                       <div className="xl:col-span-12 col-span-12 mt-0">
                         <label
                           htmlFor="signin-email"
@@ -234,12 +244,15 @@ const Signincover: FC<SignincoverProps> = () => {
                           onChange={handleInputChange}
                         />
                       </div>
+
+                      {/* Поле за парола */}
                       <div className="xl:col-span-12 col-span-12 mb-4">
                         <label
                           htmlFor="signin-password"
                           className="form-label text-default block"
                         >
                           Парола
+                          {/* Линк за забравена парола */}
                           <Link
                             to={`${import.meta.env.BASE_URL}resetpassword`}
                             className="ltr:float-right rtl:float-left text-danger"
@@ -258,6 +271,7 @@ const Signincover: FC<SignincoverProps> = () => {
                             value={formData.password}
                             onChange={handleInputChange}
                           />
+                          {/* Бутон за показване или скриване на паролата */}
                           <button
                             aria-label="button"
                             type="button"
@@ -272,6 +286,8 @@ const Signincover: FC<SignincoverProps> = () => {
                             ></i>
                           </button>
                         </div>
+
+                        {/* Запомни паролата */}
                         <div className="mt-2">
                           <div className="form-check !ps-0">
                             <input
@@ -290,6 +306,8 @@ const Signincover: FC<SignincoverProps> = () => {
                           </div>
                         </div>
                       </div>
+
+                      {/* Бутон за вход */}
                       <div className="xl:col-span-12 col-span-12 grid mt-2">
                         <button
                           type="submit"
@@ -301,6 +319,8 @@ const Signincover: FC<SignincoverProps> = () => {
                     </div>
                   </form>
                 </div>
+
+                {/* Линк за създаване на нов профил */}
                 <div className="text-center">
                   <p className="text-[0.75rem] text-[#8c9097] dark:text-white/50 mt-4">
                     Нямате профил?{" "}
@@ -314,13 +334,17 @@ const Signincover: FC<SignincoverProps> = () => {
                 </div>
               </div>
             </div>
+            {/* Празна колона за подравняване */}
             <div className="xxl:col-span-3 xl:col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-2"></div>
           </div>
         </div>
+
+        {/* Страничен панел с изображение или лого */}
         <div className="xxl:col-span-5 xl:col-span-5 lg:col-span-5 col-span-12 xl:block hidden px-0">
           <div className="authentication-cover ">
             <div className="aunthentication-cover-content rounded">
               <div className="swiper keyboard-control">
+                {/* Свипер за слайдове на страничния панел */}
                 <Swiper
                   spaceBetween={30}
                   navigation={true}
@@ -330,9 +354,11 @@ const Signincover: FC<SignincoverProps> = () => {
                   modules={[Pagination, Autoplay, Navigation]}
                   className="mySwiper"
                 >
+                  {/* Слайд 1 */}
                   <SwiperSlide>
                     <div className="text-white text-center p-[3rem] flex items-center justify-center flex-col lg:space-y-8 md:space-y-4 sm:space-y-2 space-y-2">
                       <div>
+                        {/* Лого за светъл режим */}
                         <div className="mb-[6rem] dark:hidden">
                           <img
                             src={logoPink}
@@ -341,6 +367,8 @@ const Signincover: FC<SignincoverProps> = () => {
                             style={{ width: "100%", height: "auto" }}
                           />
                         </div>
+
+                        {/* Лого за тъмен режим */}
                         <div className="mb-[6rem] hidden dark:block">
                           <img
                             src={logo}
@@ -352,6 +380,8 @@ const Signincover: FC<SignincoverProps> = () => {
                             }}
                           />
                         </div>
+
+                        {/* Заглавие и описание на приложението */}
                         <h6 className="font-semibold text-[1rem] sm:text-[1.325rem] lg:text-[1.5rem]">
                           Добре дошли в Кино Компас!
                         </h6>
@@ -364,7 +394,7 @@ const Signincover: FC<SignincoverProps> = () => {
                       </div>
                     </div>
                   </SwiperSlide>
-                  {/* Add additional slides here if needed */}
+                  {/* Добавете допълнителни слайдове, ако е необходимо */}
                 </Swiper>
               </div>
             </div>

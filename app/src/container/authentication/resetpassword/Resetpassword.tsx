@@ -3,35 +3,40 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import logo from "../../../assets/images/brand-logos/logo-large.png";
 import logoPink from "../../../assets/images/brand-logos/logo-large-pink.png";
 
-// Import Swiper styles
+// Импортиране на стиловете за Swiper
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
-// import required modules
+// Импортиране на необходимите модули за Swiper
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
+// Интерфейс за компонентата Resetcover
 interface ResetcoverProps {}
 
 const Resetcover: FC<ResetcoverProps> = () => {
+  // Състояния за показване на пароли и въведени данни
   const [passwordShow1, setPasswordShow1] = useState(false);
   const [passwordShow2, setPasswordShow2] = useState(false);
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  // Състояние за показване на съобщения за грешки или успех
   const [alerts, setAlerts] = useState<
     { message: string; color: string; icon: JSX.Element }[]
   >([]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Извличане на токена от URL параметъра
   const { token } = useParams(); // Assuming the token is passed in the URL as a parameter
   console.log("token: ", token);
   const navigate = useNavigate();
 
+  // useEffect за валидация на токена при зареждане на компонента
   useEffect(() => {
     const validateToken = async () => {
       try {
@@ -52,19 +57,21 @@ const Resetcover: FC<ResetcoverProps> = () => {
 
         const result = await response.json();
         console.log("result: ", result);
-        if (!result.valid) navigate("/signin");
+        if (!result.valid) navigate("/signin"); // Пренасочване към формата за влизане при невалиден токен
       } catch (error) {
         console.error("Error validating token:", error);
-        navigate("/signin"); // Redirect to an error page if the request fails
+        navigate("/signin"); // Пренасочване към грешка ако не може да се валидара токенът
       }
     };
 
     validateToken();
   }, [token, navigate]);
 
+  // Обработчик за промяна на паролата
   const handlePasswordReset = async () => {
     setIsSubmitting(true);
 
+    // Проверка за празни полета
     if (newPassword == "" || confirmPassword == "") {
       setAlerts([
         {
@@ -77,6 +84,7 @@ const Resetcover: FC<ResetcoverProps> = () => {
       return;
     }
 
+    // Проверка дали паролите съвпадат
     if (newPassword !== confirmPassword) {
       setAlerts([
         ...alerts,
@@ -91,6 +99,7 @@ const Resetcover: FC<ResetcoverProps> = () => {
     }
 
     try {
+      // Изпращане на новата парола към API-то
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/password-reset`,
         {
@@ -99,7 +108,7 @@ const Resetcover: FC<ResetcoverProps> = () => {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            token, // The token from the URL
+            token, // Токенът от URL
             newPassword
           })
         }
@@ -117,7 +126,7 @@ const Resetcover: FC<ResetcoverProps> = () => {
             icon: <i className="ri-check-line"></i>
           }
         ]);
-        navigate("/signin/");
+        navigate("/signin/"); // Пренасочване към формата за влизане след успешна смяна на паролата
       } else {
         setAlerts([
           ...alerts,
@@ -161,13 +170,13 @@ const Resetcover: FC<ResetcoverProps> = () => {
                   role="alert"
                   key={idx}
                   style={{
-                    width: "100%", // Ensure it takes full width
-                    boxSizing: "border-box", // Includes padding in width calculation
+                    width: "100%", // Осигурява цялостна ширина
+                    boxSizing: "border-box", // Включва padding при изчисляване на ширината
                     height: "auto",
-                    marginBottom: "1rem", // Adds space between alert and form
-                    wordBreak: "break-word", // Wraps long messages properly
-                    padding: "0.75rem 1rem", // Adjust padding to match typical alert sizing
-                    minHeight: "auto", // Allows the alert to shrink to fit smaller content
+                    marginBottom: "1rem", // Добавя разстояние между съобщението и формата
+                    wordBreak: "break-word", // Разбива дълги съобщения правилно
+                    padding: "0.75rem 1rem", // Настройка на padding за типичен размер на съобщение
+                    minHeight: "auto", // Позволява на съобщението да се свие при малки съдържания
                     alignItems: "center"
                   }}
                 >
@@ -250,11 +259,11 @@ const Resetcover: FC<ResetcoverProps> = () => {
                 </div>
                 <div className="xl:col-span-12 col-span-12 grid mt-2">
                   <button
-                    className="ti-btn ti-btn-primary w-full py-2"
                     onClick={handlePasswordReset}
                     disabled={isSubmitting}
+                    className={`ti-btn w-full bg-primary hover:bg-primarydark text-white rounded-[0.25rem] text-default w-full h-11 font-semibold mt-3`}
                   >
-                    {isSubmitting ? "Сменяме паролата Ви..." : "Смени паролата"}
+                    {isSubmitting ? "Моля, изчакайте..." : "Смяна на парола"}
                   </button>
                 </div>
               </div>
@@ -272,6 +281,7 @@ const Resetcover: FC<ResetcoverProps> = () => {
             </div>
           </div>
         </div>
+
         <div className="xxl:col-span-5 xl:col-span-5 lg:col-span-5 col-span-12 xl:block hidden px-0">
           <div className="authentication-cover ">
             <div className="aunthentication-cover-content rounded">
@@ -319,7 +329,6 @@ const Resetcover: FC<ResetcoverProps> = () => {
                       </div>
                     </div>
                   </SwiperSlide>
-                  {/* Add additional slides here if needed */}
                 </Swiper>
               </div>
             </div>

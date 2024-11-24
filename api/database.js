@@ -1,10 +1,10 @@
-// database.js
 const mysql = require("mysql2");
 const dbOpts = require("./config.js").dbOpts;
 const dbOptsLocal = require("./config.js").dbOptsLocal;
 require("dotenv").config();
 
 const db = mysql.createConnection(dbOptsLocal);
+// const db = mysql.createConnection(dbOpts);
 
 db.connect((err) => {
   if (err) throw err;
@@ -20,12 +20,9 @@ async function translate(entry) {
     const response = await fetch(url);
     const data = await response.json();
 
-    // Flatten the response array to get only the translated text
     const flattenedTranslation = data[0].map((item) => item[0]).join(" ");
 
-    // Replace multiple spaces with a single space and trim the result
     const mergedTranslation = flattenedTranslation.replace(/\s+/g, " ").trim();
-    // Return the cleaned translation
     return mergedTranslation;
   } catch (error) {
     console.error(`Error translating entry: ${entry}`, error);
@@ -33,24 +30,21 @@ async function translate(entry) {
   }
 }
 
-// Function to reset the request count daily
+// Функция за рестартиране на лимита на потребителя
 const checkAndResetRequestsDaily = (userRequests) => {
-  const currentDate = new Date().toISOString().split("T")[0]; // Get the current date in 'YYYY-MM-DD' format
+  const currentDate = new Date().toISOString().split("T")[0];
 
-  // Initialize resetDate if it doesn't exist
   if (!userRequests.resetDate) {
-    userRequests.resetDate = currentDate; // Set the resetDate for the first time
+    userRequests.resetDate = currentDate;
   }
 
-  // If the resetDate has changed, reset the requests
   if (userRequests.resetDate !== currentDate) {
-    userRequests = {}; // Reset the entire request tracking
-    userRequests.resetDate = currentDate; // Set the reset date to today
+    userRequests = {};
+    userRequests.resetDate = currentDate;
     console.log("Request counts reset for the day.");
   }
 };
 
-// Helper functions
 const checkEmailExists = (email, callback) => {
   const query = "SELECT * FROM users WHERE email = ?";
   db.query(query, [email], callback);
@@ -426,19 +420,18 @@ const getTopActors = (limit, callback) => {
       return;
     }
 
-    // Translate each actor and return the result
+    // Превеждане на името на всеки актьор
     const translatedResults = await Promise.all(
       results.map(async (row) => {
-        const translatedActor = await translate(row.actor); // Translate actor name
+        const translatedActor = await translate(row.actor);
         return {
-          actor_en: row.actor, // Original actor name in English
-          actor_bg: translatedActor, // Translated actor name
-          actor_count: row.actor_count // Count of recommendations
+          actor_en: row.actor,
+          actor_bg: translatedActor,
+          actor_count: row.actor_count
         };
       })
     );
 
-    // Pass the translated results to the callback
     callback(null, translatedResults);
   });
 };
@@ -469,19 +462,18 @@ const getTopDirectors = (limit, callback) => {
       return;
     }
 
-    // Translate each director and return the result
+    // Превеждане на името на всеки режисьор
     const translatedResults = await Promise.all(
       results.map(async (row) => {
-        const translatedDirector = await translate(row.director); // Translate director name
+        const translatedDirector = await translate(row.director);
         return {
-          director_en: row.director, // Original director name in English
-          director_bg: translatedDirector, // Translated director name
-          director_count: row.director_count // Count of recommendations
+          director_en: row.director,
+          director_bg: translatedDirector,
+          director_count: row.director_count
         };
       })
     );
 
-    // Pass the translated results to the callback
     callback(null, translatedResults);
   });
 };
@@ -512,19 +504,18 @@ const getTopWriters = (limit, callback) => {
       return;
     }
 
-    // Translate each writer and return the result
+    // Превеждане на името на всеки сценарист
     const translatedResults = await Promise.all(
       results.map(async (row) => {
-        const translatedWriter = await translate(row.writer); // Translate writer name
+        const translatedWriter = await translate(row.writer);
         return {
-          writer_en: row.writer, // Original writer name in English
-          writer_bg: translatedWriter, // Translated writer name
-          writer_count: row.writer_count // Count of recommendations
+          writer_en: row.writer,
+          writer_bg: translatedWriter,
+          writer_count: row.writer_count
         };
       })
     );
 
-    // Pass the translated results to the callback
     callback(null, translatedResults);
   });
 };
@@ -822,7 +813,6 @@ const getSortedDirectorsByProsperity = (callback) => {
       };
     });
 
-    // Translate each director's name
     const translatedResults = await Promise.all(
       directorsWithProsperity.map(async (row) => {
         const translatedDirector = await translate(row.director);

@@ -14,6 +14,7 @@ import {
 } from "../home-types";
 import { Link } from "react-router-dom";
 
+// Генерира данни за heatmap диаграмата
 export function generateData(count: any, yrange: any) {
   let i = 0;
   const series = [];
@@ -31,18 +32,20 @@ export function generateData(count: any, yrange: any) {
   return series;
 }
 
+// Преобразува RGB цвят в HEX формат
 const rgbToHex = (rgb: string): string => {
-  // Ensure the input is in the format "rgb(r, g, b)"
+  // Уверява се, че входният цвят е във формат "rgb(r, g, b)"
   const result = rgb.match(/\d+/g);
   if (!result || result.length !== 3) {
-    throw new Error("Invalid RGB color format");
+    throw new Error("Невалиден RGB формат на цвета");
   }
 
   return `#${result
-    .map((x) => parseInt(x).toString(16).padStart(2, "0")) // Convert each RGB value to hex
+    .map((x) => parseInt(x).toString(16).padStart(2, "0")) // Преобразува всяка стойност на RGB в HEX
     .join("")}`;
 };
 
+// Обновява основния цвят на базата на CSS променливи
 const updatePrimaryColor = () => {
   const rootStyles = getComputedStyle(document.documentElement);
   const primary = rootStyles.getPropertyValue("--primary").trim();
@@ -53,14 +56,15 @@ const updatePrimaryColor = () => {
 };
 
 interface GenrePopularityOverTimeProps {
-  seriesData: any[]; // Array of dynamic data for the heatmap
+  seriesData: any[]; // Масив от динамични данни за heatmap диаграмата
 }
 
 interface State {
-  options: any; // Keeps chart configuration options
-  series?: { name: string; data: (number | null)[] }[]; // Optional series for flexibility
+  options: any; // Конфигурационни опции за диаграмата
+  series?: { name: string; data: (number | null)[] }[]; // По избор, серии за диаграмата
 }
 
+// Компонент за визуализация на популярността на жанровете с времето
 export class GenrePopularityOverTime extends Component<
   GenrePopularityOverTimeProps,
   State
@@ -77,7 +81,7 @@ export class GenrePopularityOverTime extends Component<
         chroma(initialColor).darken(1).hex()
       ])
       .mode("lab")
-      .domain([0, 100]) // Adjust domain values to fit your data
+      .domain([0, 100]) // Настройва стойностите на домейна спрямо данните
       .colors(10);
 
     this.state = {
@@ -162,42 +166,44 @@ export class GenrePopularityOverTime extends Component<
     };
   }
 
+  // Извиква се при първоначалното монтиране на компонента
   componentDidMount() {
     this.updateColorRange();
 
-    // Initialize the MutationObserver to watch for class changes on document.documentElement
+    // Инициализира наблюдател за промени в класовете на root елемента (теми)
     this.observer = new MutationObserver(() => {
       this.updateColorRange();
     });
 
-    // Observe changes in the classList of the document's root element (theme changes)
     this.observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"]
     });
   }
 
+  // Извиква се при демонтиране на компонента
   componentWillUnmount() {
-    // Clean up the MutationObserver when the component is unmounted
+    // Изчиства наблюдателя
     if (this.observer) {
       this.observer.disconnect();
     }
   }
 
+  // Обновява цветната гама за heatmap диаграмата
   updateColorRange() {
     const primaryHex = updatePrimaryColor();
 
-    // Generate the new color range based on the primary color
+    // Генерира нова цветна гама на базата на основния цвят
     const newColorRange = chroma
       .scale([
         chroma(primaryHex).darken(0.5).hex(),
         chroma(primaryHex).darken(1).hex()
-      ]) // Slightly darker colors
+      ]) // По-тъмни цветове
       .mode("lab")
-      .domain([0, 100]) // Adjust domain values to fit your data
-      .colors(10); // Generate 10 colors based on the primary color
+      .domain([0, 100]) // Настройва стойностите на домейна спрямо данните
+      .colors(10); // Генерира 10 цвята на базата на основния цвят
 
-    // Update the state with the new color range
+    // Актуализира състоянието с новата цветна гама
     this.setState((prevState) => ({
       options: {
         ...prevState.options,
@@ -225,7 +231,7 @@ export class GenrePopularityOverTime extends Component<
         series={this.props.seriesData}
         type="heatmap"
         height={350}
-        width="100%" // Ensure it resizes with the container
+        width="100%" // Осигурява адаптивност спрямо контейнера
       />
     );
   }
@@ -240,7 +246,7 @@ export class MoviesAndSeriesByRatingsChart extends Component<
   constructor(props: { seriesData: MovieData[]; category: string }) {
     super(props);
 
-    // Get the initial color for the theme
+    // Вземане на първоначалния цвят за темата
     const initialColor = updatePrimaryColor();
 
     this.state = {
@@ -259,8 +265,8 @@ export class MoviesAndSeriesByRatingsChart extends Component<
         },
         yaxis: { title: { text: "Заглавие" } },
         colors: [
-          chroma(initialColor).darken(0.6).hex(), // Brighter color for Movies
-          chroma(initialColor).brighten(0.6).hex() // Darker color for Series
+          chroma(initialColor).darken(0.6).hex(), // По-светъл цвят за филми
+          chroma(initialColor).brighten(0.6).hex() // По-тъмен цвят за сериали
         ]
       }
     };
@@ -291,11 +297,11 @@ export class MoviesAndSeriesByRatingsChart extends Component<
                 ? "Метаскор"
                 : "Rotten Tomatoes рейтинг",
             data: sortedMovies.map((movie) => {
-              // Determine the color based on the type (Movie or Series)
+              // Определяне на цвета според типа (филм или сериал)
               const color =
                 movie.type === "movie"
-                  ? prevState.options.colors[0] // Brighter color for movies
-                  : prevState.options.colors[1]; // Darker color for series
+                  ? prevState.options.colors[0] // По-светъл цвят за филми
+                  : prevState.options.colors[1]; // По-тъмен цвят за сериали
 
               return {
                 x: `${movie.title_bg} (${movie.title_en})`,
@@ -305,7 +311,7 @@ export class MoviesAndSeriesByRatingsChart extends Component<
                     : sortCategory === "Metascore"
                     ? movie.metascore
                     : movie.rottenTomatoes,
-                fillColor: color // Use dynamic color for each movie/series
+                fillColor: color // Използване на динамичен цвят за всеки филм/сериал
               };
             })
           }
@@ -336,12 +342,12 @@ export class MoviesAndSeriesByRatingsChart extends Component<
   componentDidMount() {
     this.updateColorRange();
 
-    // Initialize the MutationObserver to watch for class changes on document.documentElement
+    // Инициализиране на MutationObserver за наблюдение на промени в класа на document.documentElement
     this.observer = new MutationObserver(() => {
       this.updateColorRange();
     });
 
-    // Observe changes in the classList of the document's root element (theme changes)
+    // Наблюдение на промени в classList на главния елемент на документа (смени на темата)
     this.observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"]
@@ -349,24 +355,24 @@ export class MoviesAndSeriesByRatingsChart extends Component<
   }
 
   componentWillUnmount() {
-    // Clean up the MutationObserver when the component is unmounted
+    // Почистване на MutationObserver при премахване на компонента
     if (this.observer) {
       this.observer.disconnect();
     }
   }
 
   updateColorRange() {
-    const primaryHex = updatePrimaryColor(); // Get the updated theme color
+    const primaryHex = updatePrimaryColor(); // Вземане на актуализирания цвят на темата
 
-    // Define the distinct colors based on the updated primary color
-    const movieColor = chroma(primaryHex).darken(0.6).hex(); // Brighter movie color
-    const seriesColor = chroma(primaryHex).brighten(0.6).hex(); // Darker series color
+    // Дефиниране на различни цветове на базата на актуализирания основен цвят
+    const movieColor = chroma(primaryHex).darken(0.6).hex(); // По-светъл цвят за филми
+    const seriesColor = chroma(primaryHex).brighten(0.6).hex(); // По-тъмен цвят за сериали
 
-    // Update the state with the new color values
+    // Актуализиране на състоянието с новите цветове
     this.setState((prevState) => ({
       options: {
         ...prevState.options,
-        colors: [movieColor, seriesColor] // Update colors for both categories
+        colors: [movieColor, seriesColor] // Актуализиране на цветовете за двете категории
       }
     }));
   }
@@ -409,72 +415,82 @@ export class MoviesAndSeriesByRatingsChart extends Component<
   }
 }
 
+// Интерфейс за пропсовете на компонента
 interface CountryBarProps {
-  topCountries: CountryData[] | null;
+  topCountries: CountryData[] | null; // Списък с данни за държавите или null, ако няма данни
 }
 
+// Функционален компонент за визуализация на препоръките по държави
 export const CountryBarChart: React.FC<CountryBarProps> = ({
   topCountries
 }) => {
+  // Състояние за първичния (основния) цвят на темата
   const [primaryColor, setPrimaryColor] = useState<string>("#ffffff");
 
+  // Ефект за следене на промени в темата
   useEffect(() => {
-    // Initial color update on mount
+    // Задаване на началния цвят при първоначално зареждане
     setPrimaryColor(updatePrimaryColor());
 
-    // Listener to detect theme changes by monitoring the body or html class
+    // Създаване на наблюдател за промени в класа на HTML елемента (например смяна на тема)
     const observer = new MutationObserver(() => {
       setPrimaryColor(updatePrimaryColor());
     });
 
-    // Observe changes in classList (e.g., dark/light mode changes)
+    // Наблюдение на промени в класовете на елемента document.documentElement
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["class"] // Only track class changes
+      attributeFilter: ["class"] // Следене само на промените в класовете
     });
 
-    // Cleanup observer on component unmount
+    // Премахване на наблюдателя при унищожаване на компонента
     return () => {
       observer.disconnect();
     };
   }, []);
 
+  // Проверка дали има налични данни за държавите
   if (!topCountries) {
     return <div>Зареждане...</div>;
   }
 
+  // Общо препоръки от всички държави
   const totalCount = topCountries.reduce(
     (sum, country) => sum + country.count,
     0
   );
 
-  // Generate a color scale based on the primary color
+  // Създаване на цветова скала спрямо основния цвят на темата
   const colorScale = chroma
     .scale([
-      chroma(primaryColor).brighten(0.5).saturate(1).hex(), // Slightly lighter, subtle change
-      chroma(primaryColor).brighten(3).saturate(0.5).hex(), // Brightened midpoint
-      chroma(primaryColor).darken(1).saturate(1).hex() // Slightly darker end
+      chroma(primaryColor).brighten(0.5).saturate(1).hex(), // По-светъл цвят
+      chroma(primaryColor).brighten(3).saturate(0.5).hex(), // Най-светъл (среден) цвят
+      chroma(primaryColor).darken(1).saturate(1).hex() // По-тъмен цвят
     ])
     .mode("lab")
     .domain([0, topCountries.length - 1])
     .colors(topCountries.length);
 
-  // Pagination state
+  // Пагинация: броя на елементи на страница
   const itemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Изчисляване на елементи за текущата страница
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentCountries = topCountries.slice(startIndex, endIndex);
 
+  // Общо страници за пагинацията
   const totalPages = Math.ceil(topCountries.length / itemsPerPage);
 
+  // Функция за преминаване към предишната страница
   const handlePrevChartPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
   };
 
+  // Функция за преминаване към следващата страница
   const handleNextChartPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
@@ -483,10 +499,11 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
 
   return (
     <div>
+      {/* Хоризонтален бар за визуализация на държавите */}
       <div className="flex w-full h-[0.3125rem] mb-6 rounded-full overflow-hidden">
         {topCountries.map((country, index) => {
-          const widthPercentage = (country.count / totalCount) * 100;
-          const color = colorScale[index];
+          const widthPercentage = (country.count / totalCount) * 100; // Процентна ширина за всяка държава
+          const color = colorScale[index]; // Цвят на текущата държава
 
           return (
             <div
@@ -505,12 +522,12 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
         })}
       </div>
 
-      {/* Total Count */}
+      {/* Общо препоръки */}
       <div className="mb-4 text-sm text-gray-500">
         <strong>Общ брой на препоръки:</strong> {totalCount}
       </div>
 
-      {/* External Legend */}
+      {/* Външна легенда */}
       <ul className="list-none mb-6 pt-2 crm-deals-status flex flex-col">
         {currentCountries.map((country, index) => {
           const color =
@@ -534,10 +551,12 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
         })}
       </ul>
 
+      {/* Пагинация */}
       {totalPages > 1 && (
         <div className="flex justify-center">
           <nav aria-label="Page navigation" className="pagination-style-4">
             <ul className="ti-pagination mb-0">
+              {/* Бутон за предишна страница */}
               <li
                 className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
               >
@@ -554,6 +573,8 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
                   Предишна
                 </Link>
               </li>
+
+              {/* Индекси на страниците */}
               {[...Array(totalPages)].map((_, index) => (
                 <li
                   key={index}
@@ -578,6 +599,8 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
                   </Link>
                 </li>
               ))}
+
+              {/* Бутон за следваща страница */}
               <li
                 className={`page-item ${
                   currentPage === totalPages ? "disabled" : ""
@@ -604,10 +627,12 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
   );
 };
 
+// Интерфейс за параметрите на графиката "Филми по благополучие"
 interface MoviesByProsperityBubbleChartProps {
-  sortedMoviesByProsperity: MovieProsperityData[];
+  sortedMoviesByProsperity: MovieProsperityData[]; // Сортирани филми по критерий за благополучие
 }
 
+// Компонент за визуализация на балонна графика за филми
 export class MoviesByProsperityBubbleChart extends Component<
   MoviesByProsperityBubbleChartProps,
   State
@@ -616,34 +641,37 @@ export class MoviesByProsperityBubbleChart extends Component<
     super(props);
 
     this.state = {
+      // Данни за серията и опциите на графиката
       series: [],
       options: {
         chart: {
-          type: "bubble",
+          type: "bubble", // Тип на графиката - балонна
           events: {
+            // Автоматично преизчисление при преоразмеряване на прозореца
             mounted: (chart: any) => {
               chart.windowResizeHandler();
             }
           },
           toolbar: {
-            show: false
+            show: false // Скриване на тулбара
           },
           zoom: {
-            enabled: false
+            enabled: false // Деактивиране на мащабирането
           }
         },
         plotOptions: {
           bubble: {
-            minBubbleRadius: 5,
-            maxBubbleRadius: 2000
+            minBubbleRadius: 5, // Минимален радиус на балон
+            maxBubbleRadius: 2000 // Максимален радиус на балон
           }
         },
-        dataLabels: { enabled: false },
-        fill: { opacity: 0.8 },
-        colors: [], // Empty, we will fill it manually
+        dataLabels: { enabled: false }, // Без етикети върху данните
+        fill: { opacity: 0.8 }, // Прозрачност на балоните
+        colors: [], // Цветове, ще бъдат зададени динамично
         xaxis: {
-          tickAmount: 10,
+          tickAmount: 10, // Брой отметки по X-оста
           labels: {
+            // Форматиране на стойностите в милиони долари
             formatter: (val: any) => `$${Math.round(val)}M`,
             style: { colors: "#8c9097", fontSize: "11px", fontWeight: 600 }
           },
@@ -653,9 +681,9 @@ export class MoviesByProsperityBubbleChart extends Component<
           }
         },
         yaxis: {
-          tickAmount: 7,
-          max: 10,
-          min: 5,
+          tickAmount: 7, // Брой отметки по Y-оста
+          max: 10, // Максимална стойност
+          min: 5, // Минимална стойност
           labels: {
             style: { colors: "#8c9097", fontSize: "11px", fontWeight: 600 }
           },
@@ -665,22 +693,23 @@ export class MoviesByProsperityBubbleChart extends Component<
           }
         },
         legend: {
-          show: true,
-          position: "top",
+          show: true, // Показване на легендата
+          position: "top", // Позиция - горе
           markers: {
-            width: 10,
-            height: 10,
-            radius: 12
+            width: 10, // Ширина на маркерите
+            height: 10, // Височина на маркерите
+            radius: 12 // Радиус на маркерите
           },
           itemMargin: {
             horizontal: 10,
             vertical: 5
           },
-          formatter: (seriesName: string) => seriesName // Simplified
+          formatter: (seriesName: string) => seriesName // Оптимизирано показване
         },
         tooltip: {
           shared: false,
           intersect: true,
+          // Персонализиран изглед на подсказката
           custom: ({ seriesIndex, dataPointIndex, w }: any) => {
             const movieData = w.config.series[seriesIndex].data[dataPointIndex];
 
@@ -709,7 +738,7 @@ export class MoviesByProsperityBubbleChart extends Component<
     };
   }
 
-  // Helper function to get the color based on the first genre
+  // Помощна функция за получаване на цвят според жанра
   getColorForGenre(genre: string): string {
     const genreColorMap: { [key: string]: string } = {
       Приключенски: "#1f0302",
@@ -722,10 +751,11 @@ export class MoviesByProsperityBubbleChart extends Component<
       "Филм-ноар": "#cd8885"
     };
 
-    const firstGenre = genre.split(",")[0].trim();
-    return genreColorMap[firstGenre] || "#8c9097";
+    const firstGenre = genre.split(",")[0].trim(); // Извличане на първия жанр
+    return genreColorMap[firstGenre] || "#8c9097"; // Дефолтен цвят при липса на съвпадение
   }
 
+  // Актуализация на състоянието на базата на новите свойства
   static getDerivedStateFromProps(
     nextProps: MoviesByProsperityBubbleChartProps,
     prevState: State
@@ -734,6 +764,7 @@ export class MoviesByProsperityBubbleChart extends Component<
     const instance = new MoviesByProsperityBubbleChart(nextProps);
     const genreMap: { [key: string]: any[] } = {};
 
+    // Групиране на данни по жанрове
     sortedMoviesByProsperity.forEach((movie) => {
       const prosperityScore = movie.prosperityScore || 0;
       const boxOffice =
@@ -751,12 +782,12 @@ export class MoviesByProsperityBubbleChart extends Component<
       }
 
       genreMap[genre].push({
-        x: boxOffice,
-        y: imdbRating,
-        z: prosperityScore,
+        x: boxOffice, // Приходи от боксофис
+        y: imdbRating, // IMDb рейтинг
+        z: prosperityScore, // Баланс между двете
         title_en: titleEnglish,
         title_bg: titleBulgarian,
-        color: genreColor // Use color directly, no need for fillColor
+        color: genreColor // Пряко задаване на цвета
       });
     });
 
@@ -803,42 +834,46 @@ export class Treemap extends Component<TreemapProps, TreemapState> {
   constructor(props: TreemapProps) {
     super(props);
 
+    // Начален цвят, базиран на темата
     const initialColor = updatePrimaryColor();
+
+    // Генериране на диапазон от цветове (10 цвята), базирани на началния цвят
     const initialColorRange = chroma
       .scale([
-        chroma(initialColor).darken(0.5).hex(),
-        chroma(initialColor).darken(1).hex()
+        chroma(initialColor).darken(0.5).hex(), // По-тъмен нюанс
+        chroma(initialColor).darken(1).hex() // Още по-тъмен нюанс
       ])
       .mode("lab")
       .domain([0, 100])
-      .colors(10); // Generates a range of 10 colors
+      .colors(10);
 
     this.state = {
       series: [
         {
-          data: Treemap.formatData(props.data, props.role)
+          data: Treemap.formatData(props.data, props.role) // Форматиране на данните за начално състояние
         }
       ],
       options: {
         chart: {
-          type: "treemap",
+          type: "treemap", // Тип на диаграмата - дървовидна структура
           toolbar: {
-            show: false
+            show: false // Скриване на лентата с инструменти
           }
         },
-        colors: initialColorRange, // Set initial colors based on the theme
+        colors: initialColorRange, // Първоначален набор от цветове
         legend: {
-          show: false
+          show: false // Скриване на легендата
         }
       }
     };
   }
 
-  // Static method to derive state from props
+  // Метод за извличане на състояние от променени пропсове
   static getDerivedStateFromProps(
     nextProps: TreemapProps,
     prevState: TreemapState
   ) {
+    // Проверка дали данните или ролята са променени
     if (
       nextProps.data !== prevState.series[0].data ||
       nextProps.role !== prevState.options.title?.text?.split(" ")[1]
@@ -846,20 +881,21 @@ export class Treemap extends Component<TreemapProps, TreemapState> {
       return {
         series: [
           {
-            data: Treemap.formatData(nextProps.data, nextProps.role)
+            data: Treemap.formatData(nextProps.data, nextProps.role) // Актуализиране на форматираните данни
           }
         ]
       };
     }
-    return null;
+    return null; // Няма промяна
   }
 
-  // Static method to format the data
+  // Метод за форматиране на данните на база роля
   static formatData(data: RoleData, role: string) {
     return data.map((item) => {
-      let name = "";
-      let count = 0;
+      let name = ""; // Име на елемент
+      let count = 0; // Брой свързани записи
 
+      // Проверка на типа роля и съответните полета в данните
       if (role === "Actors" && "actor_bg" in item) {
         name = (item as ActorData).actor_bg!;
         count = (item as ActorData).actor_count!;
@@ -871,54 +907,54 @@ export class Treemap extends Component<TreemapProps, TreemapState> {
         count = (item as WriterData).writer_count!;
       }
 
-      return { x: name, y: count };
+      return { x: name, y: count }; // Връщане на форматиран обект
     });
   }
 
-  // Function to get the primary color based on the theme
+  // Метод за извличане на основния цвят на базата на темата
   getPrimaryColor() {
-    const root = document.documentElement;
+    const root = document.documentElement; // Вземане на кореновия HTML елемент
     const primaryColor = window
       .getComputedStyle(root)
-      .getPropertyValue("--primary-color");
-    return primaryColor || "#9a110a"; // Default to a red color if primary color is not found
+      .getPropertyValue("--primary-color"); // Извличане на CSS променливата
+    return primaryColor || "#9a110a"; // Връщане на стандартен червен цвят, ако няма дефиниран
   }
 
-  // Function to update the color scale
+  // Метод за актуализиране на цветния диапазон
   updateColorRange() {
-    const primaryHex = updatePrimaryColor();
-    console.log("primaryHex: ", primaryHex);
+    const primaryHex = updatePrimaryColor(); // Актуализиране на основния цвят
     const newColorRange = chroma
       .scale([
-        chroma(primaryHex).darken(0.5).hex(),
+        chroma(primaryHex).darken(0.5).hex(), // По-тъмни нюанси
         chroma(primaryHex).darken(1).hex()
       ])
       .mode("lab")
       .domain([0, 100])
       .colors(10);
 
+    // Актуализиране на цветовете в състоянието
     this.setState((prevState) => ({
       options: {
         ...prevState.options,
-        colors: newColorRange // Update the colors
+        colors: newColorRange
       }
     }));
   }
 
   componentDidMount() {
-    // Observe theme changes to update the color scale dynamically
+    // Добавяне на наблюдател за промени в темата
     this.observer = new MutationObserver(() => {
-      this.updateColorRange();
+      this.updateColorRange(); // Актуализиране на цветовете при промяна
     });
 
     this.observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["class"]
+      attributeFilter: ["class"] // Слушане за промяна на класовете
     });
   }
 
   componentWillUnmount() {
-    // Cleanup observer when the component unmounts
+    // Премахване на наблюдателя при унищожаване на компонента
     if (this.observer) {
       this.observer.disconnect();
     }
@@ -927,8 +963,8 @@ export class Treemap extends Component<TreemapProps, TreemapState> {
   render() {
     return (
       <ReactApexChart
-        options={this.state.options}
-        series={this.state.series}
+        options={this.state.options} // Опции за диаграмата
+        series={this.state.series} // Данни за диаграмата
         type="treemap"
         height={350}
       />
@@ -945,70 +981,69 @@ export class TopRecommendationsBarChart extends Component<
   constructor(props: { seriesData: RecommendationData[] }) {
     super(props);
 
-    // Get the initial color for the theme
+    // Извличане на началния цвят за темата
     const initialColor = updatePrimaryColor();
 
-    // Set the distinct colors for Movies and Series based on the primary color
+    // Задаване на отделни цветове за филми и сериали, базирани на основния цвят
     this.state = {
       series: [],
       options: {
         chart: {
-          type: "bar",
-          toolbar: { show: false }
+          type: "bar", // Тип на диаграмата - хоризонтален бар
+          toolbar: { show: false } // Скриване на лентата с инструменти
         },
-        plotOptions: { bar: { borderRadius: 4, horizontal: true } },
-        grid: { borderColor: "#f2f5f7" },
-        dataLabels: { enabled: false },
+        plotOptions: { bar: { borderRadius: 4, horizontal: true } }, // Задаване на хоризонтална ориентация и радиус на колоните
+        grid: { borderColor: "#f2f5f7" }, // Цвят на мрежата
+        dataLabels: { enabled: false }, // Скриване на стойностите върху колоните
         xaxis: {
-          title: { text: "Брой препоръчвания" },
-          categories: []
+          title: { text: "Брой препоръчвания" }, // Заглавие на оста X
+          categories: [] // Категории, които ще бъдат зададени динамично
         },
-        yaxis: { title: { text: "Заглавие" } },
-        // Adjust brightness more for Movies (brighter) and darken more for Series (darker)
+        yaxis: { title: { text: "Заглавие" } }, // Заглавие на оста Y
         colors: [
-          chroma(initialColor).darken(0.6).hex(), // Brighter color for Movies
-          chroma(initialColor).brighten(0.6).hex() // Darker color for Series
+          chroma(initialColor).darken(0.6).hex(), // По-ярък цвят за филми
+          chroma(initialColor).brighten(0.6).hex() // По-тъмен цвят за сериали
         ],
         legend: {
-          show: true,
-          position: "top", // Optionally change legend position
+          show: true, // Показване на легендата
+          position: "top", // Разположение на легендата
           labels: {
-            colors: ["#000", "#000"] // You can adjust the legend text color here
+            colors: ["#000", "#000"] // Цвят на текстовете в легендата
           }
         }
       }
     };
   }
 
+  // Актуализация на състоянието при промяна на входните данни
   static getDerivedStateFromProps(
     nextProps: { seriesData: RecommendationData[] },
     prevState: State
   ) {
     if (nextProps.seriesData && nextProps.seriesData.length > 0) {
+      // Подреждане на филмите/сериалите по брой препоръчвания
       const sortedMovies = nextProps.seriesData.sort(
         (a, b) => b.recommendations - a.recommendations
       );
 
+      // Актуализиране на данните и задаване на цветове според типа
       const updatedSeries = sortedMovies.map((movie) => {
-        // Apply distinct colors for movies and series
-        const isMovie = movie.type === "movie";
-
-        // Get the color for the movie or series
+        const isMovie = movie.type === "movie"; // Проверка дали е филм
         const color = isMovie
-          ? prevState.options.colors[0] // Brighter Movie color
-          : prevState.options.colors[1]; // Darker Series color
+          ? prevState.options.colors[0] // Цвят за филм
+          : prevState.options.colors[1]; // Цвят за сериал
 
         return {
-          x: `${movie.title_bg} (${movie.title_en})`,
-          y: movie.recommendations,
-          fillColor: color // Set the dynamic color based on movie type
+          x: `${movie.title_bg} (${movie.title_en})`, // Заглавие (на български и английски)
+          y: movie.recommendations, // Брой препоръчвания
+          fillColor: color // Цвят на колоната
         };
       });
 
       return {
         series: [
           {
-            name: "Препоръчвания",
+            name: "Препоръчвания", // Име на серията
             data: updatedSeries
           }
         ],
@@ -1018,56 +1053,56 @@ export class TopRecommendationsBarChart extends Component<
             ...prevState.options.xaxis,
             categories: sortedMovies.map(
               (movie) => `${movie.title_bg} (${movie.title_en})`
-            )
+            ) // Категории за оста X
           }
         }
       };
     }
 
-    return null;
+    return null; // Няма промяна
   }
 
   componentDidMount() {
-    this.updateColorRange();
+    this.updateColorRange(); // Актуализиране на цветовия диапазон
 
-    // Initialize the MutationObserver to watch for class changes on document.documentElement
+    // Създаване на наблюдател за промени в темата
     this.observer = new MutationObserver(() => {
-      this.updateColorRange();
+      this.updateColorRange(); // Актуализиране на цветовете при промяна
     });
 
-    // Observe changes in the classList of the document's root element (theme changes)
+    // Наблюдение за промени в класовете на root елемента (смяна на темата)
     this.observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["class"]
+      attributeFilter: ["class"] // Наблюдение само за промени на класове
     });
   }
 
   componentWillUnmount() {
-    // Clean up the MutationObserver when the component is unmounted
+    // Премахване на наблюдателя при унищожаване на компонента
     if (this.observer) {
       this.observer.disconnect();
     }
   }
 
+  // Метод за актуализиране на цветовия диапазон при смяна на темата
   updateColorRange() {
-    const primaryHex = updatePrimaryColor(); // Get the updated theme color
+    const primaryHex = updatePrimaryColor(); // Извличане на новия цвят на темата
 
-    // Define the distinct colors based on the updated primary color
-    const movieColor = chroma(primaryHex).darken(0.6).hex(); // Much brighter movie color
-    const seriesColor = chroma(primaryHex).brighten(0.6).hex(); // Darker series color
+    // Определяне на отделни цветове за филми и сериали
+    const movieColor = chroma(primaryHex).darken(0.6).hex(); // Ярък цвят за филми
+    const seriesColor = chroma(primaryHex).brighten(0.6).hex(); // Тъмен цвят за сериали
 
-    // Update the state with the new color values
     this.setState((prevState) => ({
       options: {
         ...prevState.options,
-        colors: [movieColor, seriesColor] // Update colors for both categories
+        colors: [movieColor, seriesColor] // Актуализиране на цветовете
       }
     }));
   }
 
   render() {
-    const movieColor = this.state.options.colors[0];
-    const seriesColor = this.state.options.colors[1];
+    const movieColor = this.state.options.colors[0]; // Цвят за филми
+    const seriesColor = this.state.options.colors[1]; // Цвят за сериали
 
     return (
       <div>
@@ -1090,13 +1125,13 @@ export class TopRecommendationsBarChart extends Component<
 
         {this.state.series && this.state.series.length > 0 ? (
           <ReactApexChart
-            options={this.state.options}
-            series={this.state.series}
+            options={this.state.options} // Опции за диаграмата
+            series={this.state.series} // Данни за диаграмата
             type="bar"
             height={320}
           />
         ) : (
-          <p>No data available</p>
+          <p>No data available</p> // Текст, ако няма данни
         )}
       </div>
     );

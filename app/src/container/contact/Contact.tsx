@@ -1,24 +1,24 @@
 import React, { useState, ChangeEvent, FC } from "react";
 import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 
-const UserReports: FC = () => {
-  // State for the form data
+const Contact: FC = () => {
+  // Състояние за данните от формата
   const [formData, setFormData] = useState({
     email: "",
     name: ""
   });
 
-  // State for the message
+  // Състояние за съобщението
   const [message, setMessage] = useState("");
 
-  // State for empty fields validation
+  // Състояние за валидация на празни полета
   const [emptyFields, setEmptyFields] = useState({
     email: false,
     name: false,
     message: false
   });
 
-  // Function to handle input changes
+  // Функция за обработка на промени в полетата за имейл и име
   const handleInputChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -29,6 +29,7 @@ const UserReports: FC = () => {
     }));
   };
 
+  // Функция за обработка на промени в съобщението (textarea)
   const handleMessageChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = event.target.value;
     if (inputValue.length <= 200) {
@@ -36,25 +37,29 @@ const UserReports: FC = () => {
     }
   };
 
-  // Handle form submission
+  // Обработка на изпращането на формата
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
+    // Валидация за празни полета
     const isEmpty = {
       email: !formData.email,
       name: !formData.name,
       message: !message
     };
 
+    // Задаваме състоянието за празни полета
     setEmptyFields(isEmpty);
 
+    // Ако няма празни полета, изпращаме данните от формата
     if (!Object.values(isEmpty).includes(true)) {
-      console.log("Form submitted with:", {
+      console.log("Формата е изпратена с данни:", {
         email: formData.email,
         name: formData.name,
         message
       });
-      // Reset form if needed
+
+      // Рестартиране на формата след изпращането
       setFormData({ email: "", name: "" });
       setMessage("");
     }
@@ -63,7 +68,7 @@ const UserReports: FC = () => {
   return (
     <FadeInWrapper>
       <div className="container mx-auto pt-20 pb-20">
-        {/* Main Section Card */}
+        {/* Основен раздел с информация */}
         <div className="box mb-10 p-6 border-2 border-primary rounded-lg shadow">
           <h2 className="box-title" style={{ fontSize: "1.5rem" }}>
             В тази страница имате възможността да направите обратна връзка!
@@ -75,10 +80,11 @@ const UserReports: FC = () => {
           </p>
         </div>
 
-        {/* Feedback Form Card */}
+        {/* Карта за форма за обратна връзка */}
         <div className="box p-6 border-2 border-primary rounded-lg shadow">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-12 gap-y-4">
+              {/* Поле за имейл */}
               <div className="xl:col-span-12 col-span-12 mt-0">
                 <label htmlFor="email" className="form-label text-default">
                   Email <span className="text-primary">*</span>
@@ -96,6 +102,7 @@ const UserReports: FC = () => {
                 />
               </div>
 
+              {/* Поле за име */}
               <div className="xl:col-span-12 col-span-12 mb-4">
                 <label htmlFor="name" className="form-label text-default block">
                   Вашето име <span className="text-primary">*</span>
@@ -113,6 +120,7 @@ const UserReports: FC = () => {
                 />
               </div>
 
+              {/* Поле за съобщение */}
               <div className="xl:col-span-12 col-span-12">
                 <label
                   htmlFor="message"
@@ -123,8 +131,8 @@ const UserReports: FC = () => {
                 <textarea
                   className="form-control bg-opacity-70 border-2 rounded-lg p-4 mb-4 text-white hover:text-[#d94545] min-h-[2.5rem] max-h-[10rem]"
                   placeholder="Моля напишете вашето съобщение тук..."
-                  value={message} // Controlled component value
-                  onChange={handleMessageChange} // Use the specific handler for textarea
+                  value={message}
+                  onChange={handleMessageChange}
                   required
                   maxLength={200}
                   rows={4}
@@ -134,6 +142,7 @@ const UserReports: FC = () => {
                 </div>
               </div>
 
+              {/* Бутон за изпращане */}
               <div className="xl:col-span-12 col-span-12 mt-2">
                 <button
                   type="submit"
@@ -150,4 +159,4 @@ const UserReports: FC = () => {
   );
 };
 
-export default UserReports;
+export default Contact;

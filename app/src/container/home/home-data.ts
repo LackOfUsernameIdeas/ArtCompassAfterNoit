@@ -1,6 +1,10 @@
 import { Category, DataType } from "./home-types";
 
-// Мапинг на имената за категорията на рейтингите
+/**
+ * Мапинг на имената за категорията на рейтингите.
+ *
+ * @type {Record<"IMDb" | "Metascore" | "RottenTomatoes", string>}
+ */
 export const moviesAndSeriesCategoryDisplayNames: Record<
   "IMDb" | "Metascore" | "RottenTomatoes",
   string
@@ -10,12 +14,23 @@ export const moviesAndSeriesCategoryDisplayNames: Record<
   RottenTomatoes: "Rotten Tomatoes Рейтинг"
 };
 
+/**
+ * Мапинг на имената за категориите на таблицата.
+ *
+ * @type {Record<Category, string>}
+ */
 export const tableCategoryDisplayNames: Record<Category, string> = {
   Directors: "Режисьори",
   Actors: "Актьори",
   Writers: "Сценаристи"
 };
 
+/**
+ * Генерира опции за награди въз основа на предоставените данни.
+ *
+ * @param {DataType} data - Данни за награди и номинации.
+ * @returns {Array<{label: string, value: number}>} Списък с опции за награди.
+ */
 export const getAwardOptions = (data: DataType) => [
   {
     label: "Общ брой спечелени награди",
@@ -35,6 +50,12 @@ export const getAwardOptions = (data: DataType) => [
   }
 ];
 
+/**
+ * Генерира опции за средни стойности въз основа на предоставените данни.
+ *
+ * @param {DataType} data - Данни за средни стойности.
+ * @returns {Array<{label: string, value: number}>} Списък с опции за средни стойности.
+ */
 export const getAveragesOptions = (data: DataType) => [
   {
     label: "Среден Боксофис",

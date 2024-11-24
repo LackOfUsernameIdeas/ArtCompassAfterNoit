@@ -4,12 +4,12 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import logo from "../../../assets/images/brand-logos/logo-large.png";
 import logoPink from "../../../assets/images/brand-logos/logo-large-pink.png";
 
-// Import Swiper styles
+// Импортиране на стиловете за Swiper
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
-// import required modules
+// Импортиране на необходимите модули за Swiper
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Helmet } from "react-helmet-async";
 
@@ -367,7 +367,6 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
                       </div>
                     </div>
                   </SwiperSlide>
-                  {/* Add additional slides here if needed */}
                 </Swiper>
               </div>
             </div>

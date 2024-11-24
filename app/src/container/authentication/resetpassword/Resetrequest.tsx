@@ -3,12 +3,12 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import logo from "../../../assets/images/brand-logos/logo-large.png";
 import logoPink from "../../../assets/images/brand-logos/logo-large-pink.png";
 
-// Import Swiper styles
+// Импортиране на стиловете за Swiper
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
-// import required modules
+// Импортиране на необходимите модули за Swiper
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -101,12 +101,14 @@ const ResetRequest: FC<ResetRequestProps> = () => {
   return (
     <Fragment>
       <Helmet>
+        {/* Задаване на фон за страницата */}
         <body className="bg-white dark:!bg-bodybg"></body>
       </Helmet>
       <div className="grid grid-cols-12 authentication mx-0 text-defaulttextcolor text-defaultsize">
         <div className="xxl:col-span-7 xl:col-span-7 lg:col-span-12 col-span-12">
           <div className="flex justify-center items-center h-full">
             <div className="p-[3rem]">
+              {/* Заглавие и описание на страницата */}
               <p className="h5 font-semibold mb-2">
                 Забравили сте паролата си?
               </p>
@@ -114,19 +116,21 @@ const ResetRequest: FC<ResetRequestProps> = () => {
                 Въведете своя имейл тук и ако имате профил с него, ще получите
                 линк за смяна на паролата.
               </p>
+
+              {/* Извеждане на алерти, ако има */}
               {alerts.map((alert, idx) => (
                 <div
                   className={`alert alert-${alert.color} flex items-center`}
                   role="alert"
                   key={idx}
                   style={{
-                    width: "100%", // Ensure it takes full width
-                    boxSizing: "border-box", // Includes padding in width calculation
+                    width: "100%", // За да се заема пълната ширина
+                    boxSizing: "border-box", // Включва padding в изчисляването на ширината
                     height: "auto",
-                    marginBottom: "1rem", // Adds space between alert and form
-                    wordBreak: "break-word", // Wraps long messages properly
-                    padding: "0.75rem 1rem", // Adjust padding to match typical alert sizing
-                    minHeight: "auto", // Allows the alert to shrink to fit smaller content
+                    marginBottom: "1rem", // Добавя разстояние между алармата и формата
+                    wordBreak: "break-word", // Рапърва дълги съобщения правилно
+                    padding: "0.75rem 1rem", // Подравнява padding-а
+                    minHeight: "auto", // Позволява на алармата да се свие, ако съдържанието е по-малко
                     alignItems: "center"
                   }}
                 >
@@ -144,7 +148,9 @@ const ResetRequest: FC<ResetRequestProps> = () => {
                   </div>
                 </div>
               ))}
+
               <div className="grid grid-cols-12 gap-y-4">
+                {/* Формата за въвеждане на имейл */}
                 <div className="xl:col-span-12 col-span-12 mt-0">
                   <label
                     htmlFor="reset-email"
@@ -163,6 +169,8 @@ const ResetRequest: FC<ResetRequestProps> = () => {
                     />
                   </div>
                 </div>
+
+                {/* Бутон за изпращане на заявка за смяна на парола */}
                 <div className="xl:col-span-12 col-span-12 grid mt-2">
                   <button
                     className="ti-btn ti-btn-primary w-full py-2"
@@ -173,6 +181,8 @@ const ResetRequest: FC<ResetRequestProps> = () => {
                   </button>
                 </div>
               </div>
+
+              {/* Линк за връщане към формата за влизане */}
               <div className="text-center">
                 <p className="text-[0.75rem] text-[#8c9097] dark:text-white/50 mt-4">
                   Объркахте нещо?{" "}
@@ -187,6 +197,8 @@ const ResetRequest: FC<ResetRequestProps> = () => {
             </div>
           </div>
         </div>
+
+        {/* Част с изображения и слайдер */}
         <div className="xxl:col-span-5 xl:col-span-5 lg:col-span-5 col-span-12 xl:block hidden px-0">
           <div className="authentication-cover ">
             <div className="aunthentication-cover-content rounded">
@@ -202,6 +214,7 @@ const ResetRequest: FC<ResetRequestProps> = () => {
                 >
                   <SwiperSlide>
                     <div className="text-white text-center p-[3rem] flex items-center justify-center flex-col lg:space-y-8 md:space-y-4 sm:space-y-2 space-y-2">
+                      {/* Логото и текст за добре дошли */}
                       <div>
                         <div className="mb-[6rem] dark:hidden">
                           <img
@@ -234,7 +247,7 @@ const ResetRequest: FC<ResetRequestProps> = () => {
                       </div>
                     </div>
                   </SwiperSlide>
-                  {/* Add additional slides here if needed */}
+                  {/* Добавете допълнителни слайдове, ако е необходимо */}
                 </Swiper>
               </div>
             </div>

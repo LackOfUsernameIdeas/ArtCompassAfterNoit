@@ -18,7 +18,6 @@ import * as EmailValidator from "email-validator";
 interface SignupcoverProps {}
 
 const Signupcover: FC<SignupcoverProps> = () => {
-  // State management for the form fields
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -45,11 +44,9 @@ const Signupcover: FC<SignupcoverProps> = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if user is already logged in
     const token =
       localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     if (token) {
-      // Redirect to the app if token exists
       navigate(`${import.meta.env.BASE_URL}app/home/`);
     }
   }, [navigate]);
@@ -63,11 +60,10 @@ const Signupcover: FC<SignupcoverProps> = () => {
 
     setEmptyFields((prevState) => ({
       ...prevState,
-      [id]: false // Reset field error when typing
+      [id]: false
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -163,7 +159,6 @@ const Signupcover: FC<SignupcoverProps> = () => {
         throw new Error(errorData.error || "Нещо се обърка! :(");
       }
 
-      // Redirect to the verification page
       navigate(`${import.meta.env.BASE_URL}twostepverification`, {
         state: { email: formData.email }
       });
@@ -207,12 +202,12 @@ const Signupcover: FC<SignupcoverProps> = () => {
                     role="alert"
                     key={idx}
                     style={{
-                      maxWidth: "100%", // Ensures it adapts to the form width
+                      maxWidth: "100%",
                       height: "auto",
-                      marginBottom: "1rem", // Adds space between alert and form
-                      wordBreak: "break-word", // Wraps long messages properly
-                      padding: "0.75rem 1rem", // Adjust padding to match typical alert sizing
-                      minHeight: "auto", // Allows the alert to shrink to fit smaller content
+                      marginBottom: "1rem",
+                      wordBreak: "break-word",
+                      padding: "0.75rem 1rem",
+                      minHeight: "auto",
                       alignItems: "center"
                     }}
                   >
@@ -425,7 +420,6 @@ const Signupcover: FC<SignupcoverProps> = () => {
                       </div>
                     </div>
                   </SwiperSlide>
-                  {/* Add additional slides here if needed */}
                 </Swiper>
               </div>
             </div>
