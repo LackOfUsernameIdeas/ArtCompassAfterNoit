@@ -49,7 +49,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
   const averagesOptions = getAveragesOptions(data);
 
   const is1803 = useMediaQuery({ query: "(max-width: 1803px)" });
-  const is1441 = useMediaQuery({ query: "(max-width: 1441px)" });
+  const is1488 = useMediaQuery({ query: "(max-width: 1488px)" });
 
   return (
     <Fragment>
@@ -129,7 +129,9 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
             <div className="flex items-center justify-between">
               <div className="flex-grow">
                 <div className="flex flex-wrap items-start">
-                  <div className="flex items-center space-x-2">
+                  <div
+                    className={`flex items-center space-x-${is1803 ? 2 : 1}`}
+                  >
                     <p
                       className={`mb-0 text-[#8c9097] dark:text-white/50 ${
                         is1803 &&
@@ -149,13 +151,13 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                         onClick={toggleAveragesMenu}
                         aria-expanded={isAveragesMenuOpen ? "true" : "false"}
                       >
-                        <span className={`${is1441 && "hidden"}`}>
+                        <span className={`${is1488 && "hidden"}`}>
                           Сортирай по
                         </span>
                         <i
                           className={`ri-arrow-${
                             isAveragesMenuOpen ? "up" : "down"
-                          }-s-line ${!is1441 && "ml-0.5"} text-sm`}
+                          }-s-line ${!is1488 && "ml-0.5"} text-sm`}
                         ></i>
                       </Link>
                       <ul
@@ -242,13 +244,13 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                       onClick={toggleAwardsMenu}
                       aria-expanded={isAwardsMenuOpen ? "true" : "false"}
                     >
-                      <span className={`${is1441 && "hidden"}`}>
+                      <span className={`${is1488 && "hidden"}`}>
                         Сортирай по
                       </span>
                       <i
                         className={`ri-arrow-${
                           isAwardsMenuOpen ? "up" : "down"
-                        }-s-line ${!is1441 && "ml-0.5"} text-sm`}
+                        }-s-line ${!is1488 && "ml-0.5"} text-sm`}
                       ></i>
                     </Link>
                     <ul
