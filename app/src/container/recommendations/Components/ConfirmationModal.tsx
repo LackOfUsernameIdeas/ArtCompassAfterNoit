@@ -2,6 +2,7 @@ import { FC } from "react";
 import { ConfirmationModalProps } from "../recommendations-types";
 
 export const ConfirmationModal: FC<ConfirmationModalProps> = ({
+  setNotification,
   setLoading,
   setSubmitted,
   setIsModalOpen,
@@ -36,6 +37,7 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
           <button
             onClick={() => {
               handleSubmit(
+                setNotification,
                 setLoading,
                 setSubmitted,
                 setSubmitCount,

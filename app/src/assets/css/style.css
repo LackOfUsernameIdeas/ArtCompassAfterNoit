@@ -19764,10 +19764,8 @@ input[type="color" i]::-webkit-color-swatch {
   @apply shadow-[0_0px_8px_rgba(255,255,255,0.8)];
 }
 
-/* Remove background color from .question */
 .question {
-  @apply flex flex-col rounded-md border-2 border-secondary dark:border-white text-secondary dark:text-defaulttextcolor/70 text-[0.813rem] relative;
-  background-color: rgb(var(--body-bg));
+  @apply flex flex-col rounded-md border-2 border-secondary dark:border-white text-secondary dark:text-defaulttextcolor/70 text-[0.813rem] relative bg-[rgb(var(--body-bg))];
 }
 
 .input-field {

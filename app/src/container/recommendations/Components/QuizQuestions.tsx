@@ -8,7 +8,8 @@ import {
   handleNext,
   isGenreOption,
   handleSubmit,
-  getMarginClass
+  getMarginClass,
+  mockHandleSubmit
 } from "../helper_functions";
 import {
   ageOptions,
@@ -21,6 +22,7 @@ import {
 } from "../recommendations-data";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { ViewRecommendations } from "./ViewRecommendations";
+import Notification from "../../../components/common/notification/Notification";
 
 export const QuizQuestions: FC<QuizQuestionProps> = ({
   setLoading,
@@ -47,6 +49,10 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   const [showQuestion, setShowQuestion] = useState(true);
   const [selectedAnswer, setSelectedAnswer] = useState<string[] | null>(null);
   const typeOptions = ["Филм", "Сериал"];
+  const [notification, setNotification] = useState<{
+    message: string;
+    type: "success" | "error" | "warning";
+  } | null>(null);
 
   const questions = [
     {
@@ -185,7 +191,8 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       if (alreadyHasRecommendations) {
         handleOpenModal();
       } else {
-        handleSubmit(
+        mockHandleSubmit(
+          setNotification,
           setLoading,
           setSubmitted,
           setSubmitCount,
@@ -257,6 +264,16 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
           setSubmitted={setSubmitted}
         />
       )}
+      {notification?.message && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={() => {
+            console.log("Notification closed!");
+            setNotification(null); 
+          }}
+        />
+      )}
       <CSSTransition
         in={showQuestion}
         timeout={500}
@@ -302,7 +319,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
               {currentQuestion.setter === setInterests ? (
                 <div>
                   <textarea
-                    className="form-control bg-opacity-70 border-2 rounded-lg p-4 mb-4 text-white glow-effect transition-all duration-300 hover:text-[#d94545]"
+                    className="form-control bg-opacity-70 border-2 rounded-lg p-4 mb-4 text-white glow-effect transition-all duration-300 hover:text-secondary"
                     placeholder={currentQuestion.placeholder}
                     value={interests}
                     onChange={(e) => {
@@ -318,7 +335,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                     maxLength={200}
                   />
                   <div className="flex justify-between mx-2">
-                    <label className="flex items-center cursor-pointer hover:text-[#d94545]">
+                    <label className="flex items-center cursor-pointer hover:text-secondary">
                       <input
                         type="checkbox"
                         className="checkbox"
@@ -345,7 +362,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                 <div>
                   <input
                     type="text"
-                    className="input-field form-control bg-opacity-70 border-2 rounded-lg p-4 mb-4 text-white glow-effect transition-all duration-300 hover:text-[#d94545]"
+                    className="input-field form-control bg-opacity-70 border-2 rounded-lg p-4 mb-4 text-white glow-effect transition-all duration-300 hover:text-secondary"
                     placeholder={currentQuestion.placeholder}
                     value={currentQuestion.value}
                     onChange={(e) => {
@@ -410,7 +427,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                       className={`${
                         selectedAnswer && selectedAnswer.includes(option.bg)
                           ? "selected-answer transform scale-105"
-                          : "question hover:bg-[#d94545] hover:text-white"
+                          : "question hover:bg-secondary hover:text-white"
                       } bg-opacity-70 p-6 text-white rounded-lg glow-effect transition-all duration-300 cursor-pointer flex justify-center items-center`}
                     >
                       {option.bg}
@@ -433,7 +450,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                       className={`${
                         selectedAnswer && selectedAnswer.includes(option)
                           ? "selected-answer transform scale-105"
-                          : "question hover:bg-[#d94545] hover:text-white"
+                          : "question hover:bg-secondary hover:text-white"
                       } bg-opacity-70 p-6 text-white rounded-lg glow-effect transition-all duration-300 cursor-pointer flex justify-center items-center`}
                     >
                       {option}
@@ -446,7 +463,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
 
           <div
             onClick={handleClick}
-            className={`next glow-next bg-red-600 bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center transition-all duration-200 ${
+            className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center transition-all duration-200 ${
               (selectedAnswer && selectedAnswer.length > 0) ||
               (currentQuestion.isInput &&
                 typeof currentQuestion.value === "string" &&
@@ -461,10 +478,11 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
 
             {isModalOpen && alreadyHasRecommendations && (
               <ConfirmationModal
+                setNotification={setNotification}
                 setIsModalOpen={setIsModalOpen}
                 setLoading={setLoading}
                 setSubmitted={setSubmitted}
-                handleSubmit={handleSubmit}
+                handleSubmit={mockHandleSubmit}
                 setRecommendationList={setRecommendationList}
                 setSubmitCount={setSubmitCount}
                 userPreferences={userPreferences}

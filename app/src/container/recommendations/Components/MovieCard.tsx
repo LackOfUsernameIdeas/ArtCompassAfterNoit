@@ -98,13 +98,19 @@ export const MovieCard: FC<MovieCardProps> = ({
               {movie.rated || "N/A"}
             </p>
             <div className="flex items-center space-x-8 mb-4">
-              <div className="flex items-center space-x-2">
+              <div
+                className="flex items-center space-x-2"
+                title="IMDb рейтинг: Базиран на отзиви и оценки от потребители."
+              >
                 <FaStar className="dark:text-[#FFCC33] text-[#bf9413] w-8 h-8" />
                 <span className="dark:text-[#FFCC33] text-[#bf9413] font-bold text-lg">
                   {movie.imdbRating || "N/A"}
                 </span>
               </div>
-              <div className="flex items-center space-x-2">
+              <div
+                className="flex items-center space-x-2"
+                title="Метаскор: Средно претеглена оценка от критически рецензии за филма."
+              >
                 <div
                   className={`flex items-center justify-center rounded-md text-white ${
                     parseInt(movie.metascore) >= 60
@@ -127,7 +133,10 @@ export const MovieCard: FC<MovieCardProps> = ({
                 </div>
                 <span className="font-semibold">Метаскор</span>
               </div>
-              <div className="flex items-center space-x-2">
+              <div
+                className="flex items-center space-x-2"
+                title="Rotten Tomatoes рейтинг: Процент положителни рецензии от професионални критици."
+              >
                 <SiRottentomatoes className="text-[#FF0000] w-8 h-8" />
                 <span className="text-red-400 font-semibold">
                   {rottenTomatoesRating}

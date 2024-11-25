@@ -475,6 +475,19 @@ export const saveRecommendationToDatabase = async (
   }
 };
 
+export const showNotification = (
+  setNotification: React.Dispatch<
+    React.SetStateAction<{
+      message: string;
+      type: "success" | "error" | "warning";
+    } | null>
+  >,
+  message: string,
+  type: "success" | "error" | "warning"
+) => {
+  setNotification({ message, type });
+};
+
 /**
  * Обработва изпращането на потребителски данни за генериране на препоръки.
  * Извършва валидация на полетата, изпраща заявка до сървъра и обновява списъка с препоръки.
@@ -492,6 +505,12 @@ export const saveRecommendationToDatabase = async (
  * @throws {Error} - Хвърля грешка, ако не може да се обработи заявката.
  */
 export const handleSubmit = async (
+  setNotification: React.Dispatch<
+    React.SetStateAction<{
+      message: string;
+      type: "success" | "error" | "warning";
+    } | null>
+  >,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
   setSubmitCount: React.Dispatch<React.SetStateAction<number>>,
@@ -501,7 +520,11 @@ export const handleSubmit = async (
   submitCount: number
 ): Promise<void> => {
   if (submitCount >= 20) {
-    alert("Достигнахте максималния брой предложения! :(");
+    showNotification(
+      setNotification,
+      "Достигнахте максималния брой предложения! :(",
+      "error"
+    );
     return;
   }
 
@@ -526,14 +549,16 @@ export const handleSubmit = async (
     !depth ||
     !targetGroup
   ) {
-    alert("Моля, попълнете всички задължителни полета!");
+    showNotification(
+      setNotification,
+      "Моля, попълнете всички задължителни полета!",
+      "warning"
+    );
     return;
   }
 
   setLoading(true);
   setSubmitted(true);
-
-  const date = new Date().toISOString();
 
   try {
     const response = await fetch(
@@ -551,20 +576,110 @@ export const handleSubmit = async (
 
     if (response.status === 200) {
       setRecommendationList([]);
-      await saveUserPreferences(date, userPreferences, token);
-      await generateMovieRecommendations(
-        date,
-        userPreferences,
-        setRecommendationList,
-        token
+      showNotification(
+        setNotification,
+        "Успешно изпратено! Генерираме вашите препоръки...",
+        "success"
       );
       setSubmitCount((prevCount) => prevCount + 1);
     } else {
-      alert(data.error || "Something went wrong.");
+      showNotification(
+        setNotification,
+        data.error || "Възникна проблем.",
+        "error"
+      );
     }
   } catch (error) {
     console.error("Error submitting the request:", error);
-    alert("Something went wrong while submitting your request.");
+    showNotification(
+      setNotification,
+      "Възникна проблем при изпращането на заявката.",
+      "error"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const mockHandleSubmit = async (
+  setNotification: React.Dispatch<
+    React.SetStateAction<{
+      message: string;
+      type: "success" | "error" | "warning";
+    } | null>
+  >,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
+  setSubmitCount: React.Dispatch<React.SetStateAction<number>>,
+  setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
+  userPreferences: UserPreferences,
+  token: string | null,
+  submitCount: number
+) => {
+  showNotification(
+    setNotification,
+    "Достигнахте максималния брой предложения! :(",
+    "error"
+  );
+  return;
+
+  const {
+    moods,
+    timeAvailability,
+    actors,
+    directors,
+    countries,
+    pacing,
+    depth,
+    targetGroup
+  } = userPreferences;
+
+  if (
+    !moods ||
+    !timeAvailability ||
+    !actors ||
+    !directors ||
+    !countries ||
+    !pacing ||
+    !depth ||
+    !targetGroup
+  ) {
+    showNotification(
+      setNotification,
+      "Моля, попълнете всички задължителни полета!",
+      "warning"
+    );
+    return;
+  }
+
+  setLoading(true);
+  setSubmitted(true);
+
+  try {
+    // Simulate a delay
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Simulate success or failure
+    const isSuccess = Math.random() > 0.3; // 70% chance of success
+
+    if (isSuccess) {
+      setRecommendationList([]);
+      showNotification(
+        setNotification,
+        "Успешно изпратено! Генерираме вашите препоръки...",
+        "success"
+      );
+      setSubmitCount((prevCount) => prevCount + 1);
+    } else {
+      showNotification(setNotification, "Възникна проблем.", "error");
+    }
+  } catch (error) {
+    console.error("Simulated error:", error);
+    showNotification(
+      setNotification,
+      "Възникна проблем при изпращането на заявката.",
+      "error"
+    );
   } finally {
     setLoading(false);
   }

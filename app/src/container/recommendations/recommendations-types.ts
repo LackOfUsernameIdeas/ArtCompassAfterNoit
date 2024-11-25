@@ -113,11 +113,22 @@ export interface ViewRecommendationsProps {
 
 // Интерфейс за пропсите на модала за потвърждение
 export interface ConfirmationModalProps {
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието за зареждане
-  setSubmitted: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието за изпращане
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието за отворен/затворен модал
+  setNotification: React.Dispatch<
+    React.SetStateAction<{
+      message: string;
+      type: "success" | "error" | "warning";
+    } | null>
+  >;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleSubmit: (
-    // Функция за обработка на подадената форма
+    setNotification: React.Dispatch<
+      React.SetStateAction<{
+        message: string;
+        type: "success" | "error" | "warning";
+      } | null>
+    >,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
     setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
     setSubmitCount: React.Dispatch<React.SetStateAction<number>>,
