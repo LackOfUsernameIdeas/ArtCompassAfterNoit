@@ -522,7 +522,7 @@ export const handleSubmit = async (
   if (submitCount >= 20) {
     showNotification(
       setNotification,
-      "Достигнахте максималния брой предложения! :(",
+      "Достигнахте максималния брой предложения! Максималният брой опити е 20 за днес. Можете да опитате отново утре!",
       "error"
     );
     return;
@@ -618,7 +618,7 @@ export const mockHandleSubmit = async (
 ) => {
   showNotification(
     setNotification,
-    "Достигнахте максималния брой предложения! :(",
+    "Достигнахте максималния брой предложения! Максималният брой опити е 20 на ден. Можете да опитате отново утре!",
     "error"
   );
   return;

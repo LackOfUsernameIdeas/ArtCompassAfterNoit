@@ -43,7 +43,7 @@ const Notification: React.FC<NotificationProps> = ({
       >
         <h2 className="block text-xl font-semibold mb-4">
           {type === "success" && "🎉 Успех!"}
-          {type === "error" && "⚠️ Грешка!"}
+          {type === "error" && "⚠️ Възникна грешка!"}
           {type === "warning" && "⚠️ Внимание!"}
         </h2>
         <span className="block text-lg font-medium mb-6">{message}</span>
