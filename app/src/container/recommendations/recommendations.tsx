@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { Quiz } from "./Components/Quiz";
 import { useNavigate } from "react-router-dom";
 import { checkTokenValidity } from "../home/helper_functions";
-import { showNotification } from "../recommendations/helper_functions";
+import { showNotification } from "./helper_functions";
 import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 import Notification from "../../components/common/notification/Notification";
 import { NotificationState } from "./recommendations-types";
