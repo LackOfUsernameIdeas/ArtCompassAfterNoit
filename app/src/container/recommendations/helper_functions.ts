@@ -574,12 +574,16 @@ export const handleSubmit = async (
 
     const data = await response.json();
 
+    const date = new Date().toISOString();
+
     if (response.status === 200) {
       setRecommendationList([]);
-      showNotification(
-        setNotification,
-        "Успешно изпратено! Генерираме вашите препоръки...",
-        "success"
+      await saveUserPreferences(date, userPreferences, token);
+      await generateMovieRecommendations(
+        date,
+        userPreferences,
+        setRecommendationList,
+        token
       );
       setSubmitCount((prevCount) => prevCount + 1);
     } else {
