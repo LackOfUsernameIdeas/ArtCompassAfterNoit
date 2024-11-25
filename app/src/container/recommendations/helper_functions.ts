@@ -1,4 +1,10 @@
-import { Genre, Question, UserPreferences } from "./recommendations-types";
+import {
+  Genre,
+  NotificationState,
+  NotificationType,
+  Question,
+  UserPreferences
+} from "./recommendations-types";
 import { genreOptions, openAIKey } from "./recommendations-data";
 
 /**
@@ -477,13 +483,10 @@ export const saveRecommendationToDatabase = async (
 
 export const showNotification = (
   setNotification: React.Dispatch<
-    React.SetStateAction<{
-      message: string;
-      type: "success" | "error" | "warning";
-    } | null>
+    React.SetStateAction<NotificationState | null>
   >,
   message: string,
-  type: "success" | "error" | "warning"
+  type: NotificationType
 ) => {
   setNotification({ message, type });
 };
@@ -506,10 +509,7 @@ export const showNotification = (
  */
 export const handleSubmit = async (
   setNotification: React.Dispatch<
-    React.SetStateAction<{
-      message: string;
-      type: "success" | "error" | "warning";
-    } | null>
+    React.SetStateAction<NotificationState | null>
   >,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
@@ -603,10 +603,7 @@ export const handleSubmit = async (
 
 export const mockHandleSubmit = async (
   setNotification: React.Dispatch<
-    React.SetStateAction<{
-      message: string;
-      type: "success" | "error" | "warning";
-    } | null>
+    React.SetStateAction<NotificationState | null>
   >,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,

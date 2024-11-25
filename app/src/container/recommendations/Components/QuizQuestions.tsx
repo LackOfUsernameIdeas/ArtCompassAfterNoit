@@ -191,7 +191,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       if (alreadyHasRecommendations) {
         handleOpenModal();
       } else {
-        mockHandleSubmit(
+        handleSubmit(
           setNotification,
           setLoading,
           setSubmitted,
@@ -270,7 +270,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
           type={notification.type}
           onClose={() => {
             console.log("Notification closed!");
-            setNotification(null); 
+            setNotification(null);
           }}
         />
       )}
@@ -482,7 +482,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                 setIsModalOpen={setIsModalOpen}
                 setLoading={setLoading}
                 setSubmitted={setSubmitted}
-                handleSubmit={mockHandleSubmit}
+                handleSubmit={handleSubmit}
                 setRecommendationList={setRecommendationList}
                 setSubmitCount={setSubmitCount}
                 userPreferences={userPreferences}

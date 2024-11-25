@@ -1,5 +1,14 @@
 import { Dispatch, SetStateAction } from "react";
 
+// Вида на уведомлението.
+export type NotificationType = "success" | "error" | "warning";
+
+// Интерфейс за уведомление. Включва съобщението и вида на уведомлението.
+export interface NotificationState {
+  message: string;
+  type: NotificationType;
+}
+
 // Интерфейс за жанр с английско и българско име
 export interface Genre {
   en: string;

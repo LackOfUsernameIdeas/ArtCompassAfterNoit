@@ -189,15 +189,12 @@ export const checkTokenValidity = async (): Promise<string | null> => {
       }
     );
 
-    if (response.status === 401) {
-      // Ако статусът е 401 (Неоторизиран), връща URL за пренасочване
-      console.warn("Unauthorized, redirecting to /signin...");
-      return "/signin";
-    }
+    const data = await response.json(); // Извличане на отговора като JSON
 
-    if (!response.ok) {
-      // Ако отговорът не е успешен, хвърляне на грешка
-      throw new Error("Token validation failed");
+    if (!data.valid) {
+      // Ако "valid" в отговора е false, връща URL за пренасочване
+      console.warn("Token is invalid, redirecting to /signin...");
+      return "/signin";
     }
 
     return null; // Токенът е валиден, няма нужда от пренасочване

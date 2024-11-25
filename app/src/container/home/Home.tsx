@@ -11,6 +11,9 @@ import MoviesAndSeriesByRatingsChartComponent from "./Components/MoviesAndSeries
 import WidgetCards from "./Components/WidgetCards";
 import { useNavigate } from "react-router-dom";
 import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
+import { showNotification } from "../recommendations/helper_functions";
+import Notification from "../../components/common/notification/Notification";
+import { NotificationState } from "../recommendations/recommendations-types";
 
 interface CrmProps {}
 
@@ -46,20 +49,38 @@ const Home: FC<CrmProps> = () => {
     email: "" // Имейл на потребителя
   });
 
+  const [notification, setNotification] = useState<NotificationState | null>(
+    null
+  ); // Състояние за показване на известия (например съобщения за грешки, успехи или предупреждения)
+
   const navigate = useNavigate();
+
+  const handleNotificationClose = () => {
+    // Функция за затваряне на известията
+    if (notification?.type === "error") {
+      // Ако известието е от тип "грешка", пренасочване към страницата за вход
+      navigate("/signin");
+    }
+    setNotification(null); // Зануляване на известието
+  };
 
   useEffect(() => {
     const validateToken = async () => {
-      const redirectUrl = await checkTokenValidity(); // Проверка на валидността на токена
+      // Функция за проверка валидността на потребителския токен
+      const redirectUrl = await checkTokenValidity(); // Извикване на помощна функция за валидиране на токена
       if (redirectUrl) {
-        navigate(redirectUrl); // Пренасочване, ако токенът не е валиден
+        // Ако токенът е невалиден, показване на известие
+        showNotification(
+          setNotification, // Функция за задаване на известие
+          "Вашата сесия е изтекла. Моля, влезте в профила Ви отново.", // Съобщение за известието
+          "error" // Типът на известието (грешка)
+        );
       }
     };
 
-    validateToken();
-  }, [navigate]); // Добавяне на navigate като зависимост
+    validateToken(); // Стартиране на проверката на токена при първоначално зареждане на компонента
+  }, []);
 
-  // Извличане на данни за потребителя и статистики за платформата (комбинирано в едно useEffect)
   useEffect(() => {
     const token =
       localStorage.getItem("authToken") || sessionStorage.getItem("authToken"); // Вземане на токен от localStorage или sessionStorage
@@ -71,6 +92,13 @@ const Home: FC<CrmProps> = () => {
 
   return (
     <FadeInWrapper>
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={handleNotificationClose}
+        />
+      )}
       <Fragment>
         <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">
           <div>

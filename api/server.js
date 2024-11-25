@@ -311,7 +311,7 @@ app.post("/password-reset", (req, res) => {
   });
 });
 
-// Token Validation Route
+// Валидация на JWT Token
 app.post("/token-validation", (req, res) => {
   const { token } = req.body;
 
