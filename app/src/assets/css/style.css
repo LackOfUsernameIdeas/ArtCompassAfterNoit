@@ -10753,10 +10753,10 @@ label {
   @apply bg-white border-[#f3f3f3] !important;
 }
 [data-menu-styles="light"] .app-sidebar .side-menu__label {
-  @apply text-[#536485] !important;
+  @apply text-[#ffffff] !important;
 }
 [data-menu-styles="light"] .app-sidebar .side-menu__icon {
-  @apply text-[#536485] !important;
+  @apply text-[#ffffff] !important;
 }
 [data-menu-styles="light"] .app-sidebar .side-menu__item {
   @apply text-[#536485];
@@ -10778,7 +10778,7 @@ label {
   .app-sidebar
   .side-menu__item:hover
   .side-menu__icon {
-  @apply text-[#536485] fill-[#536485] !important;
+  @apply text-[#ffffff] fill-[#536485] !important;
 }
 [data-menu-styles="light"] .app-sidebar .side-menu__item.active {
   @apply font-semibold bg-white/[0.10];
