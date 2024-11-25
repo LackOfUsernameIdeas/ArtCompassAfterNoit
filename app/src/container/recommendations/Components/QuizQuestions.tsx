@@ -270,7 +270,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
           type={notification.type}
           onClose={() => {
             console.log("Notification closed!");
-            setNotification(null); 
+            setNotification(null);
           }}
         />
       )}
