@@ -144,7 +144,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   const userPreferences = {
     type,
     genres,
-    moods,
+    moods: moods?.map((mood) => mood.split(" ")[0]),
     timeAvailability,
     age,
     actors,
@@ -428,7 +428,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                         selectedAnswer && selectedAnswer.includes(option.bg)
                           ? "selected-answer transform scale-105"
                           : "question hover:bg-secondary hover:text-white"
-                      } bg-opacity-70 p-6 text-white rounded-lg glow-effect transition-all duration-300 cursor-pointer flex justify-center items-center`}
+                      } bg-opacity-70 p-6 text-white rounded-lg glow-effect transition-all duration-300 cursor-pointer flex justify-center items-center text-center`}
                     >
                       {option.bg}
                     </div>
@@ -451,9 +451,22 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                         selectedAnswer && selectedAnswer.includes(option)
                           ? "selected-answer transform scale-105"
                           : "question hover:bg-secondary hover:text-white"
-                      } bg-opacity-70 p-6 text-white rounded-lg glow-effect transition-all duration-300 cursor-pointer flex justify-center items-center`}
+                      } bg-opacity-70 p-6 text-white rounded-lg glow-effect transition-all duration-300 cursor-pointer ${
+                        currentQuestion.options === moodOptions
+                          ? "flex flex-col"
+                          : "flex"
+                      } justify-center items-center text-center`}
                     >
-                      {option}
+                      {currentQuestion.options === moodOptions ? (
+                        <>
+                          <span>{option.split(" ")[0]}</span>
+                          <span className="text-lg">
+                            {option.split(" ").slice(-1)}
+                          </span>{" "}
+                        </>
+                      ) : (
+                        <>{option}</>
+                      )}
                     </div>
                   );
                 }
