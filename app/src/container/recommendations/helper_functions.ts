@@ -268,7 +268,7 @@ export const generateMovieRecommendations = async (
                       "reason": "Защо този филм/сериал е подходящ за мен?"
                     },
                     // ...additional movies
-                  }. Не добавяй излишни думи или скоби. Увери се, че всички данни са правилно "escape-нати", за да не предизвикат грешки в JSON формата. 
+                  }. Не добавяй излишни думи или скоби. Избягвай вложени двойни или единични кавички. Увери се, че всички данни са правилно "escape-нати", за да не предизвикат грешки в JSON формата. 
                   JSON формата трябва да е валиден за JavaScript JSON.parse() функцията.`
           }
         ]
@@ -595,87 +595,6 @@ export const handleSubmit = async (
     }
   } catch (error) {
     console.error("Error submitting the request:", error);
-    showNotification(
-      setNotification,
-      "Възникна проблем при изпращането на заявката.",
-      "error"
-    );
-  } finally {
-    setLoading(false);
-  }
-};
-
-export const mockHandleSubmit = async (
-  setNotification: React.Dispatch<
-    React.SetStateAction<NotificationState | null>
-  >,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
-  setSubmitCount: React.Dispatch<React.SetStateAction<number>>,
-  setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
-  userPreferences: UserPreferences,
-  token: string | null,
-  submitCount: number
-) => {
-  showNotification(
-    setNotification,
-    "Достигнахте максималния брой предложения! Максималният брой опити е 20 на ден. Можете да опитате отново утре!",
-    "error"
-  );
-  return;
-
-  const {
-    moods,
-    timeAvailability,
-    actors,
-    directors,
-    countries,
-    pacing,
-    depth,
-    targetGroup
-  } = userPreferences;
-
-  if (
-    !moods ||
-    !timeAvailability ||
-    !actors ||
-    !directors ||
-    !countries ||
-    !pacing ||
-    !depth ||
-    !targetGroup
-  ) {
-    showNotification(
-      setNotification,
-      "Моля, попълнете всички задължителни полета!",
-      "warning"
-    );
-    return;
-  }
-
-  setLoading(true);
-  setSubmitted(true);
-
-  try {
-    // Simulate a delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Simulate success or failure
-    const isSuccess = Math.random() > 0.3; // 70% chance of success
-
-    if (isSuccess) {
-      setRecommendationList([]);
-      showNotification(
-        setNotification,
-        "Успешно изпратено! Генерираме вашите препоръки...",
-        "success"
-      );
-      setSubmitCount((prevCount) => prevCount + 1);
-    } else {
-      showNotification(setNotification, "Възникна проблем.", "error");
-    }
-  } catch (error) {
-    console.error("Simulated error:", error);
     showNotification(
       setNotification,
       "Възникна проблем при изпращането на заявката.",
