@@ -17,7 +17,7 @@ import { genreOptions, openAIKey } from "./recommendations-data";
  * @returns {Promise<string>} - Преведеният текст на български език.
  * @throws {Error} - Хвърля грешка, ако не успее да преведе текста.
  */
-export async function translate(entry: string) {
+export async function translate(entry: string): Promise<string> {
   const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bg&dt=t&q=${encodeURIComponent(
     entry
   )}`;
@@ -593,6 +593,7 @@ export const handleSubmit = async (
         "error"
       );
     }
+    console.log("kalata test: ", userPreferences);
   } catch (error) {
     console.error("Error submitting the request:", error);
     showNotification(
@@ -668,8 +669,6 @@ export const handleAnswerClick = (
       if (selectedGenre) {
         toggleGenre(selectedGenre, setGenres);
 
-        console.log("Updated Answer Selection (Genres):", selectedGenre.bg);
-
         return selectedAnswer;
       }
 
@@ -681,7 +680,6 @@ export const handleAnswerClick = (
             ? prev.filter((item) => item !== answer)
             : [...prev, answer]
           : [answer];
-        console.log("Updated Answer Selection1:", updatedAnswers);
         setter(updatedAnswers);
         return updatedAnswers;
       });
@@ -689,8 +687,6 @@ export const handleAnswerClick = (
   } else {
     setter(answer);
     setSelectedAnswer([answer]);
-    console.log("Updated Answer Selection2:", [answer]);
-    console.log("raw2:", answer);
   }
 };
 
@@ -738,9 +734,8 @@ export const getMarginClass = (question: Question): string => {
 export const handleInputChange = (
   setter: React.Dispatch<React.SetStateAction<any>>,
   value: string
-) => {
+): void => {
   setter(value);
-  console.log("Updated Field Value:", value);
 };
 
 /**
@@ -757,7 +752,7 @@ export const handleViewRecommendations = (
   setShowQuestion: React.Dispatch<React.SetStateAction<boolean>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>
-) => {
+): void => {
   setShowQuestion(false);
   setLoading(true);
 
@@ -783,7 +778,7 @@ export const handleNext = (
   setShowQuestion: React.Dispatch<React.SetStateAction<boolean>>,
   setCurrentQuestionIndex: React.Dispatch<React.SetStateAction<number>>,
   questions: any[]
-) => {
+): void => {
   setSelectedAnswer(null);
   setShowQuestion(false);
   setTimeout(() => {
@@ -808,7 +803,7 @@ export const handleBack = (
   setShowQuestion: React.Dispatch<React.SetStateAction<boolean>>,
   setCurrentQuestionIndex: React.Dispatch<React.SetStateAction<number>>,
   questions: any[]
-) => {
+): void => {
   setSelectedAnswer(null);
   setShowQuestion(false);
   setTimeout(() => {
@@ -830,7 +825,7 @@ export const handleBack = (
 export const handleRetakeQuiz = (
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>
-) => {
+): void => {
   setLoading(true);
   setTimeout(() => {
     setSubmitted(false);

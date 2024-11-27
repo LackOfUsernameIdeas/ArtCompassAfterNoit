@@ -8,8 +8,7 @@ import {
   handleNext,
   isGenreOption,
   handleSubmit,
-  getMarginClass,
-  mockHandleSubmit
+  getMarginClass
 } from "../helper_functions";
 import {
   ageOptions,
@@ -254,6 +253,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       }
     }
   }, [currentQuestion, selectedAnswer]);
+  console.log("kalata test useEffect: ", userPreferences);
 
   return (
     <div>
