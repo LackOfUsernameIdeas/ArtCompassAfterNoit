@@ -3,6 +3,7 @@ import MovieCard from "./moviecard";
 import MoreInfo from "./moreinfocard";
 import loaderIcon from "../../assets/images/brand-logos/logo_loader.png";
 import { Movie } from "./test-types";
+import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 
 interface Test {}
 
@@ -529,407 +530,410 @@ const Test: FC<Test> = () => {
   };
 
   return (
-    <Fragment>
-      <div className="flex flex-col items-center justify-start min-h-screen pt-20 page-header-breadcrumb">
-        <div className="grid grid-cols-16 gap-1">
-          <div className="xl:col-span-6 col-span-16">
-            <div className="mb-4">
-              <label className="questionTxt bubble left inflate-left">
-                Какво търсите - филм или сериал?
-              </label>
-              <div className="bubble right inflate-right">
-                <select
-                  id="type"
-                  className="form-control selectionList"
-                  value={type}
-                  onChange={(e) => {
-                    setType(e.target.value);
-                  }}
-                  required
-                >
-                  {typeOptions.map((option) => (
-                    <option
-                      key={option}
-                      value={option}
-                      className="selectionList"
-                    >
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div className="mb-4">
-              <label className="questionTxt bubble left inflate-left">
-                Кои жанрове Ви се гледат в момента?
-              </label>
-              <div className="bubble right multiCh MChitem inflate-right">
-                {genreOptions.map((genre) => (
-                  <div key={genre.en}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        value={genre.en}
-                        checked={
-                          genres.find((g) => g.en === genre.en) !== undefined
-                        }
-                        onChange={() => {
-                          toggleGenre(genre);
-                          revealBubble(1);
-                        }}
-                        required
-                      />
-                      {genre.bg}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="mb-4">
-              <label
-                className={`questionTxt bubble left ${
-                  visibleBubbles[2] ? "inflate-left" : ""
-                }`}
-              >
-                Как се чувствате в момента?
-              </label>
-              <div
-                className={`bubble right multiCh MChitem ${
-                  visibleBubbles[2] ? "inflate-right" : ""
-                }`}
-              >
-                {moodOptions.map((mood) => (
-                  <div key={mood}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        value={mood}
-                        checked={moods.includes(mood)}
-                        onChange={() => {
-                          toggleMood(mood);
-                        }}
-                        required
-                      />
-                      {mood}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="mb-4">
-              <label className="questionTxt bubble left inflate-left">
-                С какво време за гледане разполагате?
-              </label>
-              <div className="bubble right inflate-right">
-                <select
-                  id="timeAvailability"
-                  className="form-control selectionList"
-                  value={timeAvailability}
-                  onChange={(e) => setTimeAvailability(e.target.value)}
-                  required
-                >
-                  <option value="" disabled>
-                    Изберете време
-                  </option>
-                  {timeAvailabilityOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="formGroupExampleInput2"
-                className="questionTxt bubble left inflate-left"
-              >
-                Кои са вашите любими актьори?
-              </label>
-              <input
-                type="text"
-                className="form-control bubble right inflate-right"
-                placeholder="Пример: Брад Пит, Леонардо ди Каприо, Ема Уотсън"
-                value={actors}
-                onChange={(e) => setActors(e.target.value)}
-                required
-              />
-              <label className="bubble right checkboxLabel">
-                <input
-                  type="checkbox"
-                  className="checkboxInput"
-                  checked={actors === "Нямам предпочитания"}
-                  onChange={() => {
-                    setActors(
-                      actors === "Нямам предпочитания"
-                        ? ""
-                        : "Нямам предпочитания"
-                    );
-                  }}
-                  required
-                />
-                Нямам предпочитания
-              </label>
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="formGroupExampleInput2"
-                className="questionTxt bubble left inflate-left"
-              >
-                Кои филмови режисьори предпочитате?
-              </label>
-              <input
-                type="text"
-                className="form-control bubble right bubble right inflate-right selectionList"
-                id="formGroupExampleInput2"
-                placeholder="Пример: Дъфър брадърс, Стивън Спилбърг, Джеки Чан"
-                value={directors}
-                onChange={(e) => setDirectors(e.target.value)}
-                required
-              />
-              <label className="bubble right checkboxLabel">
-                <input
-                  type="checkbox"
-                  className="checkboxInput"
-                  checked={directors === "Нямам предпочитания"}
-                  onChange={() => {
-                    setDirectors(
-                      directors === "Нямам предпочитания"
-                        ? ""
-                        : "Нямам предпочитания"
-                    );
-                  }}
-                  required
-                />
-                Нямам предпочитания
-              </label>
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="formGroupExampleInput2"
-                className="questionTxt bubble left inflate-left"
-              >
-                От кои страни предпочитате да е филмът/сериалът?
-              </label>
-              <input
-                type="text"
-                className="form-control bubble right bubble right inflate-right selectionList"
-                id="formGroupExampleInput2"
-                placeholder="Пример: България, САЩ"
-                value={countries}
-                onChange={(e) => setCountries(e.target.value)}
-                required
-              />
-              <label className="bubble right checkboxLabel">
-                <input
-                  type="checkbox"
-                  className="checkboxInput"
-                  checked={countries === "Нямам предпочитания"}
-                  onChange={() => {
-                    setCountries(
-                      countries === "Нямам предпочитания"
-                        ? ""
-                        : "Нямам предпочитания"
-                    );
-                  }}
-                  required
-                />
-                Нямам предпочитания
-              </label>
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="pacing"
-                className="questionTxt bubble left inflate-left"
-              >
-                Филми/Сериали с каква бързина на развитие на сюжетното действие
-                предпочитате?
-              </label>
-              <div className="bubble right inflate-right">
-                <select
-                  id="pacing"
-                  className="form-control selectionList"
-                  value={pacing}
-                  onChange={(e) => setPacing(e.target.value)}
-                  required
-                >
-                  <option value="" disabled>
-                    Изберете бързина на развитие
-                  </option>
-                  {pacingOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="depth"
-                className="questionTxt bubble left inflate-left"
-              >
-                Филми/Сериали с какво ниво на задълбочаване харесвате?
-              </label>
-              <div className="bubble right inflate-right">
-                <select
-                  id="depth"
-                  className="form-control selectionList"
-                  value={depth}
-                  onChange={(e) => setDepth(e.target.value)}
-                  required
-                >
-                  <option value="" disabled>
-                    Изберете ниво на задълбочаване
-                  </option>
-                  {depthOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="targetGroup"
-                className="questionTxt bubble left inflate-left"
-              >
-                Каква е вашата целева група?
-              </label>
-              <div className="bubble right inflate-right">
-                <select
-                  id="targetGroup"
-                  className="form-control selectionList"
-                  value={targetGroup}
-                  onChange={(e) => setTargetGroup(e.target.value)}
-                  required
-                >
-                  <option value="" disabled>
-                    Изберете целева група
-                  </option>
-                  {targetGroupOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="formGroupExampleInput2"
-                className="questionTxt bubble left inflate-left"
-              >
-                Какви теми ви интересуват?
-              </label>
-              <div className="form-text">
-                Предпочитате филм/сериал, който засяга определена историческа
-                ера, държава или пък такъв, в който се изследва, разгадава
-                мистерия или социален проблем? Дайте описание. Можете също така
-                да споделите примери за филми/сериали, които предпочитате.
-              </div>
-              <textarea
-                className="form-control bubble right"
-                id="formGroupExampleInput2"
-                placeholder="Опишете темите, които ви интересуват"
-                value={interests}
-                onChange={(e) => setInterests(e.target.value)}
-                rows={4}
-                maxLength={200}
-              />
-              <div className="text-right mt-2">
-                <small>{`${interests.length} / 200`}</small>
-              </div>
-            </div>
-
-            <div>
-              <div className="ti-btn-list space-x-2 rtl:space-x-reverse mt-4">
-                <button
-                  type="button"
-                  className={`ti-btn ti-btn-primary-gradient ti-btn-wave`}
-                  onClick={handleSubmit}
-                >
-                  Submit
-                </button>
-              </div>
-
-              {isMoreInfoOpen && selectedMovie && (
-                <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-                  <div className="box-body">
-                    <MoreInfo
-                      title={selectedMovie.title}
-                      bgName={selectedMovie.bgName}
-                      year={selectedMovie.year}
-                      runtime={selectedMovie.runtime}
-                      director={selectedMovie.director}
-                      writer={selectedMovie.writer}
-                      imdbRating={selectedMovie.imdbRating}
-                      poster={selectedMovie.poster}
-                      plot={selectedMovie.plot}
-                      reason={selectedMovie.reason}
-                      genre={selectedMovie.genre}
-                      actors={selectedMovie.actors}
-                      country={selectedMovie.country}
-                      metascore={selectedMovie.metascore}
-                      type={selectedMovie.type}
-                      boxOffice={selectedMovie.boxOffice}
-                      totalSeasons={selectedMovie.totalSeasons}
-                    />
-                  </div>
-                  <button
-                    className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
-                    onClick={closeMoreInfo}
+    <FadeInWrapper>
+      <Fragment>
+        <div className="flex flex-col items-center justify-start min-h-screen pt-20 page-header-breadcrumb">
+          <div className="grid grid-cols-16 gap-1">
+            <div className="xl:col-span-6 col-span-16">
+              <div className="mb-4">
+                <label className="questionTxt bubble left inflate-left">
+                  Какво търсите - филм или сериал?
+                </label>
+                <div className="bubble right inflate-right">
+                  <select
+                    id="type"
+                    className="form-control selectionList"
+                    value={type}
+                    onChange={(e) => {
+                      setType(e.target.value);
+                    }}
+                    required
                   >
-                    ✕
+                    {typeOptions.map((option) => (
+                      <option
+                        key={option}
+                        value={option}
+                        className="selectionList"
+                      >
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="questionTxt bubble left inflate-left">
+                  Кои жанрове Ви се гледат в момента?
+                </label>
+                <div className="bubble right multiCh MChitem inflate-right">
+                  {genreOptions.map((genre) => (
+                    <div key={genre.en}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          value={genre.en}
+                          checked={
+                            genres.find((g) => g.en === genre.en) !== undefined
+                          }
+                          onChange={() => {
+                            toggleGenre(genre);
+                            revealBubble(1);
+                          }}
+                          required
+                        />
+                        {genre.bg}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label
+                  className={`questionTxt bubble left ${
+                    visibleBubbles[2] ? "inflate-left" : ""
+                  }`}
+                >
+                  Как се чувствате в момента?
+                </label>
+                <div
+                  className={`bubble right multiCh MChitem ${
+                    visibleBubbles[2] ? "inflate-right" : ""
+                  }`}
+                >
+                  {moodOptions.map((mood) => (
+                    <div key={mood}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          value={mood}
+                          checked={moods.includes(mood)}
+                          onChange={() => {
+                            toggleMood(mood);
+                          }}
+                          required
+                        />
+                        {mood}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="questionTxt bubble left inflate-left">
+                  С какво време за гледане разполагате?
+                </label>
+                <div className="bubble right inflate-right">
+                  <select
+                    id="timeAvailability"
+                    className="form-control selectionList"
+                    value={timeAvailability}
+                    onChange={(e) => setTimeAvailability(e.target.value)}
+                    required
+                  >
+                    <option value="" disabled>
+                      Изберете време
+                    </option>
+                    {timeAvailabilityOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="formGroupExampleInput2"
+                  className="questionTxt bubble left inflate-left"
+                >
+                  Кои са вашите любими актьори?
+                </label>
+                <input
+                  type="text"
+                  className="form-control bubble right inflate-right"
+                  placeholder="Пример: Брад Пит, Леонардо ди Каприо, Ема Уотсън"
+                  value={actors}
+                  onChange={(e) => setActors(e.target.value)}
+                  required
+                />
+                <label className="bubble right checkboxLabel">
+                  <input
+                    type="checkbox"
+                    className="checkboxInput"
+                    checked={actors === "Нямам предпочитания"}
+                    onChange={() => {
+                      setActors(
+                        actors === "Нямам предпочитания"
+                          ? ""
+                          : "Нямам предпочитания"
+                      );
+                    }}
+                    required
+                  />
+                  Нямам предпочитания
+                </label>
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="formGroupExampleInput2"
+                  className="questionTxt bubble left inflate-left"
+                >
+                  Кои филмови режисьори предпочитате?
+                </label>
+                <input
+                  type="text"
+                  className="form-control bubble right bubble right inflate-right selectionList"
+                  id="formGroupExampleInput2"
+                  placeholder="Пример: Дъфър брадърс, Стивън Спилбърг, Джеки Чан"
+                  value={directors}
+                  onChange={(e) => setDirectors(e.target.value)}
+                  required
+                />
+                <label className="bubble right checkboxLabel">
+                  <input
+                    type="checkbox"
+                    className="checkboxInput"
+                    checked={directors === "Нямам предпочитания"}
+                    onChange={() => {
+                      setDirectors(
+                        directors === "Нямам предпочитания"
+                          ? ""
+                          : "Нямам предпочитания"
+                      );
+                    }}
+                    required
+                  />
+                  Нямам предпочитания
+                </label>
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="formGroupExampleInput2"
+                  className="questionTxt bubble left inflate-left"
+                >
+                  От кои страни предпочитате да е филмът/сериалът?
+                </label>
+                <input
+                  type="text"
+                  className="form-control bubble right bubble right inflate-right selectionList"
+                  id="formGroupExampleInput2"
+                  placeholder="Пример: България, САЩ"
+                  value={countries}
+                  onChange={(e) => setCountries(e.target.value)}
+                  required
+                />
+                <label className="bubble right checkboxLabel">
+                  <input
+                    type="checkbox"
+                    className="checkboxInput"
+                    checked={countries === "Нямам предпочитания"}
+                    onChange={() => {
+                      setCountries(
+                        countries === "Нямам предпочитания"
+                          ? ""
+                          : "Нямам предпочитания"
+                      );
+                    }}
+                    required
+                  />
+                  Нямам предпочитания
+                </label>
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="pacing"
+                  className="questionTxt bubble left inflate-left"
+                >
+                  Филми/Сериали с каква бързина на развитие на сюжетното
+                  действие предпочитате?
+                </label>
+                <div className="bubble right inflate-right">
+                  <select
+                    id="pacing"
+                    className="form-control selectionList"
+                    value={pacing}
+                    onChange={(e) => setPacing(e.target.value)}
+                    required
+                  >
+                    <option value="" disabled>
+                      Изберете бързина на развитие
+                    </option>
+                    {pacingOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="depth"
+                  className="questionTxt bubble left inflate-left"
+                >
+                  Филми/Сериали с какво ниво на задълбочаване харесвате?
+                </label>
+                <div className="bubble right inflate-right">
+                  <select
+                    id="depth"
+                    className="form-control selectionList"
+                    value={depth}
+                    onChange={(e) => setDepth(e.target.value)}
+                    required
+                  >
+                    <option value="" disabled>
+                      Изберете ниво на задълбочаване
+                    </option>
+                    {depthOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="targetGroup"
+                  className="questionTxt bubble left inflate-left"
+                >
+                  Каква е вашата целева група?
+                </label>
+                <div className="bubble right inflate-right">
+                  <select
+                    id="targetGroup"
+                    className="form-control selectionList"
+                    value={targetGroup}
+                    onChange={(e) => setTargetGroup(e.target.value)}
+                    required
+                  >
+                    <option value="" disabled>
+                      Изберете целева група
+                    </option>
+                    {targetGroupOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="formGroupExampleInput2"
+                  className="questionTxt bubble left inflate-left"
+                >
+                  Какви теми ви интересуват?
+                </label>
+                <div className="form-text">
+                  Предпочитате филм/сериал, който засяга определена историческа
+                  ера, държава или пък такъв, в който се изследва, разгадава
+                  мистерия или социален проблем? Дайте описание. Можете също
+                  така да споделите примери за филми/сериали, които
+                  предпочитате.
+                </div>
+                <textarea
+                  className="form-control bubble right"
+                  id="formGroupExampleInput2"
+                  placeholder="Опишете темите, които ви интересуват"
+                  value={interests}
+                  onChange={(e) => setInterests(e.target.value)}
+                  rows={4}
+                  maxLength={200}
+                />
+                <div className="text-right mt-2">
+                  <small>{`${interests.length} / 200`}</small>
+                </div>
+              </div>
+
+              <div>
+                <div className="ti-btn-list space-x-2 rtl:space-x-reverse mt-4">
+                  <button
+                    type="button"
+                    className={`ti-btn ti-btn-primary-gradient ti-btn-wave`}
+                    onClick={handleSubmit}
+                  >
+                    Submit
                   </button>
                 </div>
-              )}
 
-              {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-                  <div className="modal-center p-6 w-full max-w-lg max-h-[80vh] relative overflow-y-auto bg-red-800 rounded-lg">
+                {isMoreInfoOpen && selectedMovie && (
+                  <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+                    <div className="box-body">
+                      <MoreInfo
+                        title={selectedMovie.title}
+                        bgName={selectedMovie.bgName}
+                        year={selectedMovie.year}
+                        runtime={selectedMovie.runtime}
+                        director={selectedMovie.director}
+                        writer={selectedMovie.writer}
+                        imdbRating={selectedMovie.imdbRating}
+                        poster={selectedMovie.poster}
+                        plot={selectedMovie.plot}
+                        reason={selectedMovie.reason}
+                        genre={selectedMovie.genre}
+                        actors={selectedMovie.actors}
+                        country={selectedMovie.country}
+                        metascore={selectedMovie.metascore}
+                        type={selectedMovie.type}
+                        boxOffice={selectedMovie.boxOffice}
+                        totalSeasons={selectedMovie.totalSeasons}
+                      />
+                    </div>
                     <button
                       className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
-                      onClick={closeModal}
+                      onClick={closeMoreInfo}
                     >
                       ✕
                     </button>
-                    {loading ? (
-                      // Loading Icon
-                      <div className="flex items-center justify-center animate-spin loader-img">
-                        <img src={loaderIcon} alt="Loader Icon" />
-                      </div>
-                    ) : (
-                      // Recommendations List
-                      <div className="text-center modal-center">
-                        <h2 className="text-xl font-semibold mb-4 text-white">
-                          Нашите предложения:
-                        </h2>
-                        <div className="space-y-6">
-                          {recommendationList.map((movie, index) => (
-                            <MovieCard
-                              key={index}
-                              title={movie.title}
-                              bgName={movie.bgName}
-                              reason={movie.reason}
-                              poster={movie.poster}
-                              onSeeMore={() => handleSeeMore(movie)}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    )}
                   </div>
-                </div>
-              )}
+                )}
+
+                {isModalOpen && (
+                  <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+                    <div className="modal-center p-6 w-full max-w-lg max-h-[80vh] relative overflow-y-auto bg-red-800 rounded-lg">
+                      <button
+                        className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
+                        onClick={closeModal}
+                      >
+                        ✕
+                      </button>
+                      {loading ? (
+                        // Loading Icon
+                        <div className="flex items-center justify-center animate-spin loader-img">
+                          <img src={loaderIcon} alt="Loader Icon" />
+                        </div>
+                      ) : (
+                        // Recommendations List
+                        <div className="text-center modal-center">
+                          <h2 className="text-xl font-semibold mb-4 text-white">
+                            Нашите предложения:
+                          </h2>
+                          <div className="space-y-6">
+                            {recommendationList.map((movie, index) => (
+                              <MovieCard
+                                key={index}
+                                title={movie.title}
+                                bgName={movie.bgName}
+                                reason={movie.reason}
+                                poster={movie.poster}
+                                onSeeMore={() => handleSeeMore(movie)}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </Fragment>
+      </Fragment>
+    </FadeInWrapper>
   );
 };
 
