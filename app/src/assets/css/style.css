@@ -116,6 +116,27 @@ Background Image
   font-family: "Opsilon";
   src: url("../../assets/fonts/Opsilon.ttf");
 }
+
+/* SerifRegular */
+@font-face {
+  font-family: "SerifRegular";
+  src: local("EquilibristRegular"),
+    url("./fonts/EquilibristLight.ttf") format("truetype");
+}
+
+/* SerifBold */
+@font-face {
+  font-family: "SerifBold";
+  src: local("EquilibristBold"),
+    url("./fonts/EquilibristBold.ttf") format("truetype");
+}
+
+/* SansRegular
+@font-face {
+  font-family: "SansRegular";
+  src: local("Opsilon"), url("./fonts/Opsilon.ttf") format("truetype");
+} */
+
 :root {
   --body-bg: 240 241 247;
   --primary: 154 17 10;
@@ -4670,7 +4691,7 @@ label {
 }
 
 .app-sidebar {
-  @apply w-[15rem] h-full bg-[#111c43] dark:bg-bodybg border-e border-e-white/10 fixed top-0 start-0 font-Montserrat z-[49] transition-all ease-linear duration-[0.05s];
+  @apply w-[15rem] h-full bg-[#111c43] dark:bg-bodybg border-e border-e-white/10 fixed top-0 start-0 font-Opsilon z-[49] transition-all ease-linear duration-[0.05s];
 }
 .app-sidebar .main-sidebar-header {
   @apply h-[3.75rem] w-[15rem] fixed flex  dark:bg-bodybg z-[9] items-center justify-center py-[0.813rem] px-5 border-b border-b-white/10 border-e border-e-white/10 transition-all ease-linear duration-[0.05s];
@@ -16471,7 +16492,7 @@ pre {
 }
 
 html {
-  @apply font-inter scroll-smooth text-start;
+  @apply font-Equilibrist scroll-smooth text-start;
 }
 
 html[dir="rtl"] {
@@ -16479,7 +16500,7 @@ html[dir="rtl"] {
 }
 
 body {
-  @apply scroll-smooth bg-bodybg h-full text-defaulttextcolor dark:text-white m-0 font-inter font-normal text-[0.813rem] relative text-start rtl:dir-rtl;
+  @apply scroll-smooth bg-bodybg h-full text-defaulttextcolor dark:text-white m-0 font-Equilibrist font-normal text-[0.813rem] relative text-start rtl:dir-rtl;
 }
 
 .page {
@@ -19685,7 +19706,7 @@ input[type="color" i]::-webkit-color-swatch {
   --t: 1.5em;
   /* the size of the tail */
 
-  max-width: 50%;
+  font-size: 1.5em;
   padding: 1em;
   border-inline: var(--t) solid #0000;
   border-radius: calc(var(--r) + var(--t)) / var(--r);
@@ -19697,28 +19718,103 @@ input[type="color" i]::-webkit-color-swatch {
 }
 
 .left {
+  max-width: 40%;
   text-align: left;
   --_p: 0;
   border-bottom-left-radius: 0 0;
+  background: linear-gradient(135deg, #6f3508, #fd3636) border-box;
   place-self: start;
 }
 
 .right {
+  max-width: 60%;
+  --_p: 1;
+  --r: 2em !important;
+  --t: 2.5em !important;
   color: #f09433;
   margin-left: 50%;
   border-bottom-right-radius: 0 0;
+  background: linear-gradient(135deg, #fd3636, #6f3508) border-box;
   place-self: end;
 }
 
 .multiCh {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.5em;
   margin-left: 40% !important;
 }
 
 .MChitem {
   margin-bottom: 0.5em;
+}
+
+select.selectionList {
+  appearance: none;
+  background: transparent;
+  color: #fff;
+  padding: 2em 0.8em 1.5em 0.8;
+  border-radius: 25px;
+  border: none;
+  text-align: center;
+  font-size: 1.2em;
+}
+
+/* Remove the blue highlight when selecting an option */
+select.selectionList:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Customize dropdown arrow */
+select.selectionList::after {
+  content: "▼";
+  position: absolute;
+  right: 1em;
+  color: #fff;
+  pointer-events: none;
+}
+
+/* Style dropdown options */
+option.selectionList {
+  background: #333;
+  /* Darker background for dropdown items */
+  color: #fff;
+  /* White text for better readability */
+  padding: 0.5em;
+  font-size: 1em;
+}
+
+@keyframes inflateFromLeft {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes inflateFromRight {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.inflate-left {
+  animation: inflateFromLeft 0.7s ease forwards;
+}
+
+.inflate-right {
+  animation: inflateFromRight 0.7s ease forwards;
 }
 
 .fade-enter {

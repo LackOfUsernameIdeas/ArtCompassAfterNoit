@@ -16,7 +16,7 @@ pre {
 }
 
 html {
-  @apply font-inter scroll-smooth text-start;
+  @apply font-Equilibrist scroll-smooth text-start;
 }
 html {
   &[dir="rtl"] {
@@ -24,7 +24,7 @@ html {
   }
 }
 body {
-  @apply scroll-smooth bg-bodybg h-full text-defaulttextcolor dark:text-white m-0 font-inter font-normal text-[0.813rem] relative text-start rtl:dir-rtl;
+  @apply scroll-smooth bg-bodybg h-full text-defaulttextcolor dark:text-white m-0 font-Equilibrist font-normal text-[0.813rem] relative text-start rtl:dir-rtl;
 }
 
 .page {
@@ -113,10 +113,10 @@ select {
   }
 }
 
-.ti-img-thumbnail{
+.ti-img-thumbnail {
   @apply p-1 rounded-md border border-defaultborder dark:border-defaultborder/10 max-w-full h-auto dark:bg-bodybg2 mx-auto;
 }
-.ti-img-thumbnail-rounded{
+.ti-img-thumbnail-rounded {
   @apply p-1 rounded-full border border-defaultborder dark:border-defaultborder/10 max-w-full h-auto dark:bg-bodybg2 mx-auto;
 }
 

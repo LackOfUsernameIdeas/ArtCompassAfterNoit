@@ -13,6 +13,7 @@ import ResetRequest from "./container/authentication/resetpassword/Resetrequest.
 import PrivateRoute from "./pages/PrivateRoute.tsx";
 import Home from "./container/home/Home.tsx";
 import Contact from "./container/contact/Contact.tsx";
+import Test from "./container/test/test.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.Fragment>
@@ -32,6 +33,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Route path="" element={<Navigate to="home" />} />
             <Route path="home" element={<Home />} />
             <Route path="recommendations" element={<Recommendations />} />
+            <Route path="test" element={<Test />} />
             <Route path="contact" element={<Contact />} />
           </Route>
 
