@@ -13,7 +13,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 require("dotenv").config();
 
-const whitelist = ["http://localhost:5174", "https://cinecompass.noit.eu"];
+const whitelist = [
+  "http://localhost:5174",
+  "http://localhost:5175",
+  "https://cinecompass.noit.eu"
+];
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || whitelist.includes(origin)) {
@@ -746,6 +750,6 @@ app.get(
 );
 
 // Start server
-app.listen(5000, () => {
-  console.log("Server started on port 5000.");
+app.listen(5001, () => {
+  console.log("Server started on port 5001.");
 });
