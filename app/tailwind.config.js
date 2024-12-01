@@ -30,10 +30,9 @@ export default {
       full: "9999px"
     },
     fontFamily: {
-      inter: ["Inter", "sans-serif"],
-      Montserrat: ["Montserrat", "sans-serif"],
       Opsilon: ["Opsilon", "sans-serif"],
-      Equilibrist: ["Equilibrist", "sans-serif"]
+      Equilibrist: ["Equilibrist", "sans-serif"],
+      SerifBold: ["SerifBold", "serif"]
     },
     fontSize: {
       defaultsize: "0.813rem",

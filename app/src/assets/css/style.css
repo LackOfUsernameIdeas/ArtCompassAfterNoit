@@ -86,10 +86,6 @@ Background Image
 
 -------------------*/
 /* Start FontFamily Styles */
-/* inter */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
-/* Montserrat */
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap");
 /* Ga Maamli */
 @import url("https://fonts.googleapis.com/css2?family=Ga+Maamli&family=Sour+Gummy:ital,wdth,wght@1,125,900&display=swap");
 /* End Tailwind Styles Styles */
@@ -117,25 +113,12 @@ Background Image
   src: url("../../assets/fonts/Opsilon.ttf");
 }
 
-/* SerifRegular */
-@font-face {
-  font-family: "SerifRegular";
-  src: local("EquilibristRegular"),
-    url("./fonts/EquilibristLight.ttf") format("truetype");
-}
-
 /* SerifBold */
 @font-face {
   font-family: "SerifBold";
   src: local("EquilibristBold"),
     url("./fonts/EquilibristBold.ttf") format("truetype");
 }
-
-/* SansRegular
-@font-face {
-  font-family: "SansRegular";
-  src: local("Opsilon"), url("./fonts/Opsilon.ttf") format("truetype");
-} */
 
 :root {
   --body-bg: 240 241 247;
