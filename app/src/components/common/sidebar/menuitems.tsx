@@ -1,6 +1,6 @@
 export const MENUITEMS = [
   {
-    menutitle: "MAIN"
+    menutitle: "ГЛАВНИ СТРАНИЦИ"
   },
   {
     path: `${import.meta.env.BASE_URL}app/home`,
@@ -10,8 +10,6 @@ export const MENUITEMS = [
     active: false,
     selected: false,
     title: "Начало",
-    badge: "",
-    badgetxt: "12",
     class:
       "badge !bg-warning/10 !text-warning !py-[0.25rem] !px-[0.45rem] !text-[0.75em] ms-2"
   },
@@ -23,8 +21,6 @@ export const MENUITEMS = [
     active: false,
     selected: false,
     title: "Нови Препоръки",
-    badge: "",
-    badgetxt: "12",
     class:
       "badge !bg-warning/10 !text-warning !py-[0.25rem] !px-[0.45rem] !text-[0.75em] ms-2"
   },
@@ -36,13 +32,11 @@ export const MENUITEMS = [
     active: false,
     selected: false,
     title: "Тест",
-    badge: "",
-    badgetxt: "12",
     class:
       "badge !bg-warning/10 !text-warning !py-[0.25rem] !px-[0.45rem] !text-[0.75em] ms-2"
   },
   {
-    menutitle: "CONTACT"
+    menutitle: "КОНТАКТ"
   },
   {
     path: `${import.meta.env.BASE_URL}app/contact`,
@@ -52,8 +46,6 @@ export const MENUITEMS = [
     active: false,
     selected: false,
     title: "За Контакт",
-    badge: "",
-    badgetxt: "12",
     class:
       "badge !bg-warning/10 !text-warning !py-[0.25rem] !px-[0.45rem] !text-[0.75em] ms-2"
   }

@@ -21,6 +21,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <React.Suspense fallback={<div>Зареждане...</div>}>
         <Routes>
           <Route path="/" element={<Navigate to="/signin" />} />
+
           <Route
             path="/app"
             element={
@@ -30,8 +31,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             }
           >
             {/* Default route */}
-            <Route path="" element={<Navigate to="home" />} />
-            <Route path="home" element={<Home />} />
+            <Route index path="home" element={<Home />} />
             <Route path="recommendations" element={<Recommendations />} />
             <Route path="test" element={<Test />} />
             <Route path="contact" element={<Contact />} />
