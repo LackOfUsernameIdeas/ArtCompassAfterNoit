@@ -1,5 +1,5 @@
 const initialState = {
-  lang: "en",
+  lang: "bg",
   dir: "ltr",
   class: "dark",
   dataMenuStyles: "dark",
