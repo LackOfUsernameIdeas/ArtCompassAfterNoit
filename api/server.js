@@ -16,7 +16,7 @@ require("dotenv").config();
 const whitelist = [
   "http://localhost:5174",
   "http://localhost:5175",
-  "https://cinecompass.noit.eu"
+  "https://artcompass.noit.eu"
 ];
 const corsOptions = {
   origin: function (origin, callback) {
@@ -38,12 +38,12 @@ app.options("*", cors(corsOptions)); // Handle preflight requests
 let verificationCodes = {};
 
 const SECRET_KEY = "1a2b3c4d5e6f7g8h9i0jklmnopqrstuvwxyz123456";
-const EMAIL_USER = "no-reply@cinecompass-api.noit.eu";
+const EMAIL_USER = "no-reply@artcompass-api.noit.eu";
 const EMAIL_PASS = "Noit_2025";
 
 // Създаване на транспортерен обект с използване на SMTP транспорт
 const transporter = nodemailer.createTransport({
-  host: "cinecompass-api.noit.eu", // Заменете с вашия cPanel mail сървър
+  host: "artcompass-api.noit.eu", // Заменете с вашия cPanel mail сървър
   port: 587, // Използвайте 465 за SSL или 587 за TLS
   secure: false, // true за SSL (порт 465), false за TLS (порт 587)
   auth: {
@@ -274,7 +274,7 @@ app.post("/password-reset-request", (req, res) => {
     });
 
     // Create a reset link
-    const resetLink = `https://cinecompass.noit.eu/resetpassword/resetcover/${token}`;
+    const resetLink = `https://artcompass.noit.eu/resetpassword/resetcover/${token}`;
 
     const mailOptions = {
       from: EMAIL_USER,
