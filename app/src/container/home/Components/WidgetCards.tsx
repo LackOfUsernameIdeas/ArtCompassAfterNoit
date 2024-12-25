@@ -50,6 +50,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
 
   const is1856 = useMediaQuery({ query: "(max-width: 1856px)" });
   const is1532 = useMediaQuery({ query: "(max-width: 1532px)" });
+  const is1966 = useMediaQuery({ query: "(max-width: 1966px)" });
 
   return (
     <Fragment>
@@ -224,10 +225,10 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
           <div className="box-body h-[5.5rem]">
             <div className="flex items-center justify-between">
               <div className="flex-grow">
-                <div className={`flex items-center space-x-${is1856 ? 2 : 1}`}>
+                <div className={`flex items-center space-x-${is1966 ? 2 : 1}`}>
                   <p
                     className={`mb-0 text-[#8c9097] dark:text-white/50 ${
-                      is1856 &&
+                      is1966 &&
                       "truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs"
                     }`}
                   >
@@ -237,7 +238,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                     <Link
                       to="#"
                       className={`flex items-center ${
-                        is1856
+                        is1966
                           ? "px-1 py-0.5 text-xs"
                           : "px-0.5 py-0.25 text-[0.70rem]"
                       } font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all max-h-[1.125rem]`}
@@ -287,7 +288,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                 <div className="flex items-center">
                   <span
                     className={`text-[${
-                      is1856 ? "1.25rem" : "1.125rem"
+                      is1966 ? "1.25rem" : "1.125rem"
                     }] font-semibold`}
                   >
                     {displayedValueAwards}
@@ -298,7 +299,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                 <span className="avatar avatar-md !rounded-full bg-primary/10 !text-secondary text-[1.125rem]">
                   <i
                     className={`bi bi-trophy text-[${
-                      is1856 ? "1rem" : "0.875rem"
+                      is1966 ? "1rem" : "0.875rem"
                     }] text-primary`}
                   ></i>
                 </span>
