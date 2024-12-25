@@ -544,7 +544,15 @@ app.get("/stats/platform/average-scores", (req, res) => {
 
 // Вземане на данни за най-препоръчвани филми/сериали в платформата
 app.get("/stats/platform/top-recommendations-with-all-data", (req, res) => {
-  db.getTopRecommendations((err, result) => {
+  const limit = parseInt(req.query.limit, 10) || 10; // По подразбиране 10, ако лимитът не е предоставен или е невалиден
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
+  db.getTopRecommendations(limit, (err, result) => {
     if (err) {
       return res
         .status(500)
@@ -558,6 +566,12 @@ app.get("/stats/platform/top-recommendations-with-all-data", (req, res) => {
 app.get("/stats/platform/top-countries", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
 
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
   db.getTopCountries(limit, (err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top countries" });
@@ -569,6 +583,12 @@ app.get("/stats/platform/top-countries", async (req, res) => {
 // Вземане на данни за най-препоръчвани жанрове в платформата
 app.get("/stats/platform/top-genres", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
 
   db.getTopGenres(limit, (err, result) => {
     if (err) {
@@ -594,6 +614,12 @@ app.get("/stats/platform/genre-popularity-over-time", async (req, res) => {
 app.get("/stats/platform/top-actors", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
 
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
   db.getTopActors(limit, (err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top actors" });
@@ -606,6 +632,12 @@ app.get("/stats/platform/top-actors", async (req, res) => {
 app.get("/stats/platform/top-directors", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
 
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
   db.getTopDirectors(limit, (err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top directors" });
@@ -617,6 +649,12 @@ app.get("/stats/platform/top-directors", async (req, res) => {
 // Вземане на данни за най-препоръчвани сценаристи в платформата
 app.get("/stats/platform/top-writers", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
 
   db.getTopWriters(limit, (err, result) => {
     if (err) {
@@ -704,6 +742,12 @@ app.get(
   async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
 
+    if (limit <= 0) {
+      return res
+        .status(400)
+        .json({ error: "Лимитът трябва да е положително число." });
+    }
+
     db.getTopMoviesAndSeriesByMetascore(limit, (err, result) => {
       if (err) {
         return res
@@ -721,6 +765,12 @@ app.get(
   async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
 
+    if (limit <= 0) {
+      return res
+        .status(400)
+        .json({ error: "Лимитът трябва да е положително число." });
+    }
+
     db.getTopMoviesAndSeriesByIMDbRating(limit, (err, result) => {
       if (err) {
         return res
@@ -737,6 +787,12 @@ app.get(
   "/stats/platform/sorted-movies-and-series-by-rotten-tomatoes-rating",
   async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
+
+    if (limit <= 0) {
+      return res
+        .status(400)
+        .json({ error: "Лимитът трябва да е положително число." });
+    }
 
     db.getTopMoviesAndSeriesByRottenTomatoesRating(limit, (err, result) => {
       if (err) {
