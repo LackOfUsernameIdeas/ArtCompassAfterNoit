@@ -14,9 +14,9 @@ export function Dark(actionfunction: any) {
     inputBorder: "",
     Light: ""
   });
-  localStorage.setItem("cinedarktheme", "dark");
-  localStorage.removeItem("cinelighttheme");
-  localStorage.removeItem("cinelighttheme");
+  localStorage.setItem("artdarktheme", "dark");
+  localStorage.removeItem("artlighttheme");
+  localStorage.removeItem("artlighttheme");
   localStorage.removeItem("darkBgRGB");
 }
 export function Light(actionfunction: any) {
@@ -31,8 +31,8 @@ export function Light(actionfunction: any) {
     Light: "",
     dataMenuStyles: theme.dataNavLayout == "horizontal" ? "light" : "dark"
   });
-  localStorage.setItem("cinelighttheme", "light");
-  localStorage.removeItem("cinedarktheme");
+  localStorage.setItem("artlighttheme", "light");
+  localStorage.removeItem("artdarktheme");
   localStorage.removeItem("Light");
   localStorage.removeItem("bodyBgRGB");
   localStorage.removeItem("darkBgRGB");
@@ -40,14 +40,14 @@ export function Light(actionfunction: any) {
 export function Ltr(actionfunction: any) {
   const theme = store.getState();
   actionfunction({ ...theme, dir: "ltr" });
-  localStorage.setItem("cineltr", "ltr");
-  localStorage.removeItem("cinertl");
+  localStorage.setItem("artltr", "ltr");
+  localStorage.removeItem("artrtl");
 }
 export function Rtl(actionfunction: any) {
   const theme = store.getState();
   actionfunction({ ...theme, dir: "rtl" });
-  localStorage.setItem("cinertl", "rtl");
-  localStorage.removeItem("cineltr");
+  localStorage.setItem("artrtl", "rtl");
+  localStorage.removeItem("artltr");
 }
 
 function closeMenuFn() {
@@ -65,12 +65,12 @@ export const HorizontalClick = (actionfunction: any) => {
     ...theme,
     dataNavLayout: "horizontal",
     dataVerticalStyle: "",
-    dataNavStyle: localStorage.cinenavstyles
-      ? localStorage.cinenavstyles
+    dataNavStyle: localStorage.artnavstyles
+      ? localStorage.artnavstyles
       : "menu-click"
   });
-  localStorage.setItem("cinelayout", "horizontal");
-  localStorage.removeItem("cineverticalstyles");
+  localStorage.setItem("artlayout", "horizontal");
+  localStorage.removeItem("artverticalstyles");
   closeMenuFn();
   const Sidebar: any = document.querySelector(".main-menu");
   if (Sidebar) {
@@ -87,8 +87,8 @@ export const Vertical = (actionfunction: any) => {
     toggled: "",
     dataNavStyle: ""
   });
-  localStorage.setItem("cinelayout", "vertical");
-  localStorage.removeItem("cinenavstyles");
+  localStorage.setItem("artlayout", "vertical");
+  localStorage.removeItem("artnavstyles");
 };
 
 export const Menuclick = (actionfunction: any) => {
@@ -99,8 +99,8 @@ export const Menuclick = (actionfunction: any) => {
     dataVerticalStyle: "",
     toggled: "menu-click-closed"
   });
-  localStorage.setItem("cinenavstyles", "menu-click");
-  localStorage.removeItem("cineverticalstyles");
+  localStorage.setItem("artnavstyles", "menu-click");
+  localStorage.removeItem("artverticalstyles");
   const Sidebar: any = document.querySelector(".main-menu");
   if (Sidebar) {
     Sidebar.style.marginInline = "0px";
@@ -115,8 +115,8 @@ export const MenuHover = (actionfunction: any) => {
     toggled: "menu-hover-closed",
     horStyle: ""
   });
-  localStorage.setItem("cinenavstyles", "menu-hover");
-  localStorage.removeItem("cineverticalstyles");
+  localStorage.setItem("artnavstyles", "menu-hover");
+  localStorage.removeItem("artverticalstyles");
   const Sidebar: any = document.querySelector(".main-menu");
   if (Sidebar) {
     Sidebar.style.marginInline = "0px";
@@ -130,8 +130,8 @@ export const IconClick = (actionfunction: any) => {
     dataVerticalStyle: "",
     toggled: "icon-click-closed"
   });
-  localStorage.setItem("cinenavstyles", "icon-click");
-  localStorage.removeItem("cineverticalstyles");
+  localStorage.setItem("artnavstyles", "icon-click");
+  localStorage.removeItem("artverticalstyles");
   const Sidebar: any = document.querySelector(".main-menu");
   if (Sidebar) {
     Sidebar.style.marginInline = "0px";
@@ -146,8 +146,8 @@ export const IconHover = (actionfunction: any) => {
     dataVerticalStyle: "",
     toggled: "icon-hover-closed"
   });
-  localStorage.setItem("cinenavstyles", "icon-hover");
-  localStorage.removeItem("cineverticalstyles");
+  localStorage.setItem("artnavstyles", "icon-hover");
+  localStorage.removeItem("artverticalstyles");
   const Sidebar: any = document.querySelector(".main-menu");
   if (Sidebar) {
     Sidebar.style.marginInline = "0px";
@@ -160,8 +160,8 @@ export const Fullwidth = (actionfunction: any) => {
     ...theme,
     dataWidth: "fullwidth"
   });
-  localStorage.setItem("cinefullwidth", "Fullwidth");
-  localStorage.removeItem("cineboxed");
+  localStorage.setItem("artfullwidth", "Fullwidth");
+  localStorage.removeItem("artboxed");
 };
 export const Boxed = (actionfunction: any) => {
   const theme = store.getState();
@@ -169,8 +169,8 @@ export const Boxed = (actionfunction: any) => {
     ...theme,
     dataWidth: "boxed"
   });
-  localStorage.setItem("cineboxed", "Boxed");
-  localStorage.removeItem("cinefullwidth");
+  localStorage.setItem("artboxed", "Boxed");
+  localStorage.removeItem("artfullwidth");
 };
 export const FixedMenu = (actionfunction: any) => {
   const theme = store.getState();
@@ -178,8 +178,8 @@ export const FixedMenu = (actionfunction: any) => {
     ...theme,
     dataMenuPosition: "fixed"
   });
-  localStorage.setItem("cinemenufixed", "MenuFixed");
-  localStorage.removeItem("cinemenuscrollable");
+  localStorage.setItem("artmenufixed", "MenuFixed");
+  localStorage.removeItem("artmenuscrollable");
 };
 export const scrollMenu = (actionfunction: any) => {
   const theme = store.getState();
@@ -187,8 +187,8 @@ export const scrollMenu = (actionfunction: any) => {
     ...theme,
     dataMenuPosition: "scrollable"
   });
-  localStorage.setItem("cinemenuscrollable", "Menuscrolled");
-  localStorage.removeItem("cinemenufixed");
+  localStorage.setItem("artmenuscrollable", "Menuscrolled");
+  localStorage.removeItem("artmenufixed");
 };
 export const Headerpostionfixed = (actionfunction: any) => {
   const theme = store.getState();
@@ -196,8 +196,8 @@ export const Headerpostionfixed = (actionfunction: any) => {
     ...theme,
     dataHeaderPosition: "fixed"
   });
-  localStorage.setItem("cineheaderfixed", "FixedHeader");
-  localStorage.removeItem("cineheaderscrollable");
+  localStorage.setItem("artheaderfixed", "FixedHeader");
+  localStorage.removeItem("artheaderscrollable");
 };
 export const Headerpostionscroll = (actionfunction: any) => {
   const theme = store.getState();
@@ -205,8 +205,8 @@ export const Headerpostionscroll = (actionfunction: any) => {
     ...theme,
     dataHeaderPosition: "scrollable"
   });
-  localStorage.setItem("cineheaderscrollable", "ScrollableHeader");
-  localStorage.removeItem("cineheaderfixed");
+  localStorage.setItem("artheaderscrollable", "ScrollableHeader");
+  localStorage.removeItem("artheaderfixed");
 };
 export const Regular = (actionfunction: any) => {
   const theme = store.getState();
@@ -214,9 +214,9 @@ export const Regular = (actionfunction: any) => {
     ...theme,
     dataPageStyle: "regular"
   });
-  localStorage.setItem("cineregular", "Regular");
-  localStorage.removeItem("cineclassic");
-  localStorage.removeItem("cinemodern");
+  localStorage.setItem("artregular", "Regular");
+  localStorage.removeItem("artclassic");
+  localStorage.removeItem("artmodern");
 };
 export const Classic = (actionfunction: any) => {
   const theme = store.getState();
@@ -224,9 +224,9 @@ export const Classic = (actionfunction: any) => {
     ...theme,
     dataPageStyle: "classic"
   });
-  localStorage.setItem("cineclassic", "Classic");
-  localStorage.removeItem("cineregular");
-  localStorage.removeItem("cinemodern");
+  localStorage.setItem("artclassic", "Classic");
+  localStorage.removeItem("artregular");
+  localStorage.removeItem("artmodern");
 };
 export const Modern = (actionfunction: any) => {
   const theme = store.getState();
@@ -234,9 +234,9 @@ export const Modern = (actionfunction: any) => {
     ...theme,
     dataPageStyle: "modern"
   });
-  localStorage.setItem("cinemodern", "Modern");
-  localStorage.removeItem("cineregular");
-  localStorage.removeItem("cineclassic");
+  localStorage.setItem("artmodern", "Modern");
+  localStorage.removeItem("artregular");
+  localStorage.removeItem("artclassic");
 };
 
 export const Defaultmenu = (actionfunction: any) => {
@@ -248,8 +248,8 @@ export const Defaultmenu = (actionfunction: any) => {
     toggled: "",
     dataNavStyle: ""
   });
-  localStorage.removeItem("cinenavstyles");
-  localStorage.setItem("cineverticalstyles", "default");
+  localStorage.removeItem("artnavstyles");
+  localStorage.setItem("artverticalstyles", "default");
   var icon = document.getElementById(
     "switcher-default-menu"
   ) as HTMLInputElement;
@@ -266,8 +266,8 @@ export const Closedmenu = (actionfunction: any) => {
     toggled: "close-menu-close",
     dataNavStyle: ""
   });
-  localStorage.setItem("cineverticalstyles", "closed");
-  localStorage.removeItem("cinenavstyles");
+  localStorage.setItem("artverticalstyles", "closed");
+  localStorage.removeItem("artnavstyles");
 };
 
 function icontextOpenFn() {
@@ -291,8 +291,8 @@ export const iconTextfn = (actionfunction: any) => {
     toggled: "icon-text-close",
     dataNavStyle: ""
   });
-  localStorage.setItem("cineverticalstyles", "icontext");
-  localStorage.removeItem("cinenavstyles");
+  localStorage.setItem("artverticalstyles", "icontext");
+  localStorage.removeItem("artnavstyles");
 
   const MainContent = document.querySelector(".main-content");
   const appSidebar = document.querySelector(".app-sidebar");
@@ -313,8 +313,8 @@ export const iconOverayFn = (actionfunction: any) => {
     toggled: "icon-overlay-close",
     dataNavStyle: ""
   });
-  localStorage.setItem("cineverticalstyles", "overlay");
-  localStorage.removeItem("cinenavstyles");
+  localStorage.setItem("artverticalstyles", "overlay");
+  localStorage.removeItem("artnavstyles");
   var icon = document.getElementById(
     "switcher-icon-overlay"
   ) as HTMLInputElement;
@@ -363,8 +363,8 @@ export const DetachedFn = (actionfunction: any) => {
     toggled: "detached-close",
     dataNavStyle: ""
   });
-  localStorage.setItem("cineverticalstyles", "detached");
-  localStorage.removeItem("cinenavstyles");
+  localStorage.setItem("artverticalstyles", "detached");
+  localStorage.removeItem("artnavstyles");
 
   const MainContent = document.querySelector(".main-content");
   const appSidebar = document.querySelector(".app-sidebar");
@@ -386,8 +386,8 @@ export const DoubletFn = (actionfunction: any) => {
     toggled: "double-menu-open",
     dataNavStyle: ""
   });
-  localStorage.setItem("cineverticalstyles", "doublemenu");
-  localStorage.removeItem("cinenavstyles");
+  localStorage.setItem("artverticalstyles", "doublemenu");
+  localStorage.removeItem("artnavstyles");
 };
 export const bgImage1 = (actionfunction: any) => {
   const theme = store.getState();
@@ -456,7 +456,7 @@ export const colorMenu = (actionfunction: any) => {
     ...theme,
     dataMenuStyles: "color"
   });
-  localStorage.setItem("cineMenu", "color");
+  localStorage.setItem("artMenu", "color");
   localStorage.removeItem("gradient");
 };
 
@@ -466,7 +466,7 @@ export const lightMenu = (actionfunction: any) => {
     ...theme,
     dataMenuStyles: "light"
   });
-  localStorage.setItem("cineMenu", "light");
+  localStorage.setItem("artMenu", "light");
   localStorage.removeItem("light");
 };
 
@@ -476,7 +476,7 @@ export const darkMenu = (actionfunction: any) => {
     ...theme,
     dataMenuStyles: "dark"
   });
-  localStorage.setItem("cineMenu", "dark");
+  localStorage.setItem("artMenu", "dark");
   localStorage.removeItem("light");
 };
 
@@ -486,7 +486,7 @@ export const gradientMenu = (actionfunction: any) => {
     ...theme,
     dataMenuStyles: "gradient"
   });
-  localStorage.setItem("cineMenu", "gradient");
+  localStorage.setItem("artMenu", "gradient");
   localStorage.removeItem("color");
 };
 export const transparentMenu = (actionfunction: any) => {
@@ -495,7 +495,7 @@ export const transparentMenu = (actionfunction: any) => {
     ...theme,
     dataMenuStyles: "transparent"
   });
-  localStorage.setItem("cineMenu", "transparent");
+  localStorage.setItem("artMenu", "transparent");
   localStorage.removeItem("gradient");
 };
 
@@ -505,7 +505,7 @@ export const lightHeader = (actionfunction: any) => {
     ...theme,
     dataHeaderStyles: "light"
   });
-  localStorage.setItem("cineHeader", "light");
+  localStorage.setItem("artHeader", "light");
   localStorage.removeItem("dark");
 };
 export const darkHeader = (actionfunction: any) => {
@@ -514,7 +514,7 @@ export const darkHeader = (actionfunction: any) => {
     ...theme,
     dataHeaderStyles: "dark"
   });
-  localStorage.setItem("cineHeader", "dark");
+  localStorage.setItem("artHeader", "dark");
   localStorage.removeItem("light");
 };
 export const colorHeader = (actionfunction: any) => {
@@ -523,7 +523,7 @@ export const colorHeader = (actionfunction: any) => {
     ...theme,
     dataHeaderStyles: "color"
   });
-  localStorage.setItem("cineHeader", "color");
+  localStorage.setItem("artHeader", "color");
   localStorage.removeItem("dark");
 };
 export const gradientHeader = (actionfunction: any) => {
@@ -532,7 +532,7 @@ export const gradientHeader = (actionfunction: any) => {
     ...theme,
     dataHeaderStyles: "gradient"
   });
-  localStorage.setItem("cineHeader", "gradient");
+  localStorage.setItem("artHeader", "gradient");
   localStorage.removeItem("transparent");
 };
 export const transparentHeader = (actionfunction: any) => {
@@ -542,7 +542,7 @@ export const transparentHeader = (actionfunction: any) => {
     dataHeaderStyles: "transparent"
   });
   localStorage.removeItem("gradient");
-  localStorage.setItem("cineHeader", "transparent");
+  localStorage.setItem("artHeader", "transparent");
 };
 
 export const primaryColor1 = (actionfunction: any) => {
@@ -742,8 +742,8 @@ export const Themebackgroundcolor = ({ actionfunction }: any) => {
     localStorage.setItem("darkBgRGB", `${r - 14} ${g - 14} ${b - 14}`);
     localStorage.setItem("Light", `${r - 9} ${g - 9} ${b - 9}`);
     localStorage.setItem("bodyBgRGB", `${r} ${g} ${b}`);
-    localStorage.removeItem("cineMenu");
-    localStorage.removeItem("cineHeader");
+    localStorage.removeItem("artMenu");
+    localStorage.removeItem("artHeader");
   };
   return (
     <div className="Themebackgroundcolor">
@@ -829,38 +829,38 @@ export const Reset1 = (actionfunction: any) => {
   }
 };
 export const LocalStorageBackup = (actionfunction: any) => {
-  localStorage.cineltr ? Ltr(actionfunction) : "";
-  localStorage.cinertl ? Rtl(actionfunction) : "";
-  localStorage.cinedarktheme ? Dark(actionfunction) : "";
-  localStorage.cinelighttheme ? Light(actionfunction) : "";
-  localStorage.cineregular ? Regular(actionfunction) : "";
-  localStorage.cineclassic ? Classic(actionfunction) : "";
-  localStorage.cinemodern ? Modern(actionfunction) : "";
-  localStorage.cinefullwidth ? Fullwidth(actionfunction) : "";
-  localStorage.cineboxed ? Boxed(actionfunction) : "";
-  localStorage.cinemenufixed ? FixedMenu(actionfunction) : "";
-  localStorage.cinemenuscrollable ? scrollMenu(actionfunction) : "";
-  localStorage.cineheaderfixed ? Headerpostionfixed(actionfunction) : "";
-  localStorage.cineheaderscrollable ? Headerpostionscroll(actionfunction) : "";
+  localStorage.artltr ? Ltr(actionfunction) : "";
+  localStorage.artrtl ? Rtl(actionfunction) : "";
+  localStorage.artdarktheme ? Dark(actionfunction) : "";
+  localStorage.artlighttheme ? Light(actionfunction) : "";
+  localStorage.artregular ? Regular(actionfunction) : "";
+  localStorage.artclassic ? Classic(actionfunction) : "";
+  localStorage.artmodern ? Modern(actionfunction) : "";
+  localStorage.artfullwidth ? Fullwidth(actionfunction) : "";
+  localStorage.artboxed ? Boxed(actionfunction) : "";
+  localStorage.artmenufixed ? FixedMenu(actionfunction) : "";
+  localStorage.artmenuscrollable ? scrollMenu(actionfunction) : "";
+  localStorage.artheaderfixed ? Headerpostionfixed(actionfunction) : "";
+  localStorage.artheaderscrollable ? Headerpostionscroll(actionfunction) : "";
 
-  localStorage.cinenavstyles === "menu-click" ? Menuclick(actionfunction) : "";
-  localStorage.cinenavstyles === "menu-hover" ? MenuHover(actionfunction) : "";
-  localStorage.cinenavstyles === "icon-click" ? IconClick(actionfunction) : "";
-  localStorage.cinenavstyles === "icon-hover" ? IconHover(actionfunction) : "";
+  localStorage.artnavstyles === "menu-click" ? Menuclick(actionfunction) : "";
+  localStorage.artnavstyles === "menu-hover" ? MenuHover(actionfunction) : "";
+  localStorage.artnavstyles === "icon-click" ? IconClick(actionfunction) : "";
+  localStorage.artnavstyles === "icon-hover" ? IconHover(actionfunction) : "";
 
   localStorage.bgimage1 ? bgImage1(actionfunction) : "";
   localStorage.bgimage2 ? bgImage2(actionfunction) : "";
   localStorage.bgimage3 ? bgImage3(actionfunction) : "";
   localStorage.bgimage4 ? bgImage4(actionfunction) : "";
   localStorage.bgimage5 ? bgImage5(actionfunction) : "";
-  localStorage.cinelayout == "horizontal" && HorizontalClick(actionfunction);
-  localStorage.cinelayout == "vertical" && Vertical(actionfunction);
+  localStorage.artlayout == "horizontal" && HorizontalClick(actionfunction);
+  localStorage.artlayout == "vertical" && Vertical(actionfunction);
   //primitive
   if (
-    localStorage.getItem("cineltr") == null ||
-    localStorage.getItem("cineltr") == "ltr"
+    localStorage.getItem("artltr") == null ||
+    localStorage.getItem("artltr") == "ltr"
   )
-    if (localStorage.getItem("cinertl") == "rtl") {
+    if (localStorage.getItem("artrtl") == "rtl") {
       document.querySelector("body")?.classList.add("rtl");
       document.querySelector("html[lang=en]")?.setAttribute("dir", "rtl");
     }
@@ -919,8 +919,8 @@ export const LocalStorageBackup = (actionfunction: any) => {
   }
 
   //layout
-  if (localStorage.cineverticalstyles) {
-    const verticalStyles = localStorage.getItem("cineverticalstyles");
+  if (localStorage.artverticalstyles) {
+    const verticalStyles = localStorage.getItem("artverticalstyles");
 
     switch (verticalStyles) {
       case "default":
@@ -968,7 +968,7 @@ export const LocalStorageBackup = (actionfunction: any) => {
     // Dark(actionfunction);
   }
   // ThemeColor MenuColor Start
-  switch (localStorage.cineMenu) {
+  switch (localStorage.artMenu) {
     case "light":
       lightMenu(actionfunction);
       break;
@@ -992,7 +992,7 @@ export const LocalStorageBackup = (actionfunction: any) => {
       break;
   }
   // ThemeColor Header Colors: start
-  switch (localStorage.cineHeader) {
+  switch (localStorage.artHeader) {
     case "light":
       lightHeader(actionfunction);
 

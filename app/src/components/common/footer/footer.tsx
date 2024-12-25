@@ -25,7 +25,7 @@ const Footer: FC = () => (
           <div className="footer-content grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             <div className="footer-column">
               <div className="brand-name">
-                <span className="footer-brand-name-cine dark:text-[#610000] text-[#AF0B48]">
+                <span className="footer-brand-name-art dark:text-[#610000] text-[#AF0B48]">
                   КИНО
                 </span>
                 <span className="footer-brand-name-compass">КОМПАС</span>
