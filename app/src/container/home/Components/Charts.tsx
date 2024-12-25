@@ -77,12 +77,19 @@ export class GenrePopularityOverTime extends Component<
     const initialColor = updatePrimaryColor();
     const initialColorRange = chroma
       .scale([
-        chroma(initialColor).darken(0.5).hex(),
-        chroma(initialColor).darken(1).hex()
+        chroma(initialColor).brighten(1).hex(),
+        chroma(initialColor).saturate(2).darken(2).hex(),
+        chroma(initialColor).darken(5).saturate(1.5).hex(),
+        chroma(initialColor).darken(10).saturate(1.5).hex(),
+        chroma(initialColor).darken(20).saturate(2).hex(),
+        chroma(initialColor).darken(40).saturate(2.5).hex(),
+        chroma(initialColor).darken(80).saturate(3).hex(),
+        chroma(initialColor).darken(160).saturate(4).hex(),
+        chroma(initialColor).darken(320).saturate(5).hex()
       ])
       .mode("lab")
-      .domain([0, 100]) // Настройва стойностите на домейна спрямо данните
-      .colors(10);
+      .domain([0, 100])
+      .colors(1000);
 
     this.state = {
       options: {
@@ -161,6 +168,9 @@ export class GenrePopularityOverTime extends Component<
                       <span>Брой препоръчвания: ${count}</span>
                     </div>`;
           }
+        },
+        legend: {
+          show: false // Изключваме легендата
         }
       }
     };
@@ -196,12 +206,19 @@ export class GenrePopularityOverTime extends Component<
     // Генерира нова цветна гама на базата на основния цвят
     const newColorRange = chroma
       .scale([
-        chroma(primaryHex).darken(0.5).hex(),
-        chroma(primaryHex).darken(1).hex()
-      ]) // По-тъмни цветове
+        chroma(primaryHex).brighten(1).hex(),
+        chroma(primaryHex).saturate(2).darken(2).hex(),
+        chroma(primaryHex).darken(5).saturate(1.5).hex(),
+        chroma(primaryHex).darken(10).saturate(1.5).hex(),
+        chroma(primaryHex).darken(20).saturate(2).hex(),
+        chroma(primaryHex).darken(40).saturate(2.5).hex(),
+        chroma(primaryHex).darken(80).saturate(3).hex(),
+        chroma(primaryHex).darken(160).saturate(4).hex(),
+        chroma(primaryHex).darken(320).saturate(5).hex()
+      ])
       .mode("lab")
-      .domain([0, 100]) // Настройва стойностите на домейна спрямо данните
-      .colors(10); // Генерира 10 цвята на базата на основния цвят
+      .domain([0, 100])
+      .colors(1000);
 
     // Актуализира състоянието с новата цветна гама
     this.setState((prevState) => ({
@@ -213,8 +230,8 @@ export class GenrePopularityOverTime extends Component<
             ...prevState.options.plotOptions.heatmap,
             colorScale: {
               ranges: newColorRange.map((color, index) => ({
-                from: index * 10,
-                to: (index + 1) * 10,
+                from: index * 1,
+                to: (index + 1) * 1,
                 color: color
               }))
             }

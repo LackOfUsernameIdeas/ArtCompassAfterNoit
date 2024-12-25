@@ -320,6 +320,7 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
             <div className="xxl:col-span-3 xl:col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-2 "></div>
           </div>
         </div>
+        {/* Страничен панел с изображение или лого */}
         <div className="xxl:col-span-5 xl:col-span-5 lg:col-span-5 col-span-12 xl:block hidden px-0">
           <div className="authentication-cover ">
             <div className="aunthentication-cover-content rounded">
@@ -333,9 +334,11 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
                   modules={[Pagination, Autoplay, Navigation]}
                   className="mySwiper"
                 >
+                  {/* Слайд 1 */}
                   <SwiperSlide>
                     <div className="text-white text-center p-[3rem] flex items-center justify-center flex-col lg:space-y-8 md:space-y-4 sm:space-y-2 space-y-2">
                       <div>
+                        {/* Лого за светъл режим */}
                         <div className="mb-[6rem] dark:hidden">
                           <img
                             src={logoPink}
@@ -344,7 +347,9 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
                             style={{ width: "100%", height: "auto" }}
                           />
                         </div>
-                        <div className="mb-[6rem] hidden dark:block">
+
+                        {/* Лого за тъмен режим */}
+                        <div className="mb-[4rem] hidden dark:block">
                           <img
                             src={logo}
                             className="authentication-image"
@@ -355,10 +360,12 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
                             }}
                           />
                         </div>
-                        <h6 className="font-semibold text-[1rem] sm:text-[1.325rem] lg:text-[1.5rem]">
+
+                        {/* Заглавие и описание на приложението */}
+                        <h6 className="font-semibold text-[1rem] lg:text-[1.325rem] sm:text-[1.325rem]">
                           Добре дошли в Кино Компас!
                         </h6>
-                        <p className="font-normal text-[0.875rem] opacity-[0.7] sm:text-[1rem] lg:mt-8">
+                        <p className="font-normal text-[0.875rem] opacity-[0.7] lg:mt-6 sm:text-[1rem] ">
                           Това е вашият гид за откриване на филми и сериали за
                           всяко настроение, анализирайки вашите предпочитания и
                           предлагайки персонализирани препоръки с помощта на
@@ -367,6 +374,7 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
                       </div>
                     </div>
                   </SwiperSlide>
+                  {/* Допълнителни слайдове, ако е необходимо */}
                 </Swiper>
               </div>
             </div>

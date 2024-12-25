@@ -344,7 +344,6 @@ const Signincover: FC<SignincoverProps> = () => {
           <div className="authentication-cover ">
             <div className="aunthentication-cover-content rounded">
               <div className="swiper keyboard-control">
-                {/* Свипер за слайдове на страничния панел */}
                 <Swiper
                   spaceBetween={30}
                   navigation={true}
@@ -369,7 +368,7 @@ const Signincover: FC<SignincoverProps> = () => {
                         </div>
 
                         {/* Лого за тъмен режим */}
-                        <div className="mb-[6rem] hidden dark:block">
+                        <div className="mb-[4rem] hidden dark:block">
                           <img
                             src={logo}
                             className="authentication-image"
@@ -382,10 +381,10 @@ const Signincover: FC<SignincoverProps> = () => {
                         </div>
 
                         {/* Заглавие и описание на приложението */}
-                        <h6 className="font-semibold text-[1rem] sm:text-[1.325rem] lg:text-[1.5rem]">
+                        <h6 className="font-semibold text-[1rem] lg:text-[1.325rem] sm:text-[1.325rem]">
                           Добре дошли в Кино Компас!
                         </h6>
-                        <p className="font-normal text-[0.875rem] opacity-[0.7] sm:text-[1rem] lg:mt-8">
+                        <p className="font-normal text-[0.875rem] opacity-[0.7] lg:mt-6 sm:text-[1rem] ">
                           Това е вашият гид за откриване на филми и сериали за
                           всяко настроение, анализирайки вашите предпочитания и
                           предлагайки персонализирани препоръки с помощта на
@@ -394,7 +393,7 @@ const Signincover: FC<SignincoverProps> = () => {
                       </div>
                     </div>
                   </SwiperSlide>
-                  {/* Добавете допълнителни слайдове, ако е необходимо */}
+                  {/* Допълнителни слайдове, ако е необходимо */}
                 </Swiper>
               </div>
             </div>
