@@ -80,7 +80,7 @@ const TopRecommendationsChartComponent: FC<
               <div className="sm:flex items-center">
                 <div
                   className={`text-defaulttextcolor dark:text-defaulttextcolor/70 text-[${
-                    is1546 ? "0.65rem" : "0.70rem"
+                    is1546 ? "0.55rem" : "0.70rem"
                   }]`}
                 >
                   Показване на резултати от{" "}
@@ -95,14 +95,15 @@ const TopRecommendationsChartComponent: FC<
                       ? data.topRecommendations.length
                       : currentTopChartPage * 5}{" "}
                   </b>
-                  от общо <b>{data.topRecommendations.length}</b> ( Страница{" "}
-                  <b>{currentTopChartPage}</b> )
+                  от общо <b>{data.topRecommendations.length}</b>
                   <i className="bi bi-arrow-right ms-2 font-semibold"></i>
                 </div>
                 <div className="ms-auto">
                   <nav
                     aria-label="Page navigation"
-                    className="pagination-style-4"
+                    className={`pagination-style-4 ${
+                      is1546 ? "text-[0.55rem]" : "text-[0.70rem]"
+                    }`}
                   >
                     <ul className="ti-pagination mb-0">
                       <li
@@ -115,8 +116,10 @@ const TopRecommendationsChartComponent: FC<
                           to="#"
                           onClick={handlePrevTopChartPage}
                           style={{
-                            padding: "0.25rem 0.5rem",
-                            fontSize: "0.8rem",
+                            padding: is1546
+                              ? "0.25rem 0.35rem"
+                              : "0.2rem 0.45rem",
+                            fontSize: is1546 ? "0.6rem" : "0.7rem",
                             lineHeight: "1.25"
                           }}
                         >
@@ -135,8 +138,10 @@ const TopRecommendationsChartComponent: FC<
                             to="#"
                             onClick={() => setCurrentTopChartPage(index + 1)}
                             style={{
-                              padding: "0.25rem 0.5rem",
-                              fontSize: "0.8rem",
+                              padding: is1546
+                                ? "0.25rem 0.35rem"
+                                : "0.2rem 0.45rem",
+                              fontSize: is1546 ? "0.6rem" : "0.7rem",
                               lineHeight: "1.25"
                             }}
                           >
@@ -156,8 +161,10 @@ const TopRecommendationsChartComponent: FC<
                           to="#"
                           onClick={handleNextTopChartPage}
                           style={{
-                            padding: "0.25rem 0.5rem",
-                            fontSize: "0.8rem",
+                            padding: is1546
+                              ? "0.25rem 0.35rem"
+                              : "0.2rem 0.45rem",
+                            fontSize: is1546 ? "0.6rem" : "0.7rem",
                             lineHeight: "1.25"
                           }}
                         >

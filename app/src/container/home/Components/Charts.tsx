@@ -418,11 +418,13 @@ export class MoviesAndSeriesByRatingsChart extends Component<
 // Интерфейс за пропсовете на компонента
 interface CountryBarProps {
   topCountries: CountryData[] | null; // Списък с данни за държавите или null, ако няма данни
+  is1546: boolean;
 }
 
 // Функционален компонент за визуализация на препоръките по държави
 export const CountryBarChart: React.FC<CountryBarProps> = ({
-  topCountries
+  topCountries,
+  is1546
 }) => {
   // Състояние за първичния (основния) цвят на темата
   const [primaryColor, setPrimaryColor] = useState<string>("#ffffff");
@@ -565,8 +567,8 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
                   to="#"
                   onClick={handlePrevChartPage}
                   style={{
-                    padding: "0.25rem 0.5rem",
-                    fontSize: "0.8rem",
+                    padding: is1546 ? "0.25rem 0.35rem" : "0.2rem 0.45rem",
+                    fontSize: is1546 ? "0.6rem" : "0.7rem",
                     lineHeight: "1.25"
                   }}
                 >
@@ -590,8 +592,8 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
                       setCurrentPage(index + 1);
                     }}
                     style={{
-                      padding: "0.25rem 0.5rem",
-                      fontSize: "0.8rem",
+                      padding: is1546 ? "0.25rem 0.35rem" : "0.2rem 0.45rem",
+                      fontSize: is1546 ? "0.6rem" : "0.7rem",
                       lineHeight: "1.25"
                     }}
                   >
@@ -611,8 +613,8 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
                   to="#"
                   onClick={handleNextChartPage}
                   style={{
-                    padding: "0.25rem 0.5rem",
-                    fontSize: "0.8rem",
+                    padding: is1546 ? "0.25rem 0.35rem" : "0.2rem 0.45rem",
+                    fontSize: is1546 ? "0.6rem" : "0.7rem",
                     lineHeight: "1.25"
                   }}
                 >

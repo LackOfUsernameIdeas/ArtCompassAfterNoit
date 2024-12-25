@@ -203,14 +203,14 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                     ? totalItems
                     : currentTablePage * 5}{" "}
                 </b>
-                от общо <b>{totalItems}</b>{" "}
+                от общо <b>{totalItems}</b>
                 <i className="bi bi-arrow-right ms-2 font-semibold"></i>
               </div>
               <div className="ms-auto">
                 <nav
                   aria-label="Page navigation"
                   className={`pagination-style-4 ${
-                    is1546 ? "text-[0.5rem]" : "text-[0.70rem]"
+                    is1546 ? "text-[0.55rem]" : "text-[0.70rem]"
                   }`}
                 >
                   <ul className="ti-pagination mb-0 flex-wrap">
@@ -230,7 +230,7 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                           padding: is1546
                             ? "0.25rem 0.35rem"
                             : "0.2rem 0.45rem",
-                          fontSize: is1546 ? "0.55rem" : "0.7rem",
+                          fontSize: is1546 ? "0.6rem" : "0.7rem",
                           lineHeight: "1.25"
                         }}
                       >
@@ -260,9 +260,9 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                               onClick={() => setCurrentTablePage(pageNumber)}
                               style={{
                                 padding: is1546
-                                  ? "0.3rem 0.25rem"
+                                  ? "0.25rem 0.35rem"
                                   : "0.2rem 0.45rem",
-                                fontSize: is1546 ? "0.5rem" : "0.7rem",
+                                fontSize: is1546 ? "0.6rem" : "0.7rem",
                                 lineHeight: "1.25"
                               }}
                             >
@@ -288,9 +288,9 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                               to="#"
                               style={{
                                 padding: is1546
-                                  ? "0.3rem 0.25rem"
+                                  ? "0.25rem 0.35rem"
                                   : "0.2rem 0.45rem",
-                                fontSize: is1546 ? "0.5rem" : "0.7rem",
+                                fontSize: is1546 ? "0.6rem" : "0.7rem",
                                 lineHeight: "1.25"
                               }}
                             >
@@ -319,7 +319,7 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                           padding: is1546
                             ? "0.25rem 0.35rem"
                             : "0.2rem 0.45rem",
-                          fontSize: is1546 ? "0.55rem" : "0.7rem",
+                          fontSize: is1546 ? "0.6rem" : "0.7rem",
                           lineHeight: "1.25"
                         }}
                       >
