@@ -48,8 +48,8 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
   const awardOptions = getAwardOptions(data);
   const averagesOptions = getAveragesOptions(data);
 
-  const is1803 = useMediaQuery({ query: "(max-width: 1803px)" });
-  const is1488 = useMediaQuery({ query: "(max-width: 1488px)" });
+  const is1856 = useMediaQuery({ query: "(max-width: 1856px)" });
+  const is1532 = useMediaQuery({ query: "(max-width: 1532px)" });
 
   return (
     <Fragment>
@@ -60,7 +60,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
               <div className="flex-grow">
                 <p
                   className={`mb-0 text-[#8c9097] dark:text-white/50 ${
-                    is1803 && "text-xs"
+                    is1856 && "text-xs"
                   }`}
                 >
                   Общ брой потребители
@@ -68,7 +68,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                 <div className="flex items-center">
                   <span
                     className={`text-[${
-                      is1803 ? "1.25rem" : "1.125rem"
+                      is1856 ? "1.25rem" : "1.125rem"
                     }] font-semibold`}
                   >
                     {data.usersCount?.[0]?.user_count || 0}
@@ -79,7 +79,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                 <span className="avatar avatar-md !rounded-full bg-primary/10 !text-secondary text-[1.125rem]">
                   <i
                     className={`bi bi-person text-primary text-[${
-                      is1803 ? "1rem" : "0.875rem"
+                      is1856 ? "1rem" : "0.875rem"
                     }]`}
                   ></i>
                 </span>
@@ -95,7 +95,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
               <div className="flex-grow">
                 <p
                   className={`mb-0 text-[#8c9097] dark:text-white/50 ${
-                    is1803 && "text-xs"
+                    is1856 && "text-xs"
                   }`}
                 >
                   Най-препоръчан жанр
@@ -103,7 +103,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                 <div className="flex items-center">
                   <span
                     className={`text-[${
-                      is1803 ? "1.25rem" : "1.125rem"
+                      is1856 ? "1.25rem" : "1.125rem"
                     }] font-semibold`}
                   >
                     {data.topGenres[0]?.genre_bg}
@@ -114,7 +114,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                 <span className="avatar avatar-md !rounded-full bg-primary/10 !text-secondary text-[1.125rem]">
                   <i
                     className={`bi bi-film text-primary text-[${
-                      is1803 ? "1rem" : "0.875rem"
+                      is1856 ? "1rem" : "0.875rem"
                     }]`}
                   ></i>
                 </span>
@@ -130,11 +130,11 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
               <div className="flex-grow">
                 <div className="flex flex-wrap items-start">
                   <div
-                    className={`flex items-center space-x-${is1803 ? 2 : 1}`}
+                    className={`flex items-center space-x-${is1856 ? 2 : 1}`}
                   >
                     <p
                       className={`mb-0 text-[#8c9097] dark:text-white/50 ${
-                        is1803 &&
+                        is1856 &&
                         "truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs"
                       }`}
                     >
@@ -144,20 +144,20 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                       <Link
                         to="#"
                         className={`flex items-center ${
-                          is1803
+                          is1856
                             ? "px-1 py-0.5 text-xs"
                             : "px-0.5 py-0.25 text-[0.70rem]"
                         } font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all max-h-[1.125rem]`}
                         onClick={toggleAveragesMenu}
                         aria-expanded={isAveragesMenuOpen ? "true" : "false"}
                       >
-                        <span className={`${is1488 && "hidden"}`}>
+                        <span className={`${is1532 && "hidden"}`}>
                           Сортирай по
                         </span>
                         <i
                           className={`ri-arrow-${
                             isAveragesMenuOpen ? "up" : "down"
-                          }-s-line ${!is1488 && "ml-0.5"} text-sm`}
+                          }-s-line ${!is1532 && "ml-0.5"} text-sm`}
                         ></i>
                       </Link>
                       <ul
@@ -197,7 +197,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                 <div className="flex items-center">
                   <span
                     className={`text-[${
-                      is1803 ? "1.25rem" : "1.125rem"
+                      is1856 ? "1.25rem" : "1.125rem"
                     }] font-semibold`}
                   >
                     {displayedValueAverages}
@@ -211,7 +211,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                       displayedNameAverages == "Среден Боксофис"
                         ? "ticket-perforated"
                         : "bi bi-clipboard-data"
-                    } text-[${is1803 ? "1rem" : "0.875rem"}] text-primary`}
+                    } text-[${is1856 ? "1rem" : "0.875rem"}] text-primary`}
                   ></i>
                 </span>
               </div>
@@ -224,10 +224,10 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
           <div className="box-body h-[5.5rem]">
             <div className="flex items-center justify-between">
               <div className="flex-grow">
-                <div className={`flex items-center space-x-${is1803 ? 2 : 1}`}>
+                <div className={`flex items-center space-x-${is1856 ? 2 : 1}`}>
                   <p
                     className={`mb-0 text-[#8c9097] dark:text-white/50 ${
-                      is1803 &&
+                      is1856 &&
                       "truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs"
                     }`}
                   >
@@ -237,20 +237,20 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                     <Link
                       to="#"
                       className={`flex items-center ${
-                        is1803
+                        is1856
                           ? "px-1 py-0.5 text-xs"
                           : "px-0.5 py-0.25 text-[0.70rem]"
                       } font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all max-h-[1.125rem]`}
                       onClick={toggleAwardsMenu}
                       aria-expanded={isAwardsMenuOpen ? "true" : "false"}
                     >
-                      <span className={`${is1488 && "hidden"}`}>
+                      <span className={`${is1532 && "hidden"}`}>
                         Сортирай по
                       </span>
                       <i
                         className={`ri-arrow-${
                           isAwardsMenuOpen ? "up" : "down"
-                        }-s-line ${!is1488 && "ml-0.5"} text-sm`}
+                        }-s-line ${!is1532 && "ml-0.5"} text-sm`}
                       ></i>
                     </Link>
                     <ul
@@ -287,7 +287,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                 <div className="flex items-center">
                   <span
                     className={`text-[${
-                      is1803 ? "1.25rem" : "1.125rem"
+                      is1856 ? "1.25rem" : "1.125rem"
                     }] font-semibold`}
                   >
                     {displayedValueAwards}
@@ -298,7 +298,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                 <span className="avatar avatar-md !rounded-full bg-primary/10 !text-secondary text-[1.125rem]">
                   <i
                     className={`bi bi-trophy text-[${
-                      is1803 ? "1rem" : "0.875rem"
+                      is1856 ? "1rem" : "0.875rem"
                     }] text-primary`}
                   ></i>
                 </span>
