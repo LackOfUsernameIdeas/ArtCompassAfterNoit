@@ -73,6 +73,7 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
   };
 
   const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
+  const is1477 = useMediaQuery({ query: "(max-width: 1477px)" });
 
   return (
     <Fragment>
@@ -189,7 +190,7 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
             <div className="sm:flex items-center">
               <div
                 className={`text-defaulttextcolor dark:text-defaulttextcolor/70 text-[${
-                  is1546 ? "0.6rem" : "0.75rem"
+                  is1546 ? "0.55rem" : "0.70rem"
                 }]`}
               >
                 Показване на резултати от{" "}
@@ -208,22 +209,28 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
               <div className="ms-auto">
                 <nav
                   aria-label="Page navigation"
-                  className="pagination-style-4"
+                  className={`pagination-style-4 ${
+                    is1546 ? "text-[0.5rem]" : "text-[0.70rem]"
+                  }`}
                 >
                   <ul className="ti-pagination mb-0 flex-wrap">
                     <li
                       className={`page-item ${
                         currentTablePage === 1 ? "disabled" : ""
                       }`}
-                      style={{ marginRight: "0.25rem" }}
+                      style={{
+                        marginRight: "0.25rem"
+                      }}
                     >
                       <Link
                         className="page-link"
                         to="#"
                         onClick={handlePrevTablePage}
                         style={{
-                          padding: "0.25rem 0.5rem",
-                          fontSize: "0.8rem",
+                          padding: is1546
+                            ? "0.25rem 0.35rem"
+                            : "0.2rem 0.45rem",
+                          fontSize: is1546 ? "0.55rem" : "0.7rem",
                           lineHeight: "1.25"
                         }}
                       >
@@ -252,8 +259,10 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                               to="#"
                               onClick={() => setCurrentTablePage(pageNumber)}
                               style={{
-                                padding: "0.25rem 0.5rem",
-                                fontSize: "0.8rem",
+                                padding: is1546
+                                  ? "0.3rem 0.25rem"
+                                  : "0.2rem 0.45rem",
+                                fontSize: is1546 ? "0.5rem" : "0.7rem",
                                 lineHeight: "1.25"
                               }}
                             >
@@ -278,8 +287,10 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                               className="page-link"
                               to="#"
                               style={{
-                                padding: "0.25rem 0.5rem",
-                                fontSize: "0.8rem",
+                                padding: is1546
+                                  ? "0.3rem 0.25rem"
+                                  : "0.2rem 0.45rem",
+                                fontSize: is1546 ? "0.5rem" : "0.7rem",
                                 lineHeight: "1.25"
                               }}
                             >
@@ -296,15 +307,19 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                       className={`page-item ${
                         currentTablePage === totalTablePages ? "disabled" : ""
                       }`}
-                      style={{ marginLeft: "0.25rem" }}
+                      style={{
+                        marginLeft: "0.25rem"
+                      }}
                     >
                       <Link
                         className="page-link"
                         to="#"
                         onClick={handleNextTablePage}
                         style={{
-                          padding: "0.25rem 0.5rem",
-                          fontSize: "0.8rem",
+                          padding: is1546
+                            ? "0.25rem 0.35rem"
+                            : "0.2rem 0.45rem",
+                          fontSize: is1546 ? "0.55rem" : "0.7rem",
                           lineHeight: "1.25"
                         }}
                       >
