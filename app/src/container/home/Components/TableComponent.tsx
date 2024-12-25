@@ -202,15 +202,15 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                     ? totalItems
                     : currentTablePage * 5}{" "}
                 </b>
-                от общо <b>{totalItems}</b> ( Страница <b>{currentTablePage}</b>{" "}
-                )<i className="bi bi-arrow-right ms-2 font-semibold"></i>
+                от общо <b>{totalItems}</b>{" "}
+                <i className="bi bi-arrow-right ms-2 font-semibold"></i>
               </div>
               <div className="ms-auto">
                 <nav
                   aria-label="Page navigation"
                   className="pagination-style-4"
                 >
-                  <ul className="ti-pagination mb-0">
+                  <ul className="ti-pagination mb-0 flex-wrap">
                     <li
                       className={`page-item ${
                         currentTablePage === 1 ? "disabled" : ""
@@ -230,30 +230,68 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                         Предишна
                       </Link>
                     </li>
-                    {[...Array(totalTablePages)].map((_, index) => (
-                      <li
-                        key={index}
-                        className={`page-item ${
-                          index + 1 === currentTablePage ? "active" : ""
-                        }`}
-                        style={{
-                          marginRight: "0.25rem"
-                        }}
-                      >
-                        <Link
-                          className="page-link"
-                          to="#"
-                          onClick={() => setCurrentTablePage(index + 1)}
-                          style={{
-                            padding: "0.25rem 0.5rem",
-                            fontSize: "0.8rem",
-                            lineHeight: "1.25"
-                          }}
-                        >
-                          {index + 1}
-                        </Link>
-                      </li>
-                    ))}
+
+                    {Array.from({ length: totalTablePages }).map((_, index) => {
+                      const pageNumber = index + 1;
+
+                      if (
+                        pageNumber === 1 ||
+                        pageNumber === totalTablePages ||
+                        Math.abs(pageNumber - currentTablePage) <= 1
+                      ) {
+                        return (
+                          <li
+                            key={pageNumber}
+                            className={`page-item ${
+                              pageNumber === currentTablePage ? "active" : ""
+                            }`}
+                            style={{ marginRight: "0.25rem" }}
+                          >
+                            <Link
+                              className="page-link"
+                              to="#"
+                              onClick={() => setCurrentTablePage(pageNumber)}
+                              style={{
+                                padding: "0.25rem 0.5rem",
+                                fontSize: "0.8rem",
+                                lineHeight: "1.25"
+                              }}
+                            >
+                              {pageNumber}
+                            </Link>
+                          </li>
+                        );
+                      }
+
+                      if (
+                        (pageNumber === currentTablePage - 2 ||
+                          pageNumber === currentTablePage + 2) &&
+                        totalTablePages > 5
+                      ) {
+                        return (
+                          <li
+                            key={pageNumber}
+                            className="page-item disabled"
+                            style={{ marginRight: "0.25rem" }}
+                          >
+                            <Link
+                              className="page-link"
+                              to="#"
+                              style={{
+                                padding: "0.25rem 0.5rem",
+                                fontSize: "0.8rem",
+                                lineHeight: "1.25"
+                              }}
+                            >
+                              ...
+                            </Link>
+                          </li>
+                        );
+                      }
+
+                      return null;
+                    })}
+
                     <li
                       className={`page-item ${
                         currentTablePage === totalTablePages ? "disabled" : ""
