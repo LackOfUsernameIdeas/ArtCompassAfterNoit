@@ -81,7 +81,7 @@ export const fetchData = async (
       { key: "usersCount", endpoint: "/stats/platform/users-count" },
       {
         key: "topRecommendations",
-        endpoint: "/stats/platform/top-recommendations-with-all-data"
+        endpoint: "/stats/platform/top-recommendations"
       },
       { key: "topGenres", endpoint: "/stats/platform/top-genres" },
       {

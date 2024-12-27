@@ -1,6 +1,7 @@
 const mysql = require("mysql2");
 const dbOpts = require("./config.js").dbOpts;
 const dbOptsLocal = require("./config.js").dbOptsLocal;
+const hf = require("./helper_functions");
 require("dotenv").config();
 
 const db = mysql.createConnection(dbOptsLocal);
@@ -10,40 +11,6 @@ db.connect((err) => {
   if (err) throw err;
   console.log("MySQL Connected...");
 });
-
-async function translate(entry) {
-  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bg&dt=t&q=${encodeURIComponent(
-    entry
-  )}`;
-
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-
-    const flattenedTranslation = data[0].map((item) => item[0]).join(" ");
-
-    const mergedTranslation = flattenedTranslation.replace(/\s+/g, " ").trim();
-    return mergedTranslation;
-  } catch (error) {
-    console.error(`Error translating entry: ${entry}`, error);
-    return entry;
-  }
-}
-
-// Функция за рестартиране на лимита на потребителя
-const checkAndResetRequestsDaily = (userRequests) => {
-  const currentDate = new Date().toISOString().split("T")[0];
-
-  if (!userRequests.resetDate) {
-    userRequests.resetDate = currentDate;
-  }
-
-  if (userRequests.resetDate !== currentDate) {
-    userRequests = {};
-    userRequests.resetDate = currentDate;
-    console.log("Request counts reset for the day.");
-  }
-};
 
 const checkEmailExists = (email, callback) => {
   const query = "SELECT * FROM users WHERE email = ?";
@@ -227,7 +194,7 @@ const getAverageBoxOfficeAndScores = (callback) => {
   db.query(query, callback);
 };
 
-const getTopRecommendations = (limit, callback) => {
+const getTopRecommendationsPlatform = (callback) => {
   const query = `
     SELECT 
         r.id,
@@ -274,8 +241,7 @@ const getTopRecommendations = (limit, callback) => {
     GROUP BY 
         r.title_en
     ORDER BY 
-        recommendations DESC
-    LIMIT ${limit};
+        recommendations DESC;
   `;
 
   db.query(query, callback);
@@ -307,7 +273,7 @@ const getTopCountries = (limit, callback) => {
     // Translate each country and return the result
     const translatedResults = await Promise.all(
       results.map(async (row) => {
-        const translatedCountry = await translate(row.country);
+        const translatedCountry = await hf.translate(row.country);
         return {
           country_en: row.country,
           country_bg: translatedCountry,
@@ -424,7 +390,7 @@ const getTopActors = (limit, callback) => {
     // Превеждане на името на всеки актьор
     const translatedResults = await Promise.all(
       results.map(async (row) => {
-        const translatedActor = await translate(row.actor);
+        const translatedActor = await hf.translate(row.actor);
         return {
           actor_en: row.actor,
           actor_bg: translatedActor,
@@ -466,7 +432,7 @@ const getTopDirectors = (limit, callback) => {
     // Превеждане на името на всеки режисьор
     const translatedResults = await Promise.all(
       results.map(async (row) => {
-        const translatedDirector = await translate(row.director);
+        const translatedDirector = await hf.translate(row.director);
         return {
           director_en: row.director,
           director_bg: translatedDirector,
@@ -508,7 +474,7 @@ const getTopWriters = (limit, callback) => {
     // Превеждане на името на всеки сценарист
     const translatedResults = await Promise.all(
       results.map(async (row) => {
-        const translatedWriter = await translate(row.writer);
+        const translatedWriter = await hf.translate(row.writer);
         return {
           writer_en: row.writer,
           writer_bg: translatedWriter,
@@ -817,7 +783,7 @@ const getSortedDirectorsByProsperity = (callback) => {
 
     const translatedResults = await Promise.all(
       directorsWithProsperity.map(async (row) => {
-        const translatedDirector = await translate(row.director);
+        const translatedDirector = await hf.translate(row.director);
         return {
           director_bg: translatedDirector,
           ...row
@@ -991,7 +957,7 @@ const getSortedActorsByProsperity = (callback) => {
     // Превеждане на имената на всеки актьор
     const translatedResults = await Promise.all(
       actorsWithProsperity.map(async (row) => {
-        const translatedActor = await translate(row.actor);
+        const translatedActor = await hf.translate(row.actor);
         return {
           actor_bg: translatedActor,
           ...row
@@ -1168,7 +1134,7 @@ const getSortedWritersByProsperity = (callback) => {
     // Translate each writer's name
     const translatedResults = await Promise.all(
       writersWithProsperity.map(async (row) => {
-        const translatedWriter = await translate(row.writer);
+        const translatedWriter = await hf.translate(row.writer);
         return {
           writer_bg: translatedWriter,
           ...row
@@ -1482,8 +1448,105 @@ const getTopMoviesAndSeriesByRottenTomatoesRating = (limit, callback) => {
   db.query(query, [limit], callback);
 };
 
+const getUsersTopRecommendations = (userId, callback) => {
+  const query = `
+    SELECT 
+        r.id,
+        r.imdbID,
+        r.title_en,
+        r.title_bg,
+        r.type,
+        r.awards,
+        COUNT(*) AS recommendations,
+
+        -- Extract Oscar wins as an integer (if available)
+        COALESCE(
+            CASE 
+                WHEN r.awards REGEXP 'Won [0-9]+ Oscar' OR r.awards REGEXP 'Won [0-9]+ Oscars' 
+                THEN CAST(NULLIF(SUBSTRING_INDEX(SUBSTRING_INDEX(r.awards, 'Won ', -1), ' Oscar', 1), '') AS UNSIGNED)
+                ELSE 0
+            END, 
+            0
+        ) AS oscar_wins,
+
+        -- Extract Oscar nominations as an integer (if available)
+        COALESCE(
+            CASE 
+                WHEN r.awards REGEXP 'Nominated for [0-9]+ Oscar' OR r.awards REGEXP 'Nominated for [0-9]+ Oscars' 
+                THEN CAST(NULLIF(SUBSTRING_INDEX(SUBSTRING_INDEX(r.awards, 'Nominated for ', -1), ' Oscar', 1), '') AS UNSIGNED)
+                ELSE 0
+            END, 
+            0
+        ) AS oscar_nominations,
+
+        -- Extract total wins as an integer
+        COALESCE(
+            CAST(NULLIF(REGEXP_SUBSTR(r.awards, '([0-9]+) win(s)?'), '') AS UNSIGNED), 
+            0
+        ) AS total_wins,
+
+        -- Extract total nominations as an integer
+        COALESCE(
+            CAST(NULLIF(REGEXP_SUBSTR(r.awards, '([0-9]+) nomination(s)?'), '') AS UNSIGNED), 
+            0
+        ) AS total_nominations
+    FROM 
+        recommendations r
+    WHERE 
+        r.user_id = ${userId}
+    GROUP BY 
+        r.title_en
+    ORDER BY 
+        recommendations DESC;
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      return callback(err);
+    }
+
+    // Count the number of series and movies
+    const recommendationsCount = results.reduce(
+      (acc, recommendation) => {
+        if (recommendation.type === "movie") {
+          acc.movies++;
+        } else if (recommendation.type === "series") {
+          acc.series++;
+        }
+        return acc;
+      },
+      { movies: 0, series: 0 }
+    );
+
+    // Include recommendationsCount in the response
+    callback(null, { recommendationsCount, recommendations: results });
+  });
+};
+
+const getUsersTopGenres = (userId, limit, callback) => {
+  const query = `
+    SELECT genre_en, genre_bg, COUNT(*) AS count
+    FROM (
+      SELECT 
+        TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(r.genre_en, ',', numbers.n), ',', -1)) AS genre_en,
+        TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(r.genre_bg, ',', numbers.n), ',', -1)) AS genre_bg
+      FROM recommendations r
+      INNER JOIN (
+        SELECT 1 AS n UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION
+        SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+      ) AS numbers 
+      ON CHAR_LENGTH(r.genre_en) - CHAR_LENGTH(REPLACE(r.genre_en, ',', '')) >= numbers.n - 1
+      AND CHAR_LENGTH(r.genre_bg) - CHAR_LENGTH(REPLACE(r.genre_bg, ',', '')) >= numbers.n - 1
+      WHERE r.user_id = ?
+    ) AS subquery
+    GROUP BY genre_en, genre_bg
+    ORDER BY count DESC
+    LIMIT ?
+  `;
+  db.query(query, [userId, limit], callback);
+};
+
 module.exports = {
-  checkAndResetRequestsDaily,
   checkEmailExists,
   createUser,
   findUserByEmail,
@@ -1493,8 +1556,7 @@ module.exports = {
   saveUserPreferences,
   getUsersCount,
   getAverageBoxOfficeAndScores,
-  getTopRecommendations,
-  getTopRecommendations,
+  getTopRecommendationsPlatform,
   getTopCountries,
   getTopGenres,
   getGenrePopularityOverTime,
@@ -1510,5 +1572,7 @@ module.exports = {
   getSortedMoviesByProsperity,
   getTopMoviesAndSeriesByMetascore,
   getTopMoviesAndSeriesByIMDbRating,
-  getTopMoviesAndSeriesByRottenTomatoesRating
+  getTopMoviesAndSeriesByRottenTomatoesRating,
+  getUsersTopRecommendations,
+  getUsersTopGenres
 };

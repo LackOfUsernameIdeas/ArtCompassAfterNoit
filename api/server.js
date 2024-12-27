@@ -7,6 +7,7 @@ const nodemailer = require("nodemailer");
 const bodyParser = require("body-parser");
 const crypto = require("crypto");
 const db = require("./database");
+const hf = require("./helper_functions");
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -133,7 +134,7 @@ app.post("/handle-submit", (req, res) => {
     const userId = decoded.id; // Вземане на потребителско ID
 
     // Алгоритъм за отстраняване на спам от заявки
-    db.checkAndResetRequestsDaily(userRequests);
+    hf.checkAndResetRequestsDaily(userRequests);
 
     // Ако потребителят все още няма данни, те се инициализират
     if (!userRequests[userId]) {
@@ -543,16 +544,8 @@ app.get("/stats/platform/average-scores", (req, res) => {
 });
 
 // Вземане на данни за най-препоръчвани филми/сериали в платформата
-app.get("/stats/platform/top-recommendations-with-all-data", (req, res) => {
-  const limit = parseInt(req.query.limit, 10) || 10; // По подразбиране 10, ако лимитът не е предоставен или е невалиден
-
-  if (limit <= 0) {
-    return res
-      .status(400)
-      .json({ error: "Лимитът трябва да е положително число." });
-  }
-
-  db.getTopRecommendations(limit, (err, result) => {
+app.get("/stats/platform/top-recommendations", (req, res) => {
+  db.getTopRecommendationsPlatform((err, result) => {
     if (err) {
       return res
         .status(500)
@@ -804,6 +797,48 @@ app.get(
     });
   }
 );
+
+// Вземане на данни за най-препоръчвани филми/сериали на даден потребител
+app.post("/stats/individual/top-recommendations", (req, res) => {
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersTopRecommendations(userId, (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error fetching top recommendations" });
+      }
+      res.json(result);
+    });
+  });
+});
+
+// Вземане на данни за най-препоръчвани жанрове на даден потребител
+app.post("/stats/individual/top-genres", (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersTopGenres(userId, limit, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: "Error fetching top genres" });
+      }
+      res.json(result);
+    });
+  });
+});
 
 // Start server
 app.listen(5000, () => {
