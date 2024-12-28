@@ -241,7 +241,8 @@ const getTopRecommendationsPlatform = (callback) => {
     GROUP BY 
         r.title_en
     ORDER BY 
-        recommendations DESC;
+        recommendations DESC
+    LIMIT 10;
   `;
 
   db.query(query, callback);
@@ -1489,7 +1490,15 @@ const getUsersTopRecommendations = (userId, callback) => {
         COALESCE(
             CAST(NULLIF(REGEXP_SUBSTR(r.awards, '([0-9]+) nomination(s)?'), '') AS UNSIGNED), 
             0
-        ) AS total_nominations
+        ) AS total_nominations,
+
+        -- Include additional fields
+        COALESCE(CAST(r.imdbRating AS DECIMAL(3, 1)), 0) AS imdbRating,
+        COALESCE(CAST(r.metascore AS UNSIGNED), 0) AS metascore,
+        COALESCE(
+            CAST(REPLACE(REPLACE(r.boxOffice, '$', ''), ',', '') AS UNSIGNED),
+            0
+        ) AS boxOffice
     FROM 
         recommendations r
     WHERE 
@@ -1546,6 +1555,139 @@ const getUsersTopGenres = (userId, limit, callback) => {
   db.query(query, [userId, limit], callback);
 };
 
+const getUsersTopActors = (userId, limit, callback) => {
+  const query = `
+  SELECT actor, COUNT(*) AS actor_count
+    FROM (
+      SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(actors, ',', n.n), ',', -1)) AS actor
+      FROM recommendations
+      CROSS JOIN (
+          SELECT a.N + b.N * 10 + 1 AS n
+          FROM (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a,
+              (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
+          ORDER BY n
+      ) n
+      WHERE user_id = ? 
+        AND n.n <= 1 + (LENGTH(actors) - LENGTH(REPLACE(actors, ',', '')))
+        AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(actors, ',', n.n), ',', -1)) != 'N/A'
+    ) AS actor_list
+    GROUP BY actor
+    ORDER BY actor_count DESC
+    LIMIT ?;
+    `;
+
+  db.query(query, [userId, limit], async (err, results) => {
+    if (err) {
+      callback(err, null);
+      return;
+    }
+
+    // Translate actor names
+    const translatedResults = await Promise.all(
+      results.map(async (row) => {
+        const translatedActor = await hf.translate(row.actor);
+        return {
+          actor_en: row.actor,
+          actor_bg: translatedActor,
+          actor_count: row.actor_count
+        };
+      })
+    );
+
+    callback(null, translatedResults);
+  });
+};
+
+const getUsersTopDirectors = (userId, limit, callback) => {
+  const query = `
+  SELECT director, COUNT(*) AS director_count
+  FROM (
+    SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(director, ',', n.n), ',', -1)) AS director
+    FROM recommendations
+    CROSS JOIN (
+        SELECT a.N + b.N * 10 + 1 AS n
+        FROM (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+              UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a,
+             (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+              UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
+        ORDER BY n
+    ) n
+    WHERE user_id = ? 
+      AND n.n <= 1 + (LENGTH(director) - LENGTH(REPLACE(director, ',', '')))
+      AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(director, ',', n.n), ',', -1)) != 'N/A'
+  ) AS director_list
+  GROUP BY director
+  ORDER BY director_count DESC
+  LIMIT ?`;
+
+  db.query(query, [userId, limit], async (err, results) => {
+    if (err) {
+      callback(err, null);
+      return;
+    }
+
+    // Translate director names
+    const translatedResults = await Promise.all(
+      results.map(async (row) => {
+        const translatedDirector = await hf.translate(row.director);
+        return {
+          director_en: row.director,
+          director_bg: translatedDirector,
+          director_count: row.director_count
+        };
+      })
+    );
+
+    callback(null, translatedResults);
+  });
+};
+
+const getUsersTopWriters = (user_id, limit, callback) => {
+  const query = `
+  SELECT writer, COUNT(*) AS writer_count
+  FROM (
+    SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(writer, ',', n.n), ',', -1)) AS writer
+    FROM recommendations
+    CROSS JOIN (
+        SELECT a.N + b.N * 10 + 1 AS n
+        FROM (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+              UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a,
+             (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+              UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
+        ORDER BY n
+    ) n
+    WHERE user_id = ? 
+      AND n.n <= 1 + (LENGTH(writer) - LENGTH(REPLACE(writer, ',', '')))
+      AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(writer, ',', n.n), ',', -1)) != 'N/A'
+  ) AS writer_list
+  GROUP BY writer
+  ORDER BY writer_count DESC
+  LIMIT ?`;
+
+  db.query(query, [user_id, limit], async (err, results) => {
+    if (err) {
+      callback(err, null);
+      return;
+    }
+
+    // Translate writer names
+    const translatedResults = await Promise.all(
+      results.map(async (row) => {
+        const translatedWriter = await hf.translate(row.writer);
+        return {
+          writer_en: row.writer,
+          writer_bg: translatedWriter,
+          writer_count: row.writer_count
+        };
+      })
+    );
+
+    callback(null, translatedResults);
+  });
+};
+
 module.exports = {
   checkEmailExists,
   createUser,
@@ -1574,5 +1716,8 @@ module.exports = {
   getTopMoviesAndSeriesByIMDbRating,
   getTopMoviesAndSeriesByRottenTomatoesRating,
   getUsersTopRecommendations,
-  getUsersTopGenres
+  getUsersTopGenres,
+  getUsersTopActors,
+  getUsersTopDirectors,
+  getUsersTopWriters
 };

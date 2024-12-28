@@ -840,7 +840,79 @@ app.post("/stats/individual/top-genres", (req, res) => {
   });
 });
 
-// Start server
+// Вземане на данни за най-препоръчвани актьори на даден потребител
+app.post("/stats/individual/top-actors", (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersTopActors(userId, limit, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: "Error fetching top genres" });
+      }
+      res.json(result);
+    });
+  });
+});
+
+// Вземане на данни за най-препоръчвани режисьори на даден потребител
+app.post("/stats/individual/top-directors", (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersTopDirectors(userId, limit, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: "Error fetching top genres" });
+      }
+      res.json(result);
+    });
+  });
+});
+
+// Вземане на данни за най-препоръчвани сценаристи на даден потребител
+app.post("/stats/individual/top-writers", (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersTopWriters(userId, limit, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: "Error fetching top genres" });
+      }
+      res.json(result);
+    });
+  });
+});
+
+// Стартиране на сървъра
 app.listen(5000, () => {
   console.log("Server started on port 5000.");
 });

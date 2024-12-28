@@ -146,7 +146,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                         to="#"
                         className={`flex items-center ${
                           is1856
-                            ? "px-1 py-0.5 text-xs"
+                            ? "px-1 py-0.5 text-[0.70rem]"
                             : "px-0.5 py-0.25 text-[0.70rem]"
                         } font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all max-h-[1.125rem]`}
                         onClick={toggleAveragesMenu}
@@ -239,7 +239,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                       to="#"
                       className={`flex items-center ${
                         is1966
-                          ? "px-1 py-0.5 text-xs"
+                          ? "px-1 py-0.5 text-[0.70rem]"
                           : "px-0.5 py-0.25 text-[0.70rem]"
                       } font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all max-h-[1.125rem]`}
                       onClick={toggleAwardsMenu}
