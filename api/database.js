@@ -1510,16 +1510,67 @@ const getUsersTopRecommendations = (userId, callback) => {
   `;
 
   db.query(query, (err, results) => {
-    if (err) {
-      return callback(err);
-    }
+    // Calculate prosperity score for each recommendation
+    const weights = {
+      total_wins: 0.3,
+      total_nominations: 0.25,
+      total_box_office: 0.15,
+      avg_metascore: 0.1,
+      avg_imdb_rating: 0.1,
+      avg_rotten_tomatoes: 0.1
+    };
+
+    // Намиране на максималната стойност на бокс офис, за да се нормализира
+    const maxBoxOffice = Math.max(
+      ...results.map((movie) => {
+        const totalBoxOffice = movie.boxOffice
+          ? parseFloat(movie.boxOffice.replace(/[$,]/g, "")) || 0
+          : 0; // Handle undefined boxOffice
+        return totalBoxOffice;
+      })
+    );
+
+    const recommendationsWithProsperity = results.map((movie) => {
+      const totalWins = movie.total_wins || 0; // Ensure no null values
+      const totalNominations = movie.total_nominations || 0;
+
+      // Parse and normalize the box office value
+      const totalBoxOffice = movie.boxOffice
+        ? parseFloat(movie.boxOffice.replace(/[$,]/g, "")) || 0
+        : 0; // Handle undefined boxOffice
+
+      // Normalize the box office value on a 0-1 scale
+      const normalizedBoxOffice = maxBoxOffice
+        ? totalBoxOffice / maxBoxOffice
+        : 0;
+
+      const avgIMDbRating = movie.imdbRating || 0;
+      const avgMetascore = movie.metascore || 0; // Add Metascore
+      const avgRottenTomatoes = movie.avg_rotten_tomatoes
+        ? parseFloat(movie.avg_rotten_tomatoes.replace("%", "")) / 100
+        : 0;
+
+      // Calculate prosperity score using weighted values
+      const prosperityScore =
+        totalWins * weights.total_wins +
+        totalNominations * weights.total_nominations +
+        normalizedBoxOffice * weights.total_box_office +
+        avgIMDbRating * weights.avg_imdb_rating +
+        avgMetascore * weights.avg_metascore +
+        avgRottenTomatoes * weights.avg_rotten_tomatoes;
+
+      return {
+        ...movie,
+        prosperityScore: Number(prosperityScore.toFixed(2)) // Round to 2 decimal places
+      };
+    });
 
     // Count the number of series and movies
-    const recommendationsCount = results.reduce(
-      (acc, recommendation) => {
-        if (recommendation.type === "movie") {
+    const recommendationsCount = recommendationsWithProsperity.reduce(
+      (acc, rec) => {
+        if (rec.type === "movie") {
           acc.movies++;
-        } else if (recommendation.type === "series") {
+        } else if (rec.type === "series") {
           acc.series++;
         }
         return acc;
@@ -1527,8 +1578,11 @@ const getUsersTopRecommendations = (userId, callback) => {
       { movies: 0, series: 0 }
     );
 
-    // Include recommendationsCount in the response
-    callback(null, { recommendationsCount, recommendations: results });
+    // Include recommendationsCount and sorted recommendations in the response
+    callback(null, {
+      recommendationsCount,
+      recommendations: recommendationsWithProsperity
+    });
   });
 };
 
