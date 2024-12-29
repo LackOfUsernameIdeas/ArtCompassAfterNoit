@@ -2,6 +2,7 @@ import { FC, Fragment, useEffect, useState, useMemo } from "react";
 import { DataType, Recommendation } from "../individualStats-types";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom"; // Make sure this is imported
+import { Tooltip } from "react-tooltip";
 
 interface RecommendationsTableProps {
   data: DataType;
@@ -68,10 +69,12 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
     }
   };
 
-  const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
+  const is1399 = useMediaQuery({ query: "(max-width: 1399px)" });
+  const is1557 = useMediaQuery({ query: "(max-width: 1557px)" });
+  const is1630 = useMediaQuery({ query: "(max-width: 1630px)" });
 
   const sortOptions = [
-    { label: "Препоръки", value: "recommendations" },
+    { label: "Брой Препоръки", value: "recommendations" },
     { label: "Просперитет", value: "prosperityScore" },
     { label: "Боксофис", value: "boxOffice" }
   ];
@@ -107,18 +110,29 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
         <div className="box custom-card h-[27.75rem]">
           <div className="box-header justify-between">
             {/* Динамично сортиране на заглавие базирано на избраната опция */}
-            <div className="box-title">
+            <div
+              className={`box-title whitespace-nowrap overflow-hidden text-ellipsis ${
+                is1399 ? "max-w-full" : is1630 ? "max-w-[20rem]" : "max-w-full"
+              }`}
+              data-tooltip-id="box-title-tooltip"
+              data-tooltip-content={
+                sortBy === "default"
+                  ? "Най-често препоръчваните филми и сериали за мен"
+                  : sortTitles[sortBy]
+              }
+            >
               {sortBy === "default"
                 ? "Най-често препоръчваните филми и сериали за мен"
                 : sortTitles[sortBy]}
             </div>
+            <Tooltip id="box-title-tooltip" />
             <div className="relative flex items-center space-x-2">
               <div className="hs-dropdown ti-dropdown">
                 <Link
                   to="#"
                   className={`flex items-center ${
-                    is1546
-                      ? "px-3 py-1.5 text-[0.85rem]"
+                    is1557
+                      ? "px-2.5 py-1 text-[0.75rem]"
                       : "px-3 py-1 text-[0.85rem]"
                   } font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all`}
                   onClick={toggleSortMenu}
@@ -138,7 +152,7 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
                   <i
                     className={`ri-arrow-${
                       isSortMenuOpen ? "up" : "down"
-                    }-s-line ${!is1546 && "ml-1"} text-base`}
+                    }-s-line ${!is1557 && "ml-1"} text-base`}
                   ></i>
                 </Link>
                 <ul
@@ -166,10 +180,17 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
               </div>
 
               <button
-                className="px-3 py-1.5 bg-primary text-white border border-primary rounded-sm text-base font-medium hover:bg-primary/10 transition-all flex items-center justify-center"
-                onClick={() =>
-                  setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
-                }
+                className="px-3 py-1.5 text-[0.85rem] bg-primary text-white border border-primary rounded-sm text-base font-medium hover:bg-primary/10 transition-all flex items-center justify-center"
+                onClick={() => {
+                  if (sortBy === "default") {
+                    // Превключване между нарастващ и намаляващ ред
+                    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+                    setSortBy("recommendations");
+                  } else {
+                    // Превключване между нарастващ и намаляващ ред, ако не е на 'default'
+                    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+                  }
+                }}
               >
                 {sortOrder === "asc" ? (
                   <i className="bx bx-sort-up text-lg"></i>
@@ -187,7 +208,7 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
                     <th>#</th>
                     <th>Заглавие</th>
                     <th>Тип</th>
-                    <th>Препоръки</th>
+                    <th>Брой Препоръки</th>
                     <th>Оскар Победи</th>
                     <th>Оскар Номинации</th>
                     <th>Общо Победи</th>
@@ -225,7 +246,7 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
             <div className="sm:flex items-center">
               <div
                 className={`text-defaulttextcolor dark:text-defaulttextcolor/70 text-[${
-                  is1546 ? "0.55rem" : "0.70rem"
+                  is1557 ? "0.55rem" : "0.70rem"
                 }]`}
               >
                 Показване на резултати от{" "}
@@ -245,7 +266,7 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
                 <nav
                   aria-label="Page navigation"
                   className={`pagination-style-4 ${
-                    is1546 ? "text-[0.55rem]" : "text-[0.70rem]"
+                    is1557 ? "text-[0.55rem]" : "text-[0.70rem]"
                   }`}
                 >
                   <ul className="ti-pagination mb-0 flex-wrap">
@@ -262,10 +283,10 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
                         to="#"
                         onClick={handlePrevTablePage}
                         style={{
-                          padding: is1546
+                          padding: is1557
                             ? "0.25rem 0.35rem"
                             : "0.2rem 0.45rem",
-                          fontSize: is1546 ? "0.6rem" : "0.7rem",
+                          fontSize: is1557 ? "0.6rem" : "0.7rem",
                           lineHeight: "1.25"
                         }}
                       >
@@ -294,10 +315,10 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
                               to="#"
                               onClick={() => setCurrentTablePage(pageNumber)}
                               style={{
-                                padding: is1546
+                                padding: is1557
                                   ? "0.25rem 0.35rem"
                                   : "0.2rem 0.45rem",
-                                fontSize: is1546 ? "0.6rem" : "0.7rem",
+                                fontSize: is1557 ? "0.6rem" : "0.7rem",
                                 lineHeight: "1.25"
                               }}
                             >
@@ -322,10 +343,10 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
                               className="page-link"
                               to="#"
                               style={{
-                                padding: is1546
+                                padding: is1557
                                   ? "0.25rem 0.35rem"
                                   : "0.2rem 0.45rem",
-                                fontSize: is1546 ? "0.6rem" : "0.7rem",
+                                fontSize: is1557 ? "0.6rem" : "0.7rem",
                                 lineHeight: "1.25"
                               }}
                             >
@@ -351,10 +372,10 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
                         to="#"
                         onClick={handleNextTablePage}
                         style={{
-                          padding: is1546
+                          padding: is1557
                             ? "0.25rem 0.35rem"
                             : "0.2rem 0.45rem",
-                          fontSize: is1546 ? "0.6rem" : "0.7rem",
+                          fontSize: is1557 ? "0.6rem" : "0.7rem",
                           lineHeight: "1.25"
                         }}
                       >

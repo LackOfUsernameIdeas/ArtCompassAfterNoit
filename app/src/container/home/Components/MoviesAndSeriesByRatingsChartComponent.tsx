@@ -10,6 +10,7 @@ import {
 } from "../helper_functions";
 import { useMediaQuery } from "react-responsive";
 import { moviesAndSeriesCategoryDisplayNames } from "../home-data";
+import { Tooltip } from "react-tooltip";
 
 interface MoviesAndSeriesByRatingsChartComponentProps {
   data: DataType;
@@ -81,7 +82,13 @@ const MoviesAndSeriesByRatingsChartComponent: FC<
         <div className="box custom-box">
           <div className="custom-box-header justify-between">
             <div
-              className="box-title"
+              className={`box-title whitespace-nowrap overflow-hidden text-ellipsis`}
+              data-tooltip-id="box-title-tooltip"
+              data-tooltip-content={`Филми и сериали по ${
+                moviesAndSeriesCategoryDisplayNames[
+                  moviesAndSeriesSortCategory as keyof typeof moviesAndSeriesCategoryDisplayNames
+                ]
+              }`}
               style={{
                 maxWidth:
                   window.innerWidth < 1400
@@ -99,6 +106,7 @@ const MoviesAndSeriesByRatingsChartComponent: FC<
                 ]
               }`}
             </div>
+            <Tooltip id="box-title-tooltip" />
 
             <div className="flex flex-wrap gap-2">
               <div
