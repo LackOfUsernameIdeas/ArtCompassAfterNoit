@@ -204,7 +204,7 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
             <div className="overflow-x-auto">
               <table className="table min-w-full whitespace-nowrap table-hover border table-bordered">
                 <thead>
-                  <tr>
+                  <tr className="border border-inherit border-solid dark:border-defaultborder/10">
                     <th>#</th>
                     <th>Заглавие</th>
                     <th>Тип</th>
@@ -221,7 +221,10 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
                 </thead>
                 <tbody>
                   {paginatedData.map((item, index) => (
-                    <tr key={index}>
+                    <tr
+                      key={index}
+                      className="border border-inherit border-solid dark:border-defaultborder/10"
+                    >
                       <td>
                         {(currentTablePage - 1) * itemsPerTablePage + index + 1}
                       </td>
