@@ -94,7 +94,10 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
               className="accordion accordionicon-left accordions-items-seperate"
               id="accordioniconLeftExample"
             >
-              <div className="hs-accordion-group">
+              <div
+                className="hs-accordion-group"
+                data-hs-accordion-always-open=""
+              >
                 <div
                   className="hs-accordion accordion-item  overflow-hidden !border-b-0 active"
                   id="hs-basic-with-title-and-arrow-stretched-heading-one"
