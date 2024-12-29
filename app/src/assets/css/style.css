@@ -17543,13 +17543,13 @@ hr {
 }
 
 .accordion-button {
-  @apply bg-white dark:bg-bodybg text-defaulttextcolor py-3 px-4 text-[0.85rem] font-medium;
+  @apply bg-gray-600/10 dark:bg-bodybg text-defaulttextcolor py-3 px-4 text-[0.85rem] font-medium;
 }
 .accordion-button:not(.collapsed) {
-  @apply text-defaulttextcolor  shadow-none;
+  @apply text-defaulttextcolor shadow-none;
 }
 .accordion-button:focus {
-  @apply bg-defaultbackground dark:bg-light text-defaulttextcolor shadow-none;
+  @apply bg-defaultbackground dark:bg-bodybg/90 text-defaulttextcolor shadow-none;
 }
 
 .accordion-body {
@@ -17557,7 +17557,7 @@ hr {
 }
 
 .accordion-item {
-  @apply text-defaulttextcolor bg-white dark:bg-bodybg border border-solid border-defaultborder dark:border-defaultborder/10 dark:text-defaulttextcolor/70;
+  @apply text-defaulttextcolor bg-white dark:bg-[#1f1f1f] border border-solid border-defaultborder dark:border-defaultborder/10 dark:text-defaulttextcolor/70;
 }
 
 .accordions-items-seperate .accordion-item:not(:first-of-type) {
