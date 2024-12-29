@@ -2064,29 +2064,30 @@ const getUsersTopDirectors = (userId, limit, callback) => {
   });
 };
 
-const getUsersTopWriters = (user_id, limit, callback) => {
+const getUsersTopWriters = (userId, limit, callback) => {
   const query = `
-  SELECT writer, COUNT(*) AS writer_count
-  FROM (
-    SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(writer, ',', n.n), ',', -1)) AS writer
-    FROM recommendations
-    CROSS JOIN (
-        SELECT a.N + b.N * 10 + 1 AS n
-        FROM (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
-              UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a,
-             (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
-              UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
-        ORDER BY n
-    ) n
-    WHERE user_id = ? 
-      AND n.n <= 1 + (LENGTH(writer) - LENGTH(REPLACE(writer, ',', '')))
-      AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(writer, ',', n.n), ',', -1)) != 'N/A'
-  ) AS writer_list
-  GROUP BY writer
-  ORDER BY writer_count DESC
-  LIMIT ?`;
+    SELECT writer, COUNT(*) AS writer_recommendations_count
+    FROM (
+      SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(writer, ',', n.n), ',', -1)) AS writer
+      FROM recommendations
+      CROSS JOIN (
+          SELECT a.N + b.N * 10 + 1 AS n
+          FROM (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a,
+              (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
+          ORDER BY n
+      ) n
+      WHERE user_id = ? 
+        AND n.n <= 1 + (LENGTH(writer) - LENGTH(REPLACE(writer, ',', '')))
+        AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(writer, ',', n.n), ',', -1)) != 'N/A'
+    ) AS writer_list
+    GROUP BY writer
+    ORDER BY writer_recommendations_count DESC
+    LIMIT ?;
+  `;
 
-  db.query(query, [user_id, limit], async (err, results) => {
+  db.query(query, [userId, limit], async (err, results) => {
     if (err) {
       callback(err, null);
       return;
@@ -2099,12 +2100,189 @@ const getUsersTopWriters = (user_id, limit, callback) => {
         return {
           writer_en: row.writer,
           writer_bg: translatedWriter,
-          writer_count: row.writer_count
+          writer_recommendations_count: row.writer_recommendations_count
         };
       })
     );
 
-    callback(null, translatedResults);
+    // Fetch prosperity data for the writers
+    const writers = translatedResults
+      .map((writer) => `'${writer.writer_en}'`)
+      .join(","); // Ensuring correct formatting for IN clause
+
+    const prosperityQuery = `
+      WITH RECURSIVE WriterSplit AS (
+        SELECT 
+            id, 
+            TRIM(SUBSTRING_INDEX(writer, ',', 1)) AS writer,
+            SUBSTRING_INDEX(writer, ',', -1) AS remaining_writers,
+            imdbRating,
+            metascore,
+            boxOffice,
+            awards,
+            imdbID,
+            ratings,
+            type
+        FROM recommendations
+        WHERE writer IS NOT NULL 
+          AND writer != 'N/A'
+        UNION ALL
+        SELECT 
+            id,
+            TRIM(SUBSTRING_INDEX(remaining_writers, ',', 1)) AS writer,
+            SUBSTRING_INDEX(remaining_writers, ',', -1) AS remaining_writers,
+            imdbRating,
+            metascore,
+            boxOffice,
+            awards,
+            imdbID,
+            ratings,
+            type
+        FROM WriterSplit
+        WHERE remaining_writers LIKE '%,%'
+      ),
+      UniqueMovies AS (
+        SELECT 
+            DISTINCT imdbID,
+            writer,
+            imdbRating,
+            metascore,
+            boxOffice,
+            awards,
+            ratings
+        FROM WriterSplit
+        WHERE writer IS NOT NULL AND writer != 'N/A'
+      ),
+      WriterRecommendations AS (
+        SELECT 
+            TRIM(SUBSTRING_INDEX(writer, ',', 1)) AS writer,
+            COUNT(*) AS total_recommendations
+        FROM recommendations
+        WHERE writer IS NOT NULL 
+          AND writer != 'N/A'
+        GROUP BY writer
+      )
+      SELECT 
+        um.writer,
+        ROUND(AVG(um.imdbRating), 2) AS avg_imdb_rating,
+        AVG(um.metascore) AS avg_metascore,
+        CONCAT('$', FORMAT(SUM(CASE 
+                WHEN um.boxOffice IS NULL OR um.boxOffice = 'N/A' 
+                THEN 0 
+                ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
+            END), 0)) AS total_box_office,
+        CONCAT(ROUND(AVG(CAST(REPLACE(REPLACE(JSON_UNQUOTE(JSON_EXTRACT(um.ratings, '$[1].Value')), '%', ''), ',', '') AS DECIMAL(5,2))), 0), '%') AS avg_rotten_tomatoes,
+        COUNT(DISTINCT um.imdbID) AS movie_count,
+        COALESCE(wr.total_recommendations, 0) AS total_recommendations,
+        SUM(CASE 
+                WHEN um.awards IS NOT NULL THEN 
+                    CASE 
+                        WHEN um.awards LIKE '1 win%' THEN 1
+                        ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ win(s)') AS UNSIGNED), 0)
+                    END
+                ELSE 0 
+            END) AS total_wins,
+        SUM(CASE 
+                WHEN um.awards IS NOT NULL THEN 
+                    CASE 
+                        WHEN um.awards LIKE '1 nomination%' THEN 1
+                        ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ nomination(s)') AS UNSIGNED), 0)
+                    END
+                ELSE 0 
+            END) AS total_nominations
+      FROM 
+          UniqueMovies um
+      LEFT JOIN 
+          WriterRecommendations wr ON um.writer = wr.writer
+      WHERE 
+          um.writer IN (${writers})
+      GROUP BY 
+          um.writer
+      ORDER BY 
+          avg_imdb_rating DESC;
+    `;
+
+    db.query(prosperityQuery, async (err, prosperityResults) => {
+      if (err) {
+        callback(err, null);
+        return;
+      }
+
+      // Calculate prosperity scores (same logic as directors)
+      const maxBoxOffice = Math.max(
+        ...prosperityResults.map((writer) => {
+          const totalBoxOffice =
+            parseFloat(writer.total_box_office.replace(/[$,]/g, "")) || 0;
+          return totalBoxOffice;
+        })
+      );
+
+      const weights = {
+        total_wins: 0.3,
+        total_nominations: 0.25,
+        total_box_office: 0.15,
+        avg_metascore: 0.1,
+        avg_imdb_rating: 0.1,
+        avg_rotten_tomatoes: 0.1
+      };
+
+      const writersWithProsperity = prosperityResults.map((writer) => {
+        const totalWins = writer.total_wins || 0;
+        const totalNominations = writer.total_nominations || 0;
+
+        const totalBoxOffice =
+          parseFloat(writer.total_box_office.replace(/[$,]/g, "")) || 0;
+        const normalizedBoxOffice = maxBoxOffice
+          ? totalBoxOffice / maxBoxOffice
+          : 0;
+
+        const avgIMDbRating = writer.avg_imdb_rating || 0;
+        const avgMetascore = writer.avg_metascore || 0;
+        const avgRottenTomatoes = writer.avg_rotten_tomatoes
+          ? parseFloat(writer.avg_rotten_tomatoes.replace("%", "")) / 100
+          : 0;
+
+        const prosperityScore =
+          totalWins * weights.total_wins +
+          totalNominations * weights.total_nominations +
+          normalizedBoxOffice * weights.total_box_office +
+          avgMetascore * weights.avg_metascore +
+          avgIMDbRating * weights.avg_imdb_rating +
+          avgRottenTomatoes * weights.avg_rotten_tomatoes;
+
+        return {
+          ...writer,
+          prosperityScore
+        };
+      });
+
+      // Combine top writers with their prosperity data
+      const combinedResults = translatedResults.map((writer) => {
+        const prosperity = writersWithProsperity.find(
+          (result) => result.writer === writer.writer_en
+        ) || {
+          prosperityScore: 0,
+          totalBoxOffice: 0,
+          avgImdbRating: 0,
+          avgMetascore: 0,
+          avgRottenTomatoes: 0,
+          totalRecommendations: 0,
+          totalWins: 0,
+          totalNominations: 0
+        };
+        return {
+          ...writer,
+          ...prosperity
+        };
+      });
+
+      const sortedResults = combinedResults.sort(
+        (a, b) =>
+          b.writer_recommendations_count - a.writer_recommendations_count
+      );
+
+      callback(null, sortedResults);
+    });
   });
 };
 
