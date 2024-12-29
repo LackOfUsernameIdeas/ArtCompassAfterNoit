@@ -54,91 +54,42 @@ export const isWriter = (item: any): item is WriterData =>
  * Извлича данни от API за платформата и ги запазва в състоянието.
  *
  * @param {string} token - Токен за удостоверяване.
- * @param {React.Dispatch<React.SetStateAction<any>>} setUserData - Функция за задаване на потребителски данни.
  * @param {React.Dispatch<React.SetStateAction<any>>} setData - Функция за задаване на общи данни.
  * @throws {Error} - Хвърля грешка, ако заявката е неуспешна.
  */
 export const fetchData = async (
   token: string,
-  setUserData: React.Dispatch<React.SetStateAction<any>>,
   setData: React.Dispatch<React.SetStateAction<any>>
 ): Promise<void> => {
   try {
-    // Fetch user data independently
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/user-data`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      }
-    })
-      .then((res) => res.json())
-      .then((userData) => setUserData(userData)) // Set userData independently here
-      .catch((error) => console.error("Error fetching user data:", error));
-
     // Fetch statistics data independently
     const endpoints = [
-      {
-        key: "usersCount",
-        endpoint: "/stats/platform/users-count",
-        method: "GET"
-      },
       {
         key: "topRecommendations",
         endpoint: "/stats/individual/top-recommendations",
         method: "POST",
         body: { token: token }
       },
-      {
-        key: "topGenres",
-        endpoint: "/stats/platform/top-genres",
-        method: "GET"
-      },
-      {
-        key: "genrePopularityOverTime",
-        endpoint: "/stats/platform/genre-popularity-over-time",
-        method: "GET"
-      },
-      {
-        key: "topActors",
-        endpoint: "/stats/platform/top-actors",
-        method: "GET"
-      },
-      {
-        key: "averageBoxOfficeAndScores",
-        endpoint: "/stats/platform/average-scores",
-        method: "GET"
-      },
-      {
-        key: "topCountries",
-        endpoint: "/stats/platform/top-countries",
-        method: "GET"
-      },
-      {
-        key: "topDirectors",
-        endpoint: "/stats/platform/top-directors",
-        method: "GET"
-      },
-      {
-        key: "topWriters",
-        endpoint: "/stats/platform/top-writers",
-        method: "GET"
-      },
-      {
-        key: "oscarsByMovie",
-        endpoint: "/stats/platform/oscars-by-movie",
-        method: "GET"
-      },
-      {
-        key: "totalAwardsByMovieOrSeries",
-        endpoint: "/stats/platform/total-awards-by-movie",
-        method: "GET"
-      },
-      {
-        key: "totalAwards",
-        endpoint: "/stats/platform/total-awards",
-        method: "GET"
-      },
+      // {
+      //   key: "topGenres",
+      //   endpoint: "/stats/platform/top-genres",
+      //   method: "GET"
+      // },
+      // {
+      //   key: "topActors",
+      //   endpoint: "/stats/platform/top-actors",
+      //   method: "GET"
+      // },
+      // {
+      //   key: "topDirectors",
+      //   endpoint: "/stats/platform/top-directors",
+      //   method: "GET"
+      // },
+      // {
+      //   key: "topWriters",
+      //   endpoint: "/stats/platform/top-writers",
+      //   method: "GET"
+      // },
       {
         key: "sortedDirectorsByProsperity",
         endpoint: "/stats/platform/sorted-directors-by-prosperity",
@@ -152,27 +103,6 @@ export const fetchData = async (
       {
         key: "sortedWritersByProsperity",
         endpoint: "/stats/platform/sorted-writers-by-prosperity",
-        method: "GET"
-      },
-      {
-        key: "sortedMoviesByProsperity",
-        endpoint: "/stats/platform/sorted-movies-by-prosperity",
-        method: "GET"
-      },
-      {
-        key: "sortedMoviesAndSeriesByMetascore",
-        endpoint: "/stats/platform/sorted-movies-and-series-by-metascore",
-        method: "GET"
-      },
-      {
-        key: "sortedMoviesAndSeriesByIMDbRating",
-        endpoint: "/stats/platform/sorted-movies-and-series-by-imdb-rating",
-        method: "GET"
-      },
-      {
-        key: "sortedMoviesAndSeriesByRottenTomatoesRating",
-        endpoint:
-          "/stats/platform/sorted-movies-and-series-by-rotten-tomatoes-rating",
         method: "GET"
       }
     ];

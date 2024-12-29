@@ -92,6 +92,13 @@ const Home: FC<CrmProps> = () => {
 
   return (
     <FadeInWrapper>
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={handleNotificationClose}
+        />
+      )}
       <Fragment>
         <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">
           <div>

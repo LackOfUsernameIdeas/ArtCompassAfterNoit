@@ -14,7 +14,6 @@ interface IndividualStatsProps {}
 const IndividualStats: FC<IndividualStatsProps> = () => {
   // Състояния за задържане на извлечени данни
   const [data, setData] = useState<DataType>({
-    usersCount: [], // Броя на потребителите
     topRecommendations: {
       recommendationsCount: {
         movies: 0,
@@ -23,30 +22,13 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
       recommendations: []
     }, // Топ препоръки
     topGenres: [], // Топ жанрове
-    genrePopularityOverTime: {}, // Популярност на жанровете през времето
     topActors: [], // Топ актьори
     topDirectors: [], // Топ режисьори
     topWriters: [], // Топ сценаристи
-    oscarsByMovie: [], // Оскари по филми
-    totalAwardsByMovieOrSeries: [], // Общо награди по филми или сериали
-    totalAwards: [], // Общо награди
     sortedDirectorsByProsperity: [], // Режисьори, сортирани по процъфтяване
     sortedActorsByProsperity: [], // Актьори, сортирани по процъфтяване
     sortedWritersByProsperity: [], // Сценаристи, сортирани по процъфтяване
-    sortedMoviesByProsperity: [], // Филми, сортирани по процъфтяване
-    sortedMoviesAndSeriesByMetascore: [], // Филми и сериали, сортирани по Metascore
-    sortedMoviesAndSeriesByIMDbRating: [], // Филми и сериали, сортирани по IMDb рейтинг
-    sortedMoviesAndSeriesByRottenTomatoesRating: [], // Филми и сериали, сортирани по Rotten Tomatoes рейтинг
-    averageBoxOfficeAndScores: [], // Среден боксофис и оценки
-    topCountries: [] // Топ държави
-  });
-
-  // Състояние за потребителски данни
-  const [userData, setUserData] = useState<UserData>({
-    id: 0, // ID на потребителя
-    first_name: "", // Име на потребителя
-    last_name: "", // Фамилия на потребителя
-    email: "" // Имейл на потребителя
+    sortedMoviesByProsperity: [] // Филми, сортирани по процъфтяване
   });
 
   const [notification, setNotification] = useState<NotificationState | null>(
@@ -86,13 +68,20 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
       localStorage.getItem("authToken") || sessionStorage.getItem("authToken"); // Вземане на токен от localStorage или sessionStorage
 
     if (token) {
-      fetchData(token, setUserData, setData); // Извличане на данни с помощта на fetchData функцията
+      fetchData(token, setData); // Извличане на данни с помощта на fetchData функцията
       console.log("fetching"); // Лог за следене на извличането на данни
     }
   }, []); // Празен масив като зависимост, за да се извика само веднъж при рендиране на компонента
 
   return (
     <FadeInWrapper>
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={handleNotificationClose}
+        />
+      )}
       <Fragment>
         <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">
           <div>

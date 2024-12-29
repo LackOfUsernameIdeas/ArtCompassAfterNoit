@@ -132,9 +132,8 @@ export interface GenreSeriesData {
 // Формат на данни за топ жанровете
 export type HeatmapData = GenreSeriesData[];
 
-// Обобщени данни за платформата (топ препоръки, жанрове и др.)
+// Обобщени данни за потребителя (топ препоръки, жанрове и др.)
 export type DataType = {
-  usersCount: UsersCountData[]; // Брой потребители
   topRecommendations: {
     recommendationsCount: {
       movies: number;
@@ -159,22 +158,9 @@ export type DataType = {
     }>;
   }; // Топ препоръки
   topGenres: any[]; // Топ жанрове
-  genrePopularityOverTime: Record<string, any>; // Популярност на жанровете през времето
   topActors: any[]; // Топ актьори
   topDirectors: any[]; // Топ режисьори
   topWriters: any[]; // Топ писатели
-  oscarsByMovie: any[]; // Оскари по филми
-  totalAwardsByMovieOrSeries: any[]; // Общо награди по филми или сериали
-  totalAwards: any[]; // Общо награди
-  sortedDirectorsByProsperity: any[]; // Подредени режисьори по процъфтяване
-  sortedActorsByProsperity: any[]; // Подредени актьори по процъфтяване
-  sortedWritersByProsperity: any[]; // Подредени писатели по процъфтяване
-  sortedMoviesByProsperity: any[]; // Подредени филми по процъфтяване
-  sortedMoviesAndSeriesByMetascore: any[]; // Подредени филми и сериали по Metascore
-  sortedMoviesAndSeriesByIMDbRating: any[]; // Подредени филми и сериали по IMDb рейтинг
-  sortedMoviesAndSeriesByRottenTomatoesRating: any[]; // Подредени филми и сериали по Rotten Tomatoes рейтинг
-  averageBoxOfficeAndScores: any[]; // Средни стойности за бокс офис и рейтинги
-  topCountries: any[]; // Топ страни
   [key: `sorted${string}ByProsperity`]: any[]; // Подредени данни по процъфтяване
 };
 
