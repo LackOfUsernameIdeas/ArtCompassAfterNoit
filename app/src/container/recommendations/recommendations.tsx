@@ -43,13 +43,6 @@ const Recommendations: FC<RecommendationsProps> = () => {
 
   return (
     <>
-      {notification && (
-        <Notification
-          message={notification.message}
-          type={notification.type}
-          onClose={handleNotificationClose}
-        />
-      )}
       <FadeInWrapper>
         <Quiz />
       </FadeInWrapper>

@@ -93,19 +93,10 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
 
   return (
     <FadeInWrapper>
-      {notification && (
-        <Notification
-          message={notification.message}
-          type={notification.type}
-          onClose={handleNotificationClose}
-        />
-      )}
       <Fragment>
         <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">
           <div>
-            <p className="font-semibold text-[1.125rem] text-defaulttextcolor dark:text-defaulttextcolor/70 !mb-0 ">
-              Здравейте, {userData.first_name} {userData.last_name}!
-            </p>
+            <p className="font-semibold text-[1.125rem] text-defaulttextcolor dark:text-defaulttextcolor/70 !mb-0 "></p>
           </div>
         </div>
         <div className="grid grid-cols-12 gap-x-6">
