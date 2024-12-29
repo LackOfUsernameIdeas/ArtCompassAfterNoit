@@ -21,9 +21,6 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
   );
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
 
-  const totalItems = filteredTableData.length;
-  const totalTablePages = Math.ceil(totalItems / itemsPerTablePage);
-
   useEffect(() => {
     setFilteredTableData(
       data.topRecommendations.recommendations as Recommendation[]
@@ -50,6 +47,9 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
         : (valueB as number) - (valueA as number);
     });
   }, [filteredTableData, sortBy, sortOrder]);
+
+  const totalItems = sortedData.length;
+  const totalTablePages = Math.ceil(totalItems / itemsPerTablePage);
 
   const paginatedData = useMemo(() => {
     const start = (currentTablePage - 1) * itemsPerTablePage;
@@ -88,6 +88,17 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
     recommendations: "Най-често препоръваните филми и сериали за мен",
     prosperityScore: "Филми и сериали по просперитет",
     boxOffice: "Най-печеливши филми и сериали"
+  };
+
+  const getTranslatedType = (type: string) => {
+    switch (type) {
+      case "movie":
+        return "филм";
+      case "series":
+        return "сериал";
+      default:
+        return type;
+    }
   };
 
   return (
@@ -194,7 +205,7 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
                         {(currentTablePage - 1) * itemsPerTablePage + index + 1}
                       </td>
                       <td>{item.title_bg}</td>
-                      <td>{item.type}</td>
+                      <td>{getTranslatedType(item.type)}</td>
                       <td>{item.recommendations}</td>
                       <td>{item.oscar_wins}</td>
                       <td>{item.oscar_nominations}</td>
@@ -224,10 +235,10 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
                 до{" "}
                 <b>
                   {currentTablePage === totalTablePages
-                    ? totalItems
+                    ? sortedData.length
                     : currentTablePage * 5}{" "}
                 </b>
-                от общо <b>{totalItems}</b>
+                от общо <b>{sortedData.length}</b>
                 <i className="bi bi-arrow-right ms-2 font-semibold"></i>
               </div>
               <div className="ms-auto">
