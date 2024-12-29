@@ -1814,7 +1814,11 @@ const getUsersTopActors = (userId, limit, callback) => {
         };
       });
 
-      callback(null, combinedResults);
+      const sortedResults = combinedResults.sort(
+        (a, b) => b.actor_count - a.actor_count
+      );
+
+      callback(null, sortedResults);
     });
   });
 };
