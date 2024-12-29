@@ -168,7 +168,7 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
                       Общо препоръки
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
-                      Победи на награди
+                      Победи на награждавания
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
                       Номинации за награди
