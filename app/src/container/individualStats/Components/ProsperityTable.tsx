@@ -150,7 +150,13 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
                       Просперитетен рейтинг
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
-                      IMDb рейтинг
+                      Среден IMDb рейтинг
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
+                      Среден Rotten Tomatoes рейтинг
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
+                      Среден Метаскор
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
                       Боксофис
@@ -179,6 +185,8 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
                       <td>{getCategoryName(item)}</td>
                       <td>{item.prosperityScore}</td>
                       <td>{item.avg_imdb_rating}</td>
+                      <td>{item.avg_rotten_tomatoes}</td>
+                      <td>{item.avg_metascore}</td>
                       <td>{item.total_box_office}</td>
                       <td>{item.movie_count}</td>
                       <td>{item.total_recommendations}</td>
