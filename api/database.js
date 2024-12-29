@@ -1807,13 +1807,14 @@ const getUsersTopActors = (userId, limit, callback) => {
           (result) => result.actor === actor.actor_en
         ) || {
           prosperityScore: 0,
-          totalBoxOffice: 0,
-          avgImdbRating: 0,
-          avgMetascore: 0,
-          avgRottenTomatoes: 0,
-          totalRecommendations: 0,
-          totalWins: 0,
-          totalNominations: 0
+          total_box_office: 0,
+          avg_imdb_rating: 0,
+          avg_metascore: 0,
+          avg_rotten_tomatoes: 0,
+          movie_count: 0,
+          total_recommendations: 0,
+          total_wins: 0,
+          total_nominations: 0
         };
         return {
           ...actor,
@@ -2034,13 +2035,14 @@ const getUsersTopDirectors = (userId, limit, callback) => {
           (result) => result.director === director.director_en
         ) || {
           prosperityScore: 0,
-          totalBoxOffice: 0,
-          avgImdbRating: 0,
-          avgMetascore: 0,
-          avgRottenTomatoes: 0,
-          totalRecommendations: 0,
-          totalWins: 0,
-          totalNominations: 0
+          total_box_office: 0,
+          avg_imdb_rating: 0,
+          avg_metascore: 0,
+          avg_rotten_tomatoes: 0,
+          movie_count: 0,
+          total_recommendations: 0,
+          total_wins: 0,
+          total_nominations: 0
         };
         return {
           ...director,
@@ -2262,13 +2264,14 @@ const getUsersTopWriters = (userId, limit, callback) => {
           (result) => result.writer === writer.writer_en
         ) || {
           prosperityScore: 0,
-          totalBoxOffice: 0,
-          avgImdbRating: 0,
-          avgMetascore: 0,
-          avgRottenTomatoes: 0,
-          totalRecommendations: 0,
-          totalWins: 0,
-          totalNominations: 0
+          total_box_office: 0,
+          avg_imdb_rating: 0,
+          avg_metascore: 0,
+          avg_rotten_tomatoes: 0,
+          movie_count: 0,
+          total_recommendations: 0,
+          total_wins: 0,
+          total_nominations: 0
         };
         return {
           ...writer,
@@ -2276,7 +2279,13 @@ const getUsersTopWriters = (userId, limit, callback) => {
         };
       });
 
-      const sortedResults = combinedResults.sort(
+      // Remove unnecessary fields
+      const filteredResults = combinedResults.map((writerData) => {
+        const { writer, total_recommendations, ...rest } = writerData;
+        return rest;
+      });
+
+      const sortedResults = filteredResults.sort(
         (a, b) =>
           b.writer_recommendations_count - a.writer_recommendations_count
       );
