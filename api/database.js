@@ -1806,15 +1806,15 @@ const getUsersTopActors = (userId, limit, callback) => {
         const prosperity = actorsWithProsperity.find(
           (result) => result.actor === actor.actor_en
         ) || {
-          prosperityScore: 0,
-          total_box_office: 0,
-          avg_imdb_rating: 0,
-          avg_metascore: 0,
-          avg_rotten_tomatoes: 0,
-          movie_count: 0,
-          total_recommendations: 0,
-          total_wins: 0,
-          total_nominations: 0
+          prosperityScore: "N/A",
+          total_box_office: "N/A",
+          avg_imdb_rating: "N/A",
+          avg_metascore: "N/A",
+          avg_rotten_tomatoes: "N/A",
+          movie_count: "N/A",
+          total_recommendations: "N/A",
+          total_wins: "N/A",
+          total_nominations: "N/A"
         };
         return {
           ...actor,
@@ -2034,15 +2034,15 @@ const getUsersTopDirectors = (userId, limit, callback) => {
         const prosperity = directorsWithProsperity.find(
           (result) => result.director === director.director_en
         ) || {
-          prosperityScore: 0,
-          total_box_office: 0,
-          avg_imdb_rating: 0,
-          avg_metascore: 0,
-          avg_rotten_tomatoes: 0,
-          movie_count: 0,
-          total_recommendations: 0,
-          total_wins: 0,
-          total_nominations: 0
+          prosperityScore: "N/A",
+          total_box_office: "N/A",
+          avg_imdb_rating: "N/A",
+          avg_metascore: "N/A",
+          avg_rotten_tomatoes: "N/A",
+          movie_count: "N/A",
+          total_recommendations: "N/A",
+          total_wins: "N/A",
+          total_nominations: "N/A"
         };
         return {
           ...director,
@@ -2263,16 +2263,17 @@ const getUsersTopWriters = (userId, limit, callback) => {
         const prosperity = writersWithProsperity.find(
           (result) => result.writer === writer.writer_en
         ) || {
-          prosperityScore: 0,
-          total_box_office: 0,
-          avg_imdb_rating: 0,
-          avg_metascore: 0,
-          avg_rotten_tomatoes: 0,
-          movie_count: 0,
-          total_recommendations: 0,
-          total_wins: 0,
-          total_nominations: 0
+          prosperityScore: "N/A",
+          total_box_office: "N/A",
+          avg_imdb_rating: "N/A",
+          avg_metascore: "N/A",
+          avg_rotten_tomatoes: "N/A",
+          movie_count: "N/A",
+          total_recommendations: "N/A",
+          total_wins: "N/A",
+          total_nominations: "N/A"
         };
+
         return {
           ...writer,
           ...prosperity
