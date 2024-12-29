@@ -1611,7 +1611,7 @@ const getUsersTopGenres = (userId, limit, callback) => {
 
 const getUsersTopActors = (userId, limit, callback) => {
   const query = `
-    SELECT actor, COUNT(*) AS actor_count
+    SELECT actor, COUNT(*) AS actor_recommendations_count
     FROM (
       SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(actors, ',', n.n), ',', -1)) AS actor
       FROM recommendations
@@ -1628,7 +1628,7 @@ const getUsersTopActors = (userId, limit, callback) => {
         AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(actors, ',', n.n), ',', -1)) != 'N/A'
     ) AS actor_list
     GROUP BY actor
-    ORDER BY actor_count DESC
+    ORDER BY actor_recommendations_count DESC
     LIMIT ?;
   `;
 
@@ -1645,43 +1645,46 @@ const getUsersTopActors = (userId, limit, callback) => {
         return {
           actor_en: row.actor,
           actor_bg: translatedActor,
-          actor_count: row.actor_count
+          actor_recommendations_count: row.actor_recommendations_count
         };
       })
     );
 
     // Fetch prosperity data for the actors
-    const actors = translatedResults.map((actor) => actor.actor_en).join("','");
+    const actors = translatedResults
+      .map((actor) => `'${actor.actor_en}'`)
+      .join(","); // Ensuring correct formatting for IN clause
+
     const prosperityQuery = `
       WITH RECURSIVE ActorSplit AS (
-      SELECT 
-          id, 
-          TRIM(SUBSTRING_INDEX(actors, ',', 1)) AS actor,
-          SUBSTRING_INDEX(actors, ',', -1) AS remaining_actors,
-          imdbRating,
-          metascore,
-          boxOffice,
-          awards,
-          imdbID,
-          ratings,
-          type
-      FROM recommendations
-      WHERE actors IS NOT NULL 
-        AND actors != 'N/A'
-      UNION ALL
-      SELECT 
-          id,
-          TRIM(SUBSTRING_INDEX(remaining_actors, ',', 1)) AS actor,
-          SUBSTRING_INDEX(remaining_actors, ',', -1) AS remaining_actors,
-          imdbRating,
-          metascore,
-          boxOffice,
-          awards,
-          imdbID,
-          ratings,
-          type
-      FROM ActorSplit
-      WHERE remaining_actors LIKE '%,%'
+        SELECT 
+            id, 
+            TRIM(SUBSTRING_INDEX(actors, ',', 1)) AS actor,
+            SUBSTRING_INDEX(actors, ',', -1) AS remaining_actors,
+            imdbRating,
+            metascore,
+            boxOffice,
+            awards,
+            imdbID,
+            ratings,
+            type
+        FROM recommendations
+        WHERE actors IS NOT NULL 
+          AND actors != 'N/A'
+        UNION ALL
+        SELECT 
+            id,
+            TRIM(SUBSTRING_INDEX(remaining_actors, ',', 1)) AS actor,
+            SUBSTRING_INDEX(remaining_actors, ',', -1) AS remaining_actors,
+            imdbRating,
+            metascore,
+            boxOffice,
+            awards,
+            imdbID,
+            ratings,
+            type
+        FROM ActorSplit
+        WHERE remaining_actors LIKE '%,%'
       ),
       UniqueMovies AS (
         SELECT 
@@ -1692,21 +1695,17 @@ const getUsersTopActors = (userId, limit, callback) => {
             boxOffice,
             awards,
             ratings
-        FROM 
-            ActorSplit
+        FROM ActorSplit
         WHERE actor IS NOT NULL AND actor != 'N/A'
       ),
       ActorRecommendations AS (
         SELECT 
             TRIM(SUBSTRING_INDEX(actors, ',', 1)) AS actor,
             COUNT(*) AS total_recommendations
-        FROM 
-            recommendations
-        WHERE 
-            actors IS NOT NULL 
-            AND actors != 'N/A'
-        GROUP BY 
-            actor
+        FROM recommendations
+        WHERE actors IS NOT NULL 
+          AND actors != 'N/A'
+        GROUP BY actor
       )
       SELECT 
         um.actor,
@@ -1741,7 +1740,7 @@ const getUsersTopActors = (userId, limit, callback) => {
       LEFT JOIN 
           ActorRecommendations ar ON um.actor = ar.actor
       WHERE 
-          um.actor IN ('${actors}')
+          um.actor IN (${actors})
       GROUP BY 
           um.actor
       ORDER BY 
@@ -1804,18 +1803,32 @@ const getUsersTopActors = (userId, limit, callback) => {
 
       // Combine the top actors with their prosperity data
       const combinedResults = translatedResults.map((actor) => {
-        const prosperity =
-          actorsWithProsperity.find(
-            (result) => result.actor === actor.actor_en
-          ) || {};
+        const prosperity = actorsWithProsperity.find(
+          (result) => result.actor === actor.actor_en
+        ) || {
+          prosperityScore: 0,
+          totalBoxOffice: 0,
+          avgImdbRating: 0,
+          avgMetascore: 0,
+          avgRottenTomatoes: 0,
+          totalRecommendations: 0,
+          totalWins: 0,
+          totalNominations: 0
+        };
         return {
           ...actor,
           ...prosperity
         };
       });
 
-      const sortedResults = combinedResults.sort(
-        (a, b) => b.actor_count - a.actor_count
+      // Remove unnecessary fields
+      const filteredResults = combinedResults.map((actorData) => {
+        const { actor, total_recommendations, ...rest } = actorData;
+        return rest;
+      });
+
+      const sortedResults = filteredResults.sort(
+        (a, b) => b.actor_recommendations_count - a.actor_recommendations_count
       );
 
       callback(null, sortedResults);

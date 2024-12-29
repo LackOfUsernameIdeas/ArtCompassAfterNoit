@@ -857,7 +857,9 @@ app.post("/stats/individual/top-actors", (req, res) => {
     const userId = decoded.id;
     db.getUsersTopActors(userId, limit, (err, result) => {
       if (err) {
-        return res.status(500).json({ error: "Error fetching top genres" });
+        return res
+          .status(500)
+          .json({ error: "Error fetching users top actors" });
       }
       res.json(result);
     });
@@ -881,7 +883,9 @@ app.post("/stats/individual/top-directors", (req, res) => {
     const userId = decoded.id;
     db.getUsersTopDirectors(userId, limit, (err, result) => {
       if (err) {
-        return res.status(500).json({ error: "Error fetching top genres" });
+        return res
+          .status(500)
+          .json({ error: "Error fetching users top directors" });
       }
       res.json(result);
     });
@@ -905,7 +909,9 @@ app.post("/stats/individual/top-writers", (req, res) => {
     const userId = decoded.id;
     db.getUsersTopWriters(userId, limit, (err, result) => {
       if (err) {
-        return res.status(500).json({ error: "Error fetching top genres" });
+        return res
+          .status(500)
+          .json({ error: "Error fetching users top writers" });
       }
       res.json(result);
     });
