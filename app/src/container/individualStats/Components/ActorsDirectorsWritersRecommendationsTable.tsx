@@ -90,7 +90,7 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
                   prosperitySortCategory as keyof typeof tableCategoryDisplayNames
                 ]
               }{" "}
-              по Просперитет
+              по Брой Препоръки
             </div>
             <div className="flex flex-wrap gap-2">
               <div
