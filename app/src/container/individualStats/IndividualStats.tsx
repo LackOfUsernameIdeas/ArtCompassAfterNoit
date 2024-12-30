@@ -145,7 +145,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                     className="hs-accordion-content w-full overflow-hidden transition-[height] duration-300"
                     aria-labelledby="hs-basic-with-title-and-arrow-stretched-heading-one"
                   >
-                    <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5 ">
+                    <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5">
                       <div className="xxl:col-span-6 col-span-12">
                         <RecommendationsTable data={data} />
                       </div>
@@ -153,7 +153,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                         <ProsperityTable data={data} />
                       </div>
                     </div>
-                    <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5 ">
+                    <div className="grid grid-cols-12 gap-x-6 ml-5 mr-5">
                       <div className="xxl:col-span-6 col-span-12">
                         <GenresBarChart data={data} />
                       </div>

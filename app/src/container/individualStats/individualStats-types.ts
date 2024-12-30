@@ -176,3 +176,9 @@ export interface Recommendation {
   boxOffice: string; // No change, still a string
   prosperityScore: number; // Added for the prosperityScore
 }
+
+export interface Genre {
+  genre_en: string;
+  genre_bg: string;
+  count: number;
+}

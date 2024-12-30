@@ -70,11 +70,12 @@ export const fetchData = async (
         method: "POST",
         body: { token: token }
       },
-      // {
-      //   key: "topGenres",
-      //   endpoint: "/stats/platform/top-genres",
-      //   method: "GET"
-      // },
+      {
+        key: "topGenres",
+        endpoint: "/stats/individual/top-genres",
+        method: "POST",
+        body: { token: token }
+      },
       // {
       //   key: "topActors",
       //   endpoint: "/stats/platform/top-actors",

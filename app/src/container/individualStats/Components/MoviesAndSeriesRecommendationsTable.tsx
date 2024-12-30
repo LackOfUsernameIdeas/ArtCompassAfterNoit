@@ -88,9 +88,9 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
 
   // Map sorting options to more descriptive titles
   const sortTitles: Record<string, string> = {
-    recommendations: "Най-често препоръваните филми и сериали за мен",
-    prosperityScore: "Филми и сериали по просперитет",
-    boxOffice: "Най-печеливши филми и сериали"
+    recommendations: "Най-Често Препоръчваните Филми и Сериали За Мен",
+    prosperityScore: "Филми и Сериали По Просперитет",
+    boxOffice: "Най-Печеливши Филми и Сериали"
   };
 
   const getTranslatedType = (type: string) => {
@@ -117,12 +117,12 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
               data-tooltip-id="box-title-tooltip"
               data-tooltip-content={
                 sortBy === "default"
-                  ? "Най-често препоръчваните филми и сериали за мен"
+                  ? "Най-Често Препоръчваните Филми и Сериали За Мен"
                   : sortTitles[sortBy]
               }
             >
               {sortBy === "default"
-                ? "Най-често препоръчваните филми и сериали за мен"
+                ? "Най-Често Препоръчваните Филми и Сериали За Мен"
                 : sortTitles[sortBy]}
             </div>
             <Tooltip id="box-title-tooltip" />
