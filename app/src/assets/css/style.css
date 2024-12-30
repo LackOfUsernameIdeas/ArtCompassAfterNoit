@@ -17557,7 +17557,7 @@ hr {
 }
 
 .accordion-item {
-  @apply text-defaulttextcolor bg-white dark:bg-[#1f1f1f] border border-solid border-defaultborder dark:border-defaultborder/10 dark:text-defaulttextcolor/70;
+  @apply text-defaulttextcolor bg-white dark:bg-[#292424] border border-solid border-defaultborder dark:border-defaultborder/10 dark:text-defaulttextcolor/70;
 }
 
 .accordions-items-seperate .accordion-item:not(:first-of-type) {
