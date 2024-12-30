@@ -28,7 +28,7 @@ interface CategorybarProps {
 }
 
 interface State {
-  series: { data: number[] }[];
+  series: { name: string; data: number[] }[];
   options: any;
 }
 
@@ -49,7 +49,12 @@ export class Categorybar extends Component<CategorybarProps, State> {
       values
     );
     this.state = {
-      series: [{ data: values }],
+      series: [
+        {
+          name: "Top Genres",
+          data: values
+        }
+      ],
       options: this.generateOptions(categories, values)
     };
   }
@@ -87,7 +92,7 @@ export class Categorybar extends Component<CategorybarProps, State> {
     const primaryHex = updatePrimaryColor();
     const colorScale = chroma
       .scale([
-        chroma(primaryHex).brighten(1).hex(),
+        chroma(primaryHex).hex(),
         chroma(primaryHex).saturate(2).darken(2).hex()
       ])
       .mode("lab")
@@ -96,33 +101,64 @@ export class Categorybar extends Component<CategorybarProps, State> {
 
     return {
       chart: {
+        toolbar: {
+          show: false
+        },
+        height: 320,
         type: "bar",
-        height: 500,
-        toolbar: { show: false }
+        events: {
+          mounted: (chart: any) => {
+            chart.windowResizeHandler();
+          }
+        }
+      },
+      grid: {
+        borderColor: "#f2f5f7"
       },
       plotOptions: {
         bar: {
-          barHeight: "90%",
-          distributed: true,
-          horizontal: true,
-          dataLabels: { position: "bottom" }
+          borderRadius: 10,
+          dataLabels: {
+            position: "top"
+          }
         }
       },
-      grid: { borderColor: "#f2f5f7" },
       dataLabels: {
         enabled: true,
-        textAnchor: "start",
-        style: { colors: ["#fff"] },
-        formatter: (val: number, opt: any) =>
-          `${categories[opt.dataPointIndex]}: ${val}`,
-        offsetX: 0,
-        dropShadow: { enabled: false }
+        formatter: (val: number) => `${val}`,
+        offsetY: -20,
+        style: {
+          fontSize: "12px",
+          colors: ["#8c9097"]
+        }
       },
-      stroke: { width: 1, colors: ["#fff"] },
+      colors: colorScale,
       xaxis: {
         categories,
+        position: "top",
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false
+        },
+        crosshairs: {
+          fill: {
+            type: "gradient",
+            gradient: {
+              colorFrom: "#D8E3F0",
+              colorTo: "#BED1E6",
+              stops: [0, 100],
+              opacityFrom: 0.4,
+              opacityTo: 0.5
+            }
+          }
+        },
+        tooltip: {
+          enabled: false
+        },
         labels: {
-          show: true,
+          show: false,
           style: {
             colors: "#8c9097",
             fontSize: "11px",
@@ -131,10 +167,30 @@ export class Categorybar extends Component<CategorybarProps, State> {
           }
         }
       },
-      yaxis: { labels: { show: false } },
+      yaxis: {
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false
+        },
+        labels: {
+          show: false
+        }
+      },
+      title: {
+        floating: true,
+        offsetY: 330,
+        align: "center",
+        style: {
+          color: "#444"
+        }
+      },
       tooltip: {
         theme: "dark",
-        x: { show: false },
+        x: {
+          show: false
+        },
         y: {
           title: {
             formatter: (val: any, opts: any) => {
@@ -144,9 +200,8 @@ export class Categorybar extends Component<CategorybarProps, State> {
           }
         }
       },
-      colors: colorScale,
       legend: {
-        show: false // Изключваме легендата
+        show: false
       }
     };
   }
@@ -156,7 +211,12 @@ export class Categorybar extends Component<CategorybarProps, State> {
     const { categories, values } = this.transformData(topGenres);
 
     this.setState({
-      series: [{ data: values }],
+      series: [
+        {
+          name: "Top Genres",
+          data: values
+        }
+      ],
       options: this.generateOptions(categories, values)
     });
   }
@@ -168,7 +228,7 @@ export class Categorybar extends Component<CategorybarProps, State> {
     const primaryHex = updatePrimaryColor();
     const colorScale = chroma
       .scale([
-        chroma(primaryHex).brighten(1).hex(),
+        chroma(primaryHex).hex(),
         chroma(primaryHex).saturate(2).darken(2).hex()
       ])
       .mode("lab")
