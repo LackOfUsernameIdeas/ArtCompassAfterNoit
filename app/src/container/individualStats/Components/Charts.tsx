@@ -1,19 +1,7 @@
 import { Component } from "react";
 import ReactApexChart from "react-apexcharts";
 import chroma from "chroma-js";
-import { ApexOptions } from "apexcharts";
 import { Genre } from "../individualStats-types";
-
-// Revenue Statistics
-interface spark3 {
-  options?: ApexOptions;
-  width?: string | number;
-  height?: string | number;
-  series?: ApexOptions["series"];
-  [key: string]: any;
-  label?: XAxisAnnotations | string;
-  endingShape?: string;
-}
 
 // Преобразува RGB цвят в HEX формат
 const rgbToHex = (rgb: string): string => {
@@ -149,7 +137,10 @@ export class Categorybar extends Component<CategorybarProps, State> {
         x: { show: false },
         y: {
           title: {
-            formatter: () => ""
+            formatter: (val: any, opts: any) => {
+              const genre = categories[opts.dataPointIndex];
+              return `${genre}:`;
+            }
           }
         }
       },
