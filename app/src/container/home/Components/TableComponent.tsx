@@ -158,7 +158,7 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                       Боксофис
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
-                      Брой филми
+                      Брой филми в платформата
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
                       Общо препоръки

@@ -205,18 +205,42 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
               <table className="table min-w-full whitespace-nowrap table-hover border table-bordered">
                 <thead>
                   <tr className="border border-inherit border-solid dark:border-defaultborder/10">
-                    <th>#</th>
-                    <th>Заглавие</th>
-                    <th>Тип</th>
-                    <th>Брой Препоръки</th>
-                    <th>Оскар Победи</th>
-                    <th>Оскар Номинации</th>
-                    <th>Общо Победи</th>
-                    <th>Общо Номинации</th>
-                    <th>IMDb Рейтинг</th>
-                    <th>Metascore</th>
-                    <th>Боксофис</th>
-                    <th>Просперитет</th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
+                      #
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
+                      Заглавие
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
+                      Тип
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
+                      Брой Препоръки
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
+                      Просперитет
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
+                      Боксофис
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
+                      Оскар Победи
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
+                      Оскар Номинации
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
+                      Общо Победи
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
+                      Общо Номинации
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
+                      IMDb Рейтинг
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
+                      Metascore
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -231,14 +255,14 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
                       <td>{item.title_bg}</td>
                       <td>{getTranslatedType(item.type)}</td>
                       <td>{item.recommendations}</td>
+                      <td>{item.prosperityScore}</td>
+                      <td>{item.boxOffice}</td>
                       <td>{item.oscar_wins}</td>
                       <td>{item.oscar_nominations}</td>
                       <td>{item.total_wins}</td>
                       <td>{item.total_nominations}</td>
                       <td>{item.imdbRating}</td>
                       <td>{item.metascore}</td>
-                      <td>{item.boxOffice}</td>
-                      <td>{item.prosperityScore}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -26,7 +26,7 @@ import {
  * @returns {boolean} - Вярно, ако обектът е DirectorData.
  */
 export const isDirector = (item: any): item is DirectorData =>
-  item && "director" in item;
+  item && "director_bg" in item;
 
 /**
  * Проверява дали даден обект е от тип ActorData.
@@ -35,7 +35,7 @@ export const isDirector = (item: any): item is DirectorData =>
  * @returns {boolean} - Вярно, ако обектът е ActorData.
  */
 export const isActor = (item: any): item is ActorData =>
-  item && "actor" in item;
+  item && "actor_bg" in item;
 
 /**
  * Проверява дали даден обект е от тип WriterData.
@@ -44,7 +44,7 @@ export const isActor = (item: any): item is ActorData =>
  * @returns {boolean} - Вярно, ако обектът е WriterData.
  */
 export const isWriter = (item: any): item is WriterData =>
-  item && "writer" in item;
+  item && "writer_bg" in item;
 
 // ==============================
 // Функции за работа с данни
@@ -92,18 +92,21 @@ export const fetchData = async (
       // },
       {
         key: "sortedDirectorsByProsperity",
-        endpoint: "/stats/platform/sorted-directors-by-prosperity",
-        method: "GET"
+        endpoint: "/stats/individual/top-directors",
+        method: "POST",
+        body: { token: token }
       },
       {
         key: "sortedActorsByProsperity",
-        endpoint: "/stats/platform/sorted-actors-by-prosperity",
-        method: "GET"
+        endpoint: "/stats/individual/top-actors",
+        method: "POST",
+        body: { token: token }
       },
       {
         key: "sortedWritersByProsperity",
-        endpoint: "/stats/platform/sorted-writers-by-prosperity",
-        method: "GET"
+        endpoint: "/stats/individual/top-writers",
+        method: "POST",
+        body: { token: token }
       }
     ];
 
@@ -198,17 +201,18 @@ export const filterTableData = (
   let newItems: FilteredTableData = [];
   switch (prosperitySortCategory) {
     case "Directors":
-      newItems = filteredTableData.filter((item) => "director" in item);
+      newItems = filteredTableData.filter((item) => "director_en" in item);
       break;
     case "Actors":
-      newItems = filteredTableData.filter((item) => "actor" in item);
+      newItems = filteredTableData.filter((item) => "actor_en" in item);
       break;
     case "Writers":
-      newItems = filteredTableData.filter((item) => "writer" in item);
+      newItems = filteredTableData.filter((item) => "writer_en" in item);
       break;
     default:
       newItems = [];
   }
+
   return newItems.slice(
     (currentTablePage - 1) * itemsPerTablePage,
     currentTablePage * itemsPerTablePage

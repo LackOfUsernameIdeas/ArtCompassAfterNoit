@@ -1,13 +1,13 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { DataType, UserData } from "./individualStats-types";
 import { checkTokenValidity, fetchData } from "./helper_functions";
-import ProsperityTable from "./Components/ProsperityTable";
+import ProsperityTable from "./Components/ActorsDirectorsWritersRecommendationsTable";
 import { useNavigate } from "react-router-dom";
 import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 import { showNotification } from "../recommendations/helper_functions";
 import Notification from "../../components/common/notification/Notification";
 import { NotificationState } from "../recommendations/recommendations-types";
-import RecommendationsTable from "./Components/RecommendationsTable";
+import RecommendationsTable from "./Components/MoviesAndSeriesRecommendationsTable";
 
 interface IndividualStatsProps {}
 

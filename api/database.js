@@ -1611,7 +1611,7 @@ const getUsersTopGenres = (userId, limit, callback) => {
 
 const getUsersTopActors = (userId, limit, callback) => {
   const query = `
-    SELECT actor, COUNT(*) AS actor_recommendations_count
+    SELECT actor, COUNT(*) AS recommendations_count
     FROM (
       SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(actors, ',', n.n), ',', -1)) AS actor
       FROM recommendations
@@ -1628,7 +1628,7 @@ const getUsersTopActors = (userId, limit, callback) => {
         AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(actors, ',', n.n), ',', -1)) != 'N/A'
     ) AS actor_list
     GROUP BY actor
-    ORDER BY actor_recommendations_count DESC
+    ORDER BY recommendations_count DESC
     LIMIT ?;
   `;
 
@@ -1645,7 +1645,7 @@ const getUsersTopActors = (userId, limit, callback) => {
         return {
           actor_en: row.actor,
           actor_bg: translatedActor,
-          actor_recommendations_count: row.actor_recommendations_count
+          recommendations_count: row.recommendations_count
         };
       })
     );
@@ -1717,7 +1717,7 @@ const getUsersTopActors = (userId, limit, callback) => {
                 ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
             END), 0)) AS total_box_office,
         CONCAT(ROUND(AVG(CAST(REPLACE(REPLACE(JSON_UNQUOTE(JSON_EXTRACT(um.ratings, '$[1].Value')), '%', ''), ',', '') AS DECIMAL(5,2))), 0), '%') AS avg_rotten_tomatoes,
-        COUNT(DISTINCT um.imdbID) AS movie_count,
+        COUNT(DISTINCT um.imdbID) AS movie_series_count,
         COALESCE(ar.total_recommendations, 0) AS total_recommendations,
         SUM(CASE 
                 WHEN um.awards IS NOT NULL THEN 
@@ -1811,7 +1811,7 @@ const getUsersTopActors = (userId, limit, callback) => {
           avg_imdb_rating: "N/A",
           avg_metascore: "N/A",
           avg_rotten_tomatoes: "N/A",
-          movie_count: "N/A",
+          movie_series_count: "N/A",
           total_recommendations: "N/A",
           total_wins: "N/A",
           total_nominations: "N/A"
@@ -1829,7 +1829,7 @@ const getUsersTopActors = (userId, limit, callback) => {
       });
 
       const sortedResults = filteredResults.sort(
-        (a, b) => b.actor_recommendations_count - a.actor_recommendations_count
+        (a, b) => b.recommendations_count - a.recommendations_count
       );
 
       callback(null, sortedResults);
@@ -1839,7 +1839,7 @@ const getUsersTopActors = (userId, limit, callback) => {
 
 const getUsersTopDirectors = (userId, limit, callback) => {
   const query = `
-    SELECT director, COUNT(*) AS director_recommendations_count
+    SELECT director, COUNT(*) AS recommendations_count
     FROM (
       SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(director, ',', n.n), ',', -1)) AS director
       FROM recommendations
@@ -1856,7 +1856,7 @@ const getUsersTopDirectors = (userId, limit, callback) => {
         AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(director, ',', n.n), ',', -1)) != 'N/A'
     ) AS director_list
     GROUP BY director
-    ORDER BY director_recommendations_count DESC
+    ORDER BY recommendations_count DESC
     LIMIT ?;
   `;
 
@@ -1873,7 +1873,7 @@ const getUsersTopDirectors = (userId, limit, callback) => {
         return {
           director_en: row.director,
           director_bg: translatedDirector,
-          director_recommendations_count: row.director_recommendations_count
+          recommendations_count: row.recommendations_count
         };
       })
     );
@@ -1945,7 +1945,7 @@ const getUsersTopDirectors = (userId, limit, callback) => {
                 ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
             END), 0)) AS total_box_office,
         CONCAT(ROUND(AVG(CAST(REPLACE(REPLACE(JSON_UNQUOTE(JSON_EXTRACT(um.ratings, '$[1].Value')), '%', ''), ',', '') AS DECIMAL(5,2))), 0), '%') AS avg_rotten_tomatoes,
-        COUNT(DISTINCT um.imdbID) AS movie_count,
+        COUNT(DISTINCT um.imdbID) AS movie_series_count,
         COALESCE(dr.total_recommendations, 0) AS total_recommendations,
         SUM(CASE 
                 WHEN um.awards IS NOT NULL THEN 
@@ -2039,7 +2039,7 @@ const getUsersTopDirectors = (userId, limit, callback) => {
           avg_imdb_rating: "N/A",
           avg_metascore: "N/A",
           avg_rotten_tomatoes: "N/A",
-          movie_count: "N/A",
+          movie_series_count: "N/A",
           total_recommendations: "N/A",
           total_wins: "N/A",
           total_nominations: "N/A"
@@ -2057,8 +2057,7 @@ const getUsersTopDirectors = (userId, limit, callback) => {
       });
 
       const sortedResults = filteredResults.sort(
-        (a, b) =>
-          b.director_recommendations_count - a.director_recommendations_count
+        (a, b) => b.recommendations_count - a.recommendations_count
       );
 
       callback(null, sortedResults);
@@ -2068,7 +2067,7 @@ const getUsersTopDirectors = (userId, limit, callback) => {
 
 const getUsersTopWriters = (userId, limit, callback) => {
   const query = `
-    SELECT writer, COUNT(*) AS writer_recommendations_count
+    SELECT writer, COUNT(*) AS recommendations_count
     FROM (
       SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(writer, ',', n.n), ',', -1)) AS writer
       FROM recommendations
@@ -2085,7 +2084,7 @@ const getUsersTopWriters = (userId, limit, callback) => {
         AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(writer, ',', n.n), ',', -1)) != 'N/A'
     ) AS writer_list
     GROUP BY writer
-    ORDER BY writer_recommendations_count DESC
+    ORDER BY recommendations_count DESC
     LIMIT ?;
   `;
 
@@ -2102,7 +2101,7 @@ const getUsersTopWriters = (userId, limit, callback) => {
         return {
           writer_en: row.writer,
           writer_bg: translatedWriter,
-          writer_recommendations_count: row.writer_recommendations_count
+          recommendations_count: row.recommendations_count
         };
       })
     );
@@ -2174,7 +2173,7 @@ const getUsersTopWriters = (userId, limit, callback) => {
                 ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
             END), 0)) AS total_box_office,
         CONCAT(ROUND(AVG(CAST(REPLACE(REPLACE(JSON_UNQUOTE(JSON_EXTRACT(um.ratings, '$[1].Value')), '%', ''), ',', '') AS DECIMAL(5,2))), 0), '%') AS avg_rotten_tomatoes,
-        COUNT(DISTINCT um.imdbID) AS movie_count,
+        COUNT(DISTINCT um.imdbID) AS movie_series_count,
         COALESCE(wr.total_recommendations, 0) AS total_recommendations,
         SUM(CASE 
                 WHEN um.awards IS NOT NULL THEN 
@@ -2268,7 +2267,7 @@ const getUsersTopWriters = (userId, limit, callback) => {
           avg_imdb_rating: "N/A",
           avg_metascore: "N/A",
           avg_rotten_tomatoes: "N/A",
-          movie_count: "N/A",
+          movie_series_count: "N/A",
           total_recommendations: "N/A",
           total_wins: "N/A",
           total_nominations: "N/A"
@@ -2287,8 +2286,7 @@ const getUsersTopWriters = (userId, limit, callback) => {
       });
 
       const sortedResults = filteredResults.sort(
-        (a, b) =>
-          b.writer_recommendations_count - a.writer_recommendations_count
+        (a, b) => b.recommendations_count - a.recommendations_count
       );
 
       callback(null, sortedResults);

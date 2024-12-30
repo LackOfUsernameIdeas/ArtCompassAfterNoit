@@ -147,6 +147,9 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
                       }
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
+                      Брой Препоръки
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
                       Просперитетен рейтинг
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
@@ -159,13 +162,10 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
                       Среден Метаскор
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
+                      Брой филми и сериали в платформата
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
                       Боксофис
-                    </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
-                      Брой филми
-                    </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
-                      Общо препоръки
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
                       Победи на награждавания
@@ -183,13 +183,13 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
                     >
                       <td>{(currentTablePage - 1) * 5 + index + 1}</td>
                       <td>{getCategoryName(item)}</td>
+                      <td>{item.recommendations_count}</td>
                       <td>{item.prosperityScore}</td>
                       <td>{item.avg_imdb_rating}</td>
                       <td>{item.avg_rotten_tomatoes}</td>
                       <td>{item.avg_metascore}</td>
+                      <td>{item.movie_series_count}</td>
                       <td>{item.total_box_office}</td>
-                      <td>{item.movie_count}</td>
-                      <td>{item.total_recommendations}</td>
                       <td>{item.total_wins}</td>
                       <td>{item.total_nominations}</td>
                     </tr>

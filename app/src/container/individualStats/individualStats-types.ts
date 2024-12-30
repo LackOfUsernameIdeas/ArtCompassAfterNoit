@@ -4,38 +4,30 @@ export interface CommonData {
   avg_metascore: number; // Среден Metascore
   total_box_office: string; // Общо приходи от бокс офис
   avg_rotten_tomatoes: string; // Среден рейтинг в Rotten Tomatoes
-  avg_runtime: number; // Средно времетраене
   total_wins: string; // Общо спечелени награди
   total_nominations: string; // Общо номинации
   prosperityScore: number; // Индекс на процъфтяването
   total_recommendations: number; // Общо препоръки
+  movie_series_count: number; // Брой филми
+  recommendations_count: number; // Брой препоръки
 }
 
 // Данни свързани с режисьори
 export interface DirectorData extends CommonData {
-  director: string; // Име на режисьора
-  director_en?: string; // Име на режисьора на английски
+  director_en: string; // Име на режисьора на английски
   director_bg: string; // Име на режисьора на български
-  movie_count: number; // Брой филми
-  director_count: number; // Брой режисьори (преименувано, за да се избегне конфликт с други интерфейси)
 }
 
 // Данни свързани с актьори
 export interface ActorData extends CommonData {
-  actor?: string; // Име на актьора
-  actor_en?: string; // Име на актьора на английски
+  actor_en: string; // Име на актьора на английски
   actor_bg: string; // Име на актьора на български
-  movie_count: number; // Брой филми
-  actor_count: number; // Брой актьори (преименувано, за да се избегне конфликт)
 }
 
 // Данни свързани с писатели
 export interface WriterData extends CommonData {
-  writer?: string; // Име на писателя
-  writer_en?: string; // Име на писателя на английски
+  writer_en: string; // Име на писателя на английски
   writer_bg: string; // Име на писателя на български
-  movie_count: number; // Брой филми
-  writer_count: number; // Брой писатели (преименувано, за да се избегне конфликт)
 }
 
 // Тип данни за роли (режисьор, актьор, писател)
