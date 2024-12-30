@@ -8,6 +8,7 @@ import { showNotification } from "../recommendations/helper_functions";
 import Notification from "../../components/common/notification/Notification";
 import { NotificationState } from "../recommendations/recommendations-types";
 import RecommendationsTable from "./Components/MoviesAndSeriesRecommendationsTable";
+import GenresBarChart from "./Components/GenresBarChart";
 
 interface IndividualStatsProps {}
 
@@ -150,6 +151,11 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                       </div>
                       <div className="xxl:col-span-6 col-span-12">
                         <ProsperityTable data={data} />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5 ">
+                      <div className="xxl:col-span-6 col-span-12">
+                        <GenresBarChart data={data} />
                       </div>
                     </div>
                   </div>
