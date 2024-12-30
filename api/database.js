@@ -673,16 +673,23 @@ const getSortedDirectorsByProsperity = (callback) => {
       WHERE director IS NOT NULL AND director != 'N/A'
   ),
   DirectorRecommendations AS (
-      SELECT 
-          TRIM(SUBSTRING_INDEX(director, ',', 1)) AS director,
-          COUNT(*) AS total_recommendations  -- Count total recommendations for each director
-      FROM 
-          recommendations
-      WHERE 
-          director IS NOT NULL 
-          AND director != 'N/A'
-      GROUP BY 
-          director
+    SELECT director, COUNT(*) AS total_recommendations  -- Count all recommendations for each director
+    FROM (
+      SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(director, ',', n.n), ',', -1)) AS director
+      FROM recommendations
+      CROSS JOIN (
+          SELECT a.N + b.N * 10 + 1 AS n
+          FROM (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a
+          , (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+            UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
+          ORDER BY n
+      ) n
+      WHERE n.n <= 1 + (LENGTH(director) - LENGTH(REPLACE(director, ',', '')))  -- Split the director list by comma
+        AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(director, ',', n.n), ',', -1)) != 'N/A'
+    ) AS director_list
+    GROUP BY director
+    ORDER BY total_recommendations DESC
   )
   SELECT 
       um.director,
@@ -768,6 +775,18 @@ const getSortedDirectorsByProsperity = (callback) => {
         ? parseFloat(director.avg_rotten_tomatoes.replace("%", "")) / 100
         : 0;
 
+      console.log(
+        "getSortedDirectorsByProsperity",
+        director.director,
+        totalWins,
+        totalNominations,
+        totalBoxOffice,
+        maxBoxOffice,
+        normalizedBoxOffice,
+        avgMetascore,
+        avgIMDbRating,
+        avgRottenTomatoes
+      );
       const prosperityScore =
         totalWins * weights.total_wins +
         totalNominations * weights.total_nominations +
@@ -844,16 +863,23 @@ const getSortedActorsByProsperity = (callback) => {
     WHERE actor IS NOT NULL AND actor != 'N/A'
   ),
   ActorRecommendations AS (
-    SELECT 
-        TRIM(SUBSTRING_INDEX(actors, ',', 1)) AS actor,
-        COUNT(*) AS total_recommendations  -- Count total recommendations for each actor
-    FROM 
-        recommendations
-    WHERE 
-        actors IS NOT NULL 
-        AND actors != 'N/A'
-    GROUP BY 
-        actor
+    SELECT actor, COUNT(*) AS total_recommendations  -- Count all recommendations for each actor
+    FROM (
+      SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(actors, ',', n.n), ',', -1)) AS actor
+      FROM recommendations
+      CROSS JOIN (
+          SELECT a.N + b.N * 10 + 1 AS n
+          FROM (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a
+          , (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+            UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
+          ORDER BY n
+      ) n
+      WHERE n.n <= 1 + (LENGTH(actors) - LENGTH(REPLACE(actors, ',', '')))  -- Split the actor list by comma
+        AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(actors, ',', n.n), ',', -1)) != 'N/A'
+    ) AS actor_list
+    GROUP BY actor
+    ORDER BY total_recommendations DESC
   )
   SELECT 
     um.actor,
@@ -1018,16 +1044,23 @@ const getSortedWritersByProsperity = (callback) => {
       WHERE writer IS NOT NULL AND writer != 'N/A'
   ),
   WriterRecommendations AS (
-      SELECT 
-          TRIM(SUBSTRING_INDEX(writer, ',', 1)) AS writer,
-          COUNT(*) AS total_recommendations  -- Count total recommendations for each writer
-      FROM 
-          recommendations
-      WHERE 
-          writer IS NOT NULL 
-          AND writer != 'N/A'
-      GROUP BY 
-          writer
+    SELECT writer, COUNT(*) AS total_recommendations  -- Count all recommendations for each writer
+    FROM (
+      SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(writer, ',', n.n), ',', -1)) AS writer
+      FROM recommendations
+      CROSS JOIN (
+          SELECT a.N + b.N * 10 + 1 AS n
+          FROM (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a
+          , (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+            UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
+          ORDER BY n
+      ) n
+      WHERE n.n <= 1 + (LENGTH(writer) - LENGTH(REPLACE(writer, ',', '')))  -- Split the writer list by comma
+        AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(writer, ',', n.n), ',', -1)) != 'N/A'
+    ) AS writer_list
+    GROUP BY writer
+    ORDER BY total_recommendations DESC
   )
   SELECT 
       um.writer,
@@ -1699,13 +1732,23 @@ const getUsersTopActors = (userId, limit, callback) => {
         WHERE actor IS NOT NULL AND actor != 'N/A'
       ),
       ActorRecommendations AS (
-        SELECT 
-            TRIM(SUBSTRING_INDEX(actors, ',', 1)) AS actor,
-            COUNT(*) AS total_recommendations
-        FROM recommendations
-        WHERE actors IS NOT NULL 
-          AND actors != 'N/A'
+        SELECT actor, COUNT(*) AS total_recommendations  -- Count all recommendations for each actor
+        FROM (
+          SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(actors, ',', n.n), ',', -1)) AS actor
+          FROM recommendations
+          CROSS JOIN (
+              SELECT a.N + b.N * 10 + 1 AS n
+              FROM (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                    UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a
+              , (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
+              ORDER BY n
+          ) n
+          WHERE n.n <= 1 + (LENGTH(actors) - LENGTH(REPLACE(actors, ',', '')))  -- Split the actor list by comma
+            AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(actors, ',', n.n), ',', -1)) != 'N/A'
+        ) AS actor_list
         GROUP BY actor
+        ORDER BY total_recommendations DESC
       )
       SELECT 
         um.actor,
@@ -1797,7 +1840,7 @@ const getUsersTopActors = (userId, limit, callback) => {
 
         return {
           ...actor,
-          prosperityScore
+          prosperityScore: Number(prosperityScore.toFixed(2))
         };
       });
 
@@ -1824,12 +1867,12 @@ const getUsersTopActors = (userId, limit, callback) => {
 
       // Remove unnecessary fields
       const filteredResults = combinedResults.map((actorData) => {
-        const { actor, total_recommendations, ...rest } = actorData;
+        const { actor, recommendations_count, ...rest } = actorData;
         return rest;
       });
 
       const sortedResults = filteredResults.sort(
-        (a, b) => b.recommendations_count - a.recommendations_count
+        (a, b) => b.total_recommendations - a.total_recommendations
       );
 
       callback(null, sortedResults);
@@ -1927,13 +1970,23 @@ const getUsersTopDirectors = (userId, limit, callback) => {
         WHERE director IS NOT NULL AND director != 'N/A'
       ),
       DirectorRecommendations AS (
-        SELECT 
-            TRIM(SUBSTRING_INDEX(director, ',', 1)) AS director,
-            COUNT(*) AS total_recommendations
-        FROM recommendations
-        WHERE director IS NOT NULL 
-          AND director != 'N/A'
+        SELECT director, COUNT(*) AS total_recommendations  -- Count all recommendations for each director
+        FROM (
+          SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(director, ',', n.n), ',', -1)) AS director
+          FROM recommendations
+          CROSS JOIN (
+              SELECT a.N + b.N * 10 + 1 AS n
+              FROM (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                    UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a
+              , (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
+              ORDER BY n
+          ) n
+          WHERE n.n <= 1 + (LENGTH(director) - LENGTH(REPLACE(director, ',', '')))  -- Split the director list by comma
+            AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(director, ',', n.n), ',', -1)) != 'N/A'
+        ) AS director_list
         GROUP BY director
+        ORDER BY total_recommendations DESC
       )
       SELECT 
         um.director,
@@ -2015,6 +2068,18 @@ const getUsersTopDirectors = (userId, limit, callback) => {
           ? parseFloat(director.avg_rotten_tomatoes.replace("%", "")) / 100
           : 0;
 
+        console.log(
+          "getUsersTopDirectors",
+          director.director,
+          totalWins,
+          totalNominations,
+          totalBoxOffice,
+          maxBoxOffice,
+          normalizedBoxOffice,
+          avgMetascore,
+          avgIMDbRating,
+          avgRottenTomatoes
+        );
         const prosperityScore =
           totalWins * weights.total_wins +
           totalNominations * weights.total_nominations +
@@ -2025,7 +2090,7 @@ const getUsersTopDirectors = (userId, limit, callback) => {
 
         return {
           ...director,
-          prosperityScore
+          prosperityScore: Number(prosperityScore.toFixed(2))
         };
       });
 
@@ -2052,12 +2117,12 @@ const getUsersTopDirectors = (userId, limit, callback) => {
 
       // Remove unnecessary fields
       const filteredResults = combinedResults.map((directorData) => {
-        const { director, total_recommendations, ...rest } = directorData;
+        const { director, recommendations_count, ...rest } = directorData;
         return rest;
       });
 
       const sortedResults = filteredResults.sort(
-        (a, b) => b.recommendations_count - a.recommendations_count
+        (a, b) => b.total_recommendations - a.total_recommendations
       );
 
       callback(null, sortedResults);
@@ -2155,13 +2220,23 @@ const getUsersTopWriters = (userId, limit, callback) => {
         WHERE writer IS NOT NULL AND writer != 'N/A'
       ),
       WriterRecommendations AS (
-        SELECT 
-            TRIM(SUBSTRING_INDEX(writer, ',', 1)) AS writer,
-            COUNT(*) AS total_recommendations
-        FROM recommendations
-        WHERE writer IS NOT NULL 
-          AND writer != 'N/A'
+        SELECT writer, COUNT(*) AS total_recommendations  -- Count all recommendations for each writer
+        FROM (
+          SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(writer, ',', n.n), ',', -1)) AS writer
+          FROM recommendations
+          CROSS JOIN (
+              SELECT a.N + b.N * 10 + 1 AS n
+              FROM (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                    UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a
+              , (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
+              ORDER BY n
+          ) n
+          WHERE n.n <= 1 + (LENGTH(writer) - LENGTH(REPLACE(writer, ',', '')))  -- Split the writer list by comma
+            AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(writer, ',', n.n), ',', -1)) != 'N/A'
+        ) AS writer_list
         GROUP BY writer
+        ORDER BY total_recommendations DESC
       )
       SELECT 
         um.writer,
@@ -2253,7 +2328,7 @@ const getUsersTopWriters = (userId, limit, callback) => {
 
         return {
           ...writer,
-          prosperityScore
+          prosperityScore: Number(prosperityScore.toFixed(2))
         };
       });
 
@@ -2281,12 +2356,12 @@ const getUsersTopWriters = (userId, limit, callback) => {
 
       // Remove unnecessary fields
       const filteredResults = combinedResults.map((writerData) => {
-        const { writer, total_recommendations, ...rest } = writerData;
+        const { writer, recommendations_count, ...rest } = writerData;
         return rest;
       });
 
       const sortedResults = filteredResults.sort(
-        (a, b) => b.recommendations_count - a.recommendations_count
+        (a, b) => b.total_recommendations - a.total_recommendations
       );
 
       callback(null, sortedResults);

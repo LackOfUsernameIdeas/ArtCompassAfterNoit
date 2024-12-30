@@ -183,7 +183,7 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
                     >
                       <td>{(currentTablePage - 1) * 5 + index + 1}</td>
                       <td>{getCategoryName(item)}</td>
-                      <td>{item.recommendations_count}</td>
+                      <td>{item.total_recommendations}</td>
                       <td>{item.prosperityScore}</td>
                       <td>{item.avg_imdb_rating}</td>
                       <td>{item.avg_rotten_tomatoes}</td>

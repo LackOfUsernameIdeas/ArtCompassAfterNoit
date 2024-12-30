@@ -7,9 +7,8 @@ export interface CommonData {
   total_wins: string; // Общо спечелени награди
   total_nominations: string; // Общо номинации
   prosperityScore: number; // Индекс на процъфтяването
-  total_recommendations: number; // Общо препоръки
   movie_series_count: number; // Брой филми
-  recommendations_count: number; // Брой препоръки
+  total_recommendations: number; // Брой препоръки
 }
 
 // Данни свързани с режисьори
