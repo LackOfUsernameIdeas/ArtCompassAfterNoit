@@ -761,6 +761,16 @@ const getSortedDirectorsByProsperity = (callback) => {
       })
     );
 
+    console.log(
+      Math.max(
+        ...results.map((director) => {
+          const totalBoxOffice =
+            parseFloat(director.total_box_office.replace(/[$,]/g, "")) || 0;
+          return totalBoxOffice;
+        })
+      )
+    );
+
     const directorsWithProsperity = results.map((director) => {
       const totalWins = director.total_wins || 0;
       const totalNominations = director.total_nominations || 0;
@@ -1867,7 +1877,7 @@ const getUsersTopActors = (userId, limit, callback) => {
 
       // Remove unnecessary fields
       const filteredResults = combinedResults.map((actorData) => {
-        const { actor, recommendations_count, ...rest } = actorData;
+        const { actor, ...rest } = actorData;
         return rest;
       });
 
@@ -1926,6 +1936,7 @@ const getUsersTopDirectors = (userId, limit, callback) => {
       .map((director) => `'${director.director_en}'`)
       .join(","); // Ensuring correct formatting for IN clause
 
+    console.log("directors: ", directors);
     const prosperityQuery = `
       WITH RECURSIVE DirectorSplit AS (
         SELECT 
@@ -2043,6 +2054,14 @@ const getUsersTopDirectors = (userId, limit, callback) => {
         })
       );
 
+      console.log(
+        ...prosperityResults.map((director) => {
+          const totalBoxOffice =
+            parseFloat(director.total_box_office.replace(/[$,]/g, "")) || 0;
+          return totalBoxOffice;
+        })
+      );
+
       const weights = {
         total_wins: 0.3,
         total_nominations: 0.25,
@@ -2117,12 +2136,12 @@ const getUsersTopDirectors = (userId, limit, callback) => {
 
       // Remove unnecessary fields
       const filteredResults = combinedResults.map((directorData) => {
-        const { director, recommendations_count, ...rest } = directorData;
+        const { director, ...rest } = directorData;
         return rest;
       });
 
       const sortedResults = filteredResults.sort(
-        (a, b) => b.total_recommendations - a.total_recommendations
+        (a, b) => b.recommendations_count - a.recommendations_count
       );
 
       callback(null, sortedResults);
@@ -2356,7 +2375,7 @@ const getUsersTopWriters = (userId, limit, callback) => {
 
       // Remove unnecessary fields
       const filteredResults = combinedResults.map((writerData) => {
-        const { writer, recommendations_count, ...rest } = writerData;
+        const { writer, ...rest } = writerData;
         return rest;
       });
 

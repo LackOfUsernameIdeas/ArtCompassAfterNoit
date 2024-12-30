@@ -50,6 +50,9 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
     [filteredTableData, prosperitySortCategory, currentTablePage]
   );
 
+  console.log("filteredTableData: ", filteredTableData);
+  console.log("prosperitySortCategory: ", prosperitySortCategory);
+
   const handleCategoryChange = (category: Category) => {
     // Превключва филтрираните данни в зависимост от избраната категория
     setFilteredTableData(data[`sorted${category}ByProsperity`]);
@@ -183,7 +186,7 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
                     >
                       <td>{(currentTablePage - 1) * 5 + index + 1}</td>
                       <td>{getCategoryName(item)}</td>
-                      <td>{item.total_recommendations}</td>
+                      <td>{item.recommendations_count}</td>
                       <td>{item.prosperityScore}</td>
                       <td>{item.avg_imdb_rating}</td>
                       <td>{item.avg_rotten_tomatoes}</td>
@@ -230,9 +233,7 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
                       className={`page-item ${
                         currentTablePage === 1 ? "disabled" : ""
                       }`}
-                      style={{
-                        marginRight: "0.25rem"
-                      }}
+                      style={{ marginRight: "0.25rem" }}
                     >
                       <Link
                         className="page-link"
@@ -319,9 +320,7 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
                       className={`page-item ${
                         currentTablePage === totalTablePages ? "disabled" : ""
                       }`}
-                      style={{
-                        marginLeft: "0.25rem"
-                      }}
+                      style={{ marginLeft: "0.25rem" }}
                     >
                       <Link
                         className="page-link"
