@@ -109,7 +109,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                     aria-controls="hs-basic-with-title-and-arrow-stretched-collapse-one"
                     type="button"
                   >
-                    Accordion #1
+                    Моите Топ Препоръки
                     <svg
                       className="hs-accordion-active:hidden hs-accordion-active:text-primary hs-accordion-active:group-hover:text-primary block w-3 h-3 text-gray-600 group-hover:text-secondary dark:text-[#8c9097] dark:text-white/50"
                       width="16"
