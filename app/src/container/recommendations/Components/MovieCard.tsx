@@ -73,12 +73,36 @@ export const MovieCard: FC<MovieCardProps> = ({
   return (
     <div className="movie-card">
       <div className="flex w-full items-center">
-        <div className="flex-shrink-0 mr-8">
+        <div className="relative flex-shrink-0 mr-8">
           <img
             src={movie.poster}
             alt={`${movie.bgName || "Movie"} Poster`}
             className="rounded-lg w-96 h-auto"
           />
+          <button
+            style={{
+              backgroundColor: "rgb(var(--body-bg))", // Dark background color
+              color: "white", // White for the plus sign
+              width: "160px", // Increased width
+              height: "200px", // Increased height
+              position: "absolute",
+              top: "0", // Sticking to the very top
+              left: "0", // Sticking to the very left
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              clipPath:
+                "polygon(24% 0%, 0% 0%, 0% 32%, 12.24% 26.29%, 24% 31.77%)", // Shape using provided points
+              border: "none",
+              cursor: "pointer"
+            }}
+            className="border border-solid border-defaultborder dark:border-defaultborder/10"
+            onClick={() => alert("Added to Watch List!")}
+            title="Add to Watch List"
+          >
+            <span style={{ fontSize: "96px", fontWeight: "bold" }}>+</span>{" "}
+            {/* Increased font size for the plus sign */}
+          </button>
         </div>
 
         <div className="flex-grow">

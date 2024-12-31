@@ -63,9 +63,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
     };
 
     validateToken(); // Стартиране на проверката на токена при първоначално зареждане на компонента
-  }, []);
 
-  useEffect(() => {
     const token =
       localStorage.getItem("authToken") || sessionStorage.getItem("authToken"); // Вземане на токен от localStorage или sessionStorage
 
@@ -73,7 +71,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
       fetchData(token, setData); // Извличане на данни с помощта на fetchData функцията
       console.log("fetching"); // Лог за следене на извличането на данни
     }
-  }, []); // Празен масив като зависимост, за да се извика само веднъж при рендиране на компонента
+  }, []);
 
   return (
     <FadeInWrapper>
