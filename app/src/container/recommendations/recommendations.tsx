@@ -6,6 +6,7 @@ import { showNotification } from "./helper_functions";
 import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 import Notification from "../../components/common/notification/Notification";
 import { NotificationState } from "./recommendations-types";
+import BookmarkAlert from "./Components/BookmarkAlert";
 
 interface RecommendationsProps {}
 
@@ -14,6 +15,8 @@ const Recommendations: FC<RecommendationsProps> = () => {
   const [notification, setNotification] = useState<NotificationState | null>(
     null // Състояние за съхраняване на текущото известие (съобщение и тип)
   );
+
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
 
   useEffect(() => {
     const validateToken = async () => {
@@ -41,6 +44,11 @@ const Recommendations: FC<RecommendationsProps> = () => {
     setNotification(null); // Зануляване на състоянието за известието
   };
 
+  const handleBookmarkClick = () => {
+    setIsBookmarked((prev) => !prev);
+    console.log(isBookmarked);
+  };
+
   return (
     <>
       {notification && (
@@ -50,8 +58,12 @@ const Recommendations: FC<RecommendationsProps> = () => {
           onClose={handleNotificationClose}
         />
       )}
+      <BookmarkAlert isBookmarked={isBookmarked} />
       <FadeInWrapper>
-        <Quiz />
+        <Quiz
+          handleBookmarkClick={handleBookmarkClick}
+          isBookmarked={isBookmarked}
+        />
       </FadeInWrapper>
     </>
   );

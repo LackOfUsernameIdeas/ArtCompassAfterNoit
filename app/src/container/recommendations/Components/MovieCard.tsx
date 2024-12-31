@@ -3,11 +3,15 @@ import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
 import { MovieCardProps } from "../recommendations-types";
 import { translate } from "../helper_functions";
+import bookmarkIconUnsaved from "../../../assets/images/brand-logos/bookmark-saved.png";
+import bookmarkIconSaved from "../../../assets/images/brand-logos/bookmark-unsaved.png";
 
 export const MovieCard: FC<MovieCardProps> = ({
   recommendationList,
   currentIndex,
-  openModal
+  openModal,
+  handleBookmarkClick,
+  isBookmarked
 }) => {
   const [translatedDirector, setTranslatedDirector] = useState<string>("");
   const [translatedWriters, setTranslatedWriters] = useState<string>("");
@@ -80,27 +84,17 @@ export const MovieCard: FC<MovieCardProps> = ({
             className="rounded-lg w-96 h-auto"
           />
           <button
+            onClick={handleBookmarkClick}
+            className="absolute top-4 left-4 p-2 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
             style={{
-              backgroundColor: "#1a1a1a", // Dark background color
-              color: "white", // White for the plus sign
-              width: "160px", // Increased width
-              height: "200px", // Increased height
-              position: "absolute",
-              top: "1rem", // Sticking to the very top
-              left: "1rem", // Sticking to the very left
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              clipPath:
-                "polygon(24% 0%, 0% 0%, 0% 32%, 12.24% 26.29%, 24% 31.77%)", // Shape using provided points
-              border: "none",
-              cursor: "pointer"
+              backgroundColor: "rgba(0, 0, 0, 0.4)" // Add a background color for better visibility
             }}
-            className="border border-solid border-defaultborder dark:border-defaultborder/10"
-            onClick={() => alert("Added to Watch List!")}
-            title="Add to Watch List"
           >
-            +
+            <img
+              src={isBookmarked ? bookmarkIconSaved : bookmarkIconUnsaved}
+              alt={isBookmarked ? "Bookmarked" : "Bookmark"}
+              className="w-8 h-8 transition-all duration-300"
+            />
           </button>
         </div>
 

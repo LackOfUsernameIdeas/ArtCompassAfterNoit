@@ -4,8 +4,9 @@ import { RecommendationsList } from "./RecommendationsList";
 import { QuizQuestions } from "./QuizQuestions";
 import { handleRetakeQuiz } from "../helper_functions";
 import Loader from "../../../components/common/loader/Loader";
+import { QuizProps } from "../recommendations-types";
 
-export const Quiz: FC = () => {
+export const Quiz: FC<QuizProps> = ({ handleBookmarkClick, isBookmarked }) => {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [recommendationList, setRecommendationList] = useState<any[]>([]);
@@ -62,7 +63,11 @@ export const Quiz: FC = () => {
               </button>
             </p>
           </div>
-          <RecommendationsList recommendationList={recommendationList} />
+          <RecommendationsList
+            recommendationList={recommendationList}
+            handleBookmarkClick={handleBookmarkClick}
+            isBookmarked={isBookmarked}
+          />
         </div>
       </CSSTransition>
     </div>
