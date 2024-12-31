@@ -99,7 +99,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                 data-hs-accordion-always-open=""
               >
                 <div
-                  className="hs-accordion accordion-item  overflow-hidden !border-b-0 active"
+                  className="hs-accordion accordion-item overflow-hidden active"
                   id="hs-basic-with-title-and-arrow-stretched-heading-one"
                 >
                   <button
@@ -163,7 +163,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                   </div>
                 </div>
                 <div
-                  className="hs-accordion accordion-item  overflow-hidden !border-b-0"
+                  className="hs-accordion accordion-item overflow-hidden"
                   id="hs-basic-with-title-and-arrow-stretched-heading-two"
                 >
                   <button
@@ -219,7 +219,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                   </div>
                 </div>
                 <div
-                  className="hs-accordion accordion-item  overflow-hidden !border-b-0"
+                  className="hs-accordion accordion-item overflow-hidden"
                   id="hs-basic-with-title-and-arrow-stretched-heading-three"
                 >
                   <button

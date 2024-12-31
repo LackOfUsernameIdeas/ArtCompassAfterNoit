@@ -81,13 +81,13 @@ export const MovieCard: FC<MovieCardProps> = ({
           />
           <button
             style={{
-              backgroundColor: "rgb(var(--body-bg))", // Dark background color
+              backgroundColor: "#1a1a1a", // Dark background color
               color: "white", // White for the plus sign
               width: "160px", // Increased width
               height: "200px", // Increased height
               position: "absolute",
-              top: "0", // Sticking to the very top
-              left: "0", // Sticking to the very left
+              top: "1rem", // Sticking to the very top
+              left: "1rem", // Sticking to the very left
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -100,8 +100,7 @@ export const MovieCard: FC<MovieCardProps> = ({
             onClick={() => alert("Added to Watch List!")}
             title="Add to Watch List"
           >
-            <span style={{ fontSize: "96px", fontWeight: "bold" }}>+</span>{" "}
-            {/* Increased font size for the plus sign */}
+            +
           </button>
         </div>
 
