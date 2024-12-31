@@ -123,8 +123,6 @@ const Home: FC<CrmProps> = () => {
             <CountryBarChartComponent data={data} />
           </div>
         </div>
-        <div className="grid grid-cols-12 gap-x-6"></div>
-        <div className="transition fixed inset-0 z-50 bg-gray-900 bg-opacity-50 dark:bg-opacity-80 opacity-0 hidden"></div>
       </Fragment>
     </FadeInWrapper>
   );

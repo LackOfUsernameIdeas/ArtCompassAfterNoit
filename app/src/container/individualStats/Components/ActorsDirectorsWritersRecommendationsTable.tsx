@@ -1,5 +1,9 @@
 import { FC, Fragment, useEffect, useState, useMemo } from "react";
-import { Category, DataType, FilteredTableData } from "../home-types";
+import {
+  Category,
+  DataType,
+  FilteredTableData
+} from "../individualStats-types";
 import {
   filterTableData,
   isActor,
@@ -8,13 +12,13 @@ import {
 } from "../helper_functions";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
-import { tableCategoryDisplayNames } from "../home-data";
+import { tableCategoryDisplayNames } from "../individualStats-data";
 
-interface TableComponentProps {
+interface ProsperityTableProps {
   data: DataType;
 }
 
-const TableComponent: FC<TableComponentProps> = ({ data }) => {
+const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
   const [prosperitySortCategory, setProsperitySortCategory] =
     useState<Category>("Directors");
 
@@ -45,6 +49,9 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
       ),
     [filteredTableData, prosperitySortCategory, currentTablePage]
   );
+
+  console.log("filteredTableData: ", filteredTableData);
+  console.log("prosperitySortCategory: ", prosperitySortCategory);
 
   const handleCategoryChange = (category: Category) => {
     // Превключва филтрираните данни в зависимост от избраната категория
@@ -86,7 +93,7 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                   prosperitySortCategory as keyof typeof tableCategoryDisplayNames
                 ]
               }{" "}
-              по Просперитет
+              по Брой Препоръки
             </div>
             <div className="flex flex-wrap gap-2">
               <div
@@ -143,6 +150,9 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                       }
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
+                      Брой Препоръки
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
                       Просперитетен рейтинг
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
@@ -155,13 +165,10 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                       Среден Метаскор
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
+                      Брой филми и сериали в платформата
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
                       Боксофис
-                    </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
-                      Брой филми в платформата
-                    </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
-                      Общо препоръки
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
                       Победи на награждавания
@@ -179,13 +186,13 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                     >
                       <td>{(currentTablePage - 1) * 5 + index + 1}</td>
                       <td>{getCategoryName(item)}</td>
+                      <td>{item.recommendations_count}</td>
                       <td>{item.prosperityScore}</td>
                       <td>{item.avg_imdb_rating}</td>
                       <td>{item.avg_rotten_tomatoes}</td>
                       <td>{item.avg_metascore}</td>
+                      <td>{item.movie_series_count}</td>
                       <td>{item.total_box_office}</td>
-                      <td>{item.movie_count}</td>
-                      <td>{item.total_recommendations}</td>
                       <td>{item.total_wins}</td>
                       <td>{item.total_nominations}</td>
                     </tr>
@@ -226,9 +233,7 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                       className={`page-item ${
                         currentTablePage === 1 ? "disabled" : ""
                       }`}
-                      style={{
-                        marginRight: "0.25rem"
-                      }}
+                      style={{ marginRight: "0.25rem" }}
                     >
                       <Link
                         className="page-link"
@@ -315,9 +320,7 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
                       className={`page-item ${
                         currentTablePage === totalTablePages ? "disabled" : ""
                       }`}
-                      style={{
-                        marginLeft: "0.25rem"
-                      }}
+                      style={{ marginLeft: "0.25rem" }}
                     >
                       <Link
                         className="page-link"
@@ -345,4 +348,4 @@ const TableComponent: FC<TableComponentProps> = ({ data }) => {
   );
 };
 
-export default TableComponent;
+export default ProsperityTable;
