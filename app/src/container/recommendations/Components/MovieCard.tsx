@@ -3,8 +3,6 @@ import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
 import { MovieCardProps } from "../recommendations-types";
 import { translate } from "../helper_functions";
-import bookmarkIconUnsaved from "../../../assets/images/brand-logos/bookmark-unsaved.png";
-import bookmarkIconSaved from "../../../assets/images/brand-logos/bookmark-saved.png";
 
 export const MovieCard: FC<MovieCardProps> = ({
   recommendationList,
