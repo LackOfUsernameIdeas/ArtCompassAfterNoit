@@ -372,7 +372,7 @@ export const generateMovieRecommendations = async (
             ]);
 
             console.log("recommendationData: ", recommendationData);
-            await saveRecommendationToDatabase(recommendationData, date, token);
+            await saveRecommendation(recommendationData, date, token);
           } else {
             console.log(`IMDb ID not found for ${movieName}`);
           }
@@ -390,14 +390,14 @@ export const generateMovieRecommendations = async (
  * След успешното записване, препоръката се изпраща в сървъра.
  *
  * @async
- * @function saveRecommendationToDatabase
+ * @function saveRecommendation
  * @param {any} recommendation - Обект, съдържащ данни за препоръчания филм или сериал.
  * @param {string} date - Дата на генерирането на препоръката.
  * @param {string | null} token - Токенът на потребителя за аутентификация.
  * @returns {Promise<void>} - Няма връщан резултат, но извършва записване на препоръката.
  * @throws {Error} - Хвърля грешка, ако не може да се запази препоръката в базата данни.
  */
-export const saveRecommendationToDatabase = async (
+export const saveRecommendation = async (
   recommendation: any,
   date: string,
   token: string | null
@@ -478,6 +478,102 @@ export const saveRecommendationToDatabase = async (
     console.log("Recommendation saved successfully:", result);
   } catch (error) {
     console.error("Error saving recommendation:", error);
+  }
+};
+
+/**
+ * Записва препоръка за филм или сериал в списъка за гледане на потребителя.
+ * Препоръката съдържа подробности като заглавие, жанр, рейтинг и други.
+ * След успешното записване, данните се изпращат до сървъра чрез съответния API маршрут.
+ *
+ * @async
+ * @function saveToWatchlist
+ * @param {any} recommendation - Обект с данни за препоръката (филм или сериал).
+ * @param {string | null} token - Токен за автентикация на потребителя.
+ * @returns {Promise<void>} - Няма върнат резултат, но изпраща заявка към сървъра.
+ * @throws {Error} - Хвърля грешка, ако данните не могат да бъдат записани.
+ */
+export const saveToWatchlist = async (
+  recommendation: any,
+  token: string | null
+): Promise<void> => {
+  try {
+    if (!recommendation || typeof recommendation !== "object") {
+      console.warn("Няма валидни данни за препоръката.");
+      return;
+    }
+
+    const genresEn = recommendation.genre
+      ? recommendation.genre.split(", ")
+      : null;
+
+    const genresBg = genresEn.map((genre: string) => {
+      const matchedGenre = genreOptions.find(
+        (option) => option.en.trim() === genre.trim()
+      );
+      return matchedGenre ? matchedGenre.bg : null;
+    });
+
+    const runtime = recommendation.runtimeGoogle || recommendation.runtime;
+    const imdbRating =
+      recommendation.imdbRatingGoogle || recommendation.imdbRating;
+
+    const formattedRecommendation = {
+      token,
+      imdbID: recommendation.imdbID || null,
+      title_en: recommendation.title || null,
+      title_bg: recommendation.bgName || null,
+      genre_en: genresEn.join(", "),
+      genre_bg: genresBg.join(", "),
+      reason: recommendation.reason || null,
+      description: recommendation.description || null,
+      year: recommendation.year || null,
+      rated: recommendation.rated || null,
+      released: recommendation.released || null,
+      runtime: runtime || null,
+      director: recommendation.director || null,
+      writer: recommendation.writer || null,
+      actors: recommendation.actors || null,
+      plot: recommendation.plot || null,
+      language: recommendation.language || null,
+      country: recommendation.country || null,
+      awards: recommendation.awards || null,
+      poster: recommendation.poster || null,
+      ratings: recommendation.ratings || [],
+      metascore: recommendation.metascore || null,
+      imdbRating: imdbRating || null,
+      imdbVotes: recommendation.imdbVotes || null,
+      type: recommendation.type || null,
+      DVD: recommendation.DVD || null,
+      boxOffice: recommendation.boxOffice || null,
+      production: recommendation.production || null,
+      website: recommendation.website || null,
+      totalSeasons: recommendation.totalSeasons || null
+    };
+
+    console.log("Подготвена препоръка:", formattedRecommendation);
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/save-to-watchlist`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formattedRecommendation)
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        "Неуспешно записване на препоръката в списъка за гледане."
+      );
+    }
+
+    const result = await response.json();
+    console.log("Препоръката е успешно добавена:", result);
+  } catch (error) {
+    console.error("Грешка при записването в списъка за гледане:", error);
   }
 };
 

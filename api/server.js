@@ -521,6 +521,98 @@ app.post("/save-recommendation", (req, res) => {
   });
 });
 
+// Запазване на препоръка в списък за гледане
+app.post("/save-to-watchlist", (req, res) => {
+  const {
+    token,
+    imdbID,
+    title_en,
+    title_bg,
+    genre_en,
+    genre_bg,
+    reason,
+    description,
+    year,
+    rated,
+    released,
+    runtime,
+    director,
+    writer,
+    actors,
+    plot,
+    language,
+    country,
+    awards,
+    poster,
+    ratings,
+    metascore,
+    imdbRating,
+    imdbVotes,
+    type,
+    DVD,
+    boxOffice,
+    production,
+    website,
+    totalSeasons
+  } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.saveToWatchlist(
+      userId,
+      imdbID,
+      title_en,
+      title_bg,
+      genre_en,
+      genre_bg,
+      reason,
+      description,
+      year,
+      rated,
+      released,
+      runtime,
+      director,
+      writer,
+      actors,
+      plot,
+      language,
+      country,
+      awards,
+      poster,
+      ratings,
+      metascore,
+      imdbRating,
+      imdbVotes,
+      type,
+      DVD,
+      boxOffice,
+      production,
+      website,
+      totalSeasons,
+      (err, result) => {
+        console.log(
+          "title_en: \n" +
+            title_en +
+            "\n" +
+            "title_bg: \n" +
+            title_bg +
+            "\n" +
+            "genre_en: \n" +
+            genre_en +
+            "\n" +
+            "genre_bg: \n" +
+            genre_bg
+        );
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        res.status(201).json({ message: "Recommendation added successfully!" });
+      }
+    );
+  });
+});
+
 // Вземане на данни за общ брой на потребители в платформата
 app.get("/stats/platform/users-count", (req, res) => {
   db.getUsersCount((err, result) => {

@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { Quiz } from "./Components/Quiz";
 import { useNavigate } from "react-router-dom";
 import { checkTokenValidity } from "../home/helper_functions";
-import { showNotification } from "./helper_functions";
+import { saveToWatchlist, showNotification } from "./helper_functions";
 import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 import Notification from "../../components/common/notification/Notification";
 import { NotificationState } from "./recommendations-types";
@@ -59,6 +59,14 @@ const Recommendations: FC<RecommendationsProps> = () => {
       } else {
         // Add the movie to bookmarks if it's not already bookmarked
         updatedBookmarks[movie.imdbID] = movie;
+
+        const token =
+          localStorage.getItem("authToken") ||
+          sessionStorage.getItem("authToken");
+
+        saveToWatchlist(movie, token).catch((error) => {
+          console.error("Error saving to watchlist:", error);
+        });
       }
 
       setCurrentBookmarkStatus(!isBookmarked); // Update the current bookmark status

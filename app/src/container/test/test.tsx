@@ -164,10 +164,7 @@ const Test: FC<Test> = () => {
     }
   };
 
-  const saveRecommendationToDatabase = async (
-    recommendation: any,
-    date: string
-  ) => {
+  const saveRecommendation = async (recommendation: any, date: string) => {
     try {
       // Check if the recommendation object is valid
       if (!recommendation || typeof recommendation !== "object") {
@@ -437,7 +434,7 @@ const Test: FC<Test> = () => {
               ]);
 
               console.log("recommendationData: ", recommendationData);
-              await saveRecommendationToDatabase(recommendationData, date);
+              await saveRecommendation(recommendationData, date);
             } else {
               console.log(`IMDb ID not found for ${movieName}`);
             }
