@@ -66,6 +66,7 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
         <button
           onClick={handlePrevious}
           className="absolute left-[-120px] top-1/2 transform -translate-y-1/2 dark:text-white text-black text-6xl dark:hover:text-gray-400 hover:text-black hover:text-opacity-60 transition"
+          style={{ fontFamily: "Arial, sans-serif" }}
         >
           &lt;
         </button>
@@ -97,6 +98,7 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
         <button
           onClick={handleNext}
           className="absolute right-[-120px] top-1/2 transform -translate-y-1/2 dark:text-white text-black text-6xl dark:hover:text-gray-400 hover:text-black hover:text-opacity-60 transition"
+          style={{ fontFamily: "Arial, sans-serif" }}
         >
           &gt;
         </button>
