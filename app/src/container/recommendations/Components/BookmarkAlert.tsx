@@ -2,21 +2,21 @@ import React, { useEffect } from "react";
 
 interface BookmarkAlertProps {
   isBookmarked: boolean;
-  onClose: () => void; // Function to close the alert after a delay
+  onDismiss: () => void; // Added dismiss function
 }
 
 const BookmarkAlert: React.FC<BookmarkAlertProps> = ({
   isBookmarked,
-  onClose
+  onDismiss
 }) => {
   // Automatically close the alert after 3 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
-      onClose();
+      onDismiss();
     }, 3000);
 
     return () => clearTimeout(timer); // Cleanup the timer when the component is unmounted
-  }, [onClose]);
+  }, [onDismiss]);
 
   return (
     <div

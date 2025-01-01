@@ -85,7 +85,7 @@ const Recommendations: FC<RecommendationsProps> = () => {
     });
   };
 
-  const closeAlert = () => {
+  const handleDismiss = () => {
     setAlertVisible(false);
   };
 
@@ -101,7 +101,7 @@ const Recommendations: FC<RecommendationsProps> = () => {
       {alertVisible && (
         <BookmarkAlert
           isBookmarked={currentBookmarkStatus}
-          onClose={closeAlert}
+          onDismiss={handleDismiss}
         />
       )}
       <FadeInWrapper>
