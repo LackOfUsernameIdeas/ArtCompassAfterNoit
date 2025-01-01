@@ -318,11 +318,6 @@ export const generateMovieRecommendations = async (
             ? runtime.replace(/h/g, "ч").replace(/m/g, "м").replace(/s/g, "с")
             : null;
 
-          console.log("imdbItem.pagemap.metatags: ", imdbItem.pagemap.metatags);
-          console.log(`Found IMDb ID: ${imdbId}`);
-          console.log(`IMDb Rating: ${imdbRating}`);
-          console.log(`Runtime: ${translatedRuntime}`);
-
           if (imdbId) {
             const omdbResponse = await fetch(
               `https://www.omdbapi.com/?apikey=89cbf31c&i=${imdbId}&plot=full`
@@ -371,7 +366,6 @@ export const generateMovieRecommendations = async (
               recommendationData
             ]);
 
-            console.log("recommendationData: ", recommendationData);
             await saveRecommendation(recommendationData, date, token);
           } else {
             console.log(`IMDb ID not found for ${movieName}`);
@@ -551,8 +545,6 @@ export const saveToWatchlist = async (
       totalSeasons: recommendation.totalSeasons || null
     };
 
-    console.log("Подготвена препоръка:", formattedRecommendation);
-
     const response = await fetch(
       `${import.meta.env.VITE_API_BASE_URL}/save-to-watchlist`,
       {
@@ -574,6 +566,50 @@ export const saveToWatchlist = async (
     console.log("Препоръката е успешно добавена:", result);
   } catch (error) {
     console.error("Грешка при записването в списъка за гледане:", error);
+  }
+};
+
+/**
+ * Премахва филм или сериал от списъка за гледане на потребителя.
+ *
+ * @async
+ * @function removeFromWatchlist
+ * @param {string} imdbID - Уникален идентификатор на филма или сериала (IMDb ID).
+ * @param {string | null} token - Токен за автентикация на потребителя.
+ * @returns {Promise<void>} - Няма върнат резултат, но изпраща заявка към сървъра.
+ * @throws {Error} - Хвърля грешка, ако данните не могат да бъдат премахнати.
+ */
+export const removeFromWatchlist = async (
+  imdbID: string,
+  token: string | null
+): Promise<void> => {
+  try {
+    if (!imdbID) {
+      console.warn("IMDb ID is required to remove a movie from the watchlist.");
+      return;
+    }
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/remove-from-watchlist`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ token, imdbID })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        "Failed to remove the movie or series from the watchlist."
+      );
+    }
+
+    const result = await response.json();
+    console.log("Successfully removed from watchlist:", result);
+  } catch (error) {
+    console.error("Error removing from watchlist:", error);
   }
 };
 
@@ -689,7 +725,6 @@ export const handleSubmit = async (
         "error"
       );
     }
-    console.log("kalata test: ", userPreferences);
   } catch (error) {
     console.error("Error submitting the request:", error);
     showNotification(

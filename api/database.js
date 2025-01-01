@@ -193,6 +193,13 @@ const saveToWatchlist = (
   db.query(query, values, callback);
 };
 
+const removeFromWatchlist = (userId, imdbID, callback) => {
+  const query = `DELETE FROM watchlist WHERE user_id = ? AND imdbID = ?;`;
+  const values = [userId, imdbID];
+
+  db.query(query, values, callback);
+};
+
 const saveUserPreferences = (
   userId,
   preferred_genres_en,
@@ -2472,6 +2479,7 @@ module.exports = {
   getUserById,
   saveRecommendation,
   saveToWatchlist,
+  removeFromWatchlist,
   saveUserPreferences,
   getUsersCount,
   getAverageBoxOfficeAndScores,

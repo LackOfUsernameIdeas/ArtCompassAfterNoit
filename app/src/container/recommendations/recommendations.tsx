@@ -2,7 +2,11 @@ import { FC, useEffect, useState } from "react";
 import { Quiz } from "./Components/Quiz";
 import { useNavigate } from "react-router-dom";
 import { checkTokenValidity } from "../home/helper_functions";
-import { saveToWatchlist, showNotification } from "./helper_functions";
+import {
+  removeFromWatchlist,
+  saveToWatchlist,
+  showNotification
+} from "./helper_functions";
 import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 import Notification from "../../components/common/notification/Notification";
 import { NotificationState } from "./recommendations-types";
@@ -52,18 +56,23 @@ const Recommendations: FC<RecommendationsProps> = () => {
     setBookmarkedMovies((prev) => {
       const isBookmarked = !!prev[movie.imdbID];
       const updatedBookmarks = { ...prev };
+      const token =
+        localStorage.getItem("authToken") ||
+        sessionStorage.getItem("authToken");
 
       if (isBookmarked) {
         // Remove the movie from bookmarks if it's already bookmarked
         delete updatedBookmarks[movie.imdbID];
+
+        // Call removeFromWatchlist API
+        removeFromWatchlist(movie.imdbID, token).catch((error) => {
+          console.error("Error removing from watchlist:", error);
+        });
       } else {
         // Add the movie to bookmarks if it's not already bookmarked
         updatedBookmarks[movie.imdbID] = movie;
 
-        const token =
-          localStorage.getItem("authToken") ||
-          sessionStorage.getItem("authToken");
-
+        // Call saveToWatchlist API
         saveToWatchlist(movie, token).catch((error) => {
           console.error("Error saving to watchlist:", error);
         });
@@ -76,8 +85,6 @@ const Recommendations: FC<RecommendationsProps> = () => {
       return updatedBookmarks; // Return the updated bookmarks object
     });
   };
-
-  console.log("bookmarkedMovies", bookmarkedMovies);
 
   return (
     <>

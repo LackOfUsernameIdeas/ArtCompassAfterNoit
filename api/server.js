@@ -613,6 +613,30 @@ app.post("/save-to-watchlist", (req, res) => {
   });
 });
 
+// Изтриване на препоръка от списъка за гледане
+app.delete("/remove-from-watchlist", (req, res) => {
+  const { token, imdbID } = req.body;
+
+  if (!imdbID) {
+    return res.status(400).json({ error: "IMDb ID is required" });
+  }
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+
+    db.removeFromWatchlist(userId, imdbID, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Recommendation not found" });
+      }
+      res.status(200).json({ message: "Recommendation removed successfully!" });
+    });
+  });
+});
+
 // Вземане на данни за общ брой на потребители в платформата
 app.get("/stats/platform/users-count", (req, res) => {
   db.getUsersCount((err, result) => {
