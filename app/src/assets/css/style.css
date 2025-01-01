@@ -19953,4 +19953,17 @@ option.selectionList {
   }
 }
 
+@keyframes slide-down {
+  from {
+    transform: translateY(-10px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-down {
+  animation: slide-down 0.5s ease-out;
+}
+
 /*# sourceMappingURL=style.css.map */

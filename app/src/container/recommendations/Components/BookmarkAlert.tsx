@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 interface BookmarkAlertProps {
   isBookmarked: boolean;
@@ -9,9 +9,12 @@ const BookmarkAlert: React.FC<BookmarkAlertProps> = ({
   isBookmarked,
   onDismiss
 }) => {
+  const [isVisible, setIsVisible] = useState(true);
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      onDismiss();
+      setIsVisible(false);
+      setTimeout(() => onDismiss(), 500); // Allow time for fade-out animation
     }, 5000);
 
     return () => clearTimeout(timer);
@@ -19,13 +22,15 @@ const BookmarkAlert: React.FC<BookmarkAlertProps> = ({
 
   return (
     <div
-      className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-sm p-4"
+      className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-lg p-8 transition-opacity duration-500 ${
+        isVisible ? "opacity-100" : "opacity-0"
+      }`}
       role="alert"
     >
       <div
         className={`${
           isBookmarked ? "bg-success" : "bg-danger"
-        } p-4 rounded-sm text-sm text-white`}
+        } p-4 rounded-sm text-sm text-white animate-slide-down`}
       >
         <div className="font-semibold flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -47,8 +52,11 @@ const BookmarkAlert: React.FC<BookmarkAlertProps> = ({
             </span>
           </div>
           <button
-            onClick={onDismiss}
-            className="inline-flex bg-teal-50 rounded-sm text-teal-500 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-offset-teal-50 focus:ring-teal-600"
+            onClick={() => {
+              setIsVisible(false);
+              setTimeout(() => onDismiss(), 500);
+            }}
+            className="inline-flex bg-teal-50 rounded-sm text-teal-500 focus:outline-none"
           >
             <span className="sr-only">Затвори</span>
             <svg
