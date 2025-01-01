@@ -80,10 +80,13 @@ const Recommendations: FC<RecommendationsProps> = () => {
 
       setCurrentBookmarkStatus(!isBookmarked); // Update the current bookmark status
       setAlertVisible(true); // Show the alert
-      setTimeout(() => setAlertVisible(false), 3000); // Hide alert after 3 seconds
 
       return updatedBookmarks; // Return the updated bookmarks object
     });
+  };
+
+  const closeAlert = () => {
+    setAlertVisible(false);
   };
 
   return (
@@ -95,7 +98,12 @@ const Recommendations: FC<RecommendationsProps> = () => {
           onClose={handleNotificationClose}
         />
       )}
-      {alertVisible && <BookmarkAlert isBookmarked={currentBookmarkStatus} />}
+      {alertVisible && (
+        <BookmarkAlert
+          isBookmarked={currentBookmarkStatus}
+          onClose={closeAlert}
+        />
+      )}
       <FadeInWrapper>
         <Quiz
           bookmarkedMovies={bookmarkedMovies}

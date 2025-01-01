@@ -1,13 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 interface BookmarkAlertProps {
   isBookmarked: boolean;
+  onClose: () => void; // Function to close the alert after a delay
 }
 
-const BookmarkAlert: React.FC<BookmarkAlertProps> = ({ isBookmarked }) => {
+const BookmarkAlert: React.FC<BookmarkAlertProps> = ({
+  isBookmarked,
+  onClose
+}) => {
+  // Automatically close the alert after 3 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 3000);
+
+    return () => clearTimeout(timer); // Cleanup the timer when the component is unmounted
+  }, [onClose]);
+
   return (
     <div
-      className={`bg-gray-50 border border-gray-200 dark:bg-light dark:border-defaultborder/10 alert mb-0 ${
+      className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 p-4 w-full max-w-sm bg-gray-50 border border-gray-200 dark:bg-light dark:border-defaultborder/10 ${
         isBookmarked ? "bg-green-50" : "bg-red-50"
       }`}
       role="alert"
