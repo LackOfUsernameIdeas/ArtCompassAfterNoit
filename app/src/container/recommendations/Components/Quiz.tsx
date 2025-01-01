@@ -6,14 +6,13 @@ import { handleRetakeQuiz } from "../helper_functions";
 import Loader from "../../../components/common/loader/Loader";
 import { QuizProps } from "../recommendations-types";
 
-export const Quiz: FC<QuizProps> = ({ handleBookmarkClick, isBookmarked }) => {
+export const Quiz: FC<QuizProps> = ({
+  handleBookmarkClick,
+  bookmarkedMovies
+}) => {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [recommendationList, setRecommendationList] = useState<any[]>([]);
-
-  useEffect(() => {
-    console.log("recommendationList: ", recommendationList);
-  }, [recommendationList]);
 
   const alreadyHasRecommendations = recommendationList.length > 0;
   return (
@@ -66,7 +65,7 @@ export const Quiz: FC<QuizProps> = ({ handleBookmarkClick, isBookmarked }) => {
           <RecommendationsList
             recommendationList={recommendationList}
             handleBookmarkClick={handleBookmarkClick}
-            isBookmarked={isBookmarked}
+            bookmarkedMovies={bookmarkedMovies}
           />
         </div>
       </CSSTransition>

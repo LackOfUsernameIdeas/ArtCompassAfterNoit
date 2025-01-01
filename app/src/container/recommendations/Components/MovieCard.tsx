@@ -3,15 +3,15 @@ import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
 import { MovieCardProps } from "../recommendations-types";
 import { translate } from "../helper_functions";
-import bookmarkIconUnsaved from "../../../assets/images/brand-logos/bookmark-saved.png";
-import bookmarkIconSaved from "../../../assets/images/brand-logos/bookmark-unsaved.png";
+import bookmarkIconUnsaved from "../../../assets/images/brand-logos/bookmark-unsaved.png";
+import bookmarkIconSaved from "../../../assets/images/brand-logos/bookmark-saved.png";
 
 export const MovieCard: FC<MovieCardProps> = ({
   recommendationList,
   currentIndex,
   openModal,
   handleBookmarkClick,
-  isBookmarked
+  bookmarkedMovies
 }) => {
   const [translatedDirector, setTranslatedDirector] = useState<string>("");
   const [translatedWriters, setTranslatedWriters] = useState<string>("");
@@ -84,15 +84,19 @@ export const MovieCard: FC<MovieCardProps> = ({
             className="rounded-lg w-96 h-auto"
           />
           <button
-            onClick={handleBookmarkClick}
+            onClick={() => handleBookmarkClick(movie.imdbID)}
             className="absolute top-4 left-4 p-2 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
             style={{
               backgroundColor: "rgba(0, 0, 0, 0.4)" // Add a background color for better visibility
             }}
           >
             <img
-              src={isBookmarked ? bookmarkIconSaved : bookmarkIconUnsaved}
-              alt={isBookmarked ? "Bookmarked" : "Bookmark"}
+              src={
+                bookmarkedMovies[movie.imdbID]
+                  ? bookmarkIconSaved
+                  : bookmarkIconUnsaved
+              }
+              alt={bookmarkedMovies[movie.imdbID] ? "Bookmarked" : "Bookmark"}
               className="w-8 h-8 transition-all duration-300"
             />
           </button>

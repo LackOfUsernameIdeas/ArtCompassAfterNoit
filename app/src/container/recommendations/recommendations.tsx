@@ -16,7 +16,9 @@ const Recommendations: FC<RecommendationsProps> = () => {
     null // Състояние за съхраняване на текущото известие (съобщение и тип)
   );
 
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+  const [bookmarkedMovies, setBookmarkedMovies] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   useEffect(() => {
     const validateToken = async () => {
@@ -44,9 +46,11 @@ const Recommendations: FC<RecommendationsProps> = () => {
     setNotification(null); // Зануляване на състоянието за известието
   };
 
-  const handleBookmarkClick = () => {
-    setIsBookmarked((prev) => !prev);
-    console.log(isBookmarked);
+  const handleBookmarkClick = (imdbID: string) => {
+    setBookmarkedMovies((prev) => ({
+      ...prev,
+      [imdbID]: !prev[imdbID] // Toggle the bookmark status
+    }));
   };
 
   return (
@@ -58,11 +62,11 @@ const Recommendations: FC<RecommendationsProps> = () => {
           onClose={handleNotificationClose}
         />
       )}
-      <BookmarkAlert isBookmarked={isBookmarked} />
+      {/* <BookmarkAlert isBookmarked={bookmarkedMovies} /> */}
       <FadeInWrapper>
         <Quiz
+          bookmarkedMovies={bookmarkedMovies}
           handleBookmarkClick={handleBookmarkClick}
-          isBookmarked={isBookmarked}
         />
       </FadeInWrapper>
     </>

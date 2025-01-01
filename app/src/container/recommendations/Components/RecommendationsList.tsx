@@ -7,7 +7,7 @@ import { PlotModal } from "./PlotModal";
 export const RecommendationsList: FC<RecommendationsProps> = ({
   recommendationList,
   handleBookmarkClick,
-  isBookmarked
+  bookmarkedMovies
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [inTransition, setInTransition] = useState(false);
@@ -84,7 +84,7 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
           isExpanded={isExpanded}
           openModal={openModal}
           handleBookmarkClick={handleBookmarkClick}
-          isBookmarked={isBookmarked}
+          bookmarkedMovies={bookmarkedMovies}
         />
       </CSSTransition>
       <CSSTransition
