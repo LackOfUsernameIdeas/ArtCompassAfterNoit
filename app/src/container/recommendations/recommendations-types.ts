@@ -85,15 +85,15 @@ export interface UserPreferences {
 }
 
 export interface QuizProps {
-  handleBookmarkClick: (imdbID: string) => void; // handleBookmarkClick е функция
-  bookmarkedMovies: { [key: string]: boolean };
+  handleBookmarkClick: (movie: Movie) => void; // handleBookmarkClick е функция
+  bookmarkedMovies: { [key: string]: Movie };
 }
 
 // Интерфейс за компонента с препоръки
 export interface RecommendationsProps {
   recommendationList: Movie[]; // Списък с препоръчани филми
-  handleBookmarkClick: (imdbID: string) => void; // handleBookmarkClick е функция
-  bookmarkedMovies: { [key: string]: boolean };
+  handleBookmarkClick: (movie: Movie) => void; // handleBookmarkClick е функция
+  bookmarkedMovies: { [key: string]: Movie };
 }
 
 // Интерфейс за пропсите на компонентата за филмова карта
@@ -102,8 +102,8 @@ export interface MovieCardProps {
   currentIndex: number; // Текущ индекс на филма
   isExpanded: boolean; // Флаг дали картата е разширена
   openModal: () => void; // Функция за отваряне на модала
-  handleBookmarkClick: (imdbID: string) => void; // handleBookmarkClick е функция
-  bookmarkedMovies: { [key: string]: boolean };
+  handleBookmarkClick: (movie: Movie) => void; // handleBookmarkClick е функция
+  bookmarkedMovies: { [key: string]: Movie };
 }
 
 // Интерфейс за пропсите на модала за сюжет

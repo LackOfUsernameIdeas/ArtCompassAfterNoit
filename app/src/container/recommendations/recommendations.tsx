@@ -17,8 +17,9 @@ const Recommendations: FC<RecommendationsProps> = () => {
   );
 
   const [bookmarkedMovies, setBookmarkedMovies] = useState<{
-    [key: string]: boolean;
+    [key: string]: any;
   }>({});
+
   const [alertVisible, setAlertVisible] = useState(false); // To control alert visibility
   const [currentBookmarkStatus, setCurrentBookmarkStatus] = useState(false); // Track current bookmark status
 
@@ -44,19 +45,31 @@ const Recommendations: FC<RecommendationsProps> = () => {
     setNotification(null);
   };
 
-  const handleBookmarkClick = (imdbID: string) => {
+  const handleBookmarkClick = (movie: {
+    imdbID: string;
+    [key: string]: any;
+  }) => {
     setBookmarkedMovies((prev) => {
-      const newStatus = !prev[imdbID];
-      setCurrentBookmarkStatus(newStatus); // Update the current bookmark status
+      const isBookmarked = !!prev[movie.imdbID];
+      const updatedBookmarks = { ...prev };
+
+      if (isBookmarked) {
+        // Remove the movie from bookmarks if it's already bookmarked
+        delete updatedBookmarks[movie.imdbID];
+      } else {
+        // Add the movie to bookmarks if it's not already bookmarked
+        updatedBookmarks[movie.imdbID] = movie;
+      }
+
+      setCurrentBookmarkStatus(!isBookmarked); // Update the current bookmark status
       setAlertVisible(true); // Show the alert
       setTimeout(() => setAlertVisible(false), 3000); // Hide alert after 3 seconds
 
-      return {
-        ...prev,
-        [imdbID]: newStatus // Toggle the bookmark status
-      };
+      return updatedBookmarks; // Return the updated bookmarks object
     });
   };
+
+  console.log("bookmarkedMovies", bookmarkedMovies);
 
   return (
     <>
