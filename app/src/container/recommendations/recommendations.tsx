@@ -19,38 +19,43 @@ const Recommendations: FC<RecommendationsProps> = () => {
   const [bookmarkedMovies, setBookmarkedMovies] = useState<{
     [key: string]: boolean;
   }>({});
+  const [alertVisible, setAlertVisible] = useState(false); // To control alert visibility
+  const [currentBookmarkStatus, setCurrentBookmarkStatus] = useState(false); // Track current bookmark status
 
   useEffect(() => {
     const validateToken = async () => {
-      // Функция за проверка валидността на токена на потребителя
-      const redirectUrl = await checkTokenValidity(); // Извикване на помощна функция за валидиране на токена
+      const redirectUrl = await checkTokenValidity();
       if (redirectUrl) {
-        // Ако токенът е невалиден, показване на известие за грешка
         showNotification(
-          setNotification, // Функция за задаване на известие
-          "Вашата сесия е изтекла. Моля, влезте в профила Ви отново.", // Съобщение за известието
-          "error" // Тип на известието (грешка)
+          setNotification,
+          "Вашата сесия е изтекла. Моля, влезте в профила Ви отново.",
+          "error"
         );
       }
     };
 
-    validateToken(); // Стартиране на валидиране на токена при зареждане на компонента
-  }, []); // Празен масив зависимости, за да се извика само веднъж
+    validateToken();
+  }, []);
 
   const handleNotificationClose = () => {
-    // Функция за затваряне на текущото известие
     if (notification?.type === "error") {
-      // Ако известието е от тип "грешка", пренасочване към страницата за вход
       navigate("/signin");
     }
-    setNotification(null); // Зануляване на състоянието за известието
+    setNotification(null);
   };
 
   const handleBookmarkClick = (imdbID: string) => {
-    setBookmarkedMovies((prev) => ({
-      ...prev,
-      [imdbID]: !prev[imdbID] // Toggle the bookmark status
-    }));
+    setBookmarkedMovies((prev) => {
+      const newStatus = !prev[imdbID];
+      setCurrentBookmarkStatus(newStatus); // Update the current bookmark status
+      setAlertVisible(true); // Show the alert
+      setTimeout(() => setAlertVisible(false), 3000); // Hide alert after 3 seconds
+
+      return {
+        ...prev,
+        [imdbID]: newStatus // Toggle the bookmark status
+      };
+    });
   };
 
   return (
@@ -62,7 +67,7 @@ const Recommendations: FC<RecommendationsProps> = () => {
           onClose={handleNotificationClose}
         />
       )}
-      {/* <BookmarkAlert isBookmarked={bookmarkedMovies} /> */}
+      {alertVisible && <BookmarkAlert isBookmarked={currentBookmarkStatus} />}
       <FadeInWrapper>
         <Quiz
           bookmarkedMovies={bookmarkedMovies}
