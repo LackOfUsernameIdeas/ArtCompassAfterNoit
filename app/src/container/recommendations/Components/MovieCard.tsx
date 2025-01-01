@@ -85,10 +85,7 @@ export const MovieCard: FC<MovieCardProps> = ({
           />
           <button
             onClick={() => handleBookmarkClick(movie)}
-            className="absolute top-4 left-4 p-2 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
-            style={{
-              backgroundColor: "rgba(193, 46, 23, 0.4)" // Add a background color for better visibility
-            }}
+            className="absolute top-4 left-4 p-2 bg-primary/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
           >
             <img
               src={
