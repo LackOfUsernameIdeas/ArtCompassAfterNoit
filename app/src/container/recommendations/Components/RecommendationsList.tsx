@@ -65,7 +65,7 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
       >
         <svg
           onClick={handlePrevious}
-          className="absolute left-[-120px] top-1/2 transform -translate-y-1/2 text-6xl cursor-pointer hover:text-secondary hover:scale-110 transition duration-200"
+          className="absolute top-1/2 transform -translate-y-1/2 text-6xl cursor-pointer hover:text-secondary hover:scale-110 transition duration-200 md:left-[-4rem] lg:left-[-4rem] xl:left-[-6rem] 2xl:left-[-10rem]"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="none"
@@ -99,6 +99,7 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
           bookmarkedMovies={bookmarkedMovies}
         />
       </CSSTransition>
+
       <CSSTransition
         in={!inTransition}
         timeout={animationDuration}
@@ -108,7 +109,7 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
       >
         <svg
           onClick={handleNext}
-          className="absolute right-[-120px] top-1/2 transform -translate-y-1/2 text-6xl cursor-pointer hover:text-secondary hover:scale-110 transition duration-200"
+          className="absolute top-1/2 transform -translate-y-1/2 text-6xl cursor-pointer hover:text-secondary hover:scale-110 transition duration-200 md:right-[-4rem] lg:right-[-4rem] xl:right-[-6rem] 2xl:right-[-10rem]"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="none"
@@ -125,6 +126,7 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
           <path d="M9 18l6-6-6-6" />
         </svg>
       </CSSTransition>
+
       <CSSTransition
         in={isModalOpen}
         timeout={300}
