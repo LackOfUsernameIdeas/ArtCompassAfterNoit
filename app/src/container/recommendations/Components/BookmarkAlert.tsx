@@ -2,20 +2,19 @@ import React, { useEffect } from "react";
 
 interface BookmarkAlertProps {
   isBookmarked: boolean;
-  onDismiss: () => void; // Added dismiss function
+  onDismiss: () => void;
 }
 
 const BookmarkAlert: React.FC<BookmarkAlertProps> = ({
   isBookmarked,
   onDismiss
 }) => {
-  // Automatically close the alert after 3 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
       onDismiss();
-    }, 3000);
+    }, 5000);
 
-    return () => clearTimeout(timer); // Cleanup the timer when the component is unmounted
+    return () => clearTimeout(timer);
   }, [onDismiss]);
 
   return (
@@ -24,19 +23,34 @@ const BookmarkAlert: React.FC<BookmarkAlertProps> = ({
       role="alert"
     >
       <div
-        className={`border border-gray-200 dark:border-defaultborder/10 ${
-          isBookmarked ? "bg-green-50" : "bg-red-50"
-        } p-4 rounded-sm text-sm`}
+        className={`${
+          isBookmarked ? "bg-success" : "bg-danger"
+        } p-4 rounded-sm text-sm text-white`}
       >
-        <div className="font-semibold flex justify-between">
-          <span>
-            {isBookmarked ? "Added to Favorites" : "Removed from Favorites"}
-          </span>
+        <div className="font-semibold flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <svg
+              className="sm:flex-shrink-0 svg-white"
+              xmlns="http://www.w3.org/2000/svg"
+              height="1.5rem"
+              viewBox="0 0 24 24"
+              width="1.5rem"
+              fill="#000000"
+            >
+              <path d="M0 0h24v24H0V0z" fill="none" />
+              <path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+            </svg>
+            <span>
+              {isBookmarked
+                ? "Добавено в списък за гледане"
+                : "Премахнато от списък за гледане"}
+            </span>
+          </div>
           <button
             onClick={onDismiss}
             className="inline-flex bg-teal-50 rounded-sm text-teal-500 focus:outline-none focus:ring-0 focus:ring-offset-0 focus:ring-offset-teal-50 focus:ring-teal-600"
           >
-            <span className="sr-only">Dismiss</span>
+            <span className="sr-only">Затвори</span>
             <svg
               className="h-3 w-3"
               width="16"
@@ -53,10 +67,10 @@ const BookmarkAlert: React.FC<BookmarkAlertProps> = ({
             </svg>
           </button>
         </div>
-        <div className="text-[0.75rem] opacity-[0.8] mb-1">
+        <div className="pl-8 text-[0.75rem] opacity-[0.8] mb-1">
           {isBookmarked
-            ? "Your movie has been saved to your favorites!"
-            : "This movie has been removed from your favorites!"}
+            ? "Вашият филм/сериал е запазен в списъка ви за гледане!"
+            : "Този филм/сериал е премахнат от списъка ви за гледане!"}
         </div>
       </div>
     </div>
