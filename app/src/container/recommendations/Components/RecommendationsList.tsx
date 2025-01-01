@@ -63,13 +63,24 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
         onExited={() => setInTransition(false)}
         unmountOnExit
       >
-        <button
+        <svg
           onClick={handlePrevious}
-          className="absolute left-[-120px] top-1/2 transform -translate-y-1/2 dark:text-white text-black text-6xl dark:hover:text-gray-400 hover:text-black hover:text-opacity-60 transition"
-          style={{ fontFamily: "Arial, sans-serif" }}
+          className="absolute left-[-120px] top-1/2 transform -translate-y-1/2 text-6xl cursor-pointer hover:text-secondary hover:scale-110 transition duration-200"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            width: "5rem",
+            height: "5rem",
+            filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.3))"
+          }}
         >
-          &lt;
-        </button>
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
       </CSSTransition>
 
       <CSSTransition
@@ -95,13 +106,24 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
         onExited={() => setInTransition(false)}
         unmountOnExit
       >
-        <button
+        <svg
           onClick={handleNext}
-          className="absolute right-[-120px] top-1/2 transform -translate-y-1/2 dark:text-white text-black text-6xl dark:hover:text-gray-400 hover:text-black hover:text-opacity-60 transition"
-          style={{ fontFamily: "Arial, sans-serif" }}
+          className="absolute right-[-120px] top-1/2 transform -translate-y-1/2 text-6xl cursor-pointer hover:text-secondary hover:scale-110 transition duration-200"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            width: "5rem",
+            height: "5rem",
+            filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.3))"
+          }}
         >
-          &gt;
-        </button>
+          <path d="M9 18l6-6-6-6" />
+        </svg>
       </CSSTransition>
       <CSSTransition
         in={isModalOpen}
