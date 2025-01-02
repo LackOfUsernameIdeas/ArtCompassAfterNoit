@@ -91,7 +91,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
         <div className="grid grid-cols-12 gap-6">
           <div className="xl:col-span-12 col-span-12">
             <div
-              className="accordion accordionicon-left accordions-items-seperate"
+              className="accordion accordionicon-left accordions-items-separate"
               id="accordioniconLeft"
             >
               <div
