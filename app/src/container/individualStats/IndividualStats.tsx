@@ -1,5 +1,5 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import { DataType, UserData } from "./individualStats-types";
+import { DataType } from "./individualStats-types";
 import { checkTokenValidity, fetchData } from "./helper_functions";
 import ProsperityTable from "./Components/ActorsDirectorsWritersRecommendationsTable";
 import { useNavigate } from "react-router-dom";

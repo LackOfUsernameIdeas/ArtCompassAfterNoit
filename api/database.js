@@ -1636,6 +1636,19 @@ const getUsersTopRecommendations = (userId, callback) => {
   `;
 
   db.query(query, (err, results) => {
+    if (err) {
+      callback(err, null);
+      return;
+    }
+
+    // If no results, return a default response
+    if (!results.length) {
+      callback(null, {
+        message: "No top recommendations found for the user."
+      });
+      return;
+    }
+
     // Calculate prosperity score for each recommendation
     const weights = {
       total_wins: 0.3,
@@ -1732,7 +1745,20 @@ const getUsersTopGenres = (userId, limit, callback) => {
     ORDER BY count DESC
     LIMIT ?
   `;
-  db.query(query, [userId, limit], callback);
+  db.query(query, [userId, limit], (err, results) => {
+    if (err) {
+      callback(err, null);
+      return;
+    }
+
+    if (!results.length) {
+      callback(null, {
+        message: "No top genres found for the user."
+      });
+    } else {
+      callback(null, results); // Pass the results to the callback
+    }
+  });
 };
 
 const getUsersTopActors = (userId, limit, callback) => {
@@ -1761,6 +1787,14 @@ const getUsersTopActors = (userId, limit, callback) => {
   db.query(query, [userId, limit], async (err, results) => {
     if (err) {
       callback(err, null);
+      return;
+    }
+
+    // If no results, return a default response
+    if (!results.length) {
+      callback(null, {
+        message: "No top actors found for the user."
+      });
       return;
     }
 
@@ -1999,6 +2033,14 @@ const getUsersTopDirectors = (userId, limit, callback) => {
   db.query(query, [userId, limit], async (err, results) => {
     if (err) {
       callback(err, null);
+      return;
+    }
+
+    // If no results, return a default response
+    if (!results.length) {
+      callback(null, {
+        message: "No top directors found for the user."
+      });
       return;
     }
 
@@ -2258,6 +2300,14 @@ const getUsersTopWriters = (userId, limit, callback) => {
   db.query(query, [userId, limit], async (err, results) => {
     if (err) {
       callback(err, null);
+      return;
+    }
+
+    // If no results, return a default response
+    if (!results.length) {
+      callback(null, {
+        message: "No top writers found for the user."
+      });
       return;
     }
 
