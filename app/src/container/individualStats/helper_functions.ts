@@ -76,21 +76,6 @@ export const fetchData = async (
         method: "POST",
         body: { token: token }
       },
-      // {
-      //   key: "topActors",
-      //   endpoint: "/stats/platform/top-actors",
-      //   method: "GET"
-      // },
-      // {
-      //   key: "topDirectors",
-      //   endpoint: "/stats/platform/top-directors",
-      //   method: "GET"
-      // },
-      // {
-      //   key: "topWriters",
-      //   endpoint: "/stats/platform/top-writers",
-      //   method: "GET"
-      // },
       {
         key: "sortedDirectorsByProsperity",
         endpoint: "/stats/individual/top-directors",
