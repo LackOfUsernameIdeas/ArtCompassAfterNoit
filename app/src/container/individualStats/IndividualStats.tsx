@@ -81,8 +81,8 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
   ) {
     return (
       <FadeInWrapper>
-        <div className="flex justify-center items-center min-h-screen text-center p-6 rounded-lg shadow-xl bg-gradient-to-r from-purple-500 via-pink-500 to-red-500">
-          <p className="text-2xl font-extrabold dtext-defaulttextcolor drop-shadow-lg">
+        <div className="flex justify-center items-center mt-[15rem] text-center p-6 rounded-lg shadow-xl">
+          <p className="text-2xl font-extrabold text-defaulttextcolor drop-shadow-lg">
             За да видите вашите индивидуални статистики, трябва първо да
             генерирате препоръки!
           </p>
