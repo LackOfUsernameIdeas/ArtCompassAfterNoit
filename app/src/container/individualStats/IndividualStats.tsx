@@ -72,13 +72,12 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
 
   if (loading) {
     return (
-      <FadeInWrapper>
+      <FadeInWrapper loadingTimeout={30000}>
         <div></div>
       </FadeInWrapper>
     );
   }
 
-  console.log("data: ", data);
   if (
     !data.topRecommendations.recommendations ||
     data.topRecommendations.recommendations.length === 0 ||
