@@ -1812,8 +1812,10 @@ const getUsersTopActors = (userId, limit, callback) => {
 
     // Fetch prosperity data for the actors
     const actors = translatedResults
-      .map((actor) => `'${actor.actor_en}'`)
-      .join(","); // Ensuring correct formatting for IN clause
+      .map((actor) => `'${actor.actor_en.replace(/'/g, "''")}'`)
+      .join(",");
+
+    console.log("actors: ", actors);
 
     const prosperityQuery = `
       WITH RECURSIVE ActorSplit AS (
@@ -1919,6 +1921,7 @@ const getUsersTopActors = (userId, limit, callback) => {
 
     db.query(prosperityQuery, async (err, prosperityResults) => {
       if (err) {
+        console.log("err: ", err);
         callback(err, null);
         return;
       }
@@ -2058,10 +2061,9 @@ const getUsersTopDirectors = (userId, limit, callback) => {
 
     // Fetch prosperity data for the directors
     const directors = translatedResults
-      .map((director) => `'${director.director_en}'`)
+      .map((director) => `'${director.director_en.replace(/'/g, "''")}'`)
       .join(","); // Ensuring correct formatting for IN clause
 
-    console.log("directors: ", directors);
     const prosperityQuery = `
       WITH RECURSIVE DirectorSplit AS (
         SELECT 
@@ -2325,7 +2327,7 @@ const getUsersTopWriters = (userId, limit, callback) => {
 
     // Fetch prosperity data for the writers
     const writers = translatedResults
-      .map((writer) => `'${writer.writer_en}'`)
+      .map((writer) => `'${writer.writer_en.replace(/'/g, "''")}'`)
       .join(","); // Ensuring correct formatting for IN clause
 
     const prosperityQuery = `

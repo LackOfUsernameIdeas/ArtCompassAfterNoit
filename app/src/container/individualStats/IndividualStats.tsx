@@ -26,8 +26,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
     topGenres: [], // Топ жанрове
     sortedDirectorsByProsperity: [], // Режисьори, сортирани по процъфтяване
     sortedActorsByProsperity: [], // Актьори, сортирани по процъфтяване
-    sortedWritersByProsperity: [], // Сценаристи, сортирани по процъфтяване
-    sortedMoviesByProsperity: [] // Филми, сортирани по процъфтяване
+    sortedWritersByProsperity: [] // Сценаристи, сортирани по процъфтяване
   });
 
   const [notification, setNotification] = useState<NotificationState | null>(
@@ -70,21 +69,23 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
     }
   }, []);
 
+  console.log("data: ", data);
   if (
     !data.topRecommendations.recommendations ||
     data.topRecommendations.recommendations.length === 0 ||
     !data.topGenres.length ||
     !data.sortedDirectorsByProsperity.length ||
     !data.sortedActorsByProsperity.length ||
-    !data.sortedWritersByProsperity.length ||
-    !data.sortedMoviesByProsperity.length
+    !data.sortedWritersByProsperity.length
   ) {
     return (
       <FadeInWrapper>
-        <div className="flex justify-center items-center mt-[15rem] text-center p-6 rounded-lg shadow-xl">
+        <div className="flex justify-center items-center bg-bodybg mt-[15rem] text-center p-6 rounded-lg shadow-xl">
           <p className="text-2xl font-extrabold text-defaulttextcolor drop-shadow-lg">
-            За да видите вашите индивидуални статистики, трябва първо да
-            генерирате препоръки!
+            🔍 За да можете да разгледате Вашите индивидуални статистики, моля,
+            първо генерирайте препоръки. Това ще ни позволи да съберем
+            необходимите данни и да Ви предоставим подробен анализ 📊, съобразен
+            с Вашите предпочитания. ⚙️
           </p>
         </div>
       </FadeInWrapper>
@@ -167,20 +168,22 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                         <MoviesAndSeriesRecommendationsTable data={data} />
                       </div>
                       <div className="xxl:col-span-6 col-span-12">
-                        {/* <ActorsDirectorsWritersRecommendationsTable data={data} /> */}
+                        <ActorsDirectorsWritersRecommendationsTable
+                          data={data}
+                        />
                       </div>
                     </div>
                     <div className="grid grid-cols-12 gap-x-6 ml-5 mr-5">
                       <div className="xxl:col-span-6 col-span-12">
-                        {/* <GenresBarChart data={data} /> */}
+                        <GenresBarChart data={data} />
                       </div>
                       <div className="xxl:col-span-6 col-span-12">
-                        {/* <CountWidgets data={data} /> */}
+                        <CountWidgets data={data} />
                       </div>
                     </div>
                   </div>
                 </div>
-                {/* <div
+                <div
                   className="hs-accordion accordion-item overflow-hidden"
                   id="hs-basic-with-title-and-arrow-stretched-heading-two"
                 >
@@ -231,7 +234,9 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                         <MoviesAndSeriesRecommendationsTable data={data} />
                       </div>
                       <div className="xxl:col-span-6 col-span-12">
-                        <ActorsDirectorsWritersRecommendationsTable data={data} />
+                        <ActorsDirectorsWritersRecommendationsTable
+                          data={data}
+                        />
                       </div>
                     </div>
                   </div>
@@ -287,11 +292,13 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                         <MoviesAndSeriesRecommendationsTable data={data} />
                       </div>
                       <div className="xxl:col-span-6 col-span-12">
-                        <ActorsDirectorsWritersRecommendationsTable data={data} />
+                        <ActorsDirectorsWritersRecommendationsTable
+                          data={data}
+                        />
                       </div>
                     </div>
                   </div>
-                </div> */}
+                </div>
               </div>
             </div>
           </div>
