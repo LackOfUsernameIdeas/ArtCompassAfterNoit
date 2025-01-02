@@ -1,7 +1,7 @@
 import { FC, Fragment } from "react";
 
-import gradientDark from "../../../assets/images/media/backgrounds/layered-peaks-haikei-dark.svg";
-import gradientLight from "../../../assets/images/media/backgrounds/layered-peaks-haikei-light.svg";
+import gradientDark from "../../../assets/images/menu-bg-images/layered-peaks-haikei-dark.svg";
+import gradientLight from "../../../assets/images/menu-bg-images/layered-peaks-haikei-light.svg";
 import techStack from "../../../assets/images/brand-logos/tech_stack.png";
 
 const Footer: FC = () => (

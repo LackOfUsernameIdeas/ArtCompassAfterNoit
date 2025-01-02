@@ -4,12 +4,6 @@ import { Link, useLocation } from "react-router-dom";
 import { MENUITEMS } from "./menuitems";
 import { ThemeChanger } from "../../../redux/action";
 import store from "../../../redux/store";
-import logo1 from "../../../assets/images/brand-logos/desktop-logo.png";
-import logo2 from "../../../assets/images/brand-logos/toggle-logo.png";
-import logo3 from "../../../assets/images/brand-logos/desktop-dark.png";
-import logo4 from "../../../assets/images/brand-logos/toggle-dark.png";
-import logo5 from "../../../assets/images/brand-logos/desktop-white.png";
-import logo6 from "../../../assets/images/brand-logos/toggle-white.png";
 import SimpleBar from "simplebar-react";
 import Menuloop from "../../ui/menuloop";
 
@@ -464,19 +458,6 @@ const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
           transition: "background-image 0.3s ease"
         }}
       >
-        <div className="main-sidebar-header">
-          <a
-            href={`${import.meta.env.BASE_URL}app/home/`}
-            className="header-logo"
-          >
-            <img src={logo1} alt="logo" className="desktop-logo" />
-            <img src={logo2} alt="logo" className="toggle-logo" />
-            <img src={logo3} alt="logo" className="desktop-dark" />
-            <img src={logo4} alt="logo" className="toggle-dark" />
-            <img src={logo5} alt="logo" className="desktop-white" />
-            <img src={logo6} alt="logo" className="toggle-white" />
-          </a>
-        </div>
         <SimpleBar className="main-sidebar" id="sidebar-scroll">
           <nav className="main-menu-container nav nav-pills flex-column sub-open">
             <ul className="main-menu" onClick={() => Sideclick()}>
