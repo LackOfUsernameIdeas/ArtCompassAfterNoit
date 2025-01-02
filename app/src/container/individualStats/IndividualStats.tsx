@@ -1,13 +1,13 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { DataType } from "./individualStats-types";
 import { checkTokenValidity, fetchData } from "./helper_functions";
-import ProsperityTable from "./Components/ActorsDirectorsWritersRecommendationsTable";
 import { useNavigate } from "react-router-dom";
 import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 import { showNotification } from "../recommendations/helper_functions";
 import Notification from "../../components/common/notification/Notification";
 import { NotificationState } from "../recommendations/recommendations-types";
-import RecommendationsTable from "./Components/MoviesAndSeriesRecommendationsTable";
+import ActorsDirectorsWritersRecommendationsTable from "./Components/ActorsDirectorsWritersRecommendationsTable";
+import MoviesAndSeriesRecommendationsTable from "./Components/MoviesAndSeriesRecommendationsTable";
 import GenresBarChart from "./Components/GenresBarChart";
 import CountWidgets from "./Components/CountWidgets";
 
@@ -24,9 +24,6 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
       recommendations: []
     }, // Топ препоръки
     topGenres: [], // Топ жанрове
-    topActors: [], // Топ актьори
-    topDirectors: [], // Топ режисьори
-    topWriters: [], // Топ сценаристи
     sortedDirectorsByProsperity: [], // Режисьори, сортирани по процъфтяване
     sortedActorsByProsperity: [], // Актьори, сортирани по процъфтяване
     sortedWritersByProsperity: [], // Сценаристи, сортирани по процъфтяване
@@ -72,6 +69,27 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
       console.log("fetching"); // Лог за следене на извличането на данни
     }
   }, []);
+
+  if (
+    !data.topRecommendations.recommendations ||
+    data.topRecommendations.recommendations.length === 0 ||
+    !data.topGenres.length ||
+    !data.sortedDirectorsByProsperity.length ||
+    !data.sortedActorsByProsperity.length ||
+    !data.sortedWritersByProsperity.length ||
+    !data.sortedMoviesByProsperity.length
+  ) {
+    return (
+      <FadeInWrapper>
+        <div className="flex justify-center items-center min-h-screen text-center p-6 rounded-lg shadow-xl bg-gradient-to-r from-purple-500 via-pink-500 to-red-500">
+          <p className="text-2xl font-extrabold dtext-defaulttextcolor drop-shadow-lg">
+            За да видите вашите индивидуални статистики, трябва първо да
+            генерирате препоръки!
+          </p>
+        </div>
+      </FadeInWrapper>
+    );
+  }
 
   return (
     <FadeInWrapper>
@@ -146,23 +164,23 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                   >
                     <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5">
                       <div className="xxl:col-span-6 col-span-12">
-                        <RecommendationsTable data={data} />
+                        <MoviesAndSeriesRecommendationsTable data={data} />
                       </div>
                       <div className="xxl:col-span-6 col-span-12">
-                        <ProsperityTable data={data} />
+                        {/* <ActorsDirectorsWritersRecommendationsTable data={data} /> */}
                       </div>
                     </div>
                     <div className="grid grid-cols-12 gap-x-6 ml-5 mr-5">
                       <div className="xxl:col-span-6 col-span-12">
-                        <GenresBarChart data={data} />
+                        {/* <GenresBarChart data={data} /> */}
                       </div>
                       <div className="xxl:col-span-6 col-span-12">
-                        <CountWidgets data={data} />
+                        {/* <CountWidgets data={data} /> */}
                       </div>
                     </div>
                   </div>
                 </div>
-                <div
+                {/* <div
                   className="hs-accordion accordion-item overflow-hidden"
                   id="hs-basic-with-title-and-arrow-stretched-heading-two"
                 >
@@ -210,10 +228,10 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                   >
                     <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5 ">
                       <div className="xxl:col-span-6 col-span-12">
-                        <RecommendationsTable data={data} />
+                        <MoviesAndSeriesRecommendationsTable data={data} />
                       </div>
                       <div className="xxl:col-span-6 col-span-12">
-                        <ProsperityTable data={data} />
+                        <ActorsDirectorsWritersRecommendationsTable data={data} />
                       </div>
                     </div>
                   </div>
@@ -266,14 +284,14 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                   >
                     <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5 ">
                       <div className="xxl:col-span-6 col-span-12">
-                        <RecommendationsTable data={data} />
+                        <MoviesAndSeriesRecommendationsTable data={data} />
                       </div>
                       <div className="xxl:col-span-6 col-span-12">
-                        <ProsperityTable data={data} />
+                        <ActorsDirectorsWritersRecommendationsTable data={data} />
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

@@ -150,9 +150,6 @@ export type DataType = {
     }>;
   }; // Топ препоръки
   topGenres: any[]; // Топ жанрове
-  topActors: any[]; // Топ актьори
-  topDirectors: any[]; // Топ режисьори
-  topWriters: any[]; // Топ писатели
   [key: `sorted${string}ByProsperity`]: any[]; // Подредени данни по процъфтяване
 };
 

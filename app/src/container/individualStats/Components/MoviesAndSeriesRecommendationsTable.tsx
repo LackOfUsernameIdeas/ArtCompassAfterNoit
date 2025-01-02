@@ -24,7 +24,7 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
 
   useEffect(() => {
     setFilteredTableData(
-      data.topRecommendations.recommendations as Recommendation[]
+      (data.topRecommendations.recommendations as Recommendation[]) || []
     );
   }, [data]);
 
