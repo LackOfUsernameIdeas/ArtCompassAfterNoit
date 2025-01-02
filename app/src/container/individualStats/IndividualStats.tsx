@@ -32,7 +32,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
   const [notification, setNotification] = useState<NotificationState | null>(
     null
   ); // Състояние за показване на известия (например съобщения за грешки, успехи или предупреждения)
-
+  const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
   const handleNotificationClose = () => {
@@ -64,10 +64,19 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
       localStorage.getItem("authToken") || sessionStorage.getItem("authToken"); // Вземане на токен от localStorage или sessionStorage
 
     if (token) {
-      fetchData(token, setData); // Извличане на данни с помощта на fetchData функцията
+      setLoading(true);
+      fetchData(token, setData, setLoading); // Извличане на данни с помощта на fetchData функцията
       console.log("fetching"); // Лог за следене на извличането на данни
     }
   }, []);
+
+  if (loading) {
+    return (
+      <FadeInWrapper>
+        <div></div>
+      </FadeInWrapper>
+    );
+  }
 
   console.log("data: ", data);
   if (

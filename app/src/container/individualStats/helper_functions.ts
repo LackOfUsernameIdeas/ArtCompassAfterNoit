@@ -59,7 +59,8 @@ export const isWriter = (item: any): item is WriterData =>
  */
 export const fetchData = async (
   token: string,
-  setData: React.Dispatch<React.SetStateAction<any>>
+  setData: React.Dispatch<React.SetStateAction<any>>,
+  setLoading: React.Dispatch<React.SetStateAction<any>>
 ): Promise<void> => {
   try {
     // Fetch statistics data independently
@@ -97,8 +98,8 @@ export const fetchData = async (
     ];
 
     // Loop over each endpoint, fetch data, and update state independently
-    endpoints.forEach(({ key, endpoint, method, body }) => {
-      fetch(`${import.meta.env.VITE_API_BASE_URL}${endpoint}`, {
+    const fetchPromises = endpoints.map(({ key, endpoint, method, body }) => {
+      return fetch(`${import.meta.env.VITE_API_BASE_URL}${endpoint}`, {
         method: method,
         headers: {
           "Content-Type": "application/json",
@@ -115,6 +116,7 @@ export const fetchData = async (
         })
         .catch((error) => console.error(`Error fetching ${key}:`, error));
     });
+    Promise.all(fetchPromises).finally(() => setLoading(false));
   } catch (error) {
     console.error("Error in fetchData:", error);
     throw error;
