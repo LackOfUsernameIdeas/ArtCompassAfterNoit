@@ -6,7 +6,6 @@ interface CountWidgetsProps {
 }
 
 const CountWidgets: FC<CountWidgetsProps> = ({ data }) => {
-  // Състояния за задържане на извлечени данни
   return (
     <Fragment>
       <div className="box custom-box">

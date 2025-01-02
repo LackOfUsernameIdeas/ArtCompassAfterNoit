@@ -7,8 +7,6 @@ interface GenresBarChartProps {
 }
 
 const GenresBarChart: FC<GenresBarChartProps> = ({ data }) => {
-  console.log("GenresBarChart: ", data);
-
   return (
     <Fragment>
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">

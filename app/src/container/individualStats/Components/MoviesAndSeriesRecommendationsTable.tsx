@@ -1,7 +1,7 @@
 import { FC, Fragment, useEffect, useState, useMemo } from "react";
 import { DataType, Recommendation } from "../individualStats-types";
 import { useMediaQuery } from "react-responsive";
-import { Link } from "react-router-dom"; // Make sure this is imported
+import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 
 interface RecommendationsTableProps {
@@ -35,7 +35,7 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
       : filteredTableData;
 
     if (sortBy === "default") {
-      return filteredByTypeData; // Or use a default sorting field here, e.g., sorted by date or another field
+      return filteredByTypeData;
     }
 
     return [...filteredByTypeData].sort((a, b) => {

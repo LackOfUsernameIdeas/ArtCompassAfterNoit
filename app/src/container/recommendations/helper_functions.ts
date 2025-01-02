@@ -67,7 +67,7 @@ export const saveUserPreferences = async (
     targetGroup: string;
   },
   token: string | null
-) => {
+): Promise<void> => {
   try {
     const {
       type,

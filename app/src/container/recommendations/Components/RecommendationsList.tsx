@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { RecommendationsProps } from "../recommendations-types";
-import { MovieCard } from "./MovieCard";
+import { MovieCard } from "./RecommendationCard";
 import { PlotModal } from "./PlotModal";
 
 export const RecommendationsList: FC<RecommendationsProps> = ({
