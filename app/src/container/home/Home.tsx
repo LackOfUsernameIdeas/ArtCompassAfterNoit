@@ -8,7 +8,7 @@ import CountryBarChartComponent from "./Components/CountryBarChartComponent";
 import MoviesByProsperityBubbleChartComponent from "./Components/MoviesByProsperityBubbleChartComponent";
 import GenrePopularityOverTimeComponent from "./Components/GenrePopularityOverTimeComponent";
 import MoviesAndSeriesByRatingsChartComponent from "./Components/MoviesAndSeriesByRatingsChartComponent";
-import WidgetCards from "./Components/WidgetCards";
+import WidgetCards from "./Components/WidgetCardsComponent";
 import { useNavigate } from "react-router-dom";
 import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 import { showNotification } from "../recommendations/helper_functions";
