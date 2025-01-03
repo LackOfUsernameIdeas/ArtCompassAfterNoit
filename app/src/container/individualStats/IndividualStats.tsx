@@ -26,7 +26,10 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
     topGenres: [], // Топ жанрове
     sortedDirectorsByRecommendationCount: [], // Режисьори, сортирани по просперитет
     sortedActorsByRecommendationCount: [], // Актьори, сортирани по просперитет
-    sortedWritersByRecommendationCount: [] // Сценаристи, сортирани по просперитет
+    sortedWritersByRecommendationCount: [], // Сценаристи, сортирани по просперитет
+    sortedDirectorsBySavedCount: [], // Режисьори, сортирани по просперитет
+    sortedActorsBySavedCount: [], // Актьори, сортирани по просперитет
+    sortedWritersBySavedCount: [] // Сценаристи, сортирани по просперитет
   });
 
   const [notification, setNotification] = useState<NotificationState | null>(

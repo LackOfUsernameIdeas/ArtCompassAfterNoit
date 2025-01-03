@@ -43,7 +43,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
     const initialFilteredData =
       data[
         `sorted${recommendationCountSortCategory}By${
-          sortType === "prosperity" ? "RecommendationCount" : "Watchlist"
+          sortType === "prosperity" ? "RecommendationCount" : "SavedCount"
         }`
       ];
     setFilteredTableData(initialFilteredData);
@@ -64,7 +64,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
     setFilteredTableData(
       data[
         `sorted${category}By${
-          sortType === "prosperity" ? "RecommendationCount" : "Watchlist"
+          sortType === "prosperity" ? "RecommendationCount" : "SavedCount"
         }`
       ]
     );
