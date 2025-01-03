@@ -4,11 +4,13 @@ import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 
-interface RecommendationsTableProps {
-  data: DataType;
+interface MoviesAndSeriesRecommendationsTableProps {
+  data: Recommendation[];
 }
 
-const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
+const MoviesAndSeriesRecommendationsTable: FC<
+  MoviesAndSeriesRecommendationsTableProps
+> = ({ data }) => {
   const [currentTablePage, setCurrentTablePage] = useState(1);
   const itemsPerTablePage = 5;
 
@@ -23,9 +25,7 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
 
   useEffect(() => {
-    setFilteredTableData(
-      (data.topRecommendations.recommendations as Recommendation[]) || []
-    );
+    setFilteredTableData(data || []);
   }, [data]);
 
   const sortedData = useMemo(() => {
@@ -420,4 +420,4 @@ const RecommendationsTable: FC<RecommendationsTableProps> = ({ data }) => {
   );
 };
 
-export default RecommendationsTable;
+export default MoviesAndSeriesRecommendationsTable;

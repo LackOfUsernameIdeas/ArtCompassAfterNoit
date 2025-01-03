@@ -14,12 +14,14 @@ import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { tableCategoryDisplayNames } from "../individualStats-data";
 
-interface ProsperityTableProps {
+interface ActorsDirectorsWritersRecommendationsTableProps {
   data: DataType;
 }
 
-const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
-  const [prosperitySortCategory, setProsperitySortCategory] =
+const ActorsDirectorsWritersRecommendationsTable: FC<
+  ActorsDirectorsWritersRecommendationsTableProps
+> = ({ data }) => {
+  const [recommendationCountSortCategory, setRecommendationCountSortCategory] =
     useState<Category>("Directors");
 
   const [filteredTableData, setFilteredTableData] = useState<FilteredTableData>(
@@ -34,29 +36,32 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
   // Следи за промени в `data` и актуализира филтрираните данни в таблицата съответно
   useEffect(() => {
     const initialFilteredData =
-      data[`sorted${prosperitySortCategory}ByRecommendationCount`];
+      data[`sorted${recommendationCountSortCategory}ByRecommendationCount`];
     setFilteredTableData(initialFilteredData);
-  }, [data, prosperitySortCategory]);
+  }, [data, recommendationCountSortCategory]);
 
   // Използва useMemo за запаметяване на изчисляването на филтрираните данни
   const memoizedFilteredData = useMemo(
     () =>
       filterTableData(
         filteredTableData,
-        prosperitySortCategory,
+        recommendationCountSortCategory,
         currentTablePage,
         itemsPerTablePage
       ),
-    [filteredTableData, prosperitySortCategory, currentTablePage]
+    [filteredTableData, recommendationCountSortCategory, currentTablePage]
   );
 
   console.log("filteredTableData: ", filteredTableData);
-  console.log("prosperitySortCategory: ", prosperitySortCategory);
+  console.log(
+    "recommendationCountSortCategory: ",
+    recommendationCountSortCategory
+  );
 
   const handleCategoryChange = (category: Category) => {
     // Превключва филтрираните данни в зависимост от избраната категория
     setFilteredTableData(data[`sorted${category}ByRecommendationCount`]);
-    setProsperitySortCategory(category);
+    setRecommendationCountSortCategory(category);
   };
 
   // Обработка на логиката за предишна страница
@@ -90,7 +95,7 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
             <div className="box-title">
               {
                 tableCategoryDisplayNames[
-                  prosperitySortCategory as keyof typeof tableCategoryDisplayNames
+                  recommendationCountSortCategory as keyof typeof tableCategoryDisplayNames
                 ]
               }{" "}
               по Брой Препоръки
@@ -106,7 +111,7 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
                     key={category}
                     type="button"
                     className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
-                      category === prosperitySortCategory
+                      category === recommendationCountSortCategory
                         ? "ti-btn-primary-full text-white"
                         : "text-[#E74581] dark:text-[#CC3333] bg-[#AF0B48] dark:bg-[#9A110A] bg-opacity-10 dark:bg-opacity-10"
                     } ${
@@ -131,7 +136,7 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
           <div className="box-body">
             <div className="overflow-x-auto">
               <table
-                key={prosperitySortCategory}
+                key={recommendationCountSortCategory}
                 className="table min-w-full whitespace-nowrap table-hover border table-bordered"
               >
                 <thead>
@@ -145,7 +150,7 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
                     <th scope="col" className="!text-start !text-[0.85rem]">
                       {
                         tableCategoryDisplayNames[
-                          prosperitySortCategory as keyof typeof tableCategoryDisplayNames
+                          recommendationCountSortCategory as keyof typeof tableCategoryDisplayNames
                         ]
                       }
                     </th>
@@ -348,4 +353,4 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
   );
 };
 
-export default ProsperityTable;
+export default ActorsDirectorsWritersRecommendationsTable;

@@ -173,7 +173,9 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                   >
                     <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5">
                       <div className="xxl:col-span-6 col-span-12">
-                        <MoviesAndSeriesRecommendationsTable data={data} />
+                        <MoviesAndSeriesRecommendationsTable
+                          data={data.topRecommendations.recommendations}
+                        />
                       </div>
                       <div className="xxl:col-span-6 col-span-12">
                         <ActorsDirectorsWritersRecommendationsTable
@@ -237,14 +239,24 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                     className="hs-accordion-content accordion-body hidden w-full overflow-hidden transition-[height] duration-300"
                     aria-labelledby="hs-basic-with-title-and-arrow-stretched-heading-two"
                   >
-                    <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5 ">
+                    <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5">
                       <div className="xxl:col-span-6 col-span-12">
-                        <MoviesAndSeriesRecommendationsTable data={data} />
+                        <MoviesAndSeriesRecommendationsTable
+                          data={data.topRecommendations.recommendations}
+                        />
                       </div>
                       <div className="xxl:col-span-6 col-span-12">
                         <ActorsDirectorsWritersRecommendationsTable
                           data={data}
                         />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-12 gap-x-6 ml-5 mr-5">
+                      <div className="xxl:col-span-6 col-span-12">
+                        <GenresBarChart data={data} />
+                      </div>
+                      <div className="xxl:col-span-6 col-span-12">
+                        <CountWidgets data={data} />
                       </div>
                     </div>
                   </div>

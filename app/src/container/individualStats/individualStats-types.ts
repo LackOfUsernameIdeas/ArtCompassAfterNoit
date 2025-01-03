@@ -131,23 +131,7 @@ export type DataType = {
       movies: number;
       series: number;
     };
-    recommendations: Array<{
-      id: number;
-      imdbID: string;
-      title_en: string;
-      title_bg: string;
-      type: string; // Ensure 'type' is correctly recognized here
-      awards: string;
-      recommendations: number;
-      oscar_wins: string;
-      oscar_nominations: string;
-      total_wins: string;
-      total_nominations: string;
-      imdbRating: string;
-      metascore: string;
-      boxOffice: string;
-      prosperityScore: number;
-    }>;
+    recommendations: Recommendation[];
   }; // Топ препоръки
   topGenres: any[]; // Топ жанрове
   [key: `sorted${string}ByRecommendationCount`]: any[]; // Подредени данни по процъфтяване
