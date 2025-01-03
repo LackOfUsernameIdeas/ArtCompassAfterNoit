@@ -6,6 +6,7 @@ import {
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
+import RecommendationCardAlert from "./RecommendationCardAlert";
 
 interface MoviesAndSeriesRecommendationsTableProps {
   data: Recommendation[] | WatchlistRecommendation[];
@@ -31,6 +32,10 @@ const MoviesAndSeriesRecommendationsTable: FC<
     Recommendation[] | WatchlistRecommendation[]
   >([]);
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
+
+  const [selectedItem, setSelectedItem] = useState<
+    Recommendation | WatchlistRecommendation | null
+  >(null); // State to track selected row
 
   useEffect(() => {
     setFilteredTableData(data || []);
@@ -86,7 +91,6 @@ const MoviesAndSeriesRecommendationsTable: FC<
       { label: "Боксофис", value: "boxOffice" }
     ];
 
-    // Add "Брой Препоръки" option only when sortType is 'recommendations'
     if (sortType === "recommendations") {
       options.unshift({ label: "Брой Препоръки", value: "recommendations" });
     }
@@ -118,8 +122,17 @@ const MoviesAndSeriesRecommendationsTable: FC<
     }
   };
 
+  const handleRowClick = (item: Recommendation | WatchlistRecommendation) => {
+    setSelectedItem(item);
+  };
+
   return (
     <Fragment>
+      <RecommendationCardAlert
+        selectedItem={selectedItem}
+        onClose={() => setSelectedItem(null)}
+      />
+
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
         <div className="box custom-card h-[27.75rem]">
           <div className="box-header justify-between">
@@ -265,6 +278,7 @@ const MoviesAndSeriesRecommendationsTable: FC<
                     <tr
                       key={index}
                       className="border border-inherit border-solid dark:border-defaultborder/10"
+                      onClick={() => handleRowClick(item)} // Add onClick here
                     >
                       <td>
                         {(currentTablePage - 1) * itemsPerTablePage + index + 1}
