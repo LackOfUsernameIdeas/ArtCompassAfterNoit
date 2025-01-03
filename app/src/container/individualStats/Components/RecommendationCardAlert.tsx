@@ -55,15 +55,15 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
       <div
         className={`p-6 rounded-lg shadow-lg bg-[rgb(var(--body-bg))] glow-effect border-2 dark:border-white border-secondary text-center max-w-full transform transition-transform duration-300 ${
           visible ? "scale-100" : "scale-75"
-        } ${"sm:w-[90%] md:w-[75%] lg:w-[85%]"}`}
+        } ${"md:w-[75%] lg:w-[85%] xl:w-[70%] 2xl:w-[50%]"}`}
       >
         <div className="recommendation-card">
-          <div className="flex w-full items-center">
-            <div className="relative flex-shrink-0 mr-8">
+          <div className="flex w-full items-center justify-between">
+            <div className="relative flex-shrink-0 mr-8 w-full md:w-1/3">
               <img
                 src={selectedItem.poster}
                 alt={`${selectedItem.title_bg || "Movie"} Poster`}
-                className="rounded-lg w-96 h-auto"
+                className="rounded-lg w-full h-auto"
               />
               <button
                 onClick={() => handleClose()}
@@ -81,7 +81,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
               </button>
             </div>
 
-            <div className="flex-grow">
+            <div className="flex-grow w-full md:w-2/3">
               <div className="sticky top-0 z-10 pb-4 mb-4">
                 <a href="#" className="block text-3xl font-bold mb-1">
                   {selectedItem.title_bg || "Заглавие не е налично"}
