@@ -11,7 +11,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   handleBookmarkClick,
   bookmarkedMovies
 }) => {
-  const [translatedDirector, setTranslatedDirector] = useState<string>("");
+  const [translatedDirectors, setTranslatedDirectors] = useState<string>("");
   const [translatedWriters, setTranslatedWriters] = useState<string>("");
   const [translatedActors, setTranslatedActors] = useState<string>("");
   const [translatedAwards, setTranslatedAwards] = useState<string>("");
@@ -31,7 +31,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   useEffect(() => {
     async function fetchDirectorTranslation() {
       const translated = await translate(recommendation.director);
-      setTranslatedDirector(translated);
+      setTranslatedDirectors(translated);
     }
 
     fetchDirectorTranslation();
@@ -156,14 +156,16 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                     {recommendation.metascore || "N/A"}
                   </span>
                 </div>
-                <span className="font-semibold">Метаскор</span>
+                <span className="font-semibold text-md sm:text-sm md:text-lg">
+                  Метаскор
+                </span>
               </div>
               <div
                 className="flex items-center space-x-2"
                 title="Rotten Tomatoes рейтинг: Процент положителни рецензии от професионални критици."
               >
                 <SiRottentomatoes className="text-[#FF0000] w-8 h-8" />
-                <span className="text-red-400 font-semibold">
+                <span className="text-red-400 font-semibold text-md sm:text-sm md:text-lg">
                   {rottenTomatoesRating}
                 </span>
               </div>
@@ -207,8 +209,8 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
             <ul className="text-opacity-80 space-y-1">
               <li>
                 <strong className="text-primary">Режисьор:</strong>{" "}
-                {translatedDirector && translatedDirector !== "N/A"
-                  ? translatedDirector
+                {translatedDirectors && translatedDirectors !== "N/A"
+                  ? translatedDirectors
                   : "Неизвестен"}
               </li>
               <li>

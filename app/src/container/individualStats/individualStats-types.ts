@@ -55,6 +55,7 @@ export interface PlotModalProps {
   onClose: () => void;
   plot: string;
 }
+
 // Данни свързани с жанрове
 export interface GenrePopularityData {
   [year: string]: {
@@ -237,3 +238,8 @@ export interface WatchlistRecommendation {
   total_nominations: string; // Общ брой номинации
   prosperityScore: number; // Процъфтяване (оценка за популярност на филма/сериала)
 }
+
+export type Rating = {
+  Source: string;
+  Value: string;
+};

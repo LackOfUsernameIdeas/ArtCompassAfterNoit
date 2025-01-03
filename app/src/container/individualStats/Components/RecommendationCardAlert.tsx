@@ -3,12 +3,14 @@ import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
 import { PlotModal } from "./PlotModal"; // Import PlotModal
 import {
+  Rating,
   Recommendation,
   WatchlistRecommendation
 } from "../individualStats-types";
+import { translate } from "../helper_functions";
 
 interface RecommendationCardAlertProps {
-  selectedItem: Recommendation | WatchlistRecommendation | null;
+  selectedItem: Recommendation | WatchlistRecommendation;
   onClose: () => void;
 }
 
@@ -16,6 +18,11 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   selectedItem,
   onClose
 }) => {
+  const [translatedDirectors, setTranslatedDirectors] = useState<string>("");
+  const [translatedWriters, setTranslatedWriters] = useState<string>("");
+  const [translatedActors, setTranslatedActors] = useState<string>("");
+  const [translatedAwards, setTranslatedAwards] = useState<string>("");
+
   const [visible, setVisible] = useState(false);
   const [isPlotModalOpen, setIsPlotModalOpen] = useState(false); // State to handle PlotModal visibility
 
@@ -40,21 +47,56 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
     setIsPlotModalOpen(false); // Close PlotModal
   };
 
+  useEffect(() => {
+    if (selectedItem?.director) {
+      async function fetchDirectorTranslation() {
+        const translated = await translate(selectedItem.director);
+        setTranslatedDirectors(translated);
+      }
+      fetchDirectorTranslation();
+    }
+  }, [selectedItem?.director]);
+
+  useEffect(() => {
+    if (selectedItem?.writer) {
+      async function fetchWriterTranslation() {
+        const translated = await translate(selectedItem.writer);
+        setTranslatedWriters(translated);
+      }
+      fetchWriterTranslation();
+    }
+  }, [selectedItem?.writer]);
+
+  useEffect(() => {
+    if (selectedItem?.actors) {
+      async function fetchActorsTranslation() {
+        const translated = await translate(selectedItem.actors);
+        setTranslatedActors(translated);
+      }
+      fetchActorsTranslation();
+    }
+  }, [selectedItem?.actors]);
+
+  useEffect(() => {
+    if (selectedItem?.awards) {
+      async function fetchAwardsTranslation() {
+        const translated = await translate(selectedItem.awards);
+        setTranslatedAwards(translated);
+      }
+      fetchAwardsTranslation();
+    }
+  }, [selectedItem?.awards]);
+
   if (!selectedItem) return null;
 
-  const getTranslatedType = (type: string) => {
-    switch (type) {
-      case "movie":
-        return "филм";
-      case "series":
-        return "сериал";
-      default:
-        return type;
-    }
-  };
-
   const translatedGenres = selectedItem.genre_bg || "Жанр неизвестен";
-  const rottenTomatoesRating = "N/A";
+  const ratings: Rating[] = Array.isArray(selectedItem.ratings)
+    ? selectedItem.ratings
+    : JSON.parse(selectedItem.ratings || "[]"); // Parse ratings if it's a string
+
+  const rottenTomatoesRating =
+    ratings?.find((rating) => rating.Source === "Rotten Tomatoes")?.Value ||
+    "N/A";
 
   return (
     <div
@@ -201,22 +243,30 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                 <h3 className="text-lg sm:text-md md:text-lg font-semibold mb-2">
                   Допълнителна информация
                 </h3>
-                <ul className="text-opacity-80 space-y-1 text-sm sm:text-xs md:text-sm">
+                <ul className="text-opacity-80 space-y-1">
                   <li>
                     <strong className="text-primary">Режисьор:</strong>{" "}
-                    {selectedItem.director || "Неизвестен"}
+                    {translatedDirectors && translatedDirectors !== "N/A"
+                      ? translatedDirectors
+                      : "Неизвестен"}
                   </li>
                   <li>
                     <strong className="text-primary">Сценаристи:</strong>{" "}
-                    {selectedItem.writer || "Неизвестни"}
+                    {translatedWriters && translatedWriters !== "N/A"
+                      ? translatedWriters
+                      : "Неизвестни"}
                   </li>
                   <li>
                     <strong className="text-primary">Актьори:</strong>{" "}
-                    {selectedItem.actors || "Неизвестни"}
+                    {translatedActors && translatedActors !== "N/A"
+                      ? translatedActors
+                      : "Неизвестни"}
                   </li>
                   <li>
                     <strong className="text-primary">Награди:</strong>{" "}
-                    {selectedItem.awards || "Няма"}
+                    {translatedAwards && translatedAwards !== "N/A"
+                      ? translatedAwards
+                      : "Няма"}
                   </li>
                   <li>
                     <strong className="text-primary">Боксофис:</strong>{" "}
