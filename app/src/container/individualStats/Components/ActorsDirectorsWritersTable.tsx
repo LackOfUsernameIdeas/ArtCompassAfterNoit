@@ -14,17 +14,19 @@ import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { tableCategoryDisplayNames } from "../individualStats-data";
 
-interface ActorsDirectorsWritersRecommendationsTableProps {
+interface ActorsDirectorsWritersTableProps {
   data: DataType;
+  type: "recommendations" | "watchlist"; // New prop to toggle between recommendations and watchlist
 }
 
-const ActorsDirectorsWritersRecommendationsTable: FC<
-  ActorsDirectorsWritersRecommendationsTableProps
-> = ({ data }) => {
+const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
+  data,
+  type
+}) => {
   const [recommendationCountSortCategory, setRecommendationCountSortCategory] =
     useState<Category>("Directors");
   const [sortType, setSortType] = useState<"prosperity" | "watchlist">(
-    "prosperity"
+    type === "recommendations" ? "prosperity" : "watchlist" // Default sortType based on prop type
   );
 
   const [filteredTableData, setFilteredTableData] = useState<FilteredTableData>(
@@ -36,7 +38,7 @@ const ActorsDirectorsWritersRecommendationsTable: FC<
   const totalItems = filteredTableData.length;
   const totalTablePages = Math.ceil(totalItems / itemsPerTablePage);
 
-  // Следи за промени в `data` и актуализира филтрираните данни в таблицата съответно
+  // UseEffect to update filtered data based on the data and sortType
   useEffect(() => {
     const initialFilteredData =
       data[
@@ -47,7 +49,6 @@ const ActorsDirectorsWritersRecommendationsTable: FC<
     setFilteredTableData(initialFilteredData);
   }, [data, recommendationCountSortCategory, sortType]);
 
-  // Използва useMemo за запаметяване на изчисляването на филтрираните данни
   const memoizedFilteredData = useMemo(
     () =>
       filterTableData(
@@ -60,7 +61,6 @@ const ActorsDirectorsWritersRecommendationsTable: FC<
   );
 
   const handleCategoryChange = (category: Category) => {
-    // Превключва филтрираните данни в зависимост от избраната категория
     setFilteredTableData(
       data[
         `sorted${category}By${
@@ -71,7 +71,6 @@ const ActorsDirectorsWritersRecommendationsTable: FC<
     setRecommendationCountSortCategory(category);
   };
 
-  // Обработка на логиката за предишна страница
   const handlePrevTablePage = () => {
     if (currentTablePage > 1) {
       setCurrentTablePage((prev) => prev - 1);
@@ -105,7 +104,7 @@ const ActorsDirectorsWritersRecommendationsTable: FC<
                   recommendationCountSortCategory as keyof typeof tableCategoryDisplayNames
                 ]
               }{" "}
-              по Брой Препоръки
+              по Брой {type === "recommendations" ? "Препоръки" : "Watchlist"}
             </div>
             <div className="flex flex-wrap gap-2">
               <div
@@ -162,7 +161,8 @@ const ActorsDirectorsWritersRecommendationsTable: FC<
                       }
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
-                      Брой Препоръки
+                      Брой{" "}
+                      {type === "recommendations" ? "Препоръки" : "Watchlist"}
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
                       Просперитетен рейтинг
@@ -360,4 +360,4 @@ const ActorsDirectorsWritersRecommendationsTable: FC<
   );
 };
 
-export default ActorsDirectorsWritersRecommendationsTable;
+export default ActorsDirectorsWritersTable;

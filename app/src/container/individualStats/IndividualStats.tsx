@@ -6,7 +6,7 @@ import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 import { showNotification } from "../recommendations/helper_functions";
 import Notification from "../../components/common/notification/Notification";
 import { NotificationState } from "../recommendations/recommendations-types";
-import ActorsDirectorsWritersRecommendationsTable from "./Components/ActorsDirectorsWritersRecommendationsTable";
+import ActorsDirectorsWritersTable from "./Components/ActorsDirectorsWritersTable";
 import MoviesAndSeriesRecommendationsTable from "./Components/MoviesAndSeriesRecommendationsTable";
 import GenresBarChart from "./Components/GenresBarChart";
 import CountWidgets from "./Components/CountWidgets";
@@ -178,8 +178,9 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                         />
                       </div>
                       <div className="xxl:col-span-6 col-span-12">
-                        <ActorsDirectorsWritersRecommendationsTable
+                        <ActorsDirectorsWritersTable
                           data={data}
+                          type="recommendations"
                         />
                       </div>
                     </div>
@@ -246,8 +247,9 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                         />
                       </div>
                       <div className="xxl:col-span-6 col-span-12">
-                        <ActorsDirectorsWritersRecommendationsTable
+                        <ActorsDirectorsWritersTable
                           data={data}
+                          type="recommendations"
                         />
                       </div>
                     </div>
