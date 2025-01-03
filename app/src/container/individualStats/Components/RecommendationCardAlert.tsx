@@ -44,7 +44,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   };
 
   const translatedGenres = selectedItem.genre_bg || "Жанр неизвестен";
-  const rottenTomatoesRating = "selectedItem.rottenTomatoes";
+  const rottenTomatoesRating = "N/A";
 
   return (
     <div
@@ -55,18 +55,18 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
       <div
         className={`p-6 rounded-lg shadow-lg bg-[rgb(var(--body-bg))] glow-effect border-2 dark:border-white border-secondary text-center max-w-full transform transition-transform duration-300 ${
           visible ? "scale-100" : "scale-75"
-        } ${"md:w-[75%] lg:w-[85%] xl:w-[70%] 2xl:w-[50%]"}`}
+        } md:w-[75%] lg:w-[85%] xl:w-[70%] 2xl:w-[50%]`}
       >
         <div className="recommendation-card">
-          <div className="flex w-full items-center justify-between">
-            <div className="relative flex-shrink-0 mr-8 w-full md:w-1/3">
+          <div className="flex items-center justify-between">
+            <div className="relative flex-shrink-0 w-full md:w-1/3">
               <img
                 src={selectedItem.poster}
                 alt={`${selectedItem.title_bg || "Movie"} Poster`}
                 className="rounded-lg w-full h-auto"
               />
               <button
-                onClick={() => handleClose()}
+                onClick={handleClose}
                 className="absolute top-4 left-4 p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
               >
                 <svg
@@ -81,7 +81,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
               </button>
             </div>
 
-            <div className="flex-grow w-full md:w-2/3">
+            <div className="flex-grow w-full md:w-2/3 text-left ml-8">
               <div className="sticky top-0 z-10 pb-4 mb-4">
                 <a href="#" className="block text-3xl font-bold mb-1">
                   {selectedItem.title_bg || "Заглавие не е налично"}
@@ -205,7 +205,6 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
             </div>
           </div>
         </div>
-
         <button
           onClick={handleClose}
           className="absolute top-4 right-4 p-2 text-[#FFCC33] dark:bg-gray-200/20 bg-gray-800/20 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
