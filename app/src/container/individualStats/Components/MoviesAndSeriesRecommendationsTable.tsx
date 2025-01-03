@@ -22,7 +22,7 @@ const MoviesAndSeriesRecommendationsTable: FC<
     "default"
   );
   const [sortType, setSortType] = useState<"recommendations" | "watchlist">(
-    type === "recommendations" ? "recommendations" : "watchlist" // Default sortType based on prop type
+    type === "recommendations" ? "recommendations" : "watchlist"
   );
 
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
@@ -37,7 +37,6 @@ const MoviesAndSeriesRecommendationsTable: FC<
   }, [data]);
 
   const sortedData = useMemo(() => {
-    // Filter the data to only include 'movie' type when sorting by 'boxOffice' or 'prosperityScore'
     const filteredByTypeData = ["boxOffice", "prosperityScore"].includes(sortBy)
       ? filteredTableData.filter((item) => item.type === "movie")
       : filteredTableData;
@@ -47,7 +46,6 @@ const MoviesAndSeriesRecommendationsTable: FC<
     }
 
     return [...filteredByTypeData].sort((a, b) => {
-      // Ensure the sortBy value exists as a property key on the objects
       const valueA = a[sortBy as keyof typeof a];
       const valueB = b[sortBy as keyof typeof b];
 
@@ -95,7 +93,6 @@ const MoviesAndSeriesRecommendationsTable: FC<
     setIsSortMenuOpen(false); // Close the menu after selecting an option
   };
 
-  // Map sorting options to more descriptive titles
   const sortTitles: Record<string, string> = {
     recommendations: "Най-Често Препоръчваните Филми и Сериали За Мен",
     prosperityScore: "Филми и Сериали По Просперитет",
@@ -118,7 +115,6 @@ const MoviesAndSeriesRecommendationsTable: FC<
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
         <div className="box custom-card h-[27.75rem]">
           <div className="box-header justify-between">
-            {/* Динамично сортиране на заглавие базирано на избраната опция */}
             <div
               className={`box-title whitespace-nowrap overflow-hidden text-ellipsis ${
                 is1399 ? "max-w-full" : is1630 ? "max-w-[20rem]" : "max-w-full"
@@ -192,11 +188,9 @@ const MoviesAndSeriesRecommendationsTable: FC<
                 className="px-3 py-1.5 text-[0.85rem] bg-primary text-white border border-primary rounded-sm text-base font-medium hover:bg-primary/10 transition-all flex items-center justify-center"
                 onClick={() => {
                   if (sortBy === "default") {
-                    // Превключване между нарастващ и намаляващ ред
                     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
                     setSortBy("recommendations");
                   } else {
-                    // Превключване между нарастващ и намаляващ ред, ако не е на 'default'
                     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
                   }
                 }}

@@ -13,6 +13,7 @@ import {
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { tableCategoryDisplayNames } from "../individualStats-data";
+import { Tooltip } from "react-tooltip";
 
 interface ActorsDirectorsWritersTableProps {
   data: DataType;
@@ -38,7 +39,6 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
   const totalItems = filteredTableData.length;
   const totalTablePages = Math.ceil(totalItems / itemsPerTablePage);
 
-  // UseEffect to update filtered data based on the data and sortType
   useEffect(() => {
     const initialFilteredData =
       data[
@@ -93,12 +93,30 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
   const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
   const is1477 = useMediaQuery({ query: "(max-width: 1477px)" });
 
+  const is1399 = useMediaQuery({ query: "(max-width: 1399px)" });
+  const is1557 = useMediaQuery({ query: "(max-width: 1557px)" });
+  const is1630 = useMediaQuery({ query: "(max-width: 1630px)" });
+
   return (
     <Fragment>
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
         <div className="box custom-card h-[27.75rem]">
           <div className="box-header justify-between">
-            <div className="box-title">
+            <div
+              className={`box-title whitespace-nowrap overflow-hidden text-ellipsis ${
+                is1399 ? "max-w-full" : is1630 ? "max-w-[15rem]" : "max-w-full"
+              }`}
+              data-tooltip-id="box-title-tooltip"
+              data-tooltip-content={`Топ ${
+                tableCategoryDisplayNames[
+                  recommendationCountSortCategory as keyof typeof tableCategoryDisplayNames
+                ]
+              } ${
+                type === "recommendations"
+                  ? "по Брой  Препоръки"
+                  : "в Списък За Гледане"
+              }`}
+            >
               Топ{" "}
               {
                 tableCategoryDisplayNames[
@@ -109,6 +127,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                 ? "по Брой  Препоръки"
                 : "в Списък За Гледане"}
             </div>
+            <Tooltip id="box-title-tooltip" />
             <div className="flex flex-wrap gap-2">
               <div
                 className="inline-flex rounded-md shadow-sm"
