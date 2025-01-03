@@ -23,6 +23,9 @@ const ActorsDirectorsWritersRecommendationsTable: FC<
 > = ({ data }) => {
   const [recommendationCountSortCategory, setRecommendationCountSortCategory] =
     useState<Category>("Directors");
+  const [sortType, setSortType] = useState<"prosperity" | "watchlist">(
+    "prosperity"
+  );
 
   const [filteredTableData, setFilteredTableData] = useState<FilteredTableData>(
     []
@@ -36,9 +39,13 @@ const ActorsDirectorsWritersRecommendationsTable: FC<
   // Следи за промени в `data` и актуализира филтрираните данни в таблицата съответно
   useEffect(() => {
     const initialFilteredData =
-      data[`sorted${recommendationCountSortCategory}ByRecommendationCount`];
+      data[
+        `sorted${recommendationCountSortCategory}By${
+          sortType === "prosperity" ? "RecommendationCount" : "Watchlist"
+        }`
+      ];
     setFilteredTableData(initialFilteredData);
-  }, [data, recommendationCountSortCategory]);
+  }, [data, recommendationCountSortCategory, sortType]);
 
   // Използва useMemo за запаметяване на изчисляването на филтрираните данни
   const memoizedFilteredData = useMemo(
@@ -52,15 +59,15 @@ const ActorsDirectorsWritersRecommendationsTable: FC<
     [filteredTableData, recommendationCountSortCategory, currentTablePage]
   );
 
-  console.log("filteredTableData: ", filteredTableData);
-  console.log(
-    "recommendationCountSortCategory: ",
-    recommendationCountSortCategory
-  );
-
   const handleCategoryChange = (category: Category) => {
     // Превключва филтрираните данни в зависимост от избраната категория
-    setFilteredTableData(data[`sorted${category}ByRecommendationCount`]);
+    setFilteredTableData(
+      data[
+        `sorted${category}By${
+          sortType === "prosperity" ? "RecommendationCount" : "Watchlist"
+        }`
+      ]
+    );
     setRecommendationCountSortCategory(category);
   };
 

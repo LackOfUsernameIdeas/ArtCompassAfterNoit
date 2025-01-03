@@ -134,7 +134,7 @@ export type DataType = {
     recommendations: Recommendation[];
   }; // Топ препоръки
   topGenres: any[]; // Топ жанрове
-  [key: `sorted${string}ByRecommendationCount`]: any[]; // Подредени данни по процъфтяване
+  [key: `sorted${string}By${"RecommendationCount" | "Watchlist"}`]: any[]; // Подредени данни по процъфтяване
 };
 
 // Категориен тип за роли
