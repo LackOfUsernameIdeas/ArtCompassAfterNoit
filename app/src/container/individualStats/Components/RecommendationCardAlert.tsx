@@ -83,17 +83,20 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
 
             <div className="flex-grow w-full md:w-2/3 text-left ml-8">
               <div className="sticky top-0 z-10 pb-4 mb-4">
-                <a href="#" className="block text-3xl font-bold mb-1">
+                <a
+                  href="#"
+                  className="block text-2xl sm:text-xl md:text-2xl font-bold mb-1"
+                >
                   {selectedItem.title_bg || "Заглавие не е налично"}
                 </a>
                 <a
                   href="#"
-                  className="block text-lg font-semibold text-opacity-60 italic mb-2"
+                  className="block text-md sm:text-sm md:text-lg font-semibold text-opacity-60 italic mb-2"
                 >
                   {selectedItem.title_en ||
                     "Заглавие на английски не е налично"}
                 </a>
-                <p className="recommendation-small-details">
+                <p className="recommendation-small-details text-sm sm:text-xs md:text-sm">
                   {translatedGenres} |{" "}
                   {selectedItem.year || "Година неизвестна"} | Рейтинг:{" "}
                   {selectedItem.rated || "N/A"}
@@ -103,8 +106,8 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                     className="flex items-center space-x-2"
                     title="IMDb рейтинг: Базиран на отзиви и оценки от потребители."
                   >
-                    <FaStar className="dark:text-[#FFCC33] text-[#bf9413] w-8 h-8" />
-                    <span className="dark:text-[#FFCC33] text-[#bf9413] font-bold text-lg">
+                    <FaStar className="dark:text-[#FFCC33] text-[#bf9413] w-6 h-6 sm:w-5 sm:h-5" />
+                    <span className="dark:text-[#FFCC33] text-[#bf9413] font-bold text-md sm:text-sm md:text-lg">
                       {selectedItem.imdbRating || "N/A"}
                     </span>
                   </div>
@@ -139,8 +142,8 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                     className="flex items-center space-x-2"
                     title="Rotten Tomatoes рейтинг: Процент положителни рецензии от професионални критици."
                   >
-                    <SiRottentomatoes className="text-[#FF0000] w-8 h-8" />
-                    <span className="text-red-400 font-semibold">
+                    <SiRottentomatoes className="text-[#FF0000] w-6 h-6 sm:w-5 sm:h-5" />
+                    <span className="text-red-400 font-semibold text-md sm:text-sm md:text-lg">
                       {rottenTomatoesRating}
                     </span>
                   </div>
@@ -149,19 +152,21 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
 
               {selectedItem.reason && (
                 <div className="mb-4">
-                  <h3 className="text-lg font-semibold mb-2">
+                  <h3 className="text-lg sm:text-md md:text-lg font-semibold mb-2">
                     Защо препоръчваме {selectedItem.title_bg}?
                   </h3>
-                  <p className="text-opacity-80 italic">
+                  <p className="text-opacity-80 italic text-sm sm:text-xs md:text-sm">
                     {selectedItem.reason}
                   </p>
                 </div>
               )}
 
               <div className="mb-4">
-                <h3 className="text-lg font-semibold mb-2">Сюжет</h3>
+                <h3 className="text-lg sm:text-md md:text-lg font-semibold mb-2">
+                  Сюжет
+                </h3>
                 <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[1.3rem] opacity-70">
-                  <p className="text-opacity-80 italic">
+                  <p className="text-opacity-80 italic text-sm sm:text-xs md:text-sm">
                     {selectedItem.description.length > 100
                       ? `${selectedItem.description.substring(0, 100)}...`
                       : selectedItem.description}
@@ -169,17 +174,20 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                 </div>
                 {selectedItem.description &&
                   selectedItem.description.length > 100 && (
-                    <button onClick={() => {}} className="mt-2 underline">
+                    <button
+                      onClick={() => {}}
+                      className="mt-2 underline text-sm sm:text-xs md:text-sm"
+                    >
                       Пълен сюжет
                     </button>
                   )}
               </div>
 
               <div className="mb-4">
-                <h3 className="text-lg font-semibold mb-2">
+                <h3 className="text-lg sm:text-md md:text-lg font-semibold mb-2">
                   Допълнителна информация
                 </h3>
-                <ul className="text-opacity-80 space-y-1">
+                <ul className="text-opacity-80 space-y-1 text-sm sm:text-xs md:text-sm">
                   <li>
                     <strong className="text-primary">Режисьор:</strong>{" "}
                     {selectedItem.director || "Неизвестен"}
