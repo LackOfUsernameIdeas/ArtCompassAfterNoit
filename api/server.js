@@ -932,7 +932,7 @@ app.post("/stats/individual/top-recommendations", (req, res) => {
   });
 });
 
-// Вземане на данни за филми/сериали в списъка за гледане на даден потребител
+// Вземане на данни за филми/сериали в списък за гледане на даден потребител
 app.post("/stats/individual/watchlist", (req, res) => {
   const { token } = req.body;
 
@@ -972,6 +972,32 @@ app.post("/stats/individual/top-genres", (req, res) => {
   });
 });
 
+// Вземане на данни за най-запазвани в списък за гледане жанрове на даден потребител
+app.post("/stats/individual/watchlist-top-genres", (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersTopGenresFromWatchlist(userId, limit, (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error fetching top genres from watchlist" });
+      }
+      res.json(result);
+    });
+  });
+});
+
 // Вземане на данни за най-препоръчвани актьори на даден потребител
 app.post("/stats/individual/top-actors", (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
@@ -992,6 +1018,32 @@ app.post("/stats/individual/top-actors", (req, res) => {
         return res
           .status(500)
           .json({ error: "Error fetching users top actors" });
+      }
+      res.json(result);
+    });
+  });
+});
+
+// Вземане на данни за най-запазвани в списък за гледане актьори на даден потребител
+app.post("/stats/individual/watchlist-top-actors", (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersTopActorsFromWatchlist(userId, limit, (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error fetching users watchlist top actors" });
       }
       res.json(result);
     });

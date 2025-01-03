@@ -1877,6 +1877,44 @@ const getUsersTopGenres = (userId, limit, callback) => {
   });
 };
 
+const getUsersTopGenresFromWatchlist = (userId, limit, callback) => {
+  const query = `
+    SELECT genre_en, genre_bg, COUNT(*) AS count
+    FROM (
+      SELECT 
+        TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(w.genre_en, ',', numbers.n), ',', -1)) AS genre_en,
+        TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(w.genre_bg, ',', numbers.n), ',', -1)) AS genre_bg
+      FROM watchlist w
+      INNER JOIN (
+        SELECT 1 AS n UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION
+        SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10
+      ) AS numbers 
+      ON CHAR_LENGTH(w.genre_en) - CHAR_LENGTH(REPLACE(w.genre_en, ',', '')) >= numbers.n - 1
+      AND CHAR_LENGTH(w.genre_bg) - CHAR_LENGTH(REPLACE(w.genre_bg, ',', '')) >= numbers.n - 1
+      WHERE w.user_id = ?
+    ) AS subquery
+    GROUP BY genre_en, genre_bg
+    ORDER BY count DESC
+    LIMIT ?
+  `;
+
+  db.query(query, [userId, limit], (err, results) => {
+    if (err) {
+      callback(err, null);
+      return;
+    }
+
+    if (!results.length) {
+      callback(null, {
+        message:
+          "No top genres from watchlist found for the user in the watchlist."
+      });
+    } else {
+      callback(null, results); // Pass the results to the callback
+    }
+  });
+};
+
 const getUsersTopActors = (userId, limit, callback) => {
   const query = `
     SELECT actor, COUNT(*) AS recommendations_count
@@ -2119,6 +2157,255 @@ const getUsersTopActors = (userId, limit, callback) => {
 
       const sortedResults = filteredResults.sort(
         (a, b) => b.total_recommendations - a.total_recommendations
+      );
+
+      callback(null, sortedResults);
+    });
+  });
+};
+
+const getUsersTopActorsFromWatchlist = (userId, limit, callback) => {
+  const query = `
+    SELECT actor, COUNT(*) AS saved_count
+    FROM (
+      SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(actors, ',', n.n), ',', -1)) AS actor
+      FROM watchlist
+      CROSS JOIN (
+          SELECT a.N + b.N * 10 + 1 AS n
+          FROM (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a,
+              (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
+          ORDER BY n
+      ) n
+      WHERE user_id = ? 
+        AND n.n <= 1 + (LENGTH(actors) - LENGTH(REPLACE(actors, ',', '')))
+        AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(actors, ',', n.n), ',', -1)) != 'N/A'
+    ) AS actor_list
+    GROUP BY actor
+    ORDER BY saved_count DESC
+    LIMIT ?;
+  `;
+
+  db.query(query, [userId, limit], async (err, results) => {
+    if (err) {
+      callback(err, null);
+      return;
+    }
+
+    // If no results, return a default response
+    if (!results.length) {
+      callback(null, {
+        message: "No top actors from watchlist found for the user."
+      });
+      return;
+    }
+
+    // Translate actor names
+    const translatedResults = await Promise.all(
+      results.map(async (row) => {
+        const translatedActor = await hf.translate(row.actor);
+        return {
+          actor_en: row.actor,
+          actor_bg: translatedActor,
+          saved_count: row.saved_count
+        };
+      })
+    );
+
+    // Fetch prosperity data for the actors
+    const actors = translatedResults
+      .map((actor) => `'${actor.actor_en.replace(/'/g, "''")}'`)
+      .join(",");
+
+    console.log("actors: ", actors);
+
+    const prosperityQuery = `
+      WITH RECURSIVE ActorSplit AS (
+        SELECT 
+            id, 
+            TRIM(SUBSTRING_INDEX(actors, ',', 1)) AS actor,
+            SUBSTRING_INDEX(actors, ',', -1) AS remaining_actors,
+            imdbRating,
+            metascore,
+            boxOffice,
+            awards,
+            imdbID,
+            ratings,
+            type
+        FROM watchlist
+        WHERE actors IS NOT NULL 
+          AND actors != 'N/A'
+        UNION ALL
+        SELECT 
+            id,
+            TRIM(SUBSTRING_INDEX(remaining_actors, ',', 1)) AS actor,
+            SUBSTRING_INDEX(remaining_actors, ',', -1) AS remaining_actors,
+            imdbRating,
+            metascore,
+            boxOffice,
+            awards,
+            imdbID,
+            ratings,
+            type
+        FROM ActorSplit
+        WHERE remaining_actors LIKE '%,%'
+      ),
+      UniqueMovies AS (
+        SELECT 
+            DISTINCT imdbID,
+            actor,
+            imdbRating,
+            metascore,
+            boxOffice,
+            awards,
+            ratings
+        FROM ActorSplit
+        WHERE actor IS NOT NULL AND actor != 'N/A'
+      ),
+      ActorRecommendations AS (
+        SELECT actor, COUNT(*) AS total_saved_count  -- Count all saved instances for each actor
+        FROM (
+          SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(actors, ',', n.n), ',', -1)) AS actor
+          FROM watchlist
+          CROSS JOIN (
+              SELECT a.N + b.N * 10 + 1 AS n
+              FROM (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                    UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a
+              , (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+                UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
+              ORDER BY n
+          ) n
+          WHERE n.n <= 1 + (LENGTH(actors) - LENGTH(REPLACE(actors, ',', '')))  -- Split the actor list by comma
+            AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(actors, ',', n.n), ',', -1)) != 'N/A'
+        ) AS actor_list
+        GROUP BY actor
+        ORDER BY total_saved_count DESC
+      )
+      SELECT 
+        um.actor,
+        ROUND(AVG(um.imdbRating), 2) AS avg_imdb_rating,
+        AVG(um.metascore) AS avg_metascore,
+        CONCAT('$', FORMAT(SUM(CASE 
+                WHEN um.boxOffice IS NULL OR um.boxOffice = 'N/A' 
+                THEN 0 
+                ELSE CAST(REPLACE(REPLACE(um.boxOffice, '$', ''), ',', '') AS UNSIGNED) 
+            END), 0)) AS total_box_office,
+        CONCAT(ROUND(AVG(CAST(REPLACE(REPLACE(JSON_UNQUOTE(JSON_EXTRACT(um.ratings, '$[1].Value')), '%', ''), ',', '') AS DECIMAL(5,2))), 0), '%') AS avg_rotten_tomatoes,
+        COUNT(DISTINCT um.imdbID) AS movie_series_count,
+        COALESCE(ar.total_saved_count, 0) AS total_saved_count,
+        SUM(CASE 
+                WHEN um.awards IS NOT NULL THEN 
+                    CASE 
+                        WHEN um.awards LIKE '1 win%' THEN 1
+                        ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ win(s)') AS UNSIGNED), 0)
+                    END
+                ELSE 0 
+            END) AS total_wins,
+        SUM(CASE 
+                WHEN um.awards IS NOT NULL THEN 
+                    CASE 
+                        WHEN um.awards LIKE '1 nomination%' THEN 1
+                        ELSE COALESCE(CAST(REGEXP_SUBSTR(um.awards, '[0-9]+ nomination(s)') AS UNSIGNED), 0)
+                    END
+                ELSE 0 
+            END) AS total_nominations
+      FROM 
+          UniqueMovies um
+      LEFT JOIN 
+          ActorRecommendations ar ON um.actor = ar.actor
+      WHERE 
+          um.actor IN (${actors})
+      GROUP BY 
+          um.actor
+      ORDER BY 
+          avg_imdb_rating DESC;
+    `;
+
+    db.query(prosperityQuery, async (err, prosperityResults) => {
+      if (err) {
+        console.log("err: ", err);
+        callback(err, null);
+        return;
+      }
+
+      // Calculate prosperity score for each actor
+      const maxBoxOffice = Math.max(
+        ...prosperityResults.map((actor) => {
+          const totalBoxOffice =
+            parseFloat(actor.total_box_office.replace(/[$,]/g, "")) || 0;
+          return totalBoxOffice;
+        })
+      );
+
+      const weights = {
+        total_wins: 0.3,
+        total_nominations: 0.25,
+        total_box_office: 0.15,
+        avg_metascore: 0.1,
+        avg_imdb_rating: 0.1,
+        avg_rotten_tomatoes: 0.1
+      };
+
+      const actorsWithProsperity = prosperityResults.map((actor) => {
+        const totalWins = actor.total_wins || 0;
+        const totalNominations = actor.total_nominations || 0;
+
+        const totalBoxOffice =
+          parseFloat(actor.total_box_office.replace(/[$,]/g, "")) || 0;
+        const normalizedBoxOffice = maxBoxOffice
+          ? totalBoxOffice / maxBoxOffice
+          : 0;
+
+        const avgIMDbRating = actor.avg_imdb_rating || 0;
+        const avgMetascore = actor.avg_metascore || 0;
+        const avgRottenTomatoes = actor.avg_rotten_tomatoes
+          ? parseFloat(actor.avg_rotten_tomatoes.replace("%", "")) / 100
+          : 0;
+
+        const prosperityScore =
+          totalWins * weights.total_wins +
+          totalNominations * weights.total_nominations +
+          normalizedBoxOffice * weights.total_box_office +
+          avgMetascore * weights.avg_metascore +
+          avgIMDbRating * weights.avg_imdb_rating +
+          avgRottenTomatoes * weights.avg_rotten_tomatoes;
+
+        return {
+          ...actor,
+          prosperityScore: Number(prosperityScore.toFixed(2))
+        };
+      });
+
+      // Combine the top actors with their prosperity data
+      const combinedResults = translatedResults.map((actor) => {
+        const prosperity = actorsWithProsperity.find(
+          (result) => result.actor === actor.actor_en
+        ) || {
+          prosperityScore: "N/A",
+          total_box_office: "N/A",
+          avg_imdb_rating: "N/A",
+          avg_metascore: "N/A",
+          avg_rotten_tomatoes: "N/A",
+          movie_series_count: "N/A",
+          total_saved_count: "N/A",
+          total_wins: "N/A",
+          total_nominations: "N/A"
+        };
+        return {
+          ...actor,
+          ...prosperity
+        };
+      });
+
+      // Remove unnecessary fields
+      const filteredResults = combinedResults.map((actorData) => {
+        const { actor, ...rest } = actorData;
+        return rest;
+      });
+
+      const sortedResults = filteredResults.sort(
+        (a, b) => b.total_saved_count - a.total_saved_count
       );
 
       callback(null, sortedResults);
@@ -2671,7 +2958,9 @@ module.exports = {
   getUsersTopRecommendations,
   getUsersWatchlist,
   getUsersTopGenres,
+  getUsersTopGenresFromWatchlist,
   getUsersTopActors,
+  getUsersTopActorsFromWatchlist,
   getUsersTopDirectors,
   getUsersTopWriters
 };
