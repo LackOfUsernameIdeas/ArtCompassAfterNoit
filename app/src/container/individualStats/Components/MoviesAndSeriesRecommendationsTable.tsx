@@ -9,17 +9,22 @@ import { Tooltip } from "react-tooltip";
 
 interface MoviesAndSeriesRecommendationsTableProps {
   data: Recommendation[] | WatchlistRecommendation[];
+  type: "recommendations" | "watchlist";
 }
 
 const MoviesAndSeriesRecommendationsTable: FC<
   MoviesAndSeriesRecommendationsTableProps
-> = ({ data }) => {
+> = ({ data, type }) => {
   const [currentTablePage, setCurrentTablePage] = useState(1);
   const itemsPerTablePage = 5;
 
   const [sortBy, setSortBy] = useState<keyof Recommendation | "default">(
     "default"
   );
+  const [sortType, setSortType] = useState<"recommendations" | "watchlist">(
+    type === "recommendations" ? "recommendations" : "watchlist" // Default sortType based on prop type
+  );
+
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   const [filteredTableData, setFilteredTableData] = useState<
@@ -218,13 +223,11 @@ const MoviesAndSeriesRecommendationsTable: FC<
                     <th scope="col" className="!text-start !text-[0.85rem]">
                       Тип
                     </th>
-                    {paginatedData &&
-                      paginatedData.length > 0 &&
-                      "recommendations" in paginatedData[0] && (
-                        <th scope="col" className="!text-start !text-[0.85rem]">
-                          Брой Препоръки
-                        </th>
-                      )}
+                    {sortType == "recommendations" && (
+                      <th scope="col" className="!text-start !text-[0.85rem]">
+                        Брой Препоръки
+                      </th>
+                    )}
                     <th scope="col" className="!text-start !text-[0.85rem]">
                       Просперитет
                     </th>
@@ -262,9 +265,10 @@ const MoviesAndSeriesRecommendationsTable: FC<
                       </td>
                       <td>{item.title_bg}</td>
                       <td>{getTranslatedType(item.type)}</td>
-                      {"recommendations" in item && (
-                        <td>{item.recommendations}</td>
-                      )}
+                      {sortType == "recommendations" &&
+                        "recommendations" in item && (
+                          <td>{item.recommendations}</td>
+                        )}
                       <td>{item.prosperityScore}</td>
                       <td>{item.boxOffice}</td>
                       <td>{item.oscar_wins}</td>

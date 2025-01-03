@@ -185,6 +185,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                     <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5">
                       <div className="xxl:col-span-6 col-span-12">
                         <MoviesAndSeriesRecommendationsTable
+                          type="recommendations"
                           data={data.topRecommendations.recommendations}
                         />
                       </div>
@@ -262,6 +263,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                     <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5">
                       <div className="xxl:col-span-6 col-span-12">
                         <MoviesAndSeriesRecommendationsTable
+                          type="watchlist"
                           data={data.topRecommendationsWatchlist.watchlist}
                         />
                       </div>
