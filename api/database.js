@@ -1631,7 +1631,6 @@ const getUsersTopRecommendations = (userId, callback) => {
       return;
     }
 
-    // If no results, return a default response
     if (!results.length) {
       callback(null, {
         message: "No top recommendations found for the user."
@@ -1639,7 +1638,6 @@ const getUsersTopRecommendations = (userId, callback) => {
       return;
     }
 
-    // Calculate prosperity score for each recommendation
     const weights = {
       total_wins: 0.3,
       total_nominations: 0.25,
@@ -1688,9 +1686,15 @@ const getUsersTopRecommendations = (userId, callback) => {
         avgMetascore * weights.avg_metascore +
         avgRottenTomatoes * weights.avg_rotten_tomatoes;
 
+      // Format the box office value with dollar sign and commas
+      const formattedBoxOffice = totalBoxOffice
+        ? `$${totalBoxOffice.toLocaleString()}`
+        : "$0";
+
       return {
         ...movie,
-        prosperityScore: Number(prosperityScore.toFixed(2)) // Round to 2 decimal places
+        prosperityScore: Number(prosperityScore.toFixed(2)), // Round to 2 decimal places
+        boxOffice: formattedBoxOffice // Add formatted boxOffice
       };
     });
 

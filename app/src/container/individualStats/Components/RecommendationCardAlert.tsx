@@ -119,7 +119,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
               />
               <button
                 onClick={() => {}}
-                className="absolute top-4 left-4 p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
+                className="absolute top-4 left-4 p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110 z-20"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
