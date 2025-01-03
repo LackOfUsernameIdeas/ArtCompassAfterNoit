@@ -120,7 +120,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                           ? "bg-[#FFCC33]"
                           : "bg-[#FF0000]"
                       }`}
-                      style={{ width: "35px", height: "35px" }}
+                      style={{ width: "2rem", height: "2rem" }}
                     >
                       <span
                         className={`${
@@ -160,7 +160,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
 
               <div className="mb-4">
                 <h3 className="text-lg font-semibold mb-2">Сюжет</h3>
-                <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[20px] opacity-70">
+                <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[1.3rem] opacity-70">
                   <p className="text-opacity-80 italic">
                     {selectedItem.description.length > 100
                       ? `${selectedItem.description.substring(0, 100)}...`
