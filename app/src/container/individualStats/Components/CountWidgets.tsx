@@ -1,8 +1,8 @@
 import { FC, Fragment } from "react";
-import { RecommendationsCount } from "../individualStats-types";
+import { Count } from "../individualStats-types";
 
 interface CountWidgetsProps {
-  recommendationsCount: RecommendationsCount;
+  recommendationsCount: Count;
 }
 
 const CountWidgets: FC<CountWidgetsProps> = ({ recommendationsCount }) => {

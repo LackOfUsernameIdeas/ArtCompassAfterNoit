@@ -1821,7 +1821,7 @@ const getUsersWatchlist = (userId, callback) => {
     });
 
     // Count the number of series and movies
-    const recommendationsCount = enrichedWatchlist.reduce(
+    const savedCount = enrichedWatchlist.reduce(
       (acc, item) => {
         if (item.type === "movie") {
           acc.movies++;
@@ -1833,9 +1833,9 @@ const getUsersWatchlist = (userId, callback) => {
       { movies: 0, series: 0 }
     );
 
-    // Include recommendationsCount and enriched watchlist in the response
+    // Include savedCount and enriched watchlist in the response
     callback(null, {
-      recommendationsCount,
+      savedCount,
       watchlist: enrichedWatchlist
     });
   });

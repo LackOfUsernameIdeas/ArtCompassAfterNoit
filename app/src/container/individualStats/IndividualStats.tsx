@@ -23,7 +23,15 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
       },
       recommendations: []
     }, // Топ препоръки
+    topRecommendationsWatchlist: {
+      savedCount: {
+        movies: 0,
+        series: 0
+      },
+      watchlist: []
+    }, // Запазени филми/сериали в списък за гледане
     topGenres: [], // Топ жанрове
+    topGenresWatchlist: [], // Топ запазени жанрове
     sortedDirectorsByRecommendationCount: [], // Режисьори, сортирани по просперитет
     sortedActorsByRecommendationCount: [], // Актьори, сортирани по просперитет
     sortedWritersByRecommendationCount: [], // Сценаристи, сортирани по просперитет
