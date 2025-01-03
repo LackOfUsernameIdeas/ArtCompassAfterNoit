@@ -25,6 +25,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
 
   const [visible, setVisible] = useState(false);
   const [isPlotModalOpen, setIsPlotModalOpen] = useState(false); // State to handle PlotModal visibility
+  const plotPreviewLength = 70;
 
   useEffect(() => {
     if (selectedItem) {
@@ -223,13 +224,16 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                 </h3>
                 <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[1.3rem] opacity-70">
                   <p className="text-opacity-80 italic text-sm sm:text-xs md:text-sm">
-                    {selectedItem.description.length > 100
-                      ? `${selectedItem.description.substring(0, 100)}...`
+                    {selectedItem.description.length > plotPreviewLength
+                      ? `${selectedItem.description.substring(
+                          0,
+                          plotPreviewLength
+                        )}...`
                       : selectedItem.description}
                   </p>
                 </div>
                 {selectedItem.description &&
-                  selectedItem.description.length > 100 && (
+                  selectedItem.description.length > plotPreviewLength && (
                     <button
                       onClick={handleOpenPlotModal}
                       className="mt-2 underline text-sm sm:text-xs md:text-sm"

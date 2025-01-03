@@ -16,7 +16,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   const [translatedActors, setTranslatedActors] = useState<string>("");
   const [translatedAwards, setTranslatedAwards] = useState<string>("");
   const [translatedGenres, setTranslatedGenres] = useState<string>("");
-  const plotPreviewLength = 110;
+  const plotPreviewLength = 150;
 
   if (!recommendationList.length) {
     return <div>No recommendations available.</div>;
@@ -143,7 +143,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                       ? "bg-[#FFCC33]"
                       : "bg-[#FF0000]"
                   }`}
-                  style={{ width: "35px", height: "35px" }}
+                  style={{ width: "2.2rem", height: "2.2rem" }}
                 >
                   <span
                     className={`${
@@ -183,7 +183,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
 
           <div className="mb-4">
             <h3 className="text-lg font-semibold mb-2">Сюжет</h3>
-            <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[20px] opacity-70">
+            <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
               <p className="text-opacity-80 italic">
                 {recommendation.description.length > plotPreviewLength
                   ? `${recommendation.description.substring(
