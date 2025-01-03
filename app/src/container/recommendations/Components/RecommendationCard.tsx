@@ -22,67 +22,68 @@ export const MovieCard: FC<MovieCardProps> = ({
     return <div>No recommendations available.</div>;
   }
 
-  const movie = recommendationList[currentIndex];
+  const recommendation = recommendationList[currentIndex];
   const rottenTomatoesRating =
-    movie.ratings?.find((rating) => rating.Source === "Rotten Tomatoes")
-      ?.Value || "N/A";
+    recommendation.ratings?.find(
+      (rating) => rating.Source === "Rotten Tomatoes"
+    )?.Value || "N/A";
 
   useEffect(() => {
     async function fetchDirectorTranslation() {
-      const translated = await translate(movie.director);
+      const translated = await translate(recommendation.director);
       setTranslatedDirector(translated);
     }
 
     fetchDirectorTranslation();
-  }, [movie.director]);
+  }, [recommendation.director]);
 
   useEffect(() => {
     async function fetchWriterTranslation() {
-      const translated = await translate(movie.writer);
+      const translated = await translate(recommendation.writer);
       setTranslatedWriters(translated);
     }
 
     fetchWriterTranslation();
-  }, [movie.writer]);
+  }, [recommendation.writer]);
 
   useEffect(() => {
     async function fetchActorsTranslation() {
-      const translated = await translate(movie.actors);
+      const translated = await translate(recommendation.actors);
       setTranslatedActors(translated);
     }
 
     fetchActorsTranslation();
-  }, [movie.actors]);
+  }, [recommendation.actors]);
 
   useEffect(() => {
     async function fetchAwardsTranslation() {
-      const translated = await translate(movie.awards);
+      const translated = await translate(recommendation.awards);
       setTranslatedAwards(translated);
     }
 
     fetchAwardsTranslation();
-  }, [movie.awards]);
+  }, [recommendation.awards]);
 
   useEffect(() => {
     async function fetchGenresTranslation() {
-      const translated = await translate(movie.genre);
+      const translated = await translate(recommendation.genre);
       setTranslatedGenres(translated);
     }
 
     fetchGenresTranslation();
-  }, [movie.genre]);
+  }, [recommendation.genre]);
 
   return (
-    <div className="movie-card">
+    <div className="recommendation-card">
       <div className="flex w-full items-center">
         <div className="relative flex-shrink-0 mr-8">
           <img
-            src={movie.poster}
-            alt={`${movie.bgName || "Movie"} Poster`}
+            src={recommendation.poster}
+            alt={`${recommendation.bgName || "Movie"} Poster`}
             className="rounded-lg w-96 h-auto"
           />
           <button
-            onClick={() => handleBookmarkClick(movie)}
+            onClick={() => handleBookmarkClick(recommendation)}
             className="absolute top-4 left-4 p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
           >
             <svg
@@ -92,7 +93,7 @@ export const MovieCard: FC<MovieCardProps> = ({
               viewBox="0 0 24 24"
               fill="currentColor"
             >
-              {bookmarkedMovies[movie.imdbID] ? (
+              {bookmarkedMovies[recommendation.imdbID] ? (
                 <>
                   <path d="M18 2H6c-1.103 0-2 .897-2 2v18l8-4.572L20 22V4c0-1.103-.897-2-2-2zm0 16.553L12 15.125 6 18.553V4h12v14.553z"></path>
                   <path d="M6 18.553V4h12v14.553L12 15.125l-6 3.428z"></path>
@@ -107,18 +108,18 @@ export const MovieCard: FC<MovieCardProps> = ({
         <div className="flex-grow">
           <div className="sticky top-0 z-10 pb-4 mb-4">
             <a href="#" className="block text-3xl font-bold mb-1">
-              {movie.bgName || "Заглавие не е налично"}
+              {recommendation.bgName || "Заглавие не е налично"}
             </a>
             <a
               href="#"
               className="block text-lg font-semibold text-opacity-60 italic mb-2"
             >
-              {movie.title || "Заглавие на английски не е налично"}
+              {recommendation.title || "Заглавие на английски не е налично"}
             </a>
-            <p className="movie-small-details">
+            <p className="recommendation-small-details">
               {translatedGenres || "Жанр неизвестен"} |{" "}
-              {movie.year || "Година неизвестна"} | Рейтинг:{" "}
-              {movie.rated || "N/A"}
+              {recommendation.year || "Година неизвестна"} | Рейтинг:{" "}
+              {recommendation.rated || "N/A"}
             </p>
             <div className="flex items-center space-x-8 mb-4">
               <div
@@ -127,7 +128,7 @@ export const MovieCard: FC<MovieCardProps> = ({
               >
                 <FaStar className="dark:text-[#FFCC33] text-[#bf9413] w-8 h-8" />
                 <span className="dark:text-[#FFCC33] text-[#bf9413] font-bold text-lg">
-                  {movie.imdbRating || "N/A"}
+                  {recommendation.imdbRating || "N/A"}
                 </span>
               </div>
               <div
@@ -136,9 +137,9 @@ export const MovieCard: FC<MovieCardProps> = ({
               >
                 <div
                   className={`flex items-center justify-center rounded-md text-white ${
-                    parseInt(movie.metascore) >= 60
+                    parseInt(recommendation.metascore) >= 60
                       ? "bg-[#54A72A]"
-                      : parseInt(movie.metascore) >= 40
+                      : parseInt(recommendation.metascore) >= 40
                       ? "bg-[#FFCC33]"
                       : "bg-[#FF0000]"
                   }`}
@@ -146,12 +147,13 @@ export const MovieCard: FC<MovieCardProps> = ({
                 >
                   <span
                     className={`${
-                      movie.metascore === "N/A" || !movie.metascore
+                      recommendation.metascore === "N/A" ||
+                      !recommendation.metascore
                         ? "text-sm"
                         : "text-xl"
                     }`}
                   >
-                    {movie.metascore || "N/A"}
+                    {recommendation.metascore || "N/A"}
                   </span>
                 </div>
                 <span className="font-semibold">Метаскор</span>
@@ -168,12 +170,12 @@ export const MovieCard: FC<MovieCardProps> = ({
             </div>
           </div>
 
-          {movie.reason && (
+          {recommendation.reason && (
             <div className="mb-4">
               <h3 className="text-lg font-semibold mb-2">
-                Защо препоръчваме {movie.bgName}?
+                Защо препоръчваме {recommendation.bgName}?
               </h3>
-              <p className="text-opacity-80 italic">{movie.reason}</p>
+              <p className="text-opacity-80 italic">{recommendation.reason}</p>
             </div>
           )}
 
@@ -181,14 +183,17 @@ export const MovieCard: FC<MovieCardProps> = ({
             <h3 className="text-lg font-semibold mb-2">Сюжет</h3>
             <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[20px] opacity-70">
               <p className="text-opacity-80 italic">
-                {movie.description.length > plotPreviewLength
-                  ? `${movie.description.substring(0, plotPreviewLength)}...`
-                  : movie.description}
+                {recommendation.description.length > plotPreviewLength
+                  ? `${recommendation.description.substring(
+                      0,
+                      plotPreviewLength
+                    )}...`
+                  : recommendation.description}
               </p>
             </div>
 
-            {movie.description &&
-              movie.description.length > plotPreviewLength && (
+            {recommendation.description &&
+              recommendation.description.length > plotPreviewLength && (
                 <button onClick={openModal} className="mt-2 underline">
                   Пълен сюжет
                 </button>
@@ -226,7 +231,7 @@ export const MovieCard: FC<MovieCardProps> = ({
               </li>
               <li>
                 <strong className="text-primary">Боксофис:</strong>{" "}
-                {movie.boxOffice || "N/A"}
+                {recommendation.boxOffice || "N/A"}
               </li>
             </ul>
           </div>

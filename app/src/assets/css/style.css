@@ -19928,7 +19928,7 @@ option.selectionList {
   transition: opacity 200ms ease-in;
 }
 
-.movie-card {
+.recommendation-card {
   @apply flex flex-col items-center justify-between rounded-lg text-defaulttextcolor text-[0.813rem] relative p-8 max-w-7xl mx-auto;
   background-color: rgb(var(--body-bg)); /* Normal background color */
 }
@@ -19937,7 +19937,7 @@ option.selectionList {
   @apply flex flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative bg-white dark:bg-bodybg p-6 shadow-lg w-full max-w-lg space-y-4 z-50;
 }
 
-.movie-small-details {
+.recommendation-small-details {
   @apply text-sm text-primary mb-4;
 }
 
