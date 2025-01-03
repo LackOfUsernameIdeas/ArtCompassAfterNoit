@@ -7,7 +7,7 @@ export interface CommonData {
   avg_runtime: number; // Средно времетраене
   total_wins: string; // Общо спечелени награди
   total_nominations: string; // Общо номинации
-  prosperityScore: number; // Индекс на процъфтяването
+  prosperityScore: number; // Индекс на просперитетто
   total_recommendations: number; // Общо препоръки
 }
 
@@ -105,7 +105,7 @@ export interface CountryData {
   count: number; // Брой филми от тази страна
 }
 
-// Данни за изчисляване на процъфтяването на филми и сериали
+// Данни за изчисляване на просперитетто на филми и сериали
 export interface MovieProsperityData {
   imdbID: string; // IMDb идентификатор
   title_en: string; // Заглавие на филма на английски
@@ -118,7 +118,7 @@ export interface MovieProsperityData {
   total_recommendations: number; // Брой препоръки
   total_wins: string; // Общо спечелени награди
   total_nominations: string; // Общо номинации
-  prosperityScore: number; // Индекс на процъфтяването
+  prosperityScore: number; // Индекс на просперитетто
   genre_en: string; // Жанр на английски
   genre_bg: string; // Жанр на български
 }
@@ -144,16 +144,16 @@ export type DataType = {
   oscarsByMovie: any[]; // Оскари по филми
   totalAwardsByMovieOrSeries: any[]; // Общо награди по филми или сериали
   totalAwards: any[]; // Общо награди
-  sortedDirectorsByProsperity: any[]; // Подредени режисьори по процъфтяване
-  sortedActorsByProsperity: any[]; // Подредени актьори по процъфтяване
-  sortedWritersByProsperity: any[]; // Подредени писатели по процъфтяване
-  sortedMoviesByProsperity: any[]; // Подредени филми по процъфтяване
+  sortedDirectorsByProsperity: any[]; // Подредени режисьори по просперитет
+  sortedActorsByProsperity: any[]; // Подредени актьори по просперитет
+  sortedWritersByProsperity: any[]; // Подредени писатели по просперитет
+  sortedMoviesByProsperity: any[]; // Подредени филми по просперитет
   sortedMoviesAndSeriesByMetascore: any[]; // Подредени филми и сериали по Metascore
   sortedMoviesAndSeriesByIMDbRating: any[]; // Подредени филми и сериали по IMDb рейтинг
   sortedMoviesAndSeriesByRottenTomatoesRating: any[]; // Подредени филми и сериали по Rotten Tomatoes рейтинг
   averageBoxOfficeAndScores: any[]; // Средни стойности за бокс офис и рейтинги
   topCountries: any[]; // Топ страни
-  [key: `sorted${string}ByProsperity`]: any[]; // Подредени данни по процъфтяване
+  [key: `sorted${string}ByProsperity`]: any[]; // Подредени данни по просперитет
 };
 
 // Категориен тип за роли

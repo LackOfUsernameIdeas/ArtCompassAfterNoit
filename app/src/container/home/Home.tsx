@@ -30,9 +30,9 @@ const Home: FC<CrmProps> = () => {
     oscarsByMovie: [], // Оскари по филми
     totalAwardsByMovieOrSeries: [], // Общо награди по филми или сериали
     totalAwards: [], // Общо награди
-    sortedDirectorsByProsperity: [], // Режисьори, сортирани по процъфтяване
-    sortedActorsByProsperity: [], // Актьори, сортирани по процъфтяване
-    sortedWritersByProsperity: [], // Сценаристи, сортирани по процъфтяване
+    sortedDirectorsByProsperity: [], // Режисьори, сортирани по просперитет
+    sortedActorsByProsperity: [], // Актьори, сортирани по просперитет
+    sortedWritersByProsperity: [], // Сценаристи, сортирани по просперитет
     sortedMoviesByProsperity: [], // Филми, сортирани по процъфтяване
     sortedMoviesAndSeriesByMetascore: [], // Филми и сериали, сортирани по Metascore
     sortedMoviesAndSeriesByIMDbRating: [], // Филми и сериали, сортирани по IMDb рейтинг

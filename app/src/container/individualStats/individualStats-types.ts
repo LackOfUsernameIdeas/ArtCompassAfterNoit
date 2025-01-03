@@ -6,7 +6,7 @@ export interface CommonData {
   avg_rotten_tomatoes: string; // Среден рейтинг в Rotten Tomatoes
   total_wins: string; // Общо спечелени награди
   total_nominations: string; // Общо номинации
-  prosperityScore: number; // Индекс на процъфтяването
+  prosperityScore: number; // Индекс на просперитетто
   movie_series_count: number; // Брой филми
   total_recommendations: number; // Брой препоръки общо
   recommendations_count: number; // Брой препоръки
@@ -97,7 +97,7 @@ export interface CountryData {
   count: number; // Брой филми от тази страна
 }
 
-// Данни за изчисляване на процъфтяването на филми и сериали
+// Данни за изчисляване на просперитетто на филми и сериали
 export interface MovieProsperityData {
   imdbID: string; // IMDb идентификатор
   title_en: string; // Заглавие на филма на английски
@@ -110,7 +110,7 @@ export interface MovieProsperityData {
   total_recommendations: number; // Брой препоръки
   total_wins: string; // Общо спечелени награди
   total_nominations: string; // Общо номинации
-  prosperityScore: number; // Индекс на процъфтяването
+  prosperityScore: number; // Индекс на просперитетто
   genre_en: string; // Жанр на английски
   genre_bg: string; // Жанр на български
 }
@@ -142,7 +142,7 @@ export type DataType = {
     recommendations: Recommendation[];
   }; // Топ препоръки
   topGenres: TopGenres; // Топ жанрове
-  [key: `sorted${string}By${"RecommendationCount" | "Watchlist"}`]: any[]; // Подредени данни по процъфтяване
+  [key: `sorted${string}By${"RecommendationCount" | "Watchlist"}`]: any[]; // Подредени данни по просперитет
 };
 
 // Категориен тип за роли
