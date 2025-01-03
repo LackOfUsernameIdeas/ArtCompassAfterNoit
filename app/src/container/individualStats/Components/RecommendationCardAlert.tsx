@@ -116,11 +116,12 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                     className="flex items-center space-x-2"
                     title="IMDb рейтинг: Базиран на отзиви и оценки от потребители."
                   >
-                    <FaStar className="dark:text-[#FFCC33] text-[#bf9413] w-6 h-6 sm:w-5 sm:h-5" />
-                    <span className="dark:text-[#FFCC33] text-[#bf9413] font-bold text-md sm:text-sm md:text-lg">
+                    <FaStar className="dark:text-[#FFCC33] text-[#bf9413] w-[2rem] h-[2rem] sm:w-[2rem] sm:h-[2rem] md:w-[2.2rem] md:h-[2.2rem]" />
+                    <span className="dark:text-[#FFCC33] text-[#bf9413] font-bold text-md sm:text-sm md:text-lg leading-none">
                       {selectedItem.imdbRating || "N/A"}
                     </span>
                   </div>
+
                   <div
                     className="flex items-center space-x-2"
                     title="Метаскор: Средно претеглена оценка от критически рецензии за филма."
@@ -133,7 +134,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                           ? "bg-[#FFCC33]"
                           : "bg-[#FF0000]"
                       }`}
-                      style={{ width: "2rem", height: "2rem" }}
+                      style={{ width: "2.2rem", height: "2.2rem" }}
                     >
                       <span
                         className={`${
@@ -146,13 +147,16 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                         {selectedItem.metascore || "N/A"}
                       </span>
                     </div>
-                    <span className="font-semibold">Метаскор</span>
+                    <span className="font-semibold text-md sm:text-sm md:text-lg">
+                      Метаскор
+                    </span>
                   </div>
+
                   <div
                     className="flex items-center space-x-2"
                     title="Rotten Tomatoes рейтинг: Процент положителни рецензии от професионални критици."
                   >
-                    <SiRottentomatoes className="text-[#FF0000] w-6 h-6 sm:w-5 sm:h-5" />
+                    <SiRottentomatoes className="text-[#FF0000] w-[2rem] h-[2rem] sm:w-[2rem] sm:h-[2rem] md:w-[2.2rem] md:h-[2.2rem]" />
                     <span className="text-red-400 font-semibold text-md sm:text-sm md:text-lg">
                       {rottenTomatoesRating}
                     </span>
