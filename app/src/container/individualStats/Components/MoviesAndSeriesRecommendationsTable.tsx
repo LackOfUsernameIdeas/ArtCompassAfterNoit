@@ -230,7 +230,7 @@ const MoviesAndSeriesRecommendationsTable: FC<
           </div>
           <div className="box-body">
             <div className="overflow-x-auto">
-              <table className="table min-w-full whitespace-nowrap table-hover border table-bordered">
+              <table className="table min-w-full whitespace-nowrap table-hover border table-bordered no-hover-text">
                 <thead>
                   <tr className="border border-inherit border-solid dark:border-defaultborder/10">
                     <th scope="col" className="!text-start !text-[0.85rem]">
@@ -273,12 +273,12 @@ const MoviesAndSeriesRecommendationsTable: FC<
                     </th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="no-hover-text">
                   {paginatedData.map((item, index) => (
                     <tr
                       key={index}
-                      className="border border-inherit border-solid dark:border-defaultborder/10"
-                      onClick={() => handleRowClick(item)} // Add onClick here
+                      className="border border-inherit border-solid hover:bg-primary/70 dark:border-defaultborder/10 dark:hover:bg-primary/50 cursor-pointer hover:text-white"
+                      onClick={() => handleRowClick(item)}
                     >
                       <td>
                         {(currentTablePage - 1) * itemsPerTablePage + index + 1}

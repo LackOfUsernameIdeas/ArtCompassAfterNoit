@@ -18191,6 +18191,9 @@ hr {
 .table.table-hover > tbody > tr:hover > * {
   @apply text-defaulttextcolor;
 }
+.table.no-hover-text > tbody > tr:hover > * {
+  @apply text-inherit;
+}
 .table .table-active {
   @apply text-defaulttextcolor;
 }

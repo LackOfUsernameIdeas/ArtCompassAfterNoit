@@ -91,10 +91,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
   };
 
   const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
-  const is1477 = useMediaQuery({ query: "(max-width: 1477px)" });
-
   const is1399 = useMediaQuery({ query: "(max-width: 1399px)" });
-  const is1557 = useMediaQuery({ query: "(max-width: 1557px)" });
   const is1630 = useMediaQuery({ query: "(max-width: 1630px)" });
 
   return (
