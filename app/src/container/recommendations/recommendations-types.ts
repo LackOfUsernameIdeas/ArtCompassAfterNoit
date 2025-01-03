@@ -97,7 +97,7 @@ export interface RecommendationsProps {
 }
 
 // Интерфейс за пропсите на компонентата за филмова карта
-export interface MovieCardProps {
+export interface RecommendationCardProps {
   recommendationList: Movie[]; // Списък с препоръчани филми
   currentIndex: number; // Текущ индекс на филма
   isExpanded: boolean; // Флаг дали картата е разширена

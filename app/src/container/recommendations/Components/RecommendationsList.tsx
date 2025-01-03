@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { RecommendationsProps } from "../recommendations-types";
-import { MovieCard } from "./RecommendationCard";
+import RecommendationCard from "./RecommendationCard";
 import { PlotModal } from "./PlotModal";
 
 export const RecommendationsList: FC<RecommendationsProps> = ({
@@ -90,7 +90,7 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
         onExited={() => setInTransition(false)}
         unmountOnExit
       >
-        <MovieCard
+        <RecommendationCard
           recommendationList={recommendationList}
           currentIndex={currentIndex}
           isExpanded={isExpanded}

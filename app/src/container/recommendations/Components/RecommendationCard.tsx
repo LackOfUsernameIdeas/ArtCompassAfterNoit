@@ -1,10 +1,10 @@
 import { FC, useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
-import { MovieCardProps } from "../recommendations-types";
+import { RecommendationCardProps } from "../recommendations-types";
 import { translate } from "../helper_functions";
 
-export const MovieCard: FC<MovieCardProps> = ({
+const RecommendationCard: FC<RecommendationCardProps> = ({
   recommendationList,
   currentIndex,
   openModal,
@@ -240,3 +240,5 @@ export const MovieCard: FC<MovieCardProps> = ({
     </div>
   );
 };
+
+export default RecommendationCard;
