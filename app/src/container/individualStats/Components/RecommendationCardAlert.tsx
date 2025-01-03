@@ -1,4 +1,6 @@
 import { FC, useState, useEffect } from "react";
+import { FaStar } from "react-icons/fa";
+import { SiRottentomatoes } from "react-icons/si";
 import {
   Recommendation,
   WatchlistRecommendation
@@ -41,6 +43,9 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
     }
   };
 
+  const translatedGenres = selectedItem.genre_bg || "Жанр неизвестен";
+  const rottenTomatoesRating = "selectedItem.rottenTomatoes";
+
   return (
     <div
       className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-50 transition-opacity duration-300 ${
@@ -48,19 +53,204 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
       }`}
     >
       <div
-        className={`p-6 rounded-lg shadow-lg bg-[rgb(var(--body-bg))] glow-effect border-2 dark:border-white border-secondary text-center w-96 transform transition-transform duration-300 ${
+        className={`p-6 rounded-lg shadow-lg bg-[rgb(var(--body-bg))] glow-effect border-2 dark:border-white border-secondary text-center max-w-full transform transition-transform duration-300 ${
           visible ? "scale-100" : "scale-75"
-        }`}
+        } ${"sm:w-[90%] md:w-[75%] lg:w-[85%]"}`}
       >
-        <h2 className="text-xl font-bold mb-4">{selectedItem.title_bg}</h2>
-        <p className="text-lg mb-6">
-          Type: {getTranslatedType(selectedItem.type)}
-        </p>
+        <div className="recommendation-card">
+          <div className="flex w-full items-center">
+            <div className="relative flex-shrink-0 mr-8">
+              <img
+                src={selectedItem.poster}
+                alt={`${selectedItem.title_bg || "Movie"} Poster`}
+                className="rounded-lg w-96 h-auto"
+              />
+              <button
+                onClick={() => handleClose()}
+                className="absolute top-4 left-4 p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="35"
+                  height="35"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M18 2H6c-1.103 0-2 .897-2 2v18l8-4.572L20 22V4c0-1.103-.897-2-2-2zm0 16.553L12 15.125 6 18.553V4h12v14.553z"></path>
+                </svg>
+              </button>
+            </div>
+
+            <div className="flex-grow">
+              <div className="sticky top-0 z-10 pb-4 mb-4">
+                <a href="#" className="block text-3xl font-bold mb-1">
+                  {selectedItem.title_bg || "Заглавие не е налично"}
+                </a>
+                <a
+                  href="#"
+                  className="block text-lg font-semibold text-opacity-60 italic mb-2"
+                >
+                  {selectedItem.title_en ||
+                    "Заглавие на английски не е налично"}
+                </a>
+                <p className="recommendation-small-details">
+                  {translatedGenres} |{" "}
+                  {selectedItem.year || "Година неизвестна"} | Рейтинг:{" "}
+                  {selectedItem.rated || "N/A"}
+                </p>
+                <div className="flex items-center space-x-8 mb-4">
+                  <div
+                    className="flex items-center space-x-2"
+                    title="IMDb рейтинг: Базиран на отзиви и оценки от потребители."
+                  >
+                    <FaStar className="dark:text-[#FFCC33] text-[#bf9413] w-8 h-8" />
+                    <span className="dark:text-[#FFCC33] text-[#bf9413] font-bold text-lg">
+                      {selectedItem.imdbRating || "N/A"}
+                    </span>
+                  </div>
+                  <div
+                    className="flex items-center space-x-2"
+                    title="Метаскор: Средно претеглена оценка от критически рецензии за филма."
+                  >
+                    <div
+                      className={`flex items-center justify-center rounded-md text-white ${
+                        parseInt(selectedItem.metascore) >= 60
+                          ? "bg-[#54A72A]"
+                          : parseInt(selectedItem.metascore) >= 40
+                          ? "bg-[#FFCC33]"
+                          : "bg-[#FF0000]"
+                      }`}
+                      style={{ width: "35px", height: "35px" }}
+                    >
+                      <span
+                        className={`${
+                          selectedItem.metascore === "N/A" ||
+                          !selectedItem.metascore
+                            ? "text-sm"
+                            : "text-xl"
+                        }`}
+                      >
+                        {selectedItem.metascore || "N/A"}
+                      </span>
+                    </div>
+                    <span className="font-semibold">Метаскор</span>
+                  </div>
+                  <div
+                    className="flex items-center space-x-2"
+                    title="Rotten Tomatoes рейтинг: Процент положителни рецензии от професионални критици."
+                  >
+                    <SiRottentomatoes className="text-[#FF0000] w-8 h-8" />
+                    <span className="text-red-400 font-semibold">
+                      {rottenTomatoesRating}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {selectedItem.reason && (
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold mb-2">
+                    Защо препоръчваме {selectedItem.title_bg}?
+                  </h3>
+                  <p className="text-opacity-80 italic">
+                    {selectedItem.reason}
+                  </p>
+                </div>
+              )}
+
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold mb-2">Сюжет</h3>
+                <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[20px] opacity-70">
+                  <p className="text-opacity-80 italic">
+                    {selectedItem.description.length > 100
+                      ? `${selectedItem.description.substring(0, 100)}...`
+                      : selectedItem.description}
+                  </p>
+                </div>
+                {selectedItem.description &&
+                  selectedItem.description.length > 100 && (
+                    <button onClick={() => {}} className="mt-2 underline">
+                      Пълен сюжет
+                    </button>
+                  )}
+              </div>
+
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold mb-2">
+                  Допълнителна информация
+                </h3>
+                <ul className="text-opacity-80 space-y-1">
+                  <li>
+                    <strong className="text-primary">Режисьор:</strong>{" "}
+                    {selectedItem.director || "Неизвестен"}
+                  </li>
+                  <li>
+                    <strong className="text-primary">Сценаристи:</strong>{" "}
+                    {selectedItem.writer || "Неизвестни"}
+                  </li>
+                  <li>
+                    <strong className="text-primary">Актьори:</strong>{" "}
+                    {selectedItem.actors || "Неизвестни"}
+                  </li>
+                  <li>
+                    <strong className="text-primary">Награди:</strong>{" "}
+                    {selectedItem.awards || "Няма"}
+                  </li>
+                  <li>
+                    <strong className="text-primary">Боксофис:</strong>{" "}
+                    {selectedItem.boxOffice || "N/A"}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <button
-          className="px-6 py-3 bg-white dark:text-black text-secondary font-bold rounded-lg hover:bg-gray-200 transition-colors"
           onClick={handleClose}
+          className="absolute top-4 right-4 p-2 text-[#FFCC33] dark:bg-gray-200/20 bg-gray-800/20 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
         >
-          Close
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            x="0px"
+            y="0px"
+            width="50"
+            height="50"
+            viewBox="0 0 48 48"
+          >
+            <linearGradient
+              id="hbE9Evnj3wAjjA2RX0We2a_OZuepOQd0omj_gr1"
+              x1="7.534"
+              x2="27.557"
+              y1="7.534"
+              y2="27.557"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop offset="0" stop-color="#f44f5a"></stop>
+              <stop offset=".443" stop-color="#ee3d4a"></stop>
+              <stop offset="1" stop-color="#e52030"></stop>
+            </linearGradient>
+            <path
+              fill="url(#hbE9Evnj3wAjjA2RX0We2a_OZuepOQd0omj_gr1)"
+              d="M42.42,12.401c0.774-0.774,0.774-2.028,0-2.802L38.401,5.58c-0.774-0.774-2.028-0.774-2.802,0	L24,17.179L12.401,5.58c-0.774-0.774-2.028-0.774-2.802,0L5.58,9.599c-0.774,0.774-0.774,2.028,0,2.802L17.179,24L5.58,35.599	c-0.774,0.774-0.774,2.028,0,2.802l4.019,4.019c0.774,0.774,2.028,0.774,2.802,0L42.42,12.401z"
+            ></path>
+            <linearGradient
+              id="hbE9Evnj3wAjjA2RX0We2b_OZuepOQd0omj_gr2"
+              x1="27.373"
+              x2="40.507"
+              y1="27.373"
+              y2="40.507"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop offset="0" stop-color="#a8142e"></stop>
+              <stop offset=".179" stop-color="#ba1632"></stop>
+              <stop offset=".243" stop-color="#c21734"></stop>
+            </linearGradient>
+            <path
+              fill="url(#hbE9Evnj3wAjjA2RX0We2b_OZuepOQd0omj_gr2)"
+              d="M24,30.821L35.599,42.42c0.774,0.774,2.028,0.774,2.802,0l4.019-4.019	c0.774-0.774,0.774-2.028,0-2.802L30.821,24L24,30.821z"
+            ></path>
+          </svg>
         </button>
       </div>
     </div>

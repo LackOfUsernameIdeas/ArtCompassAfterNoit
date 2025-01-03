@@ -1573,12 +1573,7 @@ const getTopMoviesAndSeriesByRottenTomatoesRating = (limit, callback) => {
 const getUsersTopRecommendations = (userId, callback) => {
   const query = `
     SELECT 
-        r.id,
-        r.imdbID,
-        r.title_en,
-        r.title_bg,
-        r.type,
-        r.awards,
+        r.*,
         COUNT(*) AS recommendations,
 
         -- Extract Oscar wins as an integer (if available)

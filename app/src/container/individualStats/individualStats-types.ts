@@ -170,6 +170,27 @@ export interface Recommendation {
   metascore: string; // No change, still a string
   boxOffice: string; // No change, still a string
   prosperityScore: number; // Added for the prosperityScore
+  genre_en: string; // Жанрове на английски
+  genre_bg: string; // Жанрове на български
+  reason: string; // Причина за препоръката
+  description: string; // Описание на филма/сериала
+  year: string; // Година на издаване
+  rated: string; // Оценка за възрастови ограничения
+  released: string; // Дата на издаване
+  runtime: string; // Продължителност на филма/сериала
+  director: string; // Режисьор
+  writer: string; // Сценарист
+  actors: string; // Актьори
+  plot: string; // Сюжет на филма/сериала
+  language: string; // Езици на филма/сериала
+  country: string; // Страни, от които е произведен филмът/сериалът
+  poster: string; // URL за постера на филма/сериала
+  ratings: string; // Рейтинги от различни източници
+  imdbVotes: string; // Брой гласове в IMDb
+  DVD: string; // Достъпност на DVD (ако има)
+  production: string; // Продукция (ако има)
+  website: string; // Уебсайт (ако има)
+  totalSeasons: number | null; // Брой сезони (само за сериали)
 }
 
 export interface WatchlistRecommendation {
