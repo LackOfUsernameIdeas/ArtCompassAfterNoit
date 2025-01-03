@@ -9,7 +9,8 @@ export interface CommonData {
   prosperityScore: number; // Индекс на просперитетто
   movie_series_count: number; // Брой филми
   total_recommendations: number; // Брой препоръки общо
-  recommendations_count: number; // Брой препоръки
+  recommendations_count?: number; // Брой препоръки
+  saved_count?: number; // Брой пъти запазван
 }
 
 // Данни свързани с режисьори
@@ -141,12 +142,12 @@ export type DataType = {
     recommendationsCount: Count;
     recommendations: Recommendation[];
   }; // Топ препоръки
-  topGenres: TopGenres;
-  topGenresWatchlist: TopGenres;
   topRecommendationsWatchlist: {
     savedCount: Count;
     watchlist: WatchlistRecommendation[];
-  }; // Топ жанрове
+  }; // Топ филми/сериали в списък за гледане
+  topGenres: TopGenres; // Топ жанрове
+  topGenresWatchlist: TopGenres; // Топ жанрове в списък за гледане
   [key: `sorted${string}By${"RecommendationCount" | "SavedCount"}`]: any[]; // Подредени данни по просперитет
 };
 

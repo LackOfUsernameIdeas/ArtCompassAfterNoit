@@ -1,11 +1,14 @@
 import { FC, Fragment, useEffect, useState, useMemo } from "react";
-import { DataType, Recommendation } from "../individualStats-types";
+import {
+  WatchlistRecommendation,
+  Recommendation
+} from "../individualStats-types";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 
 interface MoviesAndSeriesRecommendationsTableProps {
-  data: Recommendation[];
+  data: Recommendation[] | WatchlistRecommendation[];
 }
 
 const MoviesAndSeriesRecommendationsTable: FC<
@@ -19,9 +22,9 @@ const MoviesAndSeriesRecommendationsTable: FC<
   );
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-  const [filteredTableData, setFilteredTableData] = useState<Recommendation[]>(
-    []
-  );
+  const [filteredTableData, setFilteredTableData] = useState<
+    Recommendation[] | WatchlistRecommendation[]
+  >([]);
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -39,8 +42,9 @@ const MoviesAndSeriesRecommendationsTable: FC<
     }
 
     return [...filteredByTypeData].sort((a, b) => {
-      const valueA = a[sortBy];
-      const valueB = b[sortBy];
+      // Ensure the sortBy value exists as a property key on the objects
+      const valueA = a[sortBy as keyof typeof a];
+      const valueB = b[sortBy as keyof typeof b];
 
       if (valueA === valueB) return 0;
       return sortOrder === "asc"
@@ -214,9 +218,13 @@ const MoviesAndSeriesRecommendationsTable: FC<
                     <th scope="col" className="!text-start !text-[0.85rem]">
                       Тип
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
-                      Брой Препоръки
-                    </th>
+                    {paginatedData &&
+                      paginatedData.length > 0 &&
+                      "recommendations" in paginatedData[0] && (
+                        <th scope="col" className="!text-start !text-[0.85rem]">
+                          Брой Препоръки
+                        </th>
+                      )}
                     <th scope="col" className="!text-start !text-[0.85rem]">
                       Просперитет
                     </th>
@@ -254,7 +262,9 @@ const MoviesAndSeriesRecommendationsTable: FC<
                       </td>
                       <td>{item.title_bg}</td>
                       <td>{getTranslatedType(item.type)}</td>
-                      <td>{item.recommendations}</td>
+                      {"recommendations" in item && (
+                        <td>{item.recommendations}</td>
+                      )}
                       <td>{item.prosperityScore}</td>
                       <td>{item.boxOffice}</td>
                       <td>{item.oscar_wins}</td>

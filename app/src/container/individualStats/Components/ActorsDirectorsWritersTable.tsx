@@ -25,8 +25,8 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
 }) => {
   const [recommendationCountSortCategory, setRecommendationCountSortCategory] =
     useState<Category>("Directors");
-  const [sortType, setSortType] = useState<"prosperity" | "watchlist">(
-    type === "recommendations" ? "prosperity" : "watchlist" // Default sortType based on prop type
+  const [sortType, setSortType] = useState<"recommendations" | "watchlist">(
+    type === "recommendations" ? "recommendations" : "watchlist" // Default sortType based on prop type
   );
 
   const [filteredTableData, setFilteredTableData] = useState<FilteredTableData>(
@@ -43,7 +43,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
     const initialFilteredData =
       data[
         `sorted${recommendationCountSortCategory}By${
-          sortType === "prosperity" ? "RecommendationCount" : "SavedCount"
+          sortType === "recommendations" ? "RecommendationCount" : "SavedCount"
         }`
       ];
     setFilteredTableData(initialFilteredData);
@@ -64,7 +64,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
     setFilteredTableData(
       data[
         `sorted${category}By${
-          sortType === "prosperity" ? "RecommendationCount" : "SavedCount"
+          sortType === "recommendations" ? "RecommendationCount" : "SavedCount"
         }`
       ]
     );
@@ -99,12 +99,15 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
         <div className="box custom-card h-[27.75rem]">
           <div className="box-header justify-between">
             <div className="box-title">
+              Топ{" "}
               {
                 tableCategoryDisplayNames[
                   recommendationCountSortCategory as keyof typeof tableCategoryDisplayNames
                 ]
               }{" "}
-              по Брой {type === "recommendations" ? "Препоръки" : "Watchlist"}
+              {type === "recommendations"
+                ? "по Брой  Препоръки"
+                : "в Списък За Гледане"}
             </div>
             <div className="flex flex-wrap gap-2">
               <div
@@ -162,7 +165,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
                       Брой{" "}
-                      {type === "recommendations" ? "Препоръки" : "Watchlist"}
+                      {type === "recommendations" ? "Препоръки" : "Запазвания"}
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
                       Просперитетен рейтинг
@@ -198,7 +201,11 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                     >
                       <td>{(currentTablePage - 1) * 5 + index + 1}</td>
                       <td>{getCategoryName(item)}</td>
-                      <td>{item.recommendations_count}</td>
+                      <td>
+                        {type === "recommendations"
+                          ? item.recommendations_count
+                          : item.saved_count}
+                      </td>
                       <td>{item.prosperityScore}</td>
                       <td>{item.avg_imdb_rating}</td>
                       <td>{item.avg_rotten_tomatoes}</td>

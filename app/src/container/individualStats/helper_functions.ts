@@ -66,8 +66,20 @@ export const fetchData = async (
         body: { token: token }
       },
       {
+        key: "topRecommendationsWatchlist",
+        endpoint: "/stats/individual/watchlist",
+        method: "POST",
+        body: { token: token }
+      },
+      {
         key: "topGenres",
         endpoint: "/stats/individual/top-genres",
+        method: "POST",
+        body: { token: token }
+      },
+      {
+        key: "topGenresWatchlist",
+        endpoint: "/stats/individual/watchlist-top-genres",
         method: "POST",
         body: { token: token }
       },
@@ -78,14 +90,32 @@ export const fetchData = async (
         body: { token: token }
       },
       {
+        key: "sortedDirectorsBySavedCount",
+        endpoint: "/stats/individual/watchlist-top-directors",
+        method: "POST",
+        body: { token: token }
+      },
+      {
         key: "sortedActorsByRecommendationCount",
         endpoint: "/stats/individual/top-actors",
         method: "POST",
         body: { token: token }
       },
       {
+        key: "sortedActorsBySavedCount",
+        endpoint: "/stats/individual/watchlist-top-actors",
+        method: "POST",
+        body: { token: token }
+      },
+      {
         key: "sortedWritersByRecommendationCount",
         endpoint: "/stats/individual/top-writers",
+        method: "POST",
+        body: { token: token }
+      },
+      {
+        key: "sortedWritersBySavedCount",
+        endpoint: "/stats/individual/watchlist-top-writers",
         method: "POST",
         body: { token: token }
       }
