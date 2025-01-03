@@ -81,7 +81,6 @@ const MoviesAndSeriesRecommendationsTable: FC<
   const is1630 = useMediaQuery({ query: "(max-width: 1630px)" });
 
   const sortOptions = [
-    { label: "Брой Препоръки", value: "recommendations" },
     { label: "Просперитет", value: "prosperityScore" },
     { label: "Боксофис", value: "boxOffice" }
   ];
@@ -91,12 +90,6 @@ const MoviesAndSeriesRecommendationsTable: FC<
   const handleSortOptionSelect = (value: keyof Recommendation) => {
     setSortBy(value);
     setIsSortMenuOpen(false); // Close the menu after selecting an option
-  };
-
-  const sortTitles: Record<string, string> = {
-    recommendations: "Най-Често Препоръчваните Филми и Сериали За Мен",
-    prosperityScore: "Филми и Сериали По Просперитет",
-    boxOffice: "Най-Печеливши Филми и Сериали"
   };
 
   const getTranslatedType = (type: string) => {
@@ -120,15 +113,9 @@ const MoviesAndSeriesRecommendationsTable: FC<
                 is1399 ? "max-w-full" : is1630 ? "max-w-[20rem]" : "max-w-full"
               }`}
               data-tooltip-id="box-title-tooltip"
-              data-tooltip-content={
-                sortBy === "default"
-                  ? "Най-Често Препоръчваните Филми и Сериали За Мен"
-                  : sortTitles[sortBy]
-              }
+              data-tooltip-content="Списък За Гледане"
             >
-              {sortBy === "default"
-                ? "Най-Често Препоръчваните Филми и Сериали За Мен"
-                : sortTitles[sortBy]}
+              Списък За Гледане
             </div>
             <Tooltip id="box-title-tooltip" />
             <div className="relative flex items-center space-x-2">
