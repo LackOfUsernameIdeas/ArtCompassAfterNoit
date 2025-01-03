@@ -197,10 +197,14 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                     </div>
                     <div className="grid grid-cols-12 gap-x-6 ml-5 mr-5">
                       <div className="xxl:col-span-6 col-span-12">
-                        <GenresBarChart data={data.topGenres} />
+                        <GenresBarChart
+                          type="recommendations"
+                          data={data.topGenres}
+                        />
                       </div>
                       <div className="xxl:col-span-6 col-span-12">
                         <CountWidgets
+                          type="recommendations"
                           recommendationsCount={
                             data.topRecommendations.recommendationsCount
                           }
@@ -270,10 +274,14 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                     </div>
                     <div className="grid grid-cols-12 gap-x-6 ml-5 mr-5">
                       <div className="xxl:col-span-6 col-span-12">
-                        <GenresBarChart data={data.topGenresWatchlist} />
+                        <GenresBarChart
+                          type="watchlist"
+                          data={data.topGenresWatchlist}
+                        />
                       </div>
                       <div className="xxl:col-span-6 col-span-12">
                         <CountWidgets
+                          type="watchlist"
                           recommendationsCount={
                             data.topRecommendationsWatchlist.savedCount
                           }

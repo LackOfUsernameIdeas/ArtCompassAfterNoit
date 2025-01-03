@@ -16,7 +16,7 @@ import { tableCategoryDisplayNames } from "../individualStats-data";
 
 interface ActorsDirectorsWritersTableProps {
   data: DataType;
-  type: "recommendations" | "watchlist"; // New prop to toggle between recommendations and watchlist
+  type: "recommendations" | "watchlist";
 }
 
 const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({

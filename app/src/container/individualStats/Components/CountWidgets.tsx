@@ -3,14 +3,21 @@ import { Count } from "../individualStats-types";
 
 interface CountWidgetsProps {
   recommendationsCount: Count;
+  type: "recommendations" | "watchlist";
 }
 
-const CountWidgets: FC<CountWidgetsProps> = ({ recommendationsCount }) => {
+const CountWidgets: FC<CountWidgetsProps> = ({
+  recommendationsCount,
+  type
+}) => {
   return (
     <Fragment>
       <div className="box custom-box">
         <div className="box-header justify-between">
-          <div className="box-title">Брой Препоръчвани:</div>
+          <div className="box-title">
+            {type == "recommendations" ? "Брой Препоръчвани" : "Брой Запазвани"}
+            :
+          </div>
         </div>
         <div className="box-body">
           <div className="grid grid-cols-1 xxl:grid-cols-3 gap-x-6">
