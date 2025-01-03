@@ -1128,6 +1128,32 @@ app.post("/stats/individual/top-writers", (req, res) => {
   });
 });
 
+// Вземане на данни за най-запазвани в списък за гледане сценаристи на даден потребител
+app.post("/stats/individual/watchlist-top-writers", (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersTopWritersWatchlist(userId, limit, (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error fetching users watchlist top writers" });
+      }
+      res.json(result);
+    });
+  });
+});
+
 // Стартиране на сървъра
 app.listen(5000, () => {
   console.log("Server started on port 5000.");
