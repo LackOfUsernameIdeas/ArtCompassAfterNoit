@@ -1720,6 +1720,127 @@ const getUsersTopRecommendations = (userId, callback) => {
   });
 };
 
+const getUsersWatchlist = (userId, callback) => {
+  const query = `
+    SELECT 
+        w.*,
+        
+        -- Извличане на броя на спечелените Оскари (ако са налични)
+        COALESCE(
+            CASE 
+                WHEN w.awards REGEXP 'Won [0-9]+ Oscar' OR w.awards REGEXP 'Won [0-9]+ Oscars' 
+                THEN CAST(NULLIF(SUBSTRING_INDEX(SUBSTRING_INDEX(w.awards, 'Won ', -1), ' Oscar', 1), '') AS UNSIGNED)
+                ELSE 0
+            END, 
+            0
+        ) AS oscar_wins,
+
+        -- Извличане на броя на номинациите за Оскари (ако са налични)
+        COALESCE(
+            CASE 
+                WHEN w.awards REGEXP 'Nominated for [0-9]+ Oscar' OR w.awards REGEXP 'Nominated for [0-9]+ Oscars' 
+                THEN CAST(NULLIF(SUBSTRING_INDEX(SUBSTRING_INDEX(w.awards, 'Nominated for ', -1), ' Oscar', 1), '') AS UNSIGNED)
+                ELSE 0
+            END, 
+            0
+        ) AS oscar_nominations,
+
+        -- Извличане на общия брой спечелени награди
+        COALESCE(
+            CAST(NULLIF(REGEXP_SUBSTR(w.awards, '([0-9]+) win(s)?'), '') AS UNSIGNED), 
+            0
+        ) AS total_wins,
+
+        -- Извличане на общия брой номинации
+        COALESCE(
+            CAST(NULLIF(REGEXP_SUBSTR(w.awards, '([0-9]+) nomination(s)?'), '') AS UNSIGNED), 
+            0
+        ) AS total_nominations,
+
+        -- Добавяне на допълнителни полета
+        COALESCE(CAST(w.imdbRating AS DECIMAL(3, 1)), 0) AS imdbRating,
+        COALESCE(CAST(w.metascore AS UNSIGNED), 0) AS metascore,
+        COALESCE(
+            CAST(REPLACE(REPLACE(w.boxOffice, '$', ''), ',', '') AS UNSIGNED),
+            0
+        ) AS boxOffice
+    FROM 
+        watchlist w
+    WHERE 
+        w.user_id = ${userId}
+    ORDER BY 
+        w.title_en ASC;
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      callback(err, null);
+      return;
+    }
+
+    // Ако няма резултати, връщаме съобщение по подразбиране
+    if (!results.length) {
+      callback(null, {
+        message: "Няма записи в списъка за гледане за този потребител."
+      });
+      return;
+    }
+
+    // Изчисляване на оценка за просперитет за всеки запис
+    const weights = {
+      total_wins: 0.3, // Тегло за спечелени награди
+      total_nominations: 0.25, // Тегло за номинации
+      total_box_office: 0.15, // Тегло за приходи от касата
+      avg_metascore: 0.1, // Тегло за Metascore
+      avg_imdb_rating: 0.1, // Тегло за IMDb рейтинг
+      avg_rotten_tomatoes: 0.1 // Тегло за Rotten Tomatoes рейтинг
+    };
+
+    const maxBoxOffice = Math.max(
+      ...results.map((item) => parseFloat(item.boxOffice) || 0)
+    );
+
+    const enrichedWatchlist = results.map((item) => {
+      const totalWins = item.total_wins || 0;
+      const totalNominations = item.total_nominations || 0;
+      const normalizedBoxOffice = maxBoxOffice
+        ? (item.boxOffice || 0) / maxBoxOffice
+        : 0;
+      const prosperityScore = (
+        totalWins * weights.total_wins +
+        totalNominations * weights.total_nominations +
+        normalizedBoxOffice * weights.total_box_office +
+        (item.imdbRating || 0) * weights.avg_imdb_rating +
+        (item.metascore || 0) * weights.avg_metascore
+      ).toFixed(2);
+
+      return {
+        ...item,
+        prosperityScore: parseFloat(prosperityScore)
+      };
+    });
+
+    // Count the number of series and movies
+    const recommendationsCount = enrichedWatchlist.reduce(
+      (acc, item) => {
+        if (item.type === "movie") {
+          acc.movies++;
+        } else if (item.type === "series") {
+          acc.series++;
+        }
+        return acc;
+      },
+      { movies: 0, series: 0 }
+    );
+
+    // Include recommendationsCount and enriched watchlist in the response
+    callback(null, {
+      recommendationsCount,
+      watchlist: enrichedWatchlist
+    });
+  });
+};
+
 const getUsersTopGenres = (userId, limit, callback) => {
   const query = `
     SELECT genre_en, genre_bg, COUNT(*) AS count
@@ -2548,6 +2669,7 @@ module.exports = {
   getTopMoviesAndSeriesByIMDbRating,
   getTopMoviesAndSeriesByRottenTomatoesRating,
   getUsersTopRecommendations,
+  getUsersWatchlist,
   getUsersTopGenres,
   getUsersTopActors,
   getUsersTopDirectors,

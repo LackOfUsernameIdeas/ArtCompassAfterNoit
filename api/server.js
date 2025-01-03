@@ -932,6 +932,22 @@ app.post("/stats/individual/top-recommendations", (req, res) => {
   });
 });
 
+// Вземане на данни за филми/сериали в списъка за гледане на даден потребител
+app.post("/stats/individual/watchlist", (req, res) => {
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersWatchlist(userId, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: "Error fetching watchlist" });
+      }
+      res.json(result);
+    });
+  });
+});
+
 // Вземане на данни за най-препоръчвани жанрове на даден потребител
 app.post("/stats/individual/top-genres", (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
