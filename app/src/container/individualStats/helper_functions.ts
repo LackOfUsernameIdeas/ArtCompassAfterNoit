@@ -6,12 +6,6 @@ import {
   DirectorData,
   ActorData,
   WriterData,
-  GenrePopularityData,
-  HeatmapData,
-  MovieProsperityData,
-  MovieData,
-  RecommendationData,
-  Category,
   DataType
 } from "./individualStats-types";
 
@@ -78,19 +72,19 @@ export const fetchData = async (
         body: { token: token }
       },
       {
-        key: "sortedDirectorsByProsperity",
+        key: "sortedDirectorsByRecommendationCount",
         endpoint: "/stats/individual/top-directors",
         method: "POST",
         body: { token: token }
       },
       {
-        key: "sortedActorsByProsperity",
+        key: "sortedActorsByRecommendationCount",
         endpoint: "/stats/individual/top-actors",
         method: "POST",
         body: { token: token }
       },
       {
-        key: "sortedWritersByProsperity",
+        key: "sortedWritersByRecommendationCount",
         endpoint: "/stats/individual/top-writers",
         method: "POST",
         body: { token: token }

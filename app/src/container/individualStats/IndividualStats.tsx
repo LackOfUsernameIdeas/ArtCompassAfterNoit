@@ -24,9 +24,9 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
       recommendations: []
     }, // Топ препоръки
     topGenres: [], // Топ жанрове
-    sortedDirectorsByProsperity: [], // Режисьори, сортирани по процъфтяване
-    sortedActorsByProsperity: [], // Актьори, сортирани по процъфтяване
-    sortedWritersByProsperity: [] // Сценаристи, сортирани по процъфтяване
+    sortedDirectorsByRecommendationCount: [], // Режисьори, сортирани по процъфтяване
+    sortedActorsByRecommendationCount: [], // Актьори, сортирани по процъфтяване
+    sortedWritersByRecommendationCount: [] // Сценаристи, сортирани по процъфтяване
   });
 
   const [notification, setNotification] = useState<NotificationState | null>(
@@ -82,9 +82,9 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
     !data.topRecommendations.recommendations ||
     data.topRecommendations.recommendations.length === 0 ||
     !data.topGenres.length ||
-    !data.sortedDirectorsByProsperity.length ||
-    !data.sortedActorsByProsperity.length ||
-    !data.sortedWritersByProsperity.length
+    !data.sortedDirectorsByRecommendationCount.length ||
+    !data.sortedActorsByRecommendationCount.length ||
+    !data.sortedWritersByRecommendationCount.length
   ) {
     return (
       <FadeInWrapper>

@@ -34,7 +34,7 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
   // Следи за промени в `data` и актуализира филтрираните данни в таблицата съответно
   useEffect(() => {
     const initialFilteredData =
-      data[`sorted${prosperitySortCategory}ByProsperity`];
+      data[`sorted${prosperitySortCategory}ByRecommendationCount`];
     setFilteredTableData(initialFilteredData);
   }, [data, prosperitySortCategory]);
 
@@ -55,7 +55,7 @@ const ProsperityTable: FC<ProsperityTableProps> = ({ data }) => {
 
   const handleCategoryChange = (category: Category) => {
     // Превключва филтрираните данни в зависимост от избраната категория
-    setFilteredTableData(data[`sorted${category}ByProsperity`]);
+    setFilteredTableData(data[`sorted${category}ByRecommendationCount`]);
     setProsperitySortCategory(category);
   };
 

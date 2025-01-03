@@ -150,7 +150,7 @@ export type DataType = {
     }>;
   }; // Топ препоръки
   topGenres: any[]; // Топ жанрове
-  [key: `sorted${string}ByProsperity`]: any[]; // Подредени данни по процъфтяване
+  [key: `sorted${string}ByRecommendationCount`]: any[]; // Подредени данни по процъфтяване
 };
 
 // Категориен тип за роли
