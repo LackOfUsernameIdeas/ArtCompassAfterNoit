@@ -225,7 +225,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
         </div>
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 p-2 text-[#FFCC33] bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
+          className="absolute top-4 right-4 p-2 text-[#FFCC33] bg-opacity-60 rounded-full transition-transform duration-300 transform hover:scale-110 z-10"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
