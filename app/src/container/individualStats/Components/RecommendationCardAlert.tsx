@@ -1,6 +1,7 @@
 import { FC, useState, useEffect } from "react";
 import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
+import { PlotModal } from "./PlotModal"; // Import PlotModal
 import {
   Recommendation,
   WatchlistRecommendation
@@ -16,6 +17,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   onClose
 }) => {
   const [visible, setVisible] = useState(false);
+  const [isPlotModalOpen, setIsPlotModalOpen] = useState(false); // State to handle PlotModal visibility
 
   useEffect(() => {
     if (selectedItem) {
@@ -28,6 +30,14 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
     setTimeout(() => {
       onClose();
     }, 300); // Match animation duration
+  };
+
+  const handleOpenPlotModal = () => {
+    setIsPlotModalOpen(true); // Open PlotModal
+  };
+
+  const handleClosePlotModal = () => {
+    setIsPlotModalOpen(false); // Close PlotModal
   };
 
   if (!selectedItem) return null;
@@ -66,7 +76,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                 className="rounded-lg w-full h-auto"
               />
               <button
-                onClick={handleClose}
+                onClick={() => {}}
                 className="absolute top-4 left-4 p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
               >
                 <svg
@@ -175,7 +185,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                 {selectedItem.description &&
                   selectedItem.description.length > 100 && (
                     <button
-                      onClick={() => {}}
+                      onClick={handleOpenPlotModal}
                       className="mt-2 underline text-sm sm:text-xs md:text-sm"
                     >
                       Пълен сюжет
@@ -215,7 +225,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
         </div>
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 p-2 text-[#FFCC33] dark:bg-gray-200/20 bg-gray-800/20 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
+          className="absolute top-4 right-4 p-2 text-[#FFCC33] bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -260,6 +270,11 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
           </svg>
         </button>
       </div>
+      <PlotModal
+        isOpen={isPlotModalOpen}
+        onClose={handleClosePlotModal}
+        plot={selectedItem.description}
+      />
     </div>
   );
 };

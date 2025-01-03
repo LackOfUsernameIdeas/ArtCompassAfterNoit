@@ -49,6 +49,12 @@ export interface UserData {
   email: string; // Имейл адрес
 }
 
+// Интерфейс за пропсите на модала за сюжет
+export interface PlotModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  plot: string;
+}
 // Данни свързани с жанрове
 export interface GenrePopularityData {
   [year: string]: {
