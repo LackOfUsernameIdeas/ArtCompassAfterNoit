@@ -124,16 +124,24 @@ export interface GenreSeriesData {
 // Формат на данни за топ жанровете
 export type HeatmapData = GenreSeriesData[];
 
+export type TopGenres = {
+  genre_en: string;
+  genre_bg: string;
+  count: number;
+}[];
+
+export type RecommendationsCount = {
+  movies: number;
+  series: number;
+};
+
 // Обобщени данни за потребителя (топ препоръки, жанрове и др.)
 export type DataType = {
   topRecommendations: {
-    recommendationsCount: {
-      movies: number;
-      series: number;
-    };
+    recommendationsCount: RecommendationsCount;
     recommendations: Recommendation[];
   }; // Топ препоръки
-  topGenres: any[]; // Топ жанрове
+  topGenres: TopGenres; // Топ жанрове
   [key: `sorted${string}By${"RecommendationCount" | "Watchlist"}`]: any[]; // Подредени данни по процъфтяване
 };
 
@@ -156,10 +164,4 @@ export interface Recommendation {
   metascore: string; // No change, still a string
   boxOffice: string; // No change, still a string
   prosperityScore: number; // Added for the prosperityScore
-}
-
-export interface Genre {
-  genre_en: string;
-  genre_bg: string;
-  count: number;
 }

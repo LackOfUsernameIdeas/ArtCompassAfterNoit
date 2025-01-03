@@ -1,9 +1,9 @@
 import { FC, Fragment } from "react";
-import { DataType } from "../individualStats-types";
+import { TopGenres } from "../individualStats-types";
 import { Categorybar } from "./Charts";
 
 interface GenresBarChartProps {
-  data: DataType;
+  data: TopGenres;
 }
 
 const GenresBarChart: FC<GenresBarChartProps> = ({ data }) => {

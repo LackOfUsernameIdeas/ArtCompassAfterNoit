@@ -1,11 +1,11 @@
 import { FC, Fragment } from "react";
-import { DataType } from "../individualStats-types";
+import { RecommendationsCount } from "../individualStats-types";
 
 interface CountWidgetsProps {
-  data: DataType;
+  recommendationsCount: RecommendationsCount;
 }
 
-const CountWidgets: FC<CountWidgetsProps> = ({ data }) => {
+const CountWidgets: FC<CountWidgetsProps> = ({ recommendationsCount }) => {
   return (
     <Fragment>
       <div className="box custom-box">
@@ -22,7 +22,7 @@ const CountWidgets: FC<CountWidgetsProps> = ({ data }) => {
                 <p className="text-[.875rem] font-semibold mb-2">Филми</p>
                 <div className="flex items-center justify-center flex-wrap">
                   <h5 className="mb-0 font-semibold">
-                    {data.topRecommendations.recommendationsCount.movies}
+                    {recommendationsCount.movies}
                   </h5>
                 </div>
               </div>
@@ -36,7 +36,7 @@ const CountWidgets: FC<CountWidgetsProps> = ({ data }) => {
                 <p className="text-[.875rem] font-semibold mb-2">Сериали</p>
                 <div className="flex items-center justify-center flex-wrap">
                   <h5 className="mb-0 font-semibold">
-                    {data.topRecommendations.recommendationsCount.series}
+                    {recommendationsCount.series}
                   </h5>
                 </div>
               </div>
@@ -50,8 +50,7 @@ const CountWidgets: FC<CountWidgetsProps> = ({ data }) => {
                 <p className="text-[.875rem] font-semibold mb-2">Общо</p>
                 <div className="flex items-center justify-center flex-wrap">
                   <h5 className="mb-0 font-semibold">
-                    {data.topRecommendations.recommendationsCount.movies +
-                      data.topRecommendations.recommendationsCount.series}
+                    {recommendationsCount.movies + recommendationsCount.series}
                   </h5>
                 </div>
               </div>

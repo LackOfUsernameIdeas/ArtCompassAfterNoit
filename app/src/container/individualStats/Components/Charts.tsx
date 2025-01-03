@@ -1,7 +1,7 @@
 import { Component } from "react";
 import ReactApexChart from "react-apexcharts";
 import chroma from "chroma-js";
-import { Genre } from "../individualStats-types";
+import { TopGenres } from "../individualStats-types";
 
 // Преобразува RGB цвят в HEX формат
 const rgbToHex = (rgb: string): string => {
@@ -24,7 +24,7 @@ const updatePrimaryColor = () => {
 };
 
 interface CategorybarProps {
-  data: { topGenres: Genre[] };
+  data: TopGenres;
 }
 
 interface State {
@@ -38,12 +38,11 @@ export class Categorybar extends Component<CategorybarProps, State> {
   constructor(props: CategorybarProps) {
     super(props);
 
-    const { topGenres } = props.data;
-    const { categories, values } = this.transformData(topGenres);
+    const { categories, values } = this.transformData(props.data);
 
     console.log(
       "topGenres: ",
-      topGenres,
+      props.data,
       "categories, values: ",
       categories,
       values
@@ -60,7 +59,7 @@ export class Categorybar extends Component<CategorybarProps, State> {
   }
 
   componentDidUpdate(prevProps: CategorybarProps) {
-    if (prevProps.data.topGenres !== this.props.data.topGenres) {
+    if (prevProps.data !== this.props.data) {
       this.updateChart();
     }
   }
@@ -82,9 +81,9 @@ export class Categorybar extends Component<CategorybarProps, State> {
     }
   }
 
-  transformData(topGenres: Genre[]) {
-    const categories = topGenres.map((genre) => genre.genre_bg);
-    const values = topGenres.map((genre) => genre.count);
+  transformData(data: TopGenres) {
+    const categories = data.map((genre) => genre.genre_bg);
+    const values = data.map((genre) => genre.count);
     return { categories, values };
   }
 
@@ -207,8 +206,7 @@ export class Categorybar extends Component<CategorybarProps, State> {
   }
 
   updateChart() {
-    const { topGenres } = this.props.data;
-    const { categories, values } = this.transformData(topGenres);
+    const { categories, values } = this.transformData(this.props.data);
 
     this.setState({
       series: [
@@ -222,8 +220,7 @@ export class Categorybar extends Component<CategorybarProps, State> {
   }
 
   updateChartColors() {
-    const { topGenres } = this.props.data;
-    const { categories } = this.transformData(topGenres);
+    const { categories } = this.transformData(this.props.data);
 
     const primaryHex = updatePrimaryColor();
     const colorScale = chroma
