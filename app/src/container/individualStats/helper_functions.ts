@@ -206,7 +206,3 @@ export const filterTableData = (
     currentTablePage * itemsPerTablePage
   );
 };
-
-// ==============================
-// Handle функции
-// ==============================
