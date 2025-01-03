@@ -80,10 +80,25 @@ const MoviesAndSeriesRecommendationsTable: FC<
   const is1557 = useMediaQuery({ query: "(max-width: 1557px)" });
   const is1630 = useMediaQuery({ query: "(max-width: 1630px)" });
 
-  const sortOptions = [
-    { label: "Просперитет", value: "prosperityScore" },
-    { label: "Боксофис", value: "boxOffice" }
-  ];
+  const sortOptions = useMemo(() => {
+    const options = [
+      { label: "Просперитет", value: "prosperityScore" },
+      { label: "Боксофис", value: "boxOffice" }
+    ];
+
+    // Add "Брой Препоръки" option only when sortType is 'recommendations'
+    if (sortType === "recommendations") {
+      options.unshift({ label: "Брой Препоръки", value: "recommendations" });
+    }
+
+    return options;
+  }, [sortType]);
+
+  const sortTitles: Record<string, string> = {
+    recommendations: "Най-Често Препоръчваните Филми и Сериали За Мен",
+    prosperityScore: "Филми и Сериали По Просперитет",
+    boxOffice: "Най-Печеливши Филми и Сериали"
+  };
 
   const toggleSortMenu = () => setIsSortMenuOpen((prev) => !prev);
 
@@ -110,12 +125,22 @@ const MoviesAndSeriesRecommendationsTable: FC<
           <div className="box-header justify-between">
             <div
               className={`box-title whitespace-nowrap overflow-hidden text-ellipsis ${
-                is1399 ? "max-w-full" : is1630 ? "max-w-[20rem]" : "max-w-full"
+                is1399 ? "max-w-full" : is1630 ? "max-w-[40rem]" : "max-w-full"
               }`}
               data-tooltip-id="box-title-tooltip"
-              data-tooltip-content="Списък За Гледане"
+              data-tooltip-content={
+                sortType == "watchlist"
+                  ? "Списък За Гледане"
+                  : sortBy === "default"
+                  ? "Най-Често Препоръчваните Филми и Сериали За Мен"
+                  : sortTitles[sortBy]
+              }
             >
-              Списък За Гледане
+              {sortType == "watchlist"
+                ? "Списък За Гледане"
+                : sortBy === "default"
+                ? "Най-Често Препоръчваните Филми и Сериали За Мен"
+                : sortTitles[sortBy]}
             </div>
             <Tooltip id="box-title-tooltip" />
             <div className="relative flex items-center space-x-2">
@@ -176,7 +201,7 @@ const MoviesAndSeriesRecommendationsTable: FC<
                 onClick={() => {
                   if (sortBy === "default") {
                     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-                    setSortBy("recommendations");
+                    setSortBy("prosperityScore");
                   } else {
                     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
                   }
