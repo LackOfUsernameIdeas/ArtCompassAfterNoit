@@ -13,6 +13,10 @@ import Notification from "../../components/common/notification/Notification";
 import { NotificationState } from "../recommendations/recommendations-types";
 import BookmarkAlert from "./Components/BookmarkAlert";
 import AccordionItem from "./Components/AccordionItem";
+import MoviesAndSeriesRecommendationsTable from "./Components/MoviesAndSeriesRecommendationsTable";
+import ActorsDirectorsWritersTable from "./Components/ActorsDirectorsWritersTable";
+import GenresBarChart from "./Components/GenresBarChart";
+import CountWidgets from "./Components/CountWidgets";
 
 interface IndividualStatsProps {}
 
@@ -130,6 +134,10 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
     );
   }
 
+  const handleDismiss = () => {
+    setAlertVisible(false);
+  };
+
   return (
     <FadeInWrapper>
       {notification && (
@@ -142,17 +150,15 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
       {alertVisible && (
         <BookmarkAlert
           isBookmarked={currentBookmarkStatus}
-          onDismiss={() => setAlertVisible(false)}
+          onDismiss={handleDismiss}
         />
       )}
-
       <Fragment>
         <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">
           <div>
             <p className="font-semibold text-[1.125rem] text-defaulttextcolor dark:text-defaulttextcolor/70 !mb-0 "></p>
           </div>
         </div>
-
         <div className="grid grid-cols-12 gap-6">
           <div className="xl:col-span-12 col-span-12">
             <div
@@ -178,13 +184,18 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                 {(data.topRecommendationsWatchlist.watchlist ||
                   data.topGenresWatchlist.length ||
                   data.sortedDirectorsBySavedCount.length) && (
-                  <AccordionItem
-                    title="Моята Колекция за Гледане - Статистики"
-                    type="watchlist"
-                    data={data}
-                    handleBookmarkClick={handleBookmarkClick}
-                    bookmarkedMovies={bookmarkedMovies}
-                  />
+                  <div
+                    className="hs-accordion accordion-item overflow-hidden"
+                    id="hs-basic-with-title-and-arrow-stretched-heading-two"
+                  >
+                    <AccordionItem
+                      title="Моята Колекция за Гледане - Статистики"
+                      type="watchlist"
+                      data={data}
+                      handleBookmarkClick={handleBookmarkClick}
+                      bookmarkedMovies={bookmarkedMovies}
+                    />
+                  </div>
                 )}
               </div>
             </div>
