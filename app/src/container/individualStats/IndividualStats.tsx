@@ -169,33 +169,24 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                 className="hs-accordion-group"
                 data-hs-accordion-always-open=""
               >
-                <div
-                  className="hs-accordion accordion-item overflow-hidden active"
-                  id="hs-basic-with-title-and-arrow-stretched-heading-one"
-                >
+                <AccordionItem
+                  title="Моите Топ Препоръки - Статистики"
+                  type="recommendations"
+                  data={data}
+                  handleBookmarkClick={handleBookmarkClick}
+                  bookmarkedMovies={bookmarkedMovies}
+                />
+
+                {(data.topRecommendationsWatchlist.watchlist ||
+                  data.topGenresWatchlist.length ||
+                  data.sortedDirectorsBySavedCount.length) && (
                   <AccordionItem
-                    title="Моите Топ Препоръки - Статистики"
-                    type="recommendations"
+                    title="Моята Колекция за Гледане - Статистики"
+                    type="watchlist"
                     data={data}
                     handleBookmarkClick={handleBookmarkClick}
                     bookmarkedMovies={bookmarkedMovies}
                   />
-                </div>
-                {(data.topRecommendationsWatchlist.watchlist ||
-                  data.topGenresWatchlist.length ||
-                  data.sortedDirectorsBySavedCount.length) && (
-                  <div
-                    className="hs-accordion accordion-item overflow-hidden"
-                    id="hs-basic-with-title-and-arrow-stretched-heading-two"
-                  >
-                    <AccordionItem
-                      title="Моята Колекция за Гледане - Статистики"
-                      type="watchlist"
-                      data={data}
-                      handleBookmarkClick={handleBookmarkClick}
-                      bookmarkedMovies={bookmarkedMovies}
-                    />
-                  </div>
                 )}
               </div>
             </div>
