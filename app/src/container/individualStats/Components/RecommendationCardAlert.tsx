@@ -1,7 +1,7 @@
 import { FC, useState, useEffect } from "react";
 import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
-import { PlotModal } from "./PlotModal"; // Import PlotModal
+import { PlotModal } from "./PlotModal";
 import {
   Rating,
   Recommendation,
