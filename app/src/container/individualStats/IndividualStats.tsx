@@ -102,17 +102,19 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
 
       if (token) {
         const updatedBookmarks: { [key: string]: any } = {};
-        for (const movie of data.topRecommendationsWatchlist.watchlist) {
-          try {
-            const isBookmarked = await checkRecommendationExistsInWatchlist(
-              movie.imdbID,
-              token
-            );
-            if (isBookmarked) {
-              updatedBookmarks[movie.imdbID] = movie;
+        if (data.topRecommendationsWatchlist.watchlist) {
+          for (const movie of data.topRecommendationsWatchlist.watchlist) {
+            try {
+              const isBookmarked = await checkRecommendationExistsInWatchlist(
+                movie.imdbID,
+                token
+              );
+              if (isBookmarked) {
+                updatedBookmarks[movie.imdbID] = movie;
+              }
+            } catch (error) {
+              console.error("Error checking watchlist status:", error);
             }
-          } catch (error) {
-            console.error("Error checking watchlist status:", error);
           }
         }
         setBookmarkedMovies(updatedBookmarks);
@@ -305,11 +307,11 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                     </div>
                   </div>
                 </div>
-                {(data.topRecommendationsWatchlist.watchlist ||
-                  data.topGenresWatchlist.length ||
-                  data.sortedDirectorsBySavedCount.length ||
-                  data.sortedActorsBySavedCount.length ||
-                  data.sortedWritersBySavedCount.length) && (
+                {data.topRecommendationsWatchlist.watchlist ||
+                data.topGenresWatchlist.length ||
+                data.sortedDirectorsBySavedCount.length ||
+                data.sortedActorsBySavedCount.length ||
+                data.sortedWritersBySavedCount.length ? (
                   <div
                     className="hs-accordion accordion-item overflow-hidden"
                     id="hs-basic-with-title-and-arrow-stretched-heading-two"
@@ -390,7 +392,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                       </div>
                     </div>
                   </div>
-                )}
+                ) : null}
               </div>
             </div>
           </div>
