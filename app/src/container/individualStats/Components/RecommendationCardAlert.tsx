@@ -12,11 +12,17 @@ import { translate } from "../helper_functions";
 interface RecommendationCardAlertProps {
   selectedItem: Recommendation | WatchlistRecommendation | null;
   onClose: () => void;
+  handleBookmarkClick: (
+    movie: Recommendation | WatchlistRecommendation
+  ) => void;
+  bookmarkedMovies: { [key: string]: Recommendation | WatchlistRecommendation };
 }
 
 const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   selectedItem,
-  onClose
+  onClose,
+  handleBookmarkClick,
+  bookmarkedMovies
 }) => {
   const [translatedDirectors, setTranslatedDirectors] = useState<string>("");
   const [translatedWriters, setTranslatedWriters] = useState<string>("");
@@ -99,9 +105,11 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
     ? selectedItem.ratings
     : JSON.parse(selectedItem.ratings || "[]"); // Parse ratings if it's a string
 
-  const rottenTomatoesRating =
-    ratings?.find((rating) => rating.Source === "Rotten Tomatoes")?.Value ||
-    "N/A";
+  console.log("ratings: ", ratings);
+  const rottenTomatoesRating = Array.isArray(ratings)
+    ? ratings.find((rating) => rating.Source === "Rotten Tomatoes")?.Value ||
+      "N/A"
+    : "N/A";
 
   return (
     <div
@@ -123,7 +131,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                 className="rounded-lg w-full h-auto"
               />
               <button
-                onClick={() => {}}
+                onClick={() => handleBookmarkClick(selectedItem)}
                 className="absolute top-4 left-4 p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110 z-20"
               >
                 <svg
@@ -133,7 +141,14 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                   viewBox="0 0 24 24"
                   fill="currentColor"
                 >
-                  <path d="M18 2H6c-1.103 0-2 .897-2 2v18l8-4.572L20 22V4c0-1.103-.897-2-2-2zm0 16.553L12 15.125 6 18.553V4h12v14.553z"></path>
+                  {bookmarkedMovies[selectedItem.imdbID] ? (
+                    <>
+                      <path d="M18 2H6c-1.103 0-2 .897-2 2v18l8-4.572L20 22V4c0-1.103-.897-2-2-2zm0 16.553L12 15.125 6 18.553V4h12v14.553z"></path>
+                      <path d="M6 18.553V4h12v14.553L12 15.125l-6 3.428z"></path>
+                    </>
+                  ) : (
+                    <path d="M18 2H6c-1.103 0-2 .897-2 2v18l8-4.572L20 22V4c0-1.103-.897-2-2-2zm0 16.553-6-3.428-6 3.428V4h12v14.553z"></path>
+                  )}
                 </svg>
               </button>
             </div>

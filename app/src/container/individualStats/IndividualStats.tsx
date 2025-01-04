@@ -1,6 +1,12 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { DataType } from "./individualStats-types";
-import { checkTokenValidity, fetchData } from "./helper_functions";
+import {
+  checkRecommendationExistsInWatchlist,
+  checkTokenValidity,
+  fetchData,
+  removeFromWatchlist,
+  saveToWatchlist
+} from "./helper_functions";
 import { useNavigate } from "react-router-dom";
 import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 import { showNotification } from "../recommendations/helper_functions";
@@ -43,6 +49,10 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
   const [notification, setNotification] = useState<NotificationState | null>(
     null
   ); // Състояние за показване на известия (например съобщения за грешки, успехи или предупреждения)
+  const [bookmarkedMovies, setBookmarkedMovies] = useState<{
+    [key: string]: any;
+  }>({});
+  const [currentBookmarkStatus, setCurrentBookmarkStatus] = useState(false); // Track current bookmark status
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
@@ -80,6 +90,70 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
       console.log("fetching"); // Лог за следене на извличането на данни
     }
   }, []);
+
+  useEffect(() => {
+    const loadBookmarkStatus = async () => {
+      const token =
+        localStorage.getItem("authToken") ||
+        sessionStorage.getItem("authToken");
+
+      if (token) {
+        const updatedBookmarks: { [key: string]: any } = {};
+        for (const movie of data.topRecommendationsWatchlist.watchlist) {
+          try {
+            const isBookmarked = await checkRecommendationExistsInWatchlist(
+              movie.imdbID,
+              token
+            );
+            if (isBookmarked) {
+              updatedBookmarks[movie.imdbID] = movie;
+            }
+          } catch (error) {
+            console.error("Error checking watchlist status:", error);
+          }
+        }
+        setBookmarkedMovies(updatedBookmarks);
+      }
+    };
+
+    loadBookmarkStatus();
+  }, [data.topRecommendationsWatchlist.watchlist]);
+
+  const handleBookmarkClick = (movie: {
+    imdbID: string;
+    [key: string]: any;
+  }) => {
+    setBookmarkedMovies((prev) => {
+      const isBookmarked = !!prev[movie.imdbID];
+      const updatedBookmarks = { ...prev };
+      const token =
+        localStorage.getItem("authToken") ||
+        sessionStorage.getItem("authToken");
+
+      if (isBookmarked) {
+        // Remove the movie from bookmarks if it's already bookmarked
+        delete updatedBookmarks[movie.imdbID];
+
+        // Call removeFromWatchlist API
+        removeFromWatchlist(movie.imdbID, token).catch((error) => {
+          console.error("Error removing from watchlist:", error);
+        });
+      } else {
+        // Add the movie to bookmarks if it's not already bookmarked
+        updatedBookmarks[movie.imdbID] = movie;
+
+        // Call saveToWatchlist API
+        saveToWatchlist(movie, token).catch((error) => {
+          console.error("Error saving to watchlist:", error);
+        });
+      }
+
+      setCurrentBookmarkStatus(!isBookmarked); // Update the current bookmark status
+
+      return updatedBookmarks; // Return the updated bookmarks object
+    });
+  };
+  console.log("bookmarkedMovies: ", bookmarkedMovies);
 
   if (loading) {
     return (
@@ -187,6 +261,8 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                         <MoviesAndSeriesRecommendationsTable
                           type="recommendations"
                           data={data.topRecommendations.recommendations}
+                          handleBookmarkClick={handleBookmarkClick}
+                          bookmarkedMovies={bookmarkedMovies}
                         />
                       </div>
                       <div className="xxl:col-span-6 col-span-12">
@@ -265,6 +341,8 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                         <MoviesAndSeriesRecommendationsTable
                           type="watchlist"
                           data={data.topRecommendationsWatchlist.watchlist}
+                          handleBookmarkClick={handleBookmarkClick}
+                          bookmarkedMovies={bookmarkedMovies}
                         />
                       </div>
                       <div className="xxl:col-span-6 col-span-12">

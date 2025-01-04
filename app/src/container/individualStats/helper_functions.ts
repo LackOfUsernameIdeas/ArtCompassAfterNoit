@@ -1,6 +1,7 @@
 // ==============================
 // Импортиране на типове и интерфейси
 // ==============================
+import { genreOptions } from "./individualStats-data";
 import {
   FilteredTableData,
   DirectorData,
@@ -260,4 +261,197 @@ export const filterTableData = (
     (currentTablePage - 1) * itemsPerTablePage,
     currentTablePage * itemsPerTablePage
   );
+};
+
+/**
+ * Проверява дали препоръката вече съществува в списъка за гледане на потребителя.
+ *
+ * @async
+ * @function checkRecommendationExistsInWatchlist
+ * @param {string} imdbID - IMDb ID на препоръката.
+ * @param {string | null} token - Токен за автентикация на потребителя.
+ * @returns {Promise<boolean>} - Връща true, ако препоръката вече съществува.
+ * @throws {Error} - Хвърля грешка, ако проверката не може да бъде извършена.
+ */
+export const checkRecommendationExistsInWatchlist = async (
+  imdbID: string,
+  token: string | null
+): Promise<boolean> => {
+  try {
+    const response = await fetch(
+      `${
+        import.meta.env.VITE_API_BASE_URL
+      }/check-for-recommendation-in-watchlist`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ token, imdbID })
+      }
+    );
+
+    if (response.status === 404) {
+      throw new Error("Грешка при проверка на списъка за гледане.");
+    }
+
+    const result = await response.json();
+    console.log("result: ", result.exists, imdbID);
+
+    return result.exists || false;
+  } catch (error) {
+    console.error("Грешка при проверката:", error);
+    return false;
+  }
+};
+
+/**
+ * Записва препоръка за филм или сериал в списъка за гледане на потребителя.
+ * Препоръката съдържа подробности като заглавие, жанр, рейтинг и други.
+ * След успешното записване, данните се изпращат до сървъра чрез съответния API маршрут.
+ *
+ * @async
+ * @function saveToWatchlist
+ * @param {any} recommendation - Обект с данни за препоръката (филм или сериал).
+ * @param {string | null} token - Токен за автентикация на потребителя.
+ * @returns {Promise<void>} - Няма върнат резултат, но изпраща заявка към сървъра.
+ * @throws {Error} - Хвърля грешка, ако данните не могат да бъдат записани.
+ */
+export const saveToWatchlist = async (
+  recommendation: any,
+  token: string | null
+): Promise<void> => {
+  try {
+    if (!recommendation || typeof recommendation !== "object") {
+      console.warn("Няма валидни данни за препоръката.");
+      return;
+    }
+
+    // Проверка дали съществува в списъка за гледане
+    const exists = await checkRecommendationExistsInWatchlist(
+      recommendation.imdbID,
+      token
+    );
+
+    if (exists) {
+      console.log("Препоръката вече е добавена в списъка за гледане.");
+      return;
+    }
+
+    console.log("recommendation: ", recommendation);
+    const genresEn = recommendation.genre_en
+      ? recommendation.genre_en.split(", ")
+      : null;
+
+    const genresBg = genresEn.map((genre: string) => {
+      const matchedGenre = genreOptions.find(
+        (option) => option.en.trim() === genre.trim()
+      );
+      return matchedGenre ? matchedGenre.bg : null;
+    });
+
+    const runtime = recommendation.runtimeGoogle || recommendation.runtime;
+    const imdbRating =
+      recommendation.imdbRatingGoogle || recommendation.imdbRating;
+
+    const formattedRecommendation = {
+      token,
+      imdbID: recommendation.imdbID || null,
+      title_en: recommendation.title_en || null,
+      title_bg: recommendation.title_bg || null,
+      genre_en: genresEn.join(", "),
+      genre_bg: genresBg.join(", "),
+      reason: recommendation.reason || null,
+      description: recommendation.description || null,
+      year: recommendation.year || null,
+      rated: recommendation.rated || null,
+      released: recommendation.released || null,
+      runtime: runtime || null,
+      director: recommendation.director || null,
+      writer: recommendation.writer || null,
+      actors: recommendation.actors || null,
+      plot: recommendation.plot || null,
+      language: recommendation.language || null,
+      country: recommendation.country || null,
+      awards: recommendation.awards || null,
+      poster: recommendation.poster || null,
+      ratings: recommendation.ratings || [],
+      metascore: recommendation.metascore || null,
+      imdbRating: imdbRating || null,
+      imdbVotes: recommendation.imdbVotes || null,
+      type: recommendation.type || null,
+      DVD: recommendation.DVD || null,
+      boxOffice: recommendation.boxOffice || null,
+      production: recommendation.production || null,
+      website: recommendation.website || null,
+      totalSeasons: recommendation.totalSeasons || null
+    };
+
+    console.log("formattedRecommendation: ", formattedRecommendation);
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/save-to-watchlist`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formattedRecommendation)
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        "Неуспешно записване на препоръката в списъка за гледане."
+      );
+    }
+
+    const result = await response.json();
+    console.log("Препоръката е успешно добавена:", result);
+  } catch (error) {
+    console.error("Грешка при записването в списъка за гледане:", error);
+  }
+};
+
+/**
+ * Премахва филм или сериал от списъка за гледане на потребителя.
+ *
+ * @async
+ * @function removeFromWatchlist
+ * @param {string} imdbID - Уникален идентификатор на филма или сериала (IMDb ID).
+ * @param {string | null} token - Токен за автентикация на потребителя.
+ * @returns {Promise<void>} - Няма върнат резултат, но изпраща заявка към сървъра.
+ * @throws {Error} - Хвърля грешка, ако данните не могат да бъдат премахнати.
+ */
+export const removeFromWatchlist = async (
+  imdbID: string,
+  token: string | null
+): Promise<void> => {
+  try {
+    if (!imdbID) {
+      console.warn("IMDb ID is required to remove a movie from the watchlist.");
+      return;
+    }
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/remove-from-watchlist`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ token, imdbID })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        "Failed to remove the movie or series from the watchlist."
+      );
+    }
+
+    const result = await response.json();
+    console.log("Successfully removed from watchlist:", result);
+  } catch (error) {
+    console.error("Error removing from watchlist:", error);
+  }
 };

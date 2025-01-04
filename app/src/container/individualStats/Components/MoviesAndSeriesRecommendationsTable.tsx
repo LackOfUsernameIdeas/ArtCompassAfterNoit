@@ -11,11 +11,15 @@ import RecommendationCardAlert from "./RecommendationCardAlert";
 interface MoviesAndSeriesRecommendationsTableProps {
   data: Recommendation[] | WatchlistRecommendation[];
   type: "recommendations" | "watchlist";
+  handleBookmarkClick: (
+    movie: Recommendation | WatchlistRecommendation
+  ) => void;
+  bookmarkedMovies: { [key: string]: Recommendation | WatchlistRecommendation };
 }
 
 const MoviesAndSeriesRecommendationsTable: FC<
   MoviesAndSeriesRecommendationsTableProps
-> = ({ data, type }) => {
+> = ({ data, type, handleBookmarkClick, bookmarkedMovies }) => {
   const [currentTablePage, setCurrentTablePage] = useState(1);
   const itemsPerTablePage = 5;
 
@@ -131,6 +135,8 @@ const MoviesAndSeriesRecommendationsTable: FC<
       <RecommendationCardAlert
         selectedItem={selectedItem}
         onClose={() => setSelectedItem(null)}
+        handleBookmarkClick={handleBookmarkClick}
+        bookmarkedMovies={bookmarkedMovies}
       />
 
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
