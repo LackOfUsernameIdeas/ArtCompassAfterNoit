@@ -379,13 +379,14 @@ export const generateMovieRecommendations = async (
                 await checkRecommendationExistsInWatchlist(imdbId, token);
 
               // Ако филмът не съществува в watchlist, добавяме го към "bookmarkedMovies" с информация за ID и статус
-              setBookmarkedMovies((prevMovies) => {
-                return {
-                  ...prevMovies,
-                  [recommendationData.imdbID]: recommendationData
-                };
-              });
-
+              if (existsInWatchlist) {
+                setBookmarkedMovies((prevMovies) => {
+                  return {
+                    ...prevMovies,
+                    [recommendationData.imdbID]: recommendationData
+                  };
+                });
+              }
               // Записваме препоръката в базата данни
               await saveRecommendation(recommendationData, date, token);
             };
