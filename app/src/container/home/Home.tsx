@@ -1,11 +1,11 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { DataType, UserData } from "./home-types";
 import { checkTokenValidity, fetchData } from "./helper_functions";
-import TableComponent from "./Components/TableComponent";
-import TreemapComponent from "./Components/TreemapComponent";
+import ActorsDirectorsWritersTable from "./Components/ActorsDirectorsWritersTable";
+import ActorsDirectorsWritersTreemap from "./Components/ActorsDirectorsWritersTreemap";
 import TopRecommendationsChartComponent from "./Components/TopRecommendationsChartComponent";
 import CountryBarChartComponent from "./Components/CountryBarChartComponent";
-import MoviesByProsperityBubbleChartComponent from "./Components/MoviesByProsperityBubbleChartComponent";
+import MoviesByProsperityBubbleChartComponent from "./Components/MoviesByProsperityBubbleChart";
 import GenrePopularityOverTimeComponent from "./Components/GenrePopularityOverTimeComponent";
 import MoviesAndSeriesByRatingsChartComponent from "./Components/MoviesAndSeriesByRatingsChartComponent";
 import WidgetCards from "./Components/WidgetCardsComponent";
@@ -117,9 +117,9 @@ const Home: FC<CrmProps> = () => {
             </div>
           </div>
           <div className="xxl:col-span-6 col-span-12">
-            <TableComponent data={data} />
+            <ActorsDirectorsWritersTable data={data} />
             <TopRecommendationsChartComponent data={data} />
-            <TreemapComponent data={data} />
+            <ActorsDirectorsWritersTreemap data={data} />
             <CountryBarChartComponent data={data} />
           </div>
         </div>

@@ -2,11 +2,13 @@ import { FC, Fragment, useState } from "react";
 import { Category, DataType } from "../home-types";
 import { handleTopStatsSortCategory } from "../helper_functions";
 import { Treemap } from "./Charts";
-interface TreemapComponentProps {
+interface ActorsDirectorsWritersTreemapProps {
   data: DataType;
 }
 
-const TreemapComponent: FC<TreemapComponentProps> = ({ data }) => {
+const ActorsDirectorsWritersTreemap: FC<ActorsDirectorsWritersTreemapProps> = ({
+  data
+}) => {
   const [topStatsSortCategory, setTopStatsSortCategory] =
     useState<Category>("Actors");
 
@@ -96,4 +98,4 @@ const TreemapComponent: FC<TreemapComponentProps> = ({ data }) => {
   );
 };
 
-export default TreemapComponent;
+export default ActorsDirectorsWritersTreemap;
