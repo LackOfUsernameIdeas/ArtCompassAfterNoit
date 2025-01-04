@@ -8,6 +8,7 @@ import {
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { TopRecommendationsBarChart } from "./Charts";
+import Pagination from "../../../components/common/pagination/pagination";
 
 interface TopRecommendationsChartComponentProps {
   data: DataType;
@@ -21,9 +22,9 @@ const TopRecommendationsChartComponent: FC<
   >([]);
 
   const pageSize = 5;
-  const [currentTopChartPage, setCurrentTopChartPage] = useState(1);
+  const [currentChartPage, setCurrentChartPage] = useState(1);
 
-  const totalTopChartPages = getTotalBarChartPages(
+  const totalChartPages = getTotalBarChartPages(
     data.topRecommendations.length,
     pageSize
   );
@@ -31,29 +32,29 @@ const TopRecommendationsChartComponent: FC<
   useEffect(() => {
     const paginatedDataForTopStats = paginateBarChartData(
       data.topRecommendations,
-      currentTopChartPage,
+      currentChartPage,
       pageSize
     );
     setSeriesDataForTopStatsChart(paginatedDataForTopStats);
-  }, [currentTopChartPage, data]);
+  }, [currentChartPage, data]);
 
-  const handlePrevTopChartPage = () => {
+  const handlePrevChartPage = () => {
     handleBarChartPageChange(
       "prev",
-      currentTopChartPage,
+      currentChartPage,
       pageSize,
       data.topRecommendations.length,
-      setCurrentTopChartPage
+      setCurrentChartPage
     );
   };
 
-  const handleNextTopChartPage = () => {
+  const handleNextChartPage = () => {
     handleBarChartPageChange(
       "next",
-      currentTopChartPage,
+      currentChartPage,
       pageSize,
       data.topRecommendations.length,
-      setCurrentTopChartPage
+      setCurrentChartPage
     );
   };
 
@@ -77,104 +78,16 @@ const TopRecommendationsChartComponent: FC<
               </div>
             </div>
             <div className="box-footer">
-              <div className="sm:flex items-center">
-                <div
-                  className={`text-defaulttextcolor dark:text-defaulttextcolor/70 text-[${
-                    is1546 ? "0.55rem" : "0.70rem"
-                  }]`}
-                >
-                  Показване на резултати от{" "}
-                  <b>
-                    {currentTopChartPage === 1
-                      ? 1
-                      : (currentTopChartPage - 1) * 5 + 1}{" "}
-                  </b>
-                  до{" "}
-                  <b>
-                    {currentTopChartPage === totalTopChartPages
-                      ? data.topRecommendations.length
-                      : currentTopChartPage * 5}{" "}
-                  </b>
-                  от общо <b>{data.topRecommendations.length}</b>
-                  <i className="bi bi-arrow-right ms-2 font-semibold"></i>
-                </div>
-                <div className="ms-auto">
-                  <nav
-                    aria-label="Page navigation"
-                    className={`pagination-style-4 ${
-                      is1546 ? "text-[0.55rem]" : "text-[0.70rem]"
-                    }`}
-                  >
-                    <ul className="ti-pagination mb-0">
-                      <li
-                        className={`page-item ${
-                          currentTopChartPage === 1 ? "disabled" : ""
-                        }`}
-                      >
-                        <Link
-                          className="page-link"
-                          to="#"
-                          onClick={handlePrevTopChartPage}
-                          style={{
-                            padding: is1546
-                              ? "0.25rem 0.35rem"
-                              : "0.2rem 0.45rem",
-                            fontSize: is1546 ? "0.6rem" : "0.7rem",
-                            lineHeight: "1.25"
-                          }}
-                        >
-                          Предишна
-                        </Link>
-                      </li>
-                      {[...Array(totalTopChartPages)].map((_, index) => (
-                        <li
-                          key={index}
-                          className={`page-item ${
-                            currentTopChartPage === index + 1 ? "active" : ""
-                          }`}
-                        >
-                          <Link
-                            className="page-link"
-                            to="#"
-                            onClick={() => setCurrentTopChartPage(index + 1)}
-                            style={{
-                              padding: is1546
-                                ? "0.25rem 0.35rem"
-                                : "0.2rem 0.45rem",
-                              fontSize: is1546 ? "0.6rem" : "0.7rem",
-                              lineHeight: "1.25"
-                            }}
-                          >
-                            {index + 1}
-                          </Link>
-                        </li>
-                      ))}
-                      <li
-                        className={`page-item ${
-                          currentTopChartPage === totalTopChartPages
-                            ? "disabled"
-                            : ""
-                        }`}
-                      >
-                        <Link
-                          className="page-link"
-                          to="#"
-                          onClick={handleNextTopChartPage}
-                          style={{
-                            padding: is1546
-                              ? "0.25rem 0.35rem"
-                              : "0.2rem 0.45rem",
-                            fontSize: is1546 ? "0.6rem" : "0.7rem",
-                            lineHeight: "1.25"
-                          }}
-                        >
-                          Следваща
-                        </Link>
-                      </li>
-                    </ul>
-                  </nav>
-                </div>
-              </div>
+              <Pagination
+                currentPage={currentChartPage}
+                totalItems={data.topRecommendations.length}
+                itemsPerPage={5}
+                totalTablePages={totalChartPages}
+                isSmallScreen={is1546}
+                handlePrevPage={handlePrevChartPage}
+                handleNextPage={handleNextChartPage}
+                setCurrentPage={setCurrentChartPage}
+              />
             </div>
           </div>
         </div>
