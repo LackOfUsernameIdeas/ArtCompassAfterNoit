@@ -6,83 +6,84 @@ export interface CommonData {
   avg_rotten_tomatoes: string; // Среден рейтинг в Rotten Tomatoes
   total_wins: string; // Общо спечелени награди
   total_nominations: string; // Общо номинации
-  prosperityScore: number; // Индекс на просперитетто
-  movie_series_count: number; // Брой филми
-  total_recommendations: number; // Брой препоръки общо
-  recommendations_count?: number; // Брой препоръки
-  saved_count?: number; // Брой пъти запазван
+  prosperityScore: number; // Индекс на просперитет
+  movie_series_count: number; // Брой филми и сериали
+  total_recommendations: number; // Общо препоръки
+  recommendations_count?: number; // Брой препоръки за конкретен елемент
+  saved_count?: number; // Брой пъти запазвано
 }
 
-// Данни свързани с режисьори
+// Данни за режисьори, включително общи данни
 export interface DirectorData extends CommonData {
   director_en: string; // Име на режисьора на английски
   director_bg: string; // Име на режисьора на български
 }
 
-// Данни свързани с актьори
+// Данни за актьори, включително общи данни
 export interface ActorData extends CommonData {
   actor_en: string; // Име на актьора на английски
   actor_bg: string; // Име на актьора на български
 }
 
-// Данни свързани с писатели
+// Данни за писатели, включително общи данни
 export interface WriterData extends CommonData {
   writer_en: string; // Име на писателя на английски
   writer_bg: string; // Име на писателя на български
 }
 
-// Тип данни за роли (режисьор, актьор, писател)
+// Тип за данни, свързани с ролите (режисьори, актьори, писатели)
 export type RoleData = DirectorData[] | ActorData[] | WriterData[];
 
-// Тип данни за филтрирани таблици (съюз от данни за режисьори, актьори и писатели)
+// Тип за филтрирани таблици, обединяващи режисьори, актьори и писатели
 export type FilteredTableData = (DirectorData | ActorData | WriterData)[];
 
 // Данни за потребителите
 export type UsersCountData = {
-  user_count: number; // Брой потребители
+  user_count: number; // Брой на регистрираните потребители
 };
 
+// Данни за потребител
 export interface UserData {
-  id: number; // Идентификатор на потребителя
-  first_name: string; // Първо име
-  last_name: string; // Фамилно име
-  email: string; // Имейл адрес
+  id: number; // Уникален идентификатор на потребителя
+  first_name: string; // Първо име на потребителя
+  last_name: string; // Фамилно име на потребителя
+  email: string; // Имейл адрес на потребителя
 }
 
-// Интерфейс за пропсите на модала за сюжет
+// Пропси за модала, показващ сюжета на филма/сериала
 export interface PlotModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  plot: string;
+  isOpen: boolean; // Статус на модала (отворен/затворен)
+  onClose: () => void; // Функция за затваряне на модала
+  plot: string; // Сюжет на филма/сериала
 }
 
-// Данни свързани с жанрове
+// Данни за популярността на жанровете по години
 export interface GenrePopularityData {
   [year: string]: {
     [genre: string]: {
       genre_en: string; // Жанр на английски
       genre_bg: string; // Жанр на български
-      genre_count: number; // Брой на жанра
+      genre_count: number; // Брой на филми/сериали от този жанр
     };
   };
 }
 
-// Данни свързани с филми
+// Основни данни за филм
 export interface MovieData {
   title_en: string; // Заглавие на филма на английски
-  boxOffice: number | string; // Бокс офис приходи
+  boxOffice: number | string; // Приходи от бокс офис
   imdbRating: number; // Рейтинг в IMDb
   metascore: number; // Metascore рейтинг
   rottenTomatoes: number; // Рейтинг в Rotten Tomatoes
-  type?: "movie" | "series"; // Тип (филм или сериал)
+  type?: "movie" | "series"; // Тип на филма (филм или сериал)
   title_bg: string; // Заглавие на филма на български
 }
 
-// Данни свързани с препоръки
+// Данни за препоръки на филми/сериали
 export interface RecommendationData extends MovieData {
   id: number; // Идентификатор на препоръката
   imdbID: string; // IMDb идентификатор
-  awards: string; // Награди
+  awards: string; // Награди, спечелени от филма
   recommendations: number; // Брой препоръки
   oscar_wins: string; // Спечелени Оскари
   oscar_nominations: string; // Номинации за Оскар
@@ -90,7 +91,7 @@ export interface RecommendationData extends MovieData {
   total_nominations: string; // Общо номинации
 }
 
-// Данни за изчисляване на средни стойности за приходи и рейтинги
+// Изчисляване на средни стойности за приходи и рейтинги
 export interface AverageBoxOfficeAndScores {
   average_box_office: string; // Средни приходи от бокс офис
   average_metascore: string; // Среден Metascore
@@ -98,145 +99,102 @@ export interface AverageBoxOfficeAndScores {
   average_rotten_tomatoes: string; // Среден рейтинг в Rotten Tomatoes
 }
 
-// Данни за страните
+// Данни за страните, от които произлизат филмите
 export interface CountryData {
   country_en: string; // Страна на английски
   country_bg: string; // Страна на български
-  count: number; // Брой филми от тази страна
+  count: number; // Брой филми/сериали от тази страна
 }
 
-// Данни за изчисляване на просперитетто на филми и сериали
+// Изчисляване на просперитет на филми/сериали
 export interface MovieProsperityData {
-  imdbID: string; // IMDb идентификатор
-  title_en: string; // Заглавие на филма на английски
-  title_bg: string; // Заглавие на филма на български
+  imdbID: string; // IMDb идентификатор на филма/сериала
+  title_en: string; // Заглавие на английски
+  title_bg: string; // Заглавие на български
   type: string; // Тип на филма (филм или сериал)
   imdbRating: string; // Рейтинг в IMDb
   metascore: string; // Metascore рейтинг
-  total_box_office: string; // Общо приходи от бокс офис
+  total_box_office: string; // Приходи от бокс офис
   rotten_tomatoes: string; // Рейтинг в Rotten Tomatoes
-  total_recommendations: number; // Брой препоръки
+  total_recommendations: number; // Общо препоръки
   total_wins: string; // Общо спечелени награди
   total_nominations: string; // Общо номинации
-  prosperityScore: number; // Индекс на просперитетто
+  prosperityScore: number; // Индекс на просперитет
   genre_en: string; // Жанр на английски
   genre_bg: string; // Жанр на български
 }
 
-// Структура на данни за популярността на жанровете през времето
+// Структура за популярността на жанровете
 export interface GenreSeriesData {
-  name: string; // Име на жанра (напр. Криминален, Драма)
-  data: { x: string; y: number }[]; // Данни: година (x) и брой жанра (y)
+  name: string; // Име на жанра
+  data: { x: string; y: number }[]; // Година и брой филми/сериали
 }
 
-// Формат на данни за топ жанровете
+// Данни за топ жанровете
 export type HeatmapData = GenreSeriesData[];
 
+// Тип за данни за топ жанровете
 export type TopGenres = {
   genre_en: string;
   genre_bg: string;
   count: number;
 }[];
 
+// Данни за броя на филми и сериали
 export type Count = {
   movies: number;
   series: number;
 };
 
-// Обобщени данни за потребителя (топ препоръки, жанрове и др.)
+// Обобщени данни за потребителя (например топ препоръки и жанрове)
 export type DataType = {
   topRecommendations: {
     recommendationsCount: Count;
-    recommendations: Recommendation[];
-  }; // Топ препоръки
+    recommendations: Recommendation[]; // Топ препоръки
+  };
   topRecommendationsWatchlist: {
     savedCount: Count;
-    watchlist: WatchlistRecommendation[];
-  }; // Топ филми/сериали в списък за гледане
+    watchlist: Recommendation[]; // Топ препоръки в списък за гледане
+  };
   topGenres: TopGenres; // Топ жанрове
   topGenresWatchlist: TopGenres; // Топ жанрове в списък за гледане
-  [key: `sorted${string}By${"RecommendationCount" | "SavedCount"}`]: any[]; // Подредени данни по просперитет
+  [key: `sorted${string}By${"RecommendationCount" | "SavedCount"}`]: any[]; // Подредени данни по препоръки и запазвания
 };
 
-// Категориен тип за роли
+// Категории роли (актьори, режисьори, писатели)
 export type Category = "Actors" | "Directors" | "Writers"; // Роли: Актьори, Режисьори, Писатели
 
+// Данни за препоръки с подробности за филма/сериала
 export interface Recommendation {
   id: number;
-  imdbID: string; // Updated to match "imdbID"
-  title_en: string; // Added for the English title
-  title_bg: string; // Added for the Bulgarian title
-  type: "movie" | "series"; // Added to specify the type of the recommendation
-  awards: string; // No change, still a string for awards information
-  recommendations: number; // Adjusted to number based on the example
-  oscar_wins: string; // Adjusted to match the oscar_wins field
-  oscar_nominations: string; // Adjusted to match the oscar_nominations field
-  total_wins: string; // Adjusted to match the total_wins field
-  total_nominations: string; // Adjusted to match the total_nominations field
-  imdbRating: string; // No change, still a string
-  metascore: string; // No change, still a string
-  boxOffice: string; // No change, still a string
-  prosperityScore: number; // Added for the prosperityScore
-  genre_en: string; // Жанрове на английски
-  genre_bg: string; // Жанрове на български
-  reason: string; // Причина за препоръката
-  description: string; // Описание на филма/сериала
-  year: string; // Година на издаване
-  rated: string; // Оценка за възрастови ограничения
-  released: string; // Дата на издаване
-  runtime: string; // Продължителност на филма/сериала
-  director: string; // Режисьор
-  writer: string; // Сценарист
-  actors: string; // Актьори
-  plot: string; // Сюжет на филма/сериала
-  language: string; // Езици на филма/сериала
-  country: string; // Страни, от които е произведен филмът/сериалът
-  poster: string; // URL за постера на филма/сериала
-  ratings: string; // Рейтинги от различни източници
-  imdbVotes: string; // Брой гласове в IMDb
-  DVD: string; // Достъпност на DVD (ако има)
-  production: string; // Продукция (ако има)
-  website: string; // Уебсайт (ако има)
-  totalSeasons: number | null; // Брой сезони (само за сериали)
-}
-
-export interface WatchlistRecommendation {
-  id: number; // Идентификатор на препоръката
-  user_id: number; // Идентификатор на потребителя, който е направил препоръката
-  imdbID: string; // IMDb идентификатор на филма/сериала
+  imdbID: string; // IMDb идентификатор
   title_en: string; // Заглавие на английски
   title_bg: string; // Заглавие на български
-  genre_en: string; // Жанрове на английски
-  genre_bg: string; // Жанрове на български
+  type: "movie" | "series"; // Тип на препоръката
+  awards: string; // Награди
+  recommendations: number; // Препоръки
+  poster: string; // URL за постера на филма/сериала
+  oscar_wins: string; // Спечелени Оскари
+  oscar_nominations: string; // Номинации за Оскар
+  total_wins: string; // Общо спечелени награди
+  total_nominations: string; // Общо номинации
+  ratings: Rating[]; // Рейтинги от различни източници
+  imdbRating: string; // Рейтинг в IMDb
+  metascore: string; // Метаскор
+  boxOffice: string; // Бокс офис
+  prosperityScore: number; // Индекс на просперитет
+  genre_en: string; // Жанр на английски
+  genre_bg: string; // Жанр на български
   reason: string; // Причина за препоръката
   description: string; // Описание на филма/сериала
   year: string; // Година на издаване
   rated: string; // Оценка за възрастови ограничения
   released: string; // Дата на издаване
-  runtime: string; // Продължителност на филма/сериала
+  runtime: string; // Продължителност
   director: string; // Режисьор
-  writer: string; // Сценарист
+  writer: string; // Сценаристи
   actors: string; // Актьори
-  plot: string; // Сюжет на филма/сериала
-  language: string; // Езици на филма/сериала
-  country: string; // Страни, от които е произведен филмът/сериалът
-  awards: string; // Награди, които е спечелил филмът/сериалът
-  poster: string; // URL за постера на филма/сериала
-  ratings: string; // Рейтинги от различни източници
-  metascore: string; // Метаскор (оценка на критиците)
-  imdbRating: string; // IMDb оценка на филма/сериала
-  imdbVotes: string; // Брой гласове в IMDb
-  type: "movie" | "series"; // Тип на препоръката (филм или сериал)
-  DVD: string; // Достъпност на DVD (ако има)
-  boxOffice: string; // Приходи от боксофиса
-  production: string; // Продукция (ако има)
-  website: string; // Уебсайт (ако има)
-  totalSeasons: number | null; // Брой сезони (само за сериали)
-  oscar_wins: string; // Брой спечелени награди "Оскар"
-  oscar_nominations: string; // Брой номинации за "Оскар"
-  total_wins: string; // Общ брой спечелени награди
-  total_nominations: string; // Общ брой номинации
-  prosperityScore: number; // Процъфтяване (оценка за популярност на филма/сериала)
+  plot: string; // Сюжет
 }
 
 export type Rating = {

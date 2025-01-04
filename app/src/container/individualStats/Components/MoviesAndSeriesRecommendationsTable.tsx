@@ -1,20 +1,15 @@
 import { FC, Fragment, useEffect, useState, useMemo } from "react";
-import {
-  WatchlistRecommendation,
-  Recommendation
-} from "../individualStats-types";
+import { Recommendation } from "../individualStats-types";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import RecommendationCardAlert from "./RecommendationCardAlert";
 
 interface MoviesAndSeriesRecommendationsTableProps {
-  data: Recommendation[] | WatchlistRecommendation[];
+  data: Recommendation[];
   type: "recommendations" | "watchlist";
-  handleBookmarkClick: (
-    movie: Recommendation | WatchlistRecommendation
-  ) => void;
-  bookmarkedMovies: { [key: string]: Recommendation | WatchlistRecommendation };
+  handleBookmarkClick: (movie: Recommendation) => void;
+  bookmarkedMovies: { [key: string]: Recommendation };
 }
 
 const MoviesAndSeriesRecommendationsTable: FC<
@@ -32,14 +27,12 @@ const MoviesAndSeriesRecommendationsTable: FC<
 
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-  const [filteredTableData, setFilteredTableData] = useState<
-    Recommendation[] | WatchlistRecommendation[]
-  >([]);
+  const [filteredTableData, setFilteredTableData] = useState<Recommendation[]>(
+    []
+  );
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
 
-  const [selectedItem, setSelectedItem] = useState<
-    Recommendation | WatchlistRecommendation | null
-  >(null); // State to track selected row
+  const [selectedItem, setSelectedItem] = useState<Recommendation | null>(null); // State to track selected row
 
   useEffect(() => {
     setFilteredTableData(data || []);
@@ -126,7 +119,7 @@ const MoviesAndSeriesRecommendationsTable: FC<
     }
   };
 
-  const handleRowClick = (item: Recommendation | WatchlistRecommendation) => {
+  const handleRowClick = (item: Recommendation) => {
     setSelectedItem(item);
   };
 

@@ -3,20 +3,13 @@ import MoviesAndSeriesRecommendationsTable from "./MoviesAndSeriesRecommendation
 import ActorsDirectorsWritersTable from "./ActorsDirectorsWritersTable";
 import GenresBarChart from "./GenresBarChart";
 import CountWidgets from "./CountWidgets";
-import {
-  Count,
-  DataType,
-  Recommendation,
-  WatchlistRecommendation
-} from "../individualStats-types";
+import { Count, DataType, Recommendation } from "../individualStats-types";
 
 interface AccordionItemProps {
   title: string;
   type: "recommendations" | "watchlist";
   data: DataType;
-  handleBookmarkClick: (
-    movie: Recommendation | WatchlistRecommendation
-  ) => void; // Adjust the signature based on the actual function
+  handleBookmarkClick: (movie: Recommendation) => void; // Adjust the signature based on the actual function
   bookmarkedMovies: {
     [key: string]: any;
   }; // Adjust the type based on your actual data
