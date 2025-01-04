@@ -6,7 +6,7 @@ interface PaginationProps {
   totalItems: number;
   itemsPerPage: number;
   totalTablePages: number;
-  is1546: boolean;
+  isSmallScreen: boolean;
   handlePrevPage: () => void;
   handleNextPage: () => void;
   setCurrentPage: (page: number) => void;
@@ -17,7 +17,7 @@ const Pagination: React.FC<PaginationProps> = ({
   totalItems,
   itemsPerPage,
   totalTablePages,
-  is1546,
+  isSmallScreen,
   handlePrevPage,
   handleNextPage,
   setCurrentPage
@@ -26,7 +26,7 @@ const Pagination: React.FC<PaginationProps> = ({
     <div className="sm:flex items-center">
       <div
         className={`text-defaulttextcolor dark:text-defaulttextcolor/70 text-[${
-          is1546 ? "0.55rem" : "0.70rem"
+          isSmallScreen ? "0.55rem" : "0.70rem"
         }]`}
       >
         Показване на резултати от{" "}
@@ -43,7 +43,7 @@ const Pagination: React.FC<PaginationProps> = ({
         <nav
           aria-label="Page navigation"
           className={`pagination-style-4 ${
-            is1546 ? "text-[0.55rem]" : "text-[0.70rem]"
+            isSmallScreen ? "text-[0.55rem]" : "text-[0.70rem]"
           }`}
         >
           <ul className="ti-pagination mb-0 flex-wrap">
@@ -56,8 +56,8 @@ const Pagination: React.FC<PaginationProps> = ({
                 to="#"
                 onClick={handlePrevPage}
                 style={{
-                  padding: is1546 ? "0.25rem 0.35rem" : "0.2rem 0.45rem",
-                  fontSize: is1546 ? "0.6rem" : "0.7rem",
+                  padding: isSmallScreen ? "0.25rem 0.35rem" : "0.2rem 0.45rem",
+                  fontSize: isSmallScreen ? "0.6rem" : "0.7rem",
                   lineHeight: "1.25"
                 }}
               >
@@ -86,8 +86,10 @@ const Pagination: React.FC<PaginationProps> = ({
                       to="#"
                       onClick={() => setCurrentPage(pageNumber)}
                       style={{
-                        padding: is1546 ? "0.25rem 0.35rem" : "0.2rem 0.45rem",
-                        fontSize: is1546 ? "0.6rem" : "0.7rem",
+                        padding: isSmallScreen
+                          ? "0.25rem 0.35rem"
+                          : "0.2rem 0.45rem",
+                        fontSize: isSmallScreen ? "0.6rem" : "0.7rem",
                         lineHeight: "1.25"
                       }}
                     >
@@ -112,8 +114,10 @@ const Pagination: React.FC<PaginationProps> = ({
                       className="page-link"
                       to="#"
                       style={{
-                        padding: is1546 ? "0.25rem 0.35rem" : "0.2rem 0.45rem",
-                        fontSize: is1546 ? "0.6rem" : "0.7rem",
+                        padding: isSmallScreen
+                          ? "0.25rem 0.35rem"
+                          : "0.2rem 0.45rem",
+                        fontSize: isSmallScreen ? "0.6rem" : "0.7rem",
                         lineHeight: "1.25"
                       }}
                     >
@@ -137,8 +141,8 @@ const Pagination: React.FC<PaginationProps> = ({
                 to="#"
                 onClick={handleNextPage}
                 style={{
-                  padding: is1546 ? "0.25rem 0.35rem" : "0.2rem 0.45rem",
-                  fontSize: is1546 ? "0.6rem" : "0.7rem",
+                  padding: isSmallScreen ? "0.25rem 0.35rem" : "0.2rem 0.45rem",
+                  fontSize: isSmallScreen ? "0.6rem" : "0.7rem",
                   lineHeight: "1.25"
                 }}
               >

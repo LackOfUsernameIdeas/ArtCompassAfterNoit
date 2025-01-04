@@ -4,6 +4,7 @@ import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import RecommendationCardAlert from "./RecommendationCardAlert";
+import Pagination from "../../../components/common/pagination/pagination";
 
 interface MoviesAndSeriesRecommendationsTableProps {
   data: Recommendation[];
@@ -303,149 +304,16 @@ const MoviesAndSeriesRecommendationsTable: FC<
             </div>
           </div>
           <div className="box-footer">
-            <div className="sm:flex items-center">
-              <div
-                className={`text-defaulttextcolor dark:text-defaulttextcolor/70 text-[${
-                  is1557 ? "0.55rem" : "0.70rem"
-                }]`}
-              >
-                Показване на резултати от{" "}
-                <b>
-                  {currentTablePage === 1 ? 1 : (currentTablePage - 1) * 5 + 1}{" "}
-                </b>
-                до{" "}
-                <b>
-                  {currentTablePage === totalTablePages
-                    ? sortedData.length
-                    : currentTablePage * 5}{" "}
-                </b>
-                от общо <b>{sortedData.length}</b>
-                <i className="bi bi-arrow-right ms-2 font-semibold"></i>
-              </div>
-              <div className="ms-auto">
-                <nav
-                  aria-label="Page navigation"
-                  className={`pagination-style-4 ${
-                    is1557 ? "text-[0.55rem]" : "text-[0.70rem]"
-                  }`}
-                >
-                  <ul className="ti-pagination mb-0 flex-wrap">
-                    <li
-                      className={`page-item ${
-                        currentTablePage === 1 ? "disabled" : ""
-                      }`}
-                      style={{
-                        marginRight: "0.25rem"
-                      }}
-                    >
-                      <Link
-                        className="page-link"
-                        to="#"
-                        onClick={handlePrevTablePage}
-                        style={{
-                          padding: is1557
-                            ? "0.25rem 0.35rem"
-                            : "0.2rem 0.45rem",
-                          fontSize: is1557 ? "0.6rem" : "0.7rem",
-                          lineHeight: "1.25"
-                        }}
-                      >
-                        Предишна
-                      </Link>
-                    </li>
-
-                    {Array.from({ length: totalTablePages }).map((_, index) => {
-                      const pageNumber = index + 1;
-
-                      if (
-                        pageNumber === 1 ||
-                        pageNumber === totalTablePages ||
-                        Math.abs(pageNumber - currentTablePage) <= 1
-                      ) {
-                        return (
-                          <li
-                            key={pageNumber}
-                            className={`page-item ${
-                              pageNumber === currentTablePage ? "active" : ""
-                            }`}
-                            style={{ marginRight: "0.25rem" }}
-                          >
-                            <Link
-                              className="page-link"
-                              to="#"
-                              onClick={() => setCurrentTablePage(pageNumber)}
-                              style={{
-                                padding: is1557
-                                  ? "0.25rem 0.35rem"
-                                  : "0.2rem 0.45rem",
-                                fontSize: is1557 ? "0.6rem" : "0.7rem",
-                                lineHeight: "1.25"
-                              }}
-                            >
-                              {pageNumber}
-                            </Link>
-                          </li>
-                        );
-                      }
-
-                      if (
-                        (pageNumber === currentTablePage - 2 ||
-                          pageNumber === currentTablePage + 2) &&
-                        totalTablePages > 5
-                      ) {
-                        return (
-                          <li
-                            key={pageNumber}
-                            className="page-item disabled"
-                            style={{ marginRight: "0.25rem" }}
-                          >
-                            <Link
-                              className="page-link"
-                              to="#"
-                              style={{
-                                padding: is1557
-                                  ? "0.25rem 0.35rem"
-                                  : "0.2rem 0.45rem",
-                                fontSize: is1557 ? "0.6rem" : "0.7rem",
-                                lineHeight: "1.25"
-                              }}
-                            >
-                              ...
-                            </Link>
-                          </li>
-                        );
-                      }
-
-                      return null;
-                    })}
-
-                    <li
-                      className={`page-item ${
-                        currentTablePage === totalTablePages ? "disabled" : ""
-                      }`}
-                      style={{
-                        marginLeft: "0.25rem"
-                      }}
-                    >
-                      <Link
-                        className="page-link"
-                        to="#"
-                        onClick={handleNextTablePage}
-                        style={{
-                          padding: is1557
-                            ? "0.25rem 0.35rem"
-                            : "0.2rem 0.45rem",
-                          fontSize: is1557 ? "0.6rem" : "0.7rem",
-                          lineHeight: "1.25"
-                        }}
-                      >
-                        Следваща
-                      </Link>
-                    </li>
-                  </ul>
-                </nav>
-              </div>
-            </div>
+            <Pagination
+              currentPage={currentTablePage}
+              totalItems={totalItems}
+              itemsPerPage={itemsPerTablePage}
+              totalTablePages={totalTablePages}
+              isSmallScreen={is1557}
+              handlePrevPage={handlePrevTablePage}
+              handleNextPage={handleNextTablePage}
+              setCurrentPage={setCurrentTablePage}
+            />
           </div>
         </div>
       </div>
