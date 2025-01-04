@@ -144,7 +144,7 @@ const MoviesAndSeriesRecommendationsTable: FC<
           <div className="box-header justify-between">
             <div
               className={`box-title whitespace-nowrap overflow-hidden text-ellipsis ${
-                is1399 ? "max-w-full" : is1630 ? "max-w-[40rem]" : "max-w-full"
+                is1399 ? "max-w-full" : is1630 ? "max-w-[20rem]" : "max-w-full"
               }`}
               data-tooltip-id="box-title-tooltip"
               data-tooltip-content={
