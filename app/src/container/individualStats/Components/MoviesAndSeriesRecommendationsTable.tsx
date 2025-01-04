@@ -1,5 +1,5 @@
 import { FC, Fragment, useEffect, useState, useMemo, useCallback } from "react";
-import { Recommendation } from "../individualStats-types";
+import { Rating, Recommendation } from "../individualStats-types";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
@@ -61,13 +61,39 @@ const MoviesAndSeriesRecommendationsTable: FC<
     }
 
     return [...filteredByTypeData].sort((a, b) => {
-      const valueA = a[sortBy as keyof typeof a];
-      const valueB = b[sortBy as keyof typeof b];
+      const parseNumber = (value: any) => {
+        // Extract numeric value from formatted strings (e.g., "1,000,000" -> 1000000)
+        if (typeof value === "string") {
+          return parseFloat(value.replace(/,/g, ""));
+        }
+        return value || 0; // Fallback for null or undefined
+      };
+
+      const extractNumericValue = (
+        value: string | number | Rating[]
+      ): number => {
+        if (typeof value === "string") {
+          // Clean up the string and parse as a float
+          return parseFloat(value.replace(/[^\d.-]/g, ""));
+        } else if (typeof value === "number") {
+          // Return the number directly
+          return value;
+        } else if (Array.isArray(value)) {
+          // Handle Rating[] case (return 0 or a calculated value based on your needs)
+          return 0; // Default value or implement a custom logic
+        }
+        return 0; // Fallback value for unexpected cases
+      };
+
+      const valueA = extractNumericValue(a[sortBy as keyof typeof a]);
+      const valueB = extractNumericValue(b[sortBy as keyof typeof b]);
+
+      console.log("a[sortBy as keyof typeof a]", a[sortBy as keyof typeof a]);
+      console.log("b[sortBy as keyof typeof b]", b[sortBy as keyof typeof b]);
 
       if (valueA === valueB) return 0;
-      return sortOrder === "asc"
-        ? (valueA as number) - (valueB as number)
-        : (valueB as number) - (valueA as number);
+
+      return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
     });
   }, [filteredTableData, sortBy, sortOrder]);
 
