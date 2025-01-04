@@ -14,6 +14,7 @@ import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { tableCategoryDisplayNames } from "../individualStats-data";
 import { Tooltip } from "react-tooltip";
+import Pagination from "../../../components/common/pagination/pagination";
 
 interface ActorsDirectorsWritersTableProps {
   data: DataType;
@@ -237,7 +238,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
             </div>
           </div>
           <div className="box-footer">
-            <div className="sm:flex items-center">
+            {/* <div className="sm:flex items-center">
               <div
                 className={`text-defaulttextcolor dark:text-defaulttextcolor/70 text-[${
                   is1546 ? "0.55rem" : "0.70rem"
@@ -375,7 +376,17 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                   </ul>
                 </nav>
               </div>
-            </div>
+            </div> */}
+            <Pagination
+              currentPage={currentTablePage}
+              totalItems={totalItems}
+              itemsPerPage={itemsPerTablePage}
+              totalTablePages={totalTablePages}
+              is1546={is1546}
+              handlePrevPage={handlePrevTablePage}
+              handleNextPage={handleNextTablePage}
+              setCurrentPage={setCurrentTablePage}
+            />
           </div>
         </div>
       </div>
