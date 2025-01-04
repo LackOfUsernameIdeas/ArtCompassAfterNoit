@@ -165,9 +165,12 @@ export const fetchData = async (
       })
         .then((res) => res.json())
         .then((data) => {
+          // Replace response with an empty array if it contains a `message` field
+          const processedData =
+            data && typeof data === "object" && data.message ? [] : data;
           setData((prevState: DataType) => ({
             ...prevState,
-            [key]: data
+            [key]: processedData
           }));
         })
         .catch((error) => console.error(`Error fetching ${key}:`, error));
