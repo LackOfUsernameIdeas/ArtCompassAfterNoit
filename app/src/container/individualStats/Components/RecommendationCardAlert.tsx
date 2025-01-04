@@ -10,7 +10,7 @@ import {
 import { translate } from "../helper_functions";
 
 interface RecommendationCardAlertProps {
-  selectedItem: Recommendation | WatchlistRecommendation;
+  selectedItem: Recommendation | WatchlistRecommendation | null;
   onClose: () => void;
 }
 
@@ -49,10 +49,11 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   };
 
   useEffect(() => {
-    if (selectedItem?.director) {
+    if (selectedItem?.director !== null) {
       async function fetchDirectorTranslation() {
-        const translated = await translate(selectedItem.director);
-        setTranslatedDirectors(translated);
+        const translated =
+          selectedItem?.director && (await translate(selectedItem.director));
+        translated && setTranslatedDirectors(translated);
       }
       fetchDirectorTranslation();
     }
@@ -61,8 +62,9 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   useEffect(() => {
     if (selectedItem?.writer) {
       async function fetchWriterTranslation() {
-        const translated = await translate(selectedItem.writer);
-        setTranslatedWriters(translated);
+        const translated =
+          selectedItem?.writer && (await translate(selectedItem.writer));
+        translated && setTranslatedWriters(translated);
       }
       fetchWriterTranslation();
     }
@@ -71,8 +73,9 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   useEffect(() => {
     if (selectedItem?.actors) {
       async function fetchActorsTranslation() {
-        const translated = await translate(selectedItem.actors);
-        setTranslatedActors(translated);
+        const translated =
+          selectedItem?.actors && (await translate(selectedItem.actors));
+        translated && setTranslatedActors(translated);
       }
       fetchActorsTranslation();
     }
@@ -81,8 +84,9 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   useEffect(() => {
     if (selectedItem?.awards) {
       async function fetchAwardsTranslation() {
-        const translated = await translate(selectedItem.awards);
-        setTranslatedAwards(translated);
+        const translated =
+          selectedItem?.awards && (await translate(selectedItem.awards));
+        translated && setTranslatedAwards(translated);
       }
       fetchAwardsTranslation();
     }
