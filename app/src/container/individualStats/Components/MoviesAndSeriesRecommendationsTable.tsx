@@ -1,4 +1,4 @@
-import { FC, Fragment, useEffect, useState, useMemo } from "react";
+import { FC, Fragment, useEffect, useState, useMemo, useCallback } from "react";
 import { Recommendation } from "../individualStats-types";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
@@ -18,26 +18,32 @@ const MoviesAndSeriesRecommendationsTable: FC<
 > = ({ data, type, handleBookmarkClick, bookmarkedMovies }) => {
   const [currentTablePage, setCurrentTablePage] = useState(1);
   const itemsPerTablePage = 5;
-
   const [sortBy, setSortBy] = useState<keyof Recommendation | "default">(
     "default"
   );
-  const [sortType, setSortType] = useState<"recommendations" | "watchlist">(
-    type === "recommendations" ? "recommendations" : "watchlist"
-  );
-
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-
-  const [filteredTableData, setFilteredTableData] = useState<Recommendation[]>(
-    []
-  );
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<Recommendation | null>(null);
 
-  const [selectedItem, setSelectedItem] = useState<Recommendation | null>(null); // State to track selected row
+  const [filteredTableData, setFilteredTableData] =
+    useState<Recommendation[]>(data);
 
   useEffect(() => {
     setFilteredTableData(data || []);
   }, [data]);
+
+  const sortOptions = useMemo(() => {
+    const options = [
+      { label: "Просперитет", value: "prosperityScore" },
+      { label: "Боксофис", value: "boxOffice" }
+    ];
+
+    if (type === "recommendations") {
+      options.unshift({ label: "Брой Препоръки", value: "recommendations" });
+    }
+
+    return options;
+  }, [type]);
 
   const sortedData = useMemo(() => {
     const filteredByTypeData = ["boxOffice", "prosperityScore"].includes(sortBy)
@@ -67,62 +73,29 @@ const MoviesAndSeriesRecommendationsTable: FC<
     return sortedData.slice(start, start + itemsPerTablePage);
   }, [sortedData, currentTablePage]);
 
-  const handlePrevTablePage = () => {
-    if (currentTablePage > 1) {
-      setCurrentTablePage((prev) => prev - 1);
-    }
-  };
+  const handlePrevTablePage = useCallback(() => {
+    if (currentTablePage > 1) setCurrentTablePage((prev) => prev - 1);
+  }, [currentTablePage]);
 
-  const handleNextTablePage = () => {
-    if (currentTablePage < totalTablePages) {
+  const handleNextTablePage = useCallback(() => {
+    if (currentTablePage < totalTablePages)
       setCurrentTablePage((prev) => prev + 1);
-    }
-  };
+  }, [currentTablePage, totalTablePages]);
 
   const is1399 = useMediaQuery({ query: "(max-width: 1399px)" });
   const is1557 = useMediaQuery({ query: "(max-width: 1557px)" });
-  const is1630 = useMediaQuery({ query: "(max-width: 1630px)" });
-
-  const sortOptions = useMemo(() => {
-    const options = [
-      { label: "Просперитет", value: "prosperityScore" },
-      { label: "Боксофис", value: "boxOffice" }
-    ];
-
-    if (sortType === "recommendations") {
-      options.unshift({ label: "Брой Препоръки", value: "recommendations" });
-    }
-
-    return options;
-  }, [sortType]);
-
-  const sortTitles: Record<string, string> = {
-    recommendations: "Най-Често Препоръчваните Филми и Сериали За Мен",
-    prosperityScore: "Филми и Сериали По Просперитет",
-    boxOffice: "Най-Печеливши Филми и Сериали"
-  };
 
   const toggleSortMenu = () => setIsSortMenuOpen((prev) => !prev);
 
-  const handleSortOptionSelect = (value: keyof Recommendation) => {
+  const handleSortOptionSelect = useCallback((value: keyof Recommendation) => {
     setSortBy(value);
-    setIsSortMenuOpen(false); // Close the menu after selecting an option
-  };
+    setIsSortMenuOpen(false);
+  }, []);
 
-  const getTranslatedType = (type: string) => {
-    switch (type) {
-      case "movie":
-        return "филм";
-      case "series":
-        return "сериал";
-      default:
-        return type;
-    }
-  };
+  const getTranslatedType = (type: string) =>
+    type === "movie" ? "филм" : type === "series" ? "сериал" : type;
 
-  const handleRowClick = (item: Recommendation) => {
-    setSelectedItem(item);
-  };
+  const handleRowClick = (item: Recommendation) => setSelectedItem(item);
 
   return (
     <Fragment>
@@ -132,28 +105,23 @@ const MoviesAndSeriesRecommendationsTable: FC<
         handleBookmarkClick={handleBookmarkClick}
         bookmarkedMovies={bookmarkedMovies}
       />
-
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
         <div className="box custom-card h-[27.75rem]">
           <div className="box-header justify-between">
             <div
               className={`box-title whitespace-nowrap overflow-hidden text-ellipsis ${
-                is1399 ? "max-w-full" : is1630 ? "max-w-[20rem]" : "max-w-full"
+                is1399 ? "max-w-full" : "max-w-[20rem]"
               }`}
               data-tooltip-id="box-title-tooltip"
               data-tooltip-content={
-                sortType == "watchlist"
-                  ? "Списък За Гледане"
-                  : sortBy === "default"
-                  ? "Най-Често Препоръчваните Филми и Сериали За Мен"
-                  : sortTitles[sortBy]
+                sortBy === "default"
+                  ? "Най-Често Препоръчаните Филми и Сериали За Мен"
+                  : sortOptions.find((opt) => opt.value === sortBy)?.label
               }
             >
-              {sortType == "watchlist"
-                ? "Списък За Гледане"
-                : sortBy === "default"
-                ? "Най-Често Препоръчваните Филми и Сериали За Мен"
-                : sortTitles[sortBy]}
+              {sortBy === "default"
+                ? "Най-Често Препоръчаните Филми и Сериали За Мен"
+                : sortOptions.find((opt) => opt.value === sortBy)?.label}
             </div>
             <Tooltip id="box-title-tooltip" />
             <div className="relative flex items-center space-x-2">
@@ -208,7 +176,6 @@ const MoviesAndSeriesRecommendationsTable: FC<
                   ))}
                 </ul>
               </div>
-
               <button
                 className="px-3 py-1.5 text-[0.85rem] bg-primary text-white border border-primary rounded-sm text-base font-medium hover:bg-primary/10 transition-all flex items-center justify-center"
                 onClick={() => {
@@ -232,45 +199,19 @@ const MoviesAndSeriesRecommendationsTable: FC<
             <div className="overflow-x-auto">
               <table className="table min-w-full whitespace-nowrap table-hover border table-bordered no-hover-text">
                 <thead>
-                  <tr className="border border-inherit border-solid dark:border-defaultborder/10">
-                    <th scope="col" className="!text-start !text-[0.85rem]">
-                      #
-                    </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
-                      Заглавие
-                    </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
-                      Тип
-                    </th>
-                    {sortType == "recommendations" && (
-                      <th scope="col" className="!text-start !text-[0.85rem]">
-                        Брой Препоръки
-                      </th>
-                    )}
-                    <th scope="col" className="!text-start !text-[0.85rem]">
-                      Просперитет
-                    </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
-                      Боксофис
-                    </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
-                      Оскар Победи
-                    </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
-                      Оскар Номинации
-                    </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
-                      Общо Победи
-                    </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
-                      Общо Номинации
-                    </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
-                      IMDb Рейтинг
-                    </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
-                      Metascore
-                    </th>
+                  <tr className="border border-inherit">
+                    <th>#</th>
+                    <th>Заглавие</th>
+                    <th>Тип</th>
+                    {type === "recommendations" && <th>Брой Препоръки</th>}
+                    <th>Просперитет</th>
+                    <th>Боксофис</th>
+                    <th>Оскар Победи</th>
+                    <th>Оскар Номинации</th>
+                    <th>Общо Победи</th>
+                    <th>Общо Номинации</th>
+                    <th>IMDb Рейтинг</th>
+                    <th>Metascore</th>
                   </tr>
                 </thead>
                 <tbody className="no-hover-text">
@@ -285,7 +226,7 @@ const MoviesAndSeriesRecommendationsTable: FC<
                       </td>
                       <td>{item.title_bg}</td>
                       <td>{getTranslatedType(item.type)}</td>
-                      {sortType == "recommendations" &&
+                      {type == "recommendations" &&
                         "recommendations" in item && (
                           <td>{item.recommendations}</td>
                         )}
