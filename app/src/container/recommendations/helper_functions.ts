@@ -476,6 +476,48 @@ export const saveRecommendation = async (
 };
 
 /**
+ * Проверява дали препоръката вече съществува в списъка за гледане на потребителя.
+ *
+ * @async
+ * @function checkRecommendationExistsInWatchlist
+ * @param {string} imdbID - IMDb ID на препоръката.
+ * @param {string | null} token - Токен за автентикация на потребителя.
+ * @returns {Promise<boolean>} - Връща true, ако препоръката вече съществува.
+ * @throws {Error} - Хвърля грешка, ако проверката не може да бъде извършена.
+ */
+export const checkRecommendationExistsInWatchlist = async (
+  imdbID: string,
+  token: string | null
+): Promise<boolean> => {
+  try {
+    const response = await fetch(
+      `${
+        import.meta.env.VITE_API_BASE_URL
+      }/check-for-recommendation-in-watchlist`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ token, imdbID })
+      }
+    );
+
+    if (response.status === 404) {
+      throw new Error("Грешка при проверка на списъка за гледане.");
+    }
+
+    const result = await response.json();
+    console.log("result: ", result.exists, imdbID);
+
+    return result.exists || false;
+  } catch (error) {
+    console.error("Грешка при проверката:", error);
+    return false;
+  }
+};
+
+/**
  * Записва препоръка за филм или сериал в списъка за гледане на потребителя.
  * Препоръката съдържа подробности като заглавие, жанр, рейтинг и други.
  * След успешното записване, данните се изпращат до сървъра чрез съответния API маршрут.
@@ -494,6 +536,17 @@ export const saveToWatchlist = async (
   try {
     if (!recommendation || typeof recommendation !== "object") {
       console.warn("Няма валидни данни за препоръката.");
+      return;
+    }
+
+    // Проверка дали съществува в списъка за гледане
+    const exists = await checkRecommendationExistsInWatchlist(
+      recommendation.imdbID,
+      token
+    );
+
+    if (exists) {
+      console.log("Препоръката вече е добавена в списъка за гледане.");
       return;
     }
 

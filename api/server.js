@@ -666,11 +666,8 @@ app.post("/check-for-recommendation-in-watchlist", (req, res) => {
             .json({ error: "Database error", details: error });
         }
 
-        if (results.length > 0) {
-          return res.status(200).json({ exists: true });
-        } else {
-          return res.status(404).json({ exists: false });
-        }
+        // Always respond with 200 and include the 'exists' flag
+        return res.status(200).json({ exists: results.length > 0 });
       }
     );
   });
