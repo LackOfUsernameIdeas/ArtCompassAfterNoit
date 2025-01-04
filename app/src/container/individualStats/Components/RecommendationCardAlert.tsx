@@ -274,7 +274,9 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                   </li>
                   <li>
                     <strong className="text-primary">Боксофис:</strong>{" "}
-                    {selectedItem.boxOffice || "N/A"}
+                    {selectedItem.boxOffice === "$0"
+                      ? "N/A"
+                      : selectedItem.boxOffice || "N/A"}
                   </li>
                 </ul>
               </div>
