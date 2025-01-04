@@ -200,6 +200,11 @@ const removeFromWatchlist = (userId, imdbID, callback) => {
   db.query(query, values, callback);
 };
 
+const checkRecommendationExistsInWatchlist = (userId, imdbID, callback) => {
+  const query = "SELECT * FROM watchlist WHERE user_id = ? AND imdbID = ?";
+  db.query(query, [userId, imdbID], callback);
+};
+
 const saveUserPreferences = (
   userId,
   preferred_genres_en,
@@ -3427,6 +3432,7 @@ module.exports = {
   saveRecommendation,
   saveToWatchlist,
   removeFromWatchlist,
+  checkRecommendationExistsInWatchlist,
   saveUserPreferences,
   getUsersCount,
   getAverageBoxOfficeAndScores,

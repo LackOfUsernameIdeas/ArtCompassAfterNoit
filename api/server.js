@@ -637,6 +637,45 @@ app.delete("/remove-from-watchlist", (req, res) => {
   });
 });
 
+// Изтриване на препоръка от списъка за гледане
+app.post("/check-for-recommendation-in-watchlist", (req, res) => {
+  const { token, imdbID } = req.body;
+
+  if (!imdbID) {
+    return res.status(400).json({ error: "IMDb ID is required" });
+  }
+
+  if (!token) {
+    return res.status(401).json({ error: "Token is required" });
+  }
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: "Invalid token" });
+    }
+
+    const userId = decoded.id;
+
+    db.checkRecommendationExistsInWatchlist(
+      userId,
+      imdbID,
+      (error, results) => {
+        if (error) {
+          return res
+            .status(500)
+            .json({ error: "Database error", details: error });
+        }
+
+        if (results.length > 0) {
+          return res.status(200).json({ exists: true });
+        } else {
+          return res.status(404).json({ exists: false });
+        }
+      }
+    );
+  });
+});
+
 // Вземане на данни за общ брой на потребители в платформата
 app.get("/stats/platform/users-count", (req, res) => {
   db.getUsersCount((err, result) => {
