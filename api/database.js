@@ -1818,9 +1818,20 @@ const getUsersWatchlist = (userId, callback) => {
         (item.metascore || 0) * weights.avg_metascore
       ).toFixed(2);
 
+      // Parse and normalize the box office value
+      const totalBoxOffice = item.boxOffice
+        ? parseFloat(item.boxOffice.replace(/[$,]/g, "")) || 0
+        : 0; // Handle undefined boxOffice
+
+      // Format the box office value with dollar sign and commas
+      const formattedBoxOffice = totalBoxOffice
+        ? `$${totalBoxOffice.toLocaleString()}`
+        : "$0";
+
       return {
         ...item,
-        prosperityScore: parseFloat(prosperityScore)
+        prosperityScore: parseFloat(prosperityScore),
+        boxOffice: formattedBoxOffice // Add formatted boxOffice
       };
     });
 
