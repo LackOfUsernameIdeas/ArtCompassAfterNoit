@@ -84,6 +84,7 @@ const Recommendations: FC<RecommendationsProps> = () => {
       return updatedBookmarks; // Return the updated bookmarks object
     });
   };
+  console.log("bookmarkedMovies: ", bookmarkedMovies);
 
   const handleDismiss = () => {
     setAlertVisible(false);
@@ -108,6 +109,7 @@ const Recommendations: FC<RecommendationsProps> = () => {
         <Quiz
           bookmarkedMovies={bookmarkedMovies}
           handleBookmarkClick={handleBookmarkClick}
+          setBookmarkedMovies={setBookmarkedMovies}
         />
       </FadeInWrapper>
     </>

@@ -87,6 +87,11 @@ export interface UserPreferences {
 export interface QuizProps {
   handleBookmarkClick: (movie: Movie) => void; // handleBookmarkClick е функция
   bookmarkedMovies: { [key: string]: Movie };
+  setBookmarkedMovies: React.Dispatch<
+    React.SetStateAction<{
+      [key: string]: any;
+    }>
+  >;
 }
 
 // Интерфейс за компонента с препоръки
@@ -120,6 +125,11 @@ export interface QuizQuestionProps {
   showViewRecommendations: boolean; // Флаг за показване на препоръките
   alreadyHasRecommendations: boolean; // Флаг за проверка дали вече има препоръки
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>; // Функция за задаване на списък с препоръки
+  setBookmarkedMovies: React.Dispatch<
+    React.SetStateAction<{
+      [key: string]: any;
+    }>
+  >;
 }
 
 // Интерфейс за пропсите на компонентата за преглед на препоръки
@@ -151,12 +161,22 @@ export interface ConfirmationModalProps {
     setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
     setSubmitCount: React.Dispatch<React.SetStateAction<number>>,
     setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
+    setBookmarkedMovies: React.Dispatch<
+      React.SetStateAction<{
+        [key: string]: any;
+      }>
+    >,
     userPreferences: UserPreferences,
     token: string | null,
     submitCount: number
   ) => Promise<void>;
   setSubmitCount: React.Dispatch<React.SetStateAction<number>>; // Функция за задаване на броя на изпратените заявки
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>; // Функция за задаване на списък с препоръки
+  setBookmarkedMovies: React.Dispatch<
+    React.SetStateAction<{
+      [key: string]: any;
+    }>
+  >;
   userPreferences: UserPreferences; // Предпочитания на потребителя
   token: string | null; // Токен за автентикация
   submitCount: number; // Броя на изпратените заявки

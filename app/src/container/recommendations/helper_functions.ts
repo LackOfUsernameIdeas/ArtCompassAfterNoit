@@ -206,6 +206,11 @@ export const generateMovieRecommendations = async (
   date: string,
   userPreferences: UserPreferences,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
+  setBookmarkedMovies: React.Dispatch<
+    React.SetStateAction<{
+      [key: string]: any;
+    }>
+  >,
   token: string | null
 ) => {
   const {
@@ -361,12 +366,32 @@ export const generateMovieRecommendations = async (
               totalSeasons: omdbData.totalSeasons
             };
 
+            // Първо, задаваме списъка с препоръки
             setRecommendationList((prevRecommendations) => [
               ...prevRecommendations,
               recommendationData
             ]);
 
-            await saveRecommendation(recommendationData, date, token);
+            // След това изпълняваме проверката и записа паралелно, използвайки
+            const checkAndSaveRecommendation = async () => {
+              // Проверяваме дали филмът съществува в таблицата за watchlist
+              const existsInWatchlist =
+                await checkRecommendationExistsInWatchlist(imdbId, token);
+
+              // Ако филмът не съществува в watchlist, добавяме го към "bookmarkedMovies" с информация за ID и статус
+              setBookmarkedMovies((prevMovies) => {
+                return {
+                  ...prevMovies,
+                  [recommendationData.imdbID]: recommendationData
+                };
+              });
+
+              // Записваме препоръката в базата данни
+              await saveRecommendation(recommendationData, date, token);
+            };
+
+            // Извикваме функцията, за да изпълним и двете операции
+            checkAndSaveRecommendation();
           } else {
             console.log(`IMDb ID not found for ${movieName}`);
           }
@@ -700,6 +725,11 @@ export const handleSubmit = async (
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
   setSubmitCount: React.Dispatch<React.SetStateAction<number>>,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
+  setBookmarkedMovies: React.Dispatch<
+    React.SetStateAction<{
+      [key: string]: any;
+    }>
+  >,
   userPreferences: UserPreferences,
   token: string | null,
   submitCount: number
@@ -768,6 +798,7 @@ export const handleSubmit = async (
         date,
         userPreferences,
         setRecommendationList,
+        setBookmarkedMovies,
         token
       );
       setSubmitCount((prevCount) => prevCount + 1);
