@@ -16,6 +16,7 @@ import ActorsDirectorsWritersTable from "./Components/ActorsDirectorsWritersTabl
 import MoviesAndSeriesRecommendationsTable from "./Components/MoviesAndSeriesRecommendationsTable";
 import GenresBarChart from "./Components/GenresBarChart";
 import CountWidgets from "./Components/CountWidgets";
+import BookmarkAlert from "./Components/BookmarkAlert";
 
 interface IndividualStatsProps {}
 
@@ -52,7 +53,9 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
   const [bookmarkedMovies, setBookmarkedMovies] = useState<{
     [key: string]: any;
   }>({});
+  const [alertVisible, setAlertVisible] = useState(false); // To control alert visibility
   const [currentBookmarkStatus, setCurrentBookmarkStatus] = useState(false); // Track current bookmark status
+
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
@@ -149,6 +152,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
       }
 
       setCurrentBookmarkStatus(!isBookmarked); // Update the current bookmark status
+      setAlertVisible(true); // Show the alert
 
       return updatedBookmarks; // Return the updated bookmarks object
     });
@@ -184,6 +188,9 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
       </FadeInWrapper>
     );
   }
+  const handleDismiss = () => {
+    setAlertVisible(false);
+  };
 
   return (
     <FadeInWrapper>
@@ -192,6 +199,12 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
           message={notification.message}
           type={notification.type}
           onClose={handleNotificationClose}
+        />
+      )}
+      {alertVisible && (
+        <BookmarkAlert
+          isBookmarked={currentBookmarkStatus}
+          onDismiss={handleDismiss}
         />
       )}
       <Fragment>
