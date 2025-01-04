@@ -3,28 +3,28 @@ import { Dispatch, SetStateAction } from "react";
 // Вида на уведомлението.
 export type NotificationType = "success" | "error" | "warning";
 
-// Интерфейс за уведомление. Включва съобщението и вида на уведомлението.
+// Интерфейс за уведомление, което съдържа съобщение и тип на уведомлението.
 export interface NotificationState {
   message: string;
   type: NotificationType;
 }
 
-// Интерфейс за жанр с английско и българско име
+// Интерфейс за жанр с английско и българско име.
 export interface Genre {
-  en: string;
-  bg: string;
+  en: string; // Английско име на жанра
+  bg: string; // Българско име на жанра
 }
 
-// Интерфейс за рейтинг на филм с източник и стойност
+// Интерфейс за рейтинг на филм с източник и стойност.
 export interface Rating {
-  Source: string;
-  Value: string;
+  Source: string; // Източник на рейтинга
+  Value: string; // Стойност на рейтинга
 }
 
-// Интерфейс за въпрос с възможности и стойности
+// Интерфейс за въпрос с възможности и стойности.
 export interface Question {
   question: string; // Текст на въпроса
-  options?: string[] | { en: string; bg: string }[]; // За падащо меню или множествен избор
+  options?: string[] | { en: string; bg: string }[]; // Падащо меню или множествен избор
   isMultipleChoice?: boolean; // Флаг за множествен избор
   isInput?: boolean; // Флаг за въпрос, изискващ текстов вход
   value: any; // Стойност на отговора
@@ -33,7 +33,7 @@ export interface Question {
   description?: string; // Допълнително описание на въпроса
 }
 
-// Интерфейс за филм с всички основни данни за филма
+// Интерфейс за филм с всички основни данни за филма.
 export interface Movie {
   id: string; // ID на филма
   user_id: string; // ID на потребителя, свързан с филма
@@ -68,7 +68,7 @@ export interface Movie {
   date: string; // Дата на въвеждане на данните
 }
 
-// Интерфейс за предпочитания на потребителя
+// Интерфейс за предпочитания на потребителя.
 export interface UserPreferences {
   type: string; // Вид на предпочитанията
   genres: { en: string; bg: string }[]; // Жанрове на английски и български
@@ -84,41 +84,40 @@ export interface UserPreferences {
   targetGroup: string; // Целева група
 }
 
+// Пропс за компонентата Quiz, свързана с маркирането на филми.
 export interface QuizProps {
-  handleBookmarkClick: (movie: Movie) => void; // handleBookmarkClick е функция
-  bookmarkedMovies: { [key: string]: Movie };
+  handleBookmarkClick: (movie: Movie) => void; // Функция за маркиране на филм
+  bookmarkedMovies: { [key: string]: Movie }; // Списък с маркирани филми
   setBookmarkedMovies: React.Dispatch<
-    React.SetStateAction<{
-      [key: string]: any;
-    }>
-  >;
+    React.SetStateAction<{ [key: string]: any }>
+  >; // Функция за актуализиране на маркираните филми
 }
 
-// Интерфейс за компонента с препоръки
+// Пропс за компонентата Recommendations, отговорна за показване на препоръки.
 export interface RecommendationsProps {
   recommendationList: Movie[]; // Списък с препоръчани филми
-  handleBookmarkClick: (movie: Movie) => void; // handleBookmarkClick е функция
-  bookmarkedMovies: { [key: string]: Movie };
+  handleBookmarkClick: (movie: Movie) => void; // Функция за маркиране на филм
+  bookmarkedMovies: { [key: string]: Movie }; // Списък с маркирани филми
 }
 
-// Интерфейс за пропсите на компонентата за филмова карта
+// Пропс за компонентата RecommendationCard, която показва информация за филм.
 export interface RecommendationCardProps {
   recommendationList: Movie[]; // Списък с препоръчани филми
   currentIndex: number; // Текущ индекс на филма
   isExpanded: boolean; // Флаг дали картата е разширена
   openModal: () => void; // Функция за отваряне на модала
-  handleBookmarkClick: (movie: Movie) => void; // handleBookmarkClick е функция
-  bookmarkedMovies: { [key: string]: Movie };
+  handleBookmarkClick: (movie: Movie) => void; // Функция за маркиране на филм
+  bookmarkedMovies: { [key: string]: Movie }; // Списък с маркирани филми
 }
 
-// Интерфейс за пропсите на модала за сюжет
+// Пропс за компонентата PlotModal, показваща сюжетната линия на филма.
 export interface PlotModalProps {
   recommendationList: Movie[]; // Списък с препоръчани филми
   currentIndex: number; // Текущ индекс на филма
   closeModal: () => void; // Функция за затваряне на модала
 }
 
-// Интерфейс за пропсите на компонентата с въпросите
+// Пропс за компонентата QuizQuestion, която съдържа въпросите и опции.
 export interface QuizQuestionProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието за зареждане
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието за изпращане
@@ -126,13 +125,11 @@ export interface QuizQuestionProps {
   alreadyHasRecommendations: boolean; // Флаг за проверка дали вече има препоръки
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>; // Функция за задаване на списък с препоръки
   setBookmarkedMovies: React.Dispatch<
-    React.SetStateAction<{
-      [key: string]: any;
-    }>
-  >;
+    React.SetStateAction<{ [key: string]: any }>
+  >; // Функция за актуализиране на маркираните филми
 }
 
-// Интерфейс за пропсите на компонентата за преглед на препоръки
+// Пропс за компонентата ViewRecommendations, която показва резултатите от препоръките.
 export interface ViewRecommendationsProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието за зареждане
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието за изпращане
@@ -141,15 +138,24 @@ export interface ViewRecommendationsProps {
 
 // Интерфейс за пропсите на модала за потвърждение
 export interface ConfirmationModalProps {
+  // Функция за задаване на уведомления с тип и съобщение
   setNotification: React.Dispatch<
     React.SetStateAction<{
       message: string;
       type: "success" | "error" | "warning";
     } | null>
   >;
+
+  // Функция за задаване на състоянието за зареждане
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+
+  // Функция за задаване на състоянието за изпращане
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
+
+  // Функция за задаване на състоянието за отваряне на модала
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+
+  // Функция за обработка на изпращането на заявка
   handleSubmit: (
     setNotification: React.Dispatch<
       React.SetStateAction<{
@@ -170,14 +176,26 @@ export interface ConfirmationModalProps {
     token: string | null,
     submitCount: number
   ) => Promise<void>;
-  setSubmitCount: React.Dispatch<React.SetStateAction<number>>; // Функция за задаване на броя на изпратените заявки
-  setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>; // Функция за задаване на списък с препоръки
+
+  // Функция за задаване на броя на изпратените заявки
+  setSubmitCount: React.Dispatch<React.SetStateAction<number>>;
+
+  // Функция за задаване на списък с препоръки
+  setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>;
+
+  // Функция за задаване на списък с любими филми
   setBookmarkedMovies: React.Dispatch<
     React.SetStateAction<{
       [key: string]: any;
     }>
   >;
-  userPreferences: UserPreferences; // Предпочитания на потребителя
-  token: string | null; // Токен за автентикация
-  submitCount: number; // Броя на изпратените заявки
+
+  // Предпочитания на потребителя
+  userPreferences: UserPreferences;
+
+  // Токен за автентикация на потребителя
+  token: string | null;
+
+  // Броят на изпратените заявки
+  submitCount: number;
 }
