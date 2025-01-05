@@ -1,0 +1,27 @@
+[
+    {
+        "link_text": "НАЧАЛО",
+        "icon": "home",
+        "url": "#"
+    },
+    {
+        "link_text": "ПОВЛИЯНИ ПЕСНИ",
+        "icon": "music_note",
+        "url": "affectedSongs.php"
+    },
+    {
+        "link_text": "МОИТЕ СТАТИСТИКИ В TIKTOK",
+        "icon": "person_outline",
+        "url": "individualStats.php"
+    },
+    {
+        "link_text": "ОЩЕ СТАТИСТИКИ",
+        "icon": "insert_chart",
+        "url": "javascript:void(0);"
+    },
+    {
+        "link_text": "ЗА КОНТАКТ",
+        "icon": "info",
+        "url": "feedback.php"
+    }
+]

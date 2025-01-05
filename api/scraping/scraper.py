@@ -1,39 +1,48 @@
-import requests
+import sys
+import json
+from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 
-# Function to fetch the page content
-def fetch_goodreads_page(book_id):
-    url = f'https://www.goodreads.com/book/show/{book_id}'
-    headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
-    }
-    response = requests.get(url, headers=headers)
-    return response.text
+# Check if a URL argument is passed
+if len(sys.argv) < 2:
+    print("Error: URL is required.")
+    sys.exit(1)
 
-# Function to extract the necessary details from the page
-def extract_book_details(page_html):
-    soup = BeautifulSoup(page_html, 'html.parser')
-    details = {}
+# Get the URL from command-line argument
+URL = sys.argv[1]
 
-    # Test for a simpler element, like the book's author
-    author_element = soup.find('span', itemprop='author')
-    if author_element:
-        details['Автор'] = author_element.get_text(strip=True)
-    else:
-        details['Автор'] = 'Not available'
+# Function to handle scraping
+def scrape_contributor():
+    with sync_playwright() as p:
+        # Launch a browser (chromium is similar to Chrome)
+        browser = p.chromium.launch(headless=True)  # Set headless=False to see the browser
+        page = browser.new_page()
 
-    return details
+        # Open the target URL
+        page.goto(URL)
 
-# Main function to scrape the book information
-def main():
-    book_id = '18721932'  # Example Goodreads book ID
-    page_html = fetch_goodreads_page(book_id)
-    book_details = extract_book_details(page_html)
-    
-    # Print the scraped data
-    for key, value in book_details.items():
-        print(f'{key}: {value}')
+        # Wait for the contributor element to load (adjust selector if necessary)
+        page.wait_for_selector("span.ContributorLink__name")
 
-# Run the script
-if __name__ == '__main__':
-    main()
+        # Fetch the page content after rendering
+        page_source = page.content()
+
+        # Parse the page content with BeautifulSoup
+        soup = BeautifulSoup(page_source, 'html.parser')
+
+        # Find the specific <span> element that contains the contributor's name
+        contributor_name = soup.find('span', class_='ContributorLink__name')
+
+        if contributor_name:
+            result = contributor_name.get_text(strip=True)  # Extract the text and strip any extra whitespace
+        else:
+            result = "Contributor not found"
+
+        # Print the result
+        print(result)
+
+        # Close the browser
+        browser.close()
+
+if __name__ == "__main__":
+    scrape_contributor()
