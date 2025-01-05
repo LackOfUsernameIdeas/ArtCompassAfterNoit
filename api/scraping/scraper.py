@@ -1,6 +1,5 @@
 import sys
-import json
-from playwright.sync_api import sync_playwright
+import requests
 from bs4 import BeautifulSoup
 
 # Check if a URL argument is passed
@@ -13,36 +12,27 @@ URL = sys.argv[1]
 
 # Function to handle scraping
 def scrape_contributor():
-    with sync_playwright() as p:
-        # Launch a browser (chromium is similar to Chrome)
-        browser = p.chromium.launch(headless=True)  # Set headless=False to see the browser
-        page = browser.new_page()
+    # Send a GET request to fetch the page content
+    response = requests.get(URL)
+    
+    # Check if the request was successful
+    if response.status_code != 200:
+        print(f"Error: Failed to fetch the page. Status code: {response.status_code}")
+        sys.exit(1)
 
-        # Open the target URL
-        page.goto(URL)
+    # Parse the page content with BeautifulSoup
+    soup = BeautifulSoup(response.content, 'html.parser')
 
-        # Wait for the contributor element to load (adjust selector if necessary)
-        page.wait_for_selector("span.ContributorLink__name")
+    # Find the specific <span> element that contains the contributor's name
+    contributor_name = soup.find('span', class_='ContributorLink__name')
 
-        # Fetch the page content after rendering
-        page_source = page.content()
+    if contributor_name:
+        result = contributor_name.get_text(strip=True)  # Extract the text and strip any extra whitespace
+    else:
+        result = "Contributor not found"
 
-        # Parse the page content with BeautifulSoup
-        soup = BeautifulSoup(page_source, 'html.parser')
-
-        # Find the specific <span> element that contains the contributor's name
-        contributor_name = soup.find('span', class_='ContributorLink__name')
-
-        if contributor_name:
-            result = contributor_name.get_text(strip=True)  # Extract the text and strip any extra whitespace
-        else:
-            result = "Contributor not found"
-
-        # Print the result
-        print(result)
-
-        # Close the browser
-        browser.close()
+    # Print the result
+    print(result)
 
 if __name__ == "__main__":
     scrape_contributor()
