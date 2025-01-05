@@ -12,6 +12,7 @@ import "./index.scss";
 import ResetRequest from "./container/authentication/resetpassword/Resetrequest.tsx";
 import PrivateRoute from "./pages/PrivateRoute.tsx";
 import Home from "./container/home/Home.tsx";
+import IndividualStats from "./container/individualStats/IndividualStats.tsx";
 import Contact from "./container/contact/Contact.tsx";
 import Test from "./container/test/test.tsx";
 
@@ -21,6 +22,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <React.Suspense fallback={<div>Зареждане...</div>}>
         <Routes>
           <Route path="/" element={<Navigate to="/signin" />} />
+
           <Route
             path="/app"
             element={
@@ -30,9 +32,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             }
           >
             {/* Default route */}
-            <Route path="" element={<Navigate to="home" />} />
-            <Route path="home" element={<Home />} />
+            <Route index path="home" element={<Home />} />
             <Route path="recommendations" element={<Recommendations />} />
+            <Route path="individualStats" element={<IndividualStats />} />
             <Route path="test" element={<Test />} />
             <Route path="contact" element={<Contact />} />
           </Route>

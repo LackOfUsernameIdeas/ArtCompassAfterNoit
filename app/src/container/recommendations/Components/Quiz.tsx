@@ -4,15 +4,16 @@ import { RecommendationsList } from "./RecommendationsList";
 import { QuizQuestions } from "./QuizQuestions";
 import { handleRetakeQuiz } from "../helper_functions";
 import Loader from "../../../components/common/loader/Loader";
+import { QuizProps } from "../recommendations-types";
 
-export const Quiz: FC = () => {
+export const Quiz: FC<QuizProps> = ({
+  handleBookmarkClick,
+  bookmarkedMovies,
+  setBookmarkedMovies
+}) => {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [recommendationList, setRecommendationList] = useState<any[]>([]);
-
-  useEffect(() => {
-    console.log("recommendationList: ", recommendationList);
-  }, [recommendationList]);
 
   const alreadyHasRecommendations = recommendationList.length > 0;
   return (
@@ -40,6 +41,7 @@ export const Quiz: FC = () => {
             showViewRecommendations={alreadyHasRecommendations && !submitted}
             alreadyHasRecommendations={alreadyHasRecommendations}
             setRecommendationList={setRecommendationList}
+            setBookmarkedMovies={setBookmarkedMovies}
           />
         </div>
       </CSSTransition>
@@ -62,7 +64,11 @@ export const Quiz: FC = () => {
               </button>
             </p>
           </div>
-          <RecommendationsList recommendationList={recommendationList} />
+          <RecommendationsList
+            recommendationList={recommendationList}
+            handleBookmarkClick={handleBookmarkClick}
+            bookmarkedMovies={bookmarkedMovies}
+          />
         </div>
       </CSSTransition>
     </div>

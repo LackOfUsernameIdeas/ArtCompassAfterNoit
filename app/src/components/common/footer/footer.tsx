@@ -1,7 +1,7 @@
 import { FC, Fragment } from "react";
 
-import gradientDark from "../../../assets/images/media/backgrounds/layered-peaks-haikei-dark.svg";
-import gradientLight from "../../../assets/images/media/backgrounds/layered-peaks-haikei-light.svg";
+import gradientDark from "../../../assets/images/menu-bg-images/layered-peaks-haikei-dark.svg";
+import gradientLight from "../../../assets/images/menu-bg-images/layered-peaks-haikei-light.svg";
 import techStack from "../../../assets/images/brand-logos/tech_stack.png";
 
 const Footer: FC = () => (
@@ -20,12 +20,12 @@ const Footer: FC = () => (
       />
 
       {/* Footer Content */}
-      <footer className="footer font-normal font-Opsilon bg-white text-defaultsize leading-normal text-[0.813] shadow-[0_0_0.4rem_rgba(0,0,0,0.1)] dark:bg-bodybg py-8 rounded-[2rem] border-t-4 border-t-primary mt-auto mx-4 mb-4 relative z-10">
+      <footer className="footer font-normal font-Opsilon bg-white text-defaultsize leading-normal text-[0.813] shadow-[0_0_0.4rem_rgba(0,0,0,0.1)] dark:bg-bodybg py-8 rounded-[2rem] border-t-4 border-t-primary mt-[3rem] mx-4 mb-4 relative z-10">
         <div className="container mx-auto px-8">
           <div className="footer-content grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             <div className="footer-column">
               <div className="brand-name">
-                <span className="footer-brand-name-cine dark:text-[#610000] text-[#AF0B48]">
+                <span className="footer-brand-name-art dark:text-[#610000] text-[#AF0B48]">
                   КИНО
                 </span>
                 <span className="footer-brand-name-compass">КОМПАС</span>

@@ -10,6 +10,8 @@ import {
 } from "../helper_functions";
 import { useMediaQuery } from "react-responsive";
 import { moviesAndSeriesCategoryDisplayNames } from "../home-data";
+import { Tooltip } from "react-tooltip";
+import Pagination from "../../../components/common/pagination/pagination";
 
 interface MoviesAndSeriesByRatingsChartComponentProps {
   data: DataType;
@@ -81,7 +83,13 @@ const MoviesAndSeriesByRatingsChartComponent: FC<
         <div className="box custom-box">
           <div className="custom-box-header justify-between">
             <div
-              className="box-title"
+              className={`box-title whitespace-nowrap overflow-hidden text-ellipsis`}
+              data-tooltip-id="box-title-tooltip"
+              data-tooltip-content={`Филми и сериали по ${
+                moviesAndSeriesCategoryDisplayNames[
+                  moviesAndSeriesSortCategory as keyof typeof moviesAndSeriesCategoryDisplayNames
+                ]
+              }`}
               style={{
                 maxWidth:
                   window.innerWidth < 1400
@@ -99,6 +107,7 @@ const MoviesAndSeriesByRatingsChartComponent: FC<
                 ]
               }`}
             </div>
+            <Tooltip id="box-title-tooltip" />
 
             <div className="flex flex-wrap gap-2">
               <div
@@ -150,93 +159,16 @@ const MoviesAndSeriesByRatingsChartComponent: FC<
             </div>
           </div>
           <div className="box-footer">
-            <div className="sm:flex items-center">
-              <div
-                className={`text-defaulttextcolor dark:text-defaulttextcolor/70 text-[${
-                  is1546 ? "0.65rem" : "0.70rem"
-                }]`}
-              >
-                Показване на резултати от{" "}
-                <b>
-                  {currentChartPage === 1 ? 1 : (currentChartPage - 1) * 5 + 1}{" "}
-                </b>
-                до{" "}
-                <b>
-                  {currentChartPage === totalChartPages
-                    ? data.sortedMoviesAndSeriesByIMDbRating.length
-                    : currentChartPage * 5}{" "}
-                </b>
-                от общо <b>{data.sortedMoviesAndSeriesByIMDbRating.length}</b>{" "}
-                (Страница <b>{currentChartPage}</b> )
-                <i className="bi bi-arrow-right ms-2 font-semibold"></i>
-              </div>
-              <div className="ms-auto">
-                <nav
-                  aria-label="Page navigation"
-                  className="pagination-style-4"
-                >
-                  <ul className="ti-pagination mb-0">
-                    <li
-                      className={`page-item ${
-                        currentChartPage === 1 ? "disabled" : ""
-                      }`}
-                    >
-                      <Link
-                        className="page-link"
-                        to="#"
-                        onClick={handlePrevChartPage}
-                        style={{
-                          padding: "0.25rem 0.5rem",
-                          fontSize: "0.8rem",
-                          lineHeight: "1.25"
-                        }}
-                      >
-                        Предишна
-                      </Link>
-                    </li>
-                    {[...Array(totalChartPages)].map((_, index) => (
-                      <li
-                        key={index}
-                        className={`page-item ${
-                          currentChartPage === index + 1 ? "active" : ""
-                        }`}
-                      >
-                        <Link
-                          className="page-link"
-                          to="#"
-                          onClick={() => setCurrentChartPage(index + 1)}
-                          style={{
-                            padding: "0.25rem 0.5rem",
-                            fontSize: "0.8rem",
-                            lineHeight: "1.25"
-                          }}
-                        >
-                          {index + 1}
-                        </Link>
-                      </li>
-                    ))}
-                    <li
-                      className={`page-item ${
-                        currentChartPage === totalChartPages ? "disabled" : ""
-                      }`}
-                    >
-                      <Link
-                        className="page-link"
-                        to="#"
-                        onClick={handleNextChartPage}
-                        style={{
-                          padding: "0.25rem 0.5rem",
-                          fontSize: "0.8rem",
-                          lineHeight: "1.25"
-                        }}
-                      >
-                        Следваща
-                      </Link>
-                    </li>
-                  </ul>
-                </nav>
-              </div>
-            </div>
+            <Pagination
+              currentPage={currentChartPage}
+              totalItems={data.sortedMoviesAndSeriesByIMDbRating.length}
+              itemsPerPage={5}
+              totalTablePages={totalChartPages}
+              isSmallScreen={is1546}
+              handlePrevPage={handlePrevChartPage}
+              handleNextPage={handleNextChartPage}
+              setCurrentPage={setCurrentChartPage}
+            />
           </div>
         </div>
       </div>

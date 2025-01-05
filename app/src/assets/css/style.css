@@ -624,7 +624,7 @@ Background Image
   justify-content: center;
 }
 
-.footer-brand-name-cine {
+.footer-brand-name-art {
   font-family: "Opsilon", sans-serif;
   font-weight: bold;
   font-size: 2rem;
@@ -4574,64 +4574,64 @@ label {
 }
 
 /* Start::task-kanboard-board */
-.cine-kanban-board {
+.art-kanban-board {
   @apply flex overflow-x-auto items-stretch mb-3 pb-4;
 }
-.cine-kanban-board .kanban-tasks-type {
+.art-kanban-board .kanban-tasks-type {
   @apply min-w-[20rem] me-6 w-full;
 }
-.cine-kanban-board .kanban-tasks-type:last-child {
+.art-kanban-board .kanban-tasks-type:last-child {
   @apply me-0;
 }
-.cine-kanban-board .kanban-tasks-type .kanban-tasks {
+.art-kanban-board .kanban-tasks-type .kanban-tasks {
   @apply touch-none;
 }
-.cine-kanban-board .task-image .kanban-image {
+.art-kanban-board .task-image .kanban-image {
   @apply h-[150px] w-full rounded-md;
 }
-.cine-kanban-board .kanban-content {
+.art-kanban-board .kanban-content {
   @apply mt-3;
 }
-.cine-kanban-board .kanban-task-description {
+.art-kanban-board .kanban-task-description {
   @apply text-textmuted text-[0.82rem];
 }
-.cine-kanban-board .kanban-tasks-type.new .kanban-tasks.box {
+.art-kanban-board .kanban-tasks-type.new .kanban-tasks.box {
   @apply border-t-[3px] border-solid border-primary/30;
 }
-.cine-kanban-board .kanban-tasks-type.todo .kanban-tasks.box {
+.art-kanban-board .kanban-tasks-type.todo .kanban-tasks.box {
   @apply border-t-[3px] border-solid border-warning/30;
 }
-.cine-kanban-board .kanban-tasks-type.in-progress .kanban-tasks.box {
+.art-kanban-board .kanban-tasks-type.in-progress .kanban-tasks.box {
   @apply border-t-[3px] border-solid border-info/30;
 }
-.cine-kanban-board .kanban-tasks-type.inreview .kanban-tasks.box {
+.art-kanban-board .kanban-tasks-type.inreview .kanban-tasks.box {
   @apply border-t-[3px] border-solid border-danger/30;
 }
-.cine-kanban-board .kanban-tasks-type.completed .kanban-tasks.box {
+.art-kanban-board .kanban-tasks-type.completed .kanban-tasks.box {
   @apply border-t-[3px] border-solid border-success/30;
 }
-.cine-kanban-board #new-tasks .box:last-child,
-.cine-kanban-board #todo-tasks .box:last-child,
-.cine-kanban-board #inprogress-tasks .box:last-child,
-.cine-kanban-board #inreview-tasks .box:last-child,
-.cine-kanban-board #completed-tasks .box:last-child {
+.art-kanban-board #new-tasks .box:last-child,
+.art-kanban-board #todo-tasks .box:last-child,
+.art-kanban-board #inprogress-tasks .box:last-child,
+.art-kanban-board #inreview-tasks .box:last-child,
+.art-kanban-board #completed-tasks .box:last-child {
   @apply mb-0;
 }
-.cine-kanban-board #new-tasks,
-.cine-kanban-board #todo-tasks,
-.cine-kanban-board #inprogress-tasks,
-.cine-kanban-board #inreview-tasks,
-.cine-kanban-board #completed-tasks {
+.art-kanban-board #new-tasks,
+.art-kanban-board #todo-tasks,
+.art-kanban-board #inprogress-tasks,
+.art-kanban-board #inreview-tasks,
+.art-kanban-board #completed-tasks {
   @apply relative max-h-[35rem];
 }
-.cine-kanban-board #new-tasks .simplebar-content,
-.cine-kanban-board #todo-tasks .simplebar-content,
-.cine-kanban-board #inprogress-tasks .simplebar-content,
-.cine-kanban-board #inreview-tasks .simplebar-content,
-.cine-kanban-board #completed-tasks .simplebar-content {
+.art-kanban-board #new-tasks .simplebar-content,
+.art-kanban-board #todo-tasks .simplebar-content,
+.art-kanban-board #inprogress-tasks .simplebar-content,
+.art-kanban-board #inreview-tasks .simplebar-content,
+.art-kanban-board #completed-tasks .simplebar-content {
   @apply pt-0 pb-4 px-0;
 }
-.cine-kanban-board .task-Null {
+.art-kanban-board .task-Null {
   @apply relative min-h-[12.5rem] before:absolute before:inset-0 before:bg-white dark:before:bg-bodybg before:rounded-md before:bg-[url("../images/media/media-83.svg")] before:bg-cover before:bg-center before:h-[12.5rem]
         before:w-full before:my-0 before:mx-auto;
 }
@@ -17543,13 +17543,13 @@ hr {
 }
 
 .accordion-button {
-  @apply bg-white dark:bg-bodybg text-defaulttextcolor py-3 px-4 text-[0.85rem] font-medium;
+  @apply bg-gray-600/10 dark:bg-bodybg text-defaulttextcolor py-3 px-4 text-[0.85rem] font-medium;
 }
 .accordion-button:not(.collapsed) {
-  @apply text-defaulttextcolor  shadow-none;
+  @apply text-defaulttextcolor shadow-none;
 }
 .accordion-button:focus {
-  @apply bg-defaultbackground dark:bg-light text-defaulttextcolor shadow-none;
+  @apply bg-defaultbackground dark:bg-bodybg/90 text-defaulttextcolor shadow-none;
 }
 
 .accordion-body {
@@ -17557,13 +17557,13 @@ hr {
 }
 
 .accordion-item {
-  @apply text-defaulttextcolor bg-white dark:bg-bodybg border border-solid border-defaultborder dark:border-defaultborder/10 dark:text-defaulttextcolor/70;
+  @apply text-defaulttextcolor bg-white dark:bg-[#292424] border border-solid border-defaultborder dark:border-defaultborder/10 dark:text-defaulttextcolor/70;
 }
 
-.accordions-items-seperate .accordion-item:not(:first-of-type) {
+.accordions-items-separate .accordion-item:not(:first-of-type) {
   @apply mt-2;
 }
-.accordions-items-seperate .accordion-item {
+.accordions-items-separate .accordion-item {
   @apply border-t border-solid border-defaultborder dark:border-defaultborder/10 rounded-md overflow-hidden;
 }
 
@@ -18190,6 +18190,9 @@ hr {
 }
 .table.table-hover > tbody > tr:hover > * {
   @apply text-defaulttextcolor;
+}
+.table.no-hover-text > tbody > tr:hover > * {
+  @apply text-inherit;
 }
 .table .table-active {
   @apply text-defaulttextcolor;
@@ -19925,7 +19928,7 @@ option.selectionList {
   transition: opacity 200ms ease-in;
 }
 
-.movie-card {
+.recommendation-card {
   @apply flex flex-col items-center justify-between rounded-lg text-defaulttextcolor text-[0.813rem] relative p-8 max-w-7xl mx-auto;
   background-color: rgb(var(--body-bg)); /* Normal background color */
 }
@@ -19934,7 +19937,7 @@ option.selectionList {
   @apply flex flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative bg-white dark:bg-bodybg p-6 shadow-lg w-full max-w-lg space-y-4 z-50;
 }
 
-.movie-small-details {
+.recommendation-small-details {
   @apply text-sm text-primary mb-4;
 }
 
@@ -19951,6 +19954,19 @@ option.selectionList {
   100% {
     transform: rotate(360deg);
   }
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(-10px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-down {
+  animation: slide-down 0.5s ease-out;
 }
 
 /*# sourceMappingURL=style.css.map */

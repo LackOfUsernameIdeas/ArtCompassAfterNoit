@@ -7,6 +7,7 @@ const nodemailer = require("nodemailer");
 const bodyParser = require("body-parser");
 const crypto = require("crypto");
 const db = require("./database");
+const hf = require("./helper_functions");
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -16,7 +17,7 @@ require("dotenv").config();
 const whitelist = [
   "http://localhost:5174",
   "http://localhost:5175",
-  "https://cinecompass.noit.eu"
+  "https://artcompass.noit.eu"
 ];
 const corsOptions = {
   origin: function (origin, callback) {
@@ -38,12 +39,12 @@ app.options("*", cors(corsOptions)); // Handle preflight requests
 let verificationCodes = {};
 
 const SECRET_KEY = "1a2b3c4d5e6f7g8h9i0jklmnopqrstuvwxyz123456";
-const EMAIL_USER = "no-reply@cinecompass-api.noit.eu";
+const EMAIL_USER = "no-reply@artcompass-api.noit.eu";
 const EMAIL_PASS = "Noit_2025";
 
 // Създаване на транспортерен обект с използване на SMTP транспорт
 const transporter = nodemailer.createTransport({
-  host: "cinecompass-api.noit.eu", // Заменете с вашия cPanel mail сървър
+  host: "artcompass-api.noit.eu", // Заменете с вашия cPanel mail сървър
   port: 587, // Използвайте 465 за SSL или 587 за TLS
   secure: false, // true за SSL (порт 465), false за TLS (порт 587)
   auth: {
@@ -133,7 +134,7 @@ app.post("/handle-submit", (req, res) => {
     const userId = decoded.id; // Вземане на потребителско ID
 
     // Алгоритъм за отстраняване на спам от заявки
-    db.checkAndResetRequestsDaily(userRequests);
+    hf.checkAndResetRequestsDaily(userRequests);
 
     // Ако потребителят все още няма данни, те се инициализират
     if (!userRequests[userId]) {
@@ -274,7 +275,7 @@ app.post("/password-reset-request", (req, res) => {
     });
 
     // Create a reset link
-    const resetLink = `https://cinecompass.noit.eu/resetpassword/resetcover/${token}`;
+    const resetLink = `https://artcompass.noit.eu/resetpassword/resetcover/${token}`;
 
     const mailOptions = {
       from: EMAIL_USER,
@@ -520,6 +521,158 @@ app.post("/save-recommendation", (req, res) => {
   });
 });
 
+// Запазване на препоръка в списък за гледане
+app.post("/save-to-watchlist", (req, res) => {
+  const {
+    token,
+    imdbID,
+    title_en,
+    title_bg,
+    genre_en,
+    genre_bg,
+    reason,
+    description,
+    year,
+    rated,
+    released,
+    runtime,
+    director,
+    writer,
+    actors,
+    plot,
+    language,
+    country,
+    awards,
+    poster,
+    ratings,
+    metascore,
+    imdbRating,
+    imdbVotes,
+    type,
+    DVD,
+    boxOffice,
+    production,
+    website,
+    totalSeasons
+  } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.saveToWatchlist(
+      userId,
+      imdbID,
+      title_en,
+      title_bg,
+      genre_en,
+      genre_bg,
+      reason,
+      description,
+      year,
+      rated,
+      released,
+      runtime,
+      director,
+      writer,
+      actors,
+      plot,
+      language,
+      country,
+      awards,
+      poster,
+      ratings,
+      metascore,
+      imdbRating,
+      imdbVotes,
+      type,
+      DVD,
+      boxOffice,
+      production,
+      website,
+      totalSeasons,
+      (err, result) => {
+        console.log(
+          "title_en: \n" +
+            title_en +
+            "\n" +
+            "title_bg: \n" +
+            title_bg +
+            "\n" +
+            "genre_en: \n" +
+            genre_en +
+            "\n" +
+            "genre_bg: \n" +
+            genre_bg
+        );
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        res.status(201).json({ message: "Recommendation added successfully!" });
+      }
+    );
+  });
+});
+
+// Изтриване на препоръка от списъка за гледане
+app.delete("/remove-from-watchlist", (req, res) => {
+  const { token, imdbID } = req.body;
+
+  if (!imdbID) {
+    return res.status(400).json({ error: "IMDb ID is required" });
+  }
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+
+    db.removeFromWatchlist(userId, imdbID, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Recommendation not found" });
+      }
+      res.status(200).json({ message: "Recommendation removed successfully!" });
+    });
+  });
+});
+
+// Изтриване на препоръка от списъка за гледане
+app.post("/check-for-recommendation-in-watchlist", (req, res) => {
+  const { token, imdbID } = req.body;
+
+  if (!imdbID) {
+    return res.status(400).json({ error: "IMDb ID is required" });
+  }
+
+  if (!token) {
+    return res.status(401).json({ error: "Token is required" });
+  }
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: "Invalid token" });
+    }
+
+    const userId = decoded.id;
+
+    db.checkRecommendationExistsInWatchlist(
+      userId,
+      imdbID,
+      (error, results) => {
+        if (error) {
+          return res
+            .status(500)
+            .json({ error: "Database error", details: error });
+        }
+
+        // Always respond with 200 and include the 'exists' flag
+        return res.status(200).json({ exists: results.length > 0 });
+      }
+    );
+  });
+});
+
 // Вземане на данни за общ брой на потребители в платформата
 app.get("/stats/platform/users-count", (req, res) => {
   db.getUsersCount((err, result) => {
@@ -543,8 +696,8 @@ app.get("/stats/platform/average-scores", (req, res) => {
 });
 
 // Вземане на данни за най-препоръчвани филми/сериали в платформата
-app.get("/stats/platform/top-recommendations-with-all-data", (req, res) => {
-  db.getTopRecommendations((err, result) => {
+app.get("/stats/platform/top-recommendations", (req, res) => {
+  db.getTopRecommendationsPlatform((err, result) => {
     if (err) {
       return res
         .status(500)
@@ -558,6 +711,12 @@ app.get("/stats/platform/top-recommendations-with-all-data", (req, res) => {
 app.get("/stats/platform/top-countries", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
 
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
   db.getTopCountries(limit, (err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top countries" });
@@ -569,6 +728,12 @@ app.get("/stats/platform/top-countries", async (req, res) => {
 // Вземане на данни за най-препоръчвани жанрове в платформата
 app.get("/stats/platform/top-genres", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
 
   db.getTopGenres(limit, (err, result) => {
     if (err) {
@@ -594,6 +759,12 @@ app.get("/stats/platform/genre-popularity-over-time", async (req, res) => {
 app.get("/stats/platform/top-actors", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
 
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
   db.getTopActors(limit, (err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top actors" });
@@ -606,6 +777,12 @@ app.get("/stats/platform/top-actors", async (req, res) => {
 app.get("/stats/platform/top-directors", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
 
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
   db.getTopDirectors(limit, (err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top directors" });
@@ -617,6 +794,12 @@ app.get("/stats/platform/top-directors", async (req, res) => {
 // Вземане на данни за най-препоръчвани сценаристи в платформата
 app.get("/stats/platform/top-writers", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
 
   db.getTopWriters(limit, (err, result) => {
     if (err) {
@@ -704,6 +887,12 @@ app.get(
   async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
 
+    if (limit <= 0) {
+      return res
+        .status(400)
+        .json({ error: "Лимитът трябва да е положително число." });
+    }
+
     db.getTopMoviesAndSeriesByMetascore(limit, (err, result) => {
       if (err) {
         return res
@@ -720,6 +909,12 @@ app.get(
   "/stats/platform/sorted-movies-and-series-by-imdb-rating",
   async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
+
+    if (limit <= 0) {
+      return res
+        .status(400)
+        .json({ error: "Лимитът трябва да е положително число." });
+    }
 
     db.getTopMoviesAndSeriesByIMDbRating(limit, (err, result) => {
       if (err) {
@@ -738,6 +933,12 @@ app.get(
   async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
 
+    if (limit <= 0) {
+      return res
+        .status(400)
+        .json({ error: "Лимитът трябва да е положително число." });
+    }
+
     db.getTopMoviesAndSeriesByRottenTomatoesRating(limit, (err, result) => {
       if (err) {
         return res.status(500).json({
@@ -749,7 +950,247 @@ app.get(
   }
 );
 
-// Start server
+// Вземане на данни за най-препоръчвани филми/сериали на даден потребител
+app.post("/stats/individual/top-recommendations", (req, res) => {
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersTopRecommendations(userId, (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error fetching top recommendations" });
+      }
+      res.json(result);
+    });
+  });
+});
+
+// Вземане на данни за филми/сериали в списък за гледане на даден потребител
+app.post("/stats/individual/watchlist", (req, res) => {
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersWatchlist(userId, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: "Error fetching watchlist" });
+      }
+      res.json(result);
+    });
+  });
+});
+
+// Вземане на данни за най-препоръчвани жанрове на даден потребител
+app.post("/stats/individual/top-genres", (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersTopGenres(userId, limit, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: "Error fetching top genres" });
+      }
+      res.json(result);
+    });
+  });
+});
+
+// Вземане на данни за най-запазвани в списък за гледане жанрове на даден потребител
+app.post("/stats/individual/watchlist-top-genres", (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersTopGenresFromWatchlist(userId, limit, (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error fetching top genres from watchlist" });
+      }
+      res.json(result);
+    });
+  });
+});
+
+// Вземане на данни за най-препоръчвани актьори на даден потребител
+app.post("/stats/individual/top-actors", (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersTopActors(userId, limit, (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error fetching users top actors" });
+      }
+      res.json(result);
+    });
+  });
+});
+
+// Вземане на данни за най-запазвани в списък за гледане актьори на даден потребител
+app.post("/stats/individual/watchlist-top-actors", (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersTopActorsFromWatchlist(userId, limit, (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error fetching users watchlist top actors" });
+      }
+      res.json(result);
+    });
+  });
+});
+
+// Вземане на данни за най-препоръчвани режисьори на даден потребител
+app.post("/stats/individual/top-directors", (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersTopDirectors(userId, limit, (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error fetching users top directors" });
+      }
+      res.json(result);
+    });
+  });
+});
+
+// Вземане на данни за най-запазвани в списък за гледане режисьори на даден потребител
+app.post("/stats/individual/watchlist-top-directors", (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersTopDirectorsFromWatchlist(userId, limit, (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error fetching users watchlist top directors" });
+      }
+      res.json(result);
+    });
+  });
+});
+
+// Вземане на данни за най-препоръчвани сценаристи на даден потребител
+app.post("/stats/individual/top-writers", (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersTopWriters(userId, limit, (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error fetching users top writers" });
+      }
+      res.json(result);
+    });
+  });
+});
+
+// Вземане на данни за най-запазвани в списък за гледане сценаристи на даден потребител
+app.post("/stats/individual/watchlist-top-writers", (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+
+  if (limit <= 0) {
+    return res
+      .status(400)
+      .json({ error: "Лимитът трябва да е положително число." });
+  }
+
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersTopWritersWatchlist(userId, limit, (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error fetching users watchlist top writers" });
+      }
+      res.json(result);
+    });
+  });
+});
+
+// Стартиране на сървъра
 app.listen(5000, () => {
   console.log("Server started on port 5000.");
 });

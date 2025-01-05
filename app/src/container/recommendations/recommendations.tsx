@@ -2,10 +2,15 @@ import { FC, useEffect, useState } from "react";
 import { Quiz } from "./Components/Quiz";
 import { useNavigate } from "react-router-dom";
 import { checkTokenValidity } from "../home/helper_functions";
-import { showNotification } from "./helper_functions";
+import {
+  removeFromWatchlist,
+  saveToWatchlist,
+  showNotification
+} from "./helper_functions";
 import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 import Notification from "../../components/common/notification/Notification";
 import { NotificationState } from "./recommendations-types";
+import BookmarkAlert from "./Components/BookmarkAlert";
 
 interface RecommendationsProps {}
 
@@ -15,30 +20,74 @@ const Recommendations: FC<RecommendationsProps> = () => {
     null // Състояние за съхраняване на текущото известие (съобщение и тип)
   );
 
+  const [bookmarkedMovies, setBookmarkedMovies] = useState<{
+    [key: string]: any;
+  }>({});
+
+  const [alertVisible, setAlertVisible] = useState(false); // To control alert visibility
+  const [currentBookmarkStatus, setCurrentBookmarkStatus] = useState(false); // Track current bookmark status
+
   useEffect(() => {
     const validateToken = async () => {
-      // Функция за проверка валидността на токена на потребителя
-      const redirectUrl = await checkTokenValidity(); // Извикване на помощна функция за валидиране на токена
+      const redirectUrl = await checkTokenValidity();
       if (redirectUrl) {
-        // Ако токенът е невалиден, показване на известие за грешка
         showNotification(
-          setNotification, // Функция за задаване на известие
-          "Вашата сесия е изтекла. Моля, влезте в профила Ви отново.", // Съобщение за известието
-          "error" // Тип на известието (грешка)
+          setNotification,
+          "Вашата сесия е изтекла. Моля, влезте в профила Ви отново.",
+          "error"
         );
       }
     };
 
-    validateToken(); // Стартиране на валидиране на токена при зареждане на компонента
-  }, []); // Празен масив зависимости, за да се извика само веднъж
+    validateToken();
+  }, []);
 
   const handleNotificationClose = () => {
-    // Функция за затваряне на текущото известие
     if (notification?.type === "error") {
-      // Ако известието е от тип "грешка", пренасочване към страницата за вход
       navigate("/signin");
     }
-    setNotification(null); // Зануляване на състоянието за известието
+    setNotification(null);
+  };
+
+  const handleBookmarkClick = (movie: {
+    imdbID: string;
+    [key: string]: any;
+  }) => {
+    setBookmarkedMovies((prev) => {
+      const isBookmarked = !!prev[movie.imdbID];
+      const updatedBookmarks = { ...prev };
+      const token =
+        localStorage.getItem("authToken") ||
+        sessionStorage.getItem("authToken");
+
+      if (isBookmarked) {
+        // Remove the movie from bookmarks if it's already bookmarked
+        delete updatedBookmarks[movie.imdbID];
+
+        // Call removeFromWatchlist API
+        removeFromWatchlist(movie.imdbID, token).catch((error) => {
+          console.error("Error removing from watchlist:", error);
+        });
+      } else {
+        // Add the movie to bookmarks if it's not already bookmarked
+        updatedBookmarks[movie.imdbID] = movie;
+
+        // Call saveToWatchlist API
+        saveToWatchlist(movie, token).catch((error) => {
+          console.error("Error saving to watchlist:", error);
+        });
+      }
+
+      setCurrentBookmarkStatus(!isBookmarked); // Update the current bookmark status
+      setAlertVisible(true); // Show the alert
+
+      return updatedBookmarks; // Return the updated bookmarks object
+    });
+  };
+  console.log("bookmarkedMovies: ", bookmarkedMovies);
+
+  const handleDismiss = () => {
+    setAlertVisible(false);
   };
 
   return (
@@ -50,8 +99,18 @@ const Recommendations: FC<RecommendationsProps> = () => {
           onClose={handleNotificationClose}
         />
       )}
+      {alertVisible && (
+        <BookmarkAlert
+          isBookmarked={currentBookmarkStatus}
+          onDismiss={handleDismiss}
+        />
+      )}
       <FadeInWrapper>
-        <Quiz />
+        <Quiz
+          bookmarkedMovies={bookmarkedMovies}
+          handleBookmarkClick={handleBookmarkClick}
+          setBookmarkedMovies={setBookmarkedMovies}
+        />
       </FadeInWrapper>
     </>
   );

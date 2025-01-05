@@ -1,14 +1,14 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { DataType, UserData } from "./home-types";
 import { checkTokenValidity, fetchData } from "./helper_functions";
-import TableComponent from "./Components/TableComponent";
-import TreemapComponent from "./Components/TreemapComponent";
+import ActorsDirectorsWritersTable from "./Components/ActorsDirectorsWritersTable";
+import ActorsDirectorsWritersTreemap from "./Components/ActorsDirectorsWritersTreemap";
 import TopRecommendationsChartComponent from "./Components/TopRecommendationsChartComponent";
 import CountryBarChartComponent from "./Components/CountryBarChartComponent";
-import MoviesByProsperityBubbleChartComponent from "./Components/MoviesByProsperityBubbleChartComponent";
+import MoviesByProsperityBubbleChartComponent from "./Components/MoviesByProsperityBubbleChart";
 import GenrePopularityOverTimeComponent from "./Components/GenrePopularityOverTimeComponent";
 import MoviesAndSeriesByRatingsChartComponent from "./Components/MoviesAndSeriesByRatingsChartComponent";
-import WidgetCards from "./Components/WidgetCards";
+import WidgetCards from "./Components/WidgetCardsComponent";
 import { useNavigate } from "react-router-dom";
 import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 import { showNotification } from "../recommendations/helper_functions";
@@ -30,9 +30,9 @@ const Home: FC<CrmProps> = () => {
     oscarsByMovie: [], // Оскари по филми
     totalAwardsByMovieOrSeries: [], // Общо награди по филми или сериали
     totalAwards: [], // Общо награди
-    sortedDirectorsByProsperity: [], // Режисьори, сортирани по процъфтяване
-    sortedActorsByProsperity: [], // Актьори, сортирани по процъфтяване
-    sortedWritersByProsperity: [], // Сценаристи, сортирани по процъфтяване
+    sortedDirectorsByProsperity: [], // Режисьори, сортирани по просперитет
+    sortedActorsByProsperity: [], // Актьори, сортирани по просперитет
+    sortedWritersByProsperity: [], // Сценаристи, сортирани по просперитет
     sortedMoviesByProsperity: [], // Филми, сортирани по процъфтяване
     sortedMoviesAndSeriesByMetascore: [], // Филми и сериали, сортирани по Metascore
     sortedMoviesAndSeriesByIMDbRating: [], // Филми и сериали, сортирани по IMDb рейтинг
@@ -117,14 +117,12 @@ const Home: FC<CrmProps> = () => {
             </div>
           </div>
           <div className="xxl:col-span-6 col-span-12">
-            <TableComponent data={data} />
+            <ActorsDirectorsWritersTable data={data} />
             <TopRecommendationsChartComponent data={data} />
-            <TreemapComponent data={data} />
+            <ActorsDirectorsWritersTreemap data={data} />
             <CountryBarChartComponent data={data} />
           </div>
         </div>
-        <div className="grid grid-cols-12 gap-x-6"></div>
-        <div className="transition fixed inset-0 z-50 bg-gray-900 bg-opacity-50 dark:bg-opacity-80 opacity-0 hidden"></div>
       </Fragment>
     </FadeInWrapper>
   );

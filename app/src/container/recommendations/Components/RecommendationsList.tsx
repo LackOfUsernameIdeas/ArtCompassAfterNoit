@@ -1,11 +1,13 @@
 import { FC, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { RecommendationsProps } from "../recommendations-types";
-import { MovieCard } from "./MovieCard";
+import RecommendationCard from "./RecommendationCard";
 import { PlotModal } from "./PlotModal";
 
 export const RecommendationsList: FC<RecommendationsProps> = ({
-  recommendationList
+  recommendationList,
+  handleBookmarkClick,
+  bookmarkedMovies
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [inTransition, setInTransition] = useState(false);
@@ -61,12 +63,24 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
         onExited={() => setInTransition(false)}
         unmountOnExit
       >
-        <button
+        <svg
           onClick={handlePrevious}
-          className="absolute left-[-120px] top-1/2 transform -translate-y-1/2 dark:text-white text-black text-6xl dark:hover:text-gray-400 hover:text-black hover:text-opacity-60 transition"
+          className="absolute top-1/2 transform -translate-y-1/2 text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200 md:left-[-4rem] lg:left-[-4rem] xl:left-[-6rem] 2xl:left-[-10rem]"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            width: "5rem",
+            height: "5rem",
+            filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.3))"
+          }}
         >
-          &lt;
-        </button>
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
       </CSSTransition>
 
       <CSSTransition
@@ -76,13 +90,16 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
         onExited={() => setInTransition(false)}
         unmountOnExit
       >
-        <MovieCard
+        <RecommendationCard
           recommendationList={recommendationList}
           currentIndex={currentIndex}
           isExpanded={isExpanded}
           openModal={openModal}
+          handleBookmarkClick={handleBookmarkClick}
+          bookmarkedMovies={bookmarkedMovies}
         />
       </CSSTransition>
+
       <CSSTransition
         in={!inTransition}
         timeout={animationDuration}
@@ -90,13 +107,26 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
         onExited={() => setInTransition(false)}
         unmountOnExit
       >
-        <button
+        <svg
           onClick={handleNext}
-          className="absolute right-[-120px] top-1/2 transform -translate-y-1/2 dark:text-white text-black text-6xl dark:hover:text-gray-400 hover:text-black hover:text-opacity-60 transition"
+          className="absolute top-1/2 transform -translate-y-1/2 text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200 md:right-[-4rem] lg:right-[-4rem] xl:right-[-6rem] 2xl:right-[-10rem]"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            width: "5rem",
+            height: "5rem",
+            filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.3))"
+          }}
         >
-          &gt;
-        </button>
+          <path d="M9 18l6-6-6-6" />
+        </svg>
       </CSSTransition>
+
       <CSSTransition
         in={isModalOpen}
         timeout={300}
