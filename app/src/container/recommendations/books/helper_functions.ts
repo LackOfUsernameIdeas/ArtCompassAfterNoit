@@ -3,7 +3,7 @@ import {
   NotificationState,
   NotificationType,
   Question,
-  UserPreferences
+  MoviesSeriesUserPreferences
 } from "./booksRecommendations-types";
 import { genreOptions, openAIKey } from "./booksRecommendations-data";
 
@@ -12,16 +12,16 @@ import { genreOptions, openAIKey } from "./booksRecommendations-data";
  * Ако не успее да запише предпочитанията, се хвърля грешка.
  *
  * @async
- * @function saveUserPreferences
+ * @function saveMoviesSeriesUserPreferences
  * @param {string} date - Датата на записа на предпочитанията.
- * @param {Object} userPreferences - Обект с предпочитанията на потребителя.
+ * @param {Object} moviesSeriesUserPreferences - Обект с предпочитанията на потребителя.
  * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
  * @returns {Promise<void>} - Няма връщан резултат, но хвърля грешка при неуспех.
  * @throws {Error} - Хвърля грешка, ако заявката не е успешна.
  */
-export const saveUserPreferences = async (
+export const saveMoviesSeriesUserPreferences = async (
   date: string,
-  userPreferences: {
+  moviesSeriesUserPreferences: {
     type: string;
     genres: { en: string; bg: string }[];
     moods: string[];
@@ -51,7 +51,7 @@ export const saveUserPreferences = async (
       pacing,
       depth,
       targetGroup
-    } = userPreferences;
+    } = moviesSeriesUserPreferences;
 
     const preferredGenresEn =
       genres.length > 0 ? genres.map((g) => g.en).join(", ") : null;
@@ -77,7 +77,9 @@ export const saveUserPreferences = async (
     });
 
     const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/save-user-preferences`,
+      `${
+        import.meta.env.VITE_API_BASE_URL
+      }/save-movies-series-user-preferences`,
       {
         method: "POST",
         headers: {
@@ -165,7 +167,7 @@ const fetchIMDbDataWithFailover = async (movieName: string) => {
  * @async
  * @function generateMovieRecommendations
  * @param {string} date - Датата на генерирането на препоръките.
- * @param {UserPreferences} userPreferences - Преференциите на потребителя за филми/сериали.
+ * @param {MoviesSeriesUserPreferences} moviesSeriesUserPreferences - Преференциите на потребителя за филми/сериали.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за задаване на препоръките в компонент.
  * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките.
@@ -173,7 +175,7 @@ const fetchIMDbDataWithFailover = async (movieName: string) => {
  */
 export const generateMovieRecommendations = async (
   date: string,
-  userPreferences: UserPreferences,
+  moviesSeriesUserPreferences: MoviesSeriesUserPreferences,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
   setBookmarkedMovies: React.Dispatch<
     React.SetStateAction<{
@@ -195,7 +197,7 @@ export const generateMovieRecommendations = async (
     pacing,
     depth,
     targetGroup
-  } = userPreferences;
+  } = moviesSeriesUserPreferences;
   try {
     const typeText = type === "Филм" ? "филма" : "сериала";
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -342,7 +344,7 @@ export const generateMovieRecommendations = async (
             ]);
 
             // След това изпълняваме проверката и записа паралелно, използвайки
-            const checkAndSaveRecommendation = async () => {
+            const checkAndSaveMoviesSeriesRecommendation = async () => {
               // Проверяваме дали филмът съществува в таблицата за watchlist
               const existsInWatchlist =
                 await checkRecommendationExistsInWatchlist(imdbId, token);
@@ -357,11 +359,15 @@ export const generateMovieRecommendations = async (
                 });
               }
               // Записваме препоръката в базата данни
-              await saveRecommendation(recommendationData, date, token);
+              await saveMoviesSeriesRecommendation(
+                recommendationData,
+                date,
+                token
+              );
             };
 
             // Извикваме функцията, за да изпълним и двете операции
-            checkAndSaveRecommendation();
+            checkAndSaveMoviesSeriesRecommendation();
           } else {
             console.log(`IMDb ID not found for ${movieName}`);
           }
@@ -379,14 +385,14 @@ export const generateMovieRecommendations = async (
  * След успешното записване, препоръката се изпраща в сървъра.
  *
  * @async
- * @function saveRecommendation
+ * @function saveMoviesSeriesRecommendation
  * @param {any} recommendation - Обект, съдържащ данни за препоръчания филм или сериал.
  * @param {string} date - Дата на генерирането на препоръката.
  * @param {string | null} token - Токенът на потребителя за аутентификация.
  * @returns {Promise<void>} - Няма връщан резултат, но извършва записване на препоръката.
  * @throws {Error} - Хвърля грешка, ако не може да се запази препоръката в базата данни.
  */
-export const saveRecommendation = async (
+export const saveMoviesSeriesRecommendation = async (
   recommendation: any,
   date: string,
   token: string | null
@@ -449,7 +455,7 @@ export const saveRecommendation = async (
     console.log("Formatted Recommendation:", formattedRecommendation);
 
     const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/save-recommendation`,
+      `${import.meta.env.VITE_API_BASE_URL}/save-movies-series-recommendation`,
       {
         method: "POST",
         headers: {
@@ -692,7 +698,7 @@ export const showNotification = (
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitted - Функция за задаване на статус за подадена заявка.
  * @param {React.Dispatch<React.SetStateAction<number>>} setSubmitCount - Функция за актуализиране на броя на подадените заявки.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за актуализиране на списъка с препоръки.
- * @param {UserPreferences} userPreferences - Преференции на потребителя за филми/сериали.
+ * @param {MoviesSeriesUserPreferences} moviesSeriesUserPreferences - Преференции на потребителя за филми/сериали.
  * @param {string | null} token - Токенът за аутентификация на потребителя.
  * @param {number} submitCount - Броят на подадените заявки.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките и записва данни.
@@ -711,7 +717,7 @@ export const handleSubmit = async (
       [key: string]: any;
     }>
   >,
-  userPreferences: UserPreferences,
+  moviesSeriesUserPreferences: MoviesSeriesUserPreferences,
   token: string | null,
   submitCount: number
 ): Promise<void> => {
@@ -733,7 +739,7 @@ export const handleSubmit = async (
     pacing,
     depth,
     targetGroup
-  } = userPreferences;
+  } = moviesSeriesUserPreferences;
 
   if (
     !moods ||
@@ -774,10 +780,14 @@ export const handleSubmit = async (
 
     if (response.status === 200) {
       setRecommendationList([]);
-      await saveUserPreferences(date, userPreferences, token);
+      await saveMoviesSeriesUserPreferences(
+        date,
+        moviesSeriesUserPreferences,
+        token
+      );
       await generateMovieRecommendations(
         date,
-        userPreferences,
+        moviesSeriesUserPreferences,
         setRecommendationList,
         setBookmarkedMovies,
         token

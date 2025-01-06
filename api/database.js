@@ -39,7 +39,7 @@ const getUserById = (userId, callback) => {
   db.query(query, [userId], callback);
 };
 
-const saveRecommendation = (
+const saveMoviesSeriesRecommendation = (
   userId,
   imdbID,
   title_en,
@@ -205,7 +205,7 @@ const checkRecommendationExistsInWatchlist = (userId, imdbID, callback) => {
   db.query(query, [userId, imdbID], callback);
 };
 
-const saveUserPreferences = (
+const saveMoviesSeriesUserPreferences = (
   userId,
   preferred_genres_en,
   preferred_genres_bg,
@@ -223,7 +223,7 @@ const saveUserPreferences = (
   date,
   callback
 ) => {
-  const sql = `INSERT INTO user_preferences (user_id, preferred_genres_en, preferred_genres_bg, mood, timeAvailability, preferred_age, preferred_type, preferred_actors, preferred_directors, preferred_countries, preferred_pacing, preferred_depth, preferred_target_group, interests, date)
+  const sql = `INSERT INTO movies_series_user_preferences (user_id, preferred_genres_en, preferred_genres_bg, mood, timeAvailability, preferred_age, preferred_type, preferred_actors, preferred_directors, preferred_countries, preferred_pacing, preferred_depth, preferred_target_group, interests, date)
                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   const values = [
@@ -3440,11 +3440,11 @@ module.exports = {
   findUserByEmail,
   updateUserPassword,
   getUserById,
-  saveRecommendation,
+  saveMoviesSeriesRecommendation,
   saveToWatchlist,
   removeFromWatchlist,
   checkRecommendationExistsInWatchlist,
-  saveUserPreferences,
+  saveMoviesSeriesUserPreferences,
   getUsersCount,
   getAverageBoxOfficeAndScores,
   getTopRecommendationsPlatform,

@@ -69,7 +69,7 @@ export interface Movie {
 }
 
 // Интерфейс за предпочитания на потребителя.
-export interface UserPreferences {
+export interface MoviesSeriesUserPreferences {
   type: string; // Вид на предпочитанията
   genres: { en: string; bg: string }[]; // Жанрове на английски и български
   moods: string[]; // Настроения
@@ -172,7 +172,7 @@ export interface ConfirmationModalProps {
         [key: string]: any;
       }>
     >,
-    userPreferences: UserPreferences,
+    moviesSeriesUserPreferences: MoviesSeriesUserPreferences,
     token: string | null,
     submitCount: number
   ) => Promise<void>;
@@ -191,7 +191,7 @@ export interface ConfirmationModalProps {
   >;
 
   // Предпочитания на потребителя
-  userPreferences: UserPreferences;
+  moviesSeriesUserPreferences: MoviesSeriesUserPreferences;
 
   // Токен за автентикация на потребителя
   token: string | null;

@@ -141,7 +141,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   const token =
     localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
 
-  const userPreferences = {
+  const moviesSeriesUserPreferences = {
     type,
     genres,
     moods: moods?.map((mood) => mood.split(" ")[0]),
@@ -198,7 +198,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
           setSubmitCount,
           setRecommendationList,
           setBookmarkedMovies,
-          userPreferences,
+          moviesSeriesUserPreferences,
           token,
           submitCount
         );
@@ -255,7 +255,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       }
     }
   }, [currentQuestion, selectedAnswer]);
-  console.log("kalata test useEffect: ", userPreferences);
+  console.log("kalata test useEffect: ", moviesSeriesUserPreferences);
 
   return (
     <div>
@@ -501,7 +501,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                 setRecommendationList={setRecommendationList}
                 setBookmarkedMovies={setBookmarkedMovies}
                 setSubmitCount={setSubmitCount}
-                userPreferences={userPreferences}
+                moviesSeriesUserPreferences={moviesSeriesUserPreferences}
                 token={token}
                 submitCount={submitCount}
               />
