@@ -1,20 +1,34 @@
 import { FC, Fragment, useEffect, useState, useMemo } from "react";
-import { Category, DataType, FilteredTableData } from "../home-types";
+import {
+  Category,
+  DataType,
+  FilteredTableData
+} from "../booksIndividualStats-types";
 import { filterTableData } from "../helper_functions";
-import { isActor, isDirector, isWriter } from "../../helper_functions_common";
+import {
+  isActor,
+  isDirector,
+  isWriter
+} from "../../../helper_functions_common";
 import { useMediaQuery } from "react-responsive";
-import { tableCategoryDisplayNames } from "../home-data";
-import Pagination from "../../../components/common/pagination/pagination";
+import { tableCategoryDisplayNames } from "../booksIndividualStats-data";
+import { Tooltip } from "react-tooltip";
+import Pagination from "../../../../components/common/pagination/pagination";
 
 interface ActorsDirectorsWritersTableProps {
   data: DataType;
+  type: "recommendations" | "watchlist";
 }
 
 const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
-  data
+  data,
+  type
 }) => {
-  const [prosperitySortCategory, setProsperitySortCategory] =
+  const [recommendationCountSortCategory, setRecommendationCountSortCategory] =
     useState<Category>("Directors");
+  const [sortType, setSortType] = useState<"recommendations" | "watchlist">(
+    type === "recommendations" ? "recommendations" : "watchlist" // Default sortType based on prop type
+  );
 
   const [filteredTableData, setFilteredTableData] = useState<FilteredTableData>(
     []
@@ -25,32 +39,38 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
   const totalItems = filteredTableData.length;
   const totalTablePages = Math.ceil(totalItems / itemsPerTablePage);
 
-  // Следи за промени в `data` и актуализира филтрираните данни в таблицата съответно
   useEffect(() => {
     const initialFilteredData =
-      data[`sorted${prosperitySortCategory}ByProsperity`];
+      data[
+        `sorted${recommendationCountSortCategory}By${
+          sortType === "recommendations" ? "RecommendationCount" : "SavedCount"
+        }`
+      ];
     setFilteredTableData(initialFilteredData);
-  }, [data, prosperitySortCategory]);
+  }, [data, recommendationCountSortCategory, sortType]);
 
-  // Използва useMemo за запаметяване на изчисляването на филтрираните данни
   const memoizedFilteredData = useMemo(
     () =>
       filterTableData(
         filteredTableData,
-        prosperitySortCategory,
+        recommendationCountSortCategory,
         currentTablePage,
         itemsPerTablePage
       ),
-    [filteredTableData, prosperitySortCategory, currentTablePage]
+    [filteredTableData, recommendationCountSortCategory, currentTablePage]
   );
 
   const handleCategoryChange = (category: Category) => {
-    // Превключва филтрираните данни в зависимост от избраната категория
-    setFilteredTableData(data[`sorted${category}ByProsperity`]);
-    setProsperitySortCategory(category);
+    setFilteredTableData(
+      data[
+        `sorted${category}By${
+          sortType === "recommendations" ? "RecommendationCount" : "SavedCount"
+        }`
+      ]
+    );
+    setRecommendationCountSortCategory(category);
   };
 
-  // Обработка на логиката за предишна страница
   const handlePrevTablePage = () => {
     if (currentTablePage > 1) {
       setCurrentTablePage((prev) => prev - 1);
@@ -71,21 +91,40 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
   };
 
   const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
-  const is1477 = useMediaQuery({ query: "(max-width: 1477px)" });
+  const is1399 = useMediaQuery({ query: "(max-width: 1399px)" });
+  const is1630 = useMediaQuery({ query: "(max-width: 1630px)" });
 
   return (
     <Fragment>
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
         <div className="box custom-card h-[27.75rem]">
           <div className="box-header justify-between">
-            <div className="box-title">
+            <div
+              className={`box-title whitespace-nowrap overflow-hidden text-ellipsis ${
+                is1399 ? "max-w-full" : is1630 ? "max-w-[15rem]" : "max-w-full"
+              }`}
+              data-tooltip-id="box-title-tooltip"
+              data-tooltip-content={`Топ ${
+                tableCategoryDisplayNames[
+                  recommendationCountSortCategory as keyof typeof tableCategoryDisplayNames
+                ]
+              } ${
+                type === "recommendations"
+                  ? "по Брой  Препоръки"
+                  : "в Списък За Гледане"
+              }`}
+            >
+              Топ{" "}
               {
                 tableCategoryDisplayNames[
-                  prosperitySortCategory as keyof typeof tableCategoryDisplayNames
+                  recommendationCountSortCategory as keyof typeof tableCategoryDisplayNames
                 ]
               }{" "}
-              по Просперитет
+              {type === "recommendations"
+                ? "по Брой  Препоръки"
+                : "в Списък За Гледане"}
             </div>
+            <Tooltip id="box-title-tooltip" />
             <div className="flex flex-wrap gap-2">
               <div
                 className="inline-flex rounded-md shadow-sm"
@@ -97,7 +136,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                     key={category}
                     type="button"
                     className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
-                      category === prosperitySortCategory
+                      category === recommendationCountSortCategory
                         ? "ti-btn-primary-full text-white"
                         : "text-[#E74581] dark:text-[#CC3333] bg-[#AF0B48] dark:bg-[#9A110A] bg-opacity-10 dark:bg-opacity-10"
                     } ${
@@ -122,7 +161,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
           <div className="box-body">
             <div className="overflow-x-auto">
               <table
-                key={prosperitySortCategory}
+                key={recommendationCountSortCategory}
                 className="table min-w-full whitespace-nowrap table-hover border table-bordered"
               >
                 <thead>
@@ -136,9 +175,13 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                     <th scope="col" className="!text-start !text-[0.85rem]">
                       {
                         tableCategoryDisplayNames[
-                          prosperitySortCategory as keyof typeof tableCategoryDisplayNames
+                          recommendationCountSortCategory as keyof typeof tableCategoryDisplayNames
                         ]
                       }
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
+                      Брой{" "}
+                      {type === "recommendations" ? "Препоръки" : "Запазвания"}
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
                       Просперитетен рейтинг
@@ -153,13 +196,10 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                       Среден Метаскор
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
+                      Брой филми и сериали в платформата
+                    </th>
+                    <th scope="col" className="!text-start !text-[0.85rem]">
                       Боксофис
-                    </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
-                      Брой филми в платформата
-                    </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
-                      Общо препоръки
                     </th>
                     <th scope="col" className="!text-start !text-[0.85rem]">
                       Победи на награждавания
@@ -177,13 +217,17 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                     >
                       <td>{(currentTablePage - 1) * 5 + index + 1}</td>
                       <td>{getCategoryName(item)}</td>
+                      <td>
+                        {type === "recommendations"
+                          ? item.recommendations_count
+                          : item.saved_count}
+                      </td>
                       <td>{item.prosperityScore}</td>
                       <td>{item.avg_imdb_rating}</td>
                       <td>{item.avg_rotten_tomatoes}</td>
                       <td>{item.avg_metascore}</td>
+                      <td>{item.movie_series_count}</td>
                       <td>{item.total_box_office}</td>
-                      <td>{item.movie_count}</td>
-                      <td>{item.total_recommendations}</td>
                       <td>{item.total_wins}</td>
                       <td>{item.total_nominations}</td>
                     </tr>

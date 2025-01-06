@@ -120,7 +120,7 @@ const Test: FC<Test> = () => {
     localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
   const openAIKey = import.meta.env.VITE_OPENAI_API_KEY;
 
-  const saveUserPreferences = async (date: string) => {
+  const saveMoviesSeriesUserPreferences = async (date: string) => {
     try {
       const preferredGenresEn =
         genres.length > 0 ? genres.map((g) => g.en).join(", ") : null;
@@ -128,7 +128,9 @@ const Test: FC<Test> = () => {
         genres.length > 0 ? genres.map((g) => g.bg).join(", ") : null;
 
       const response = await fetch(
-        "http://localhost:5000/save-user-preferences",
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/save-movies-series-recommendation`,
         {
           method: "POST",
           headers: {
@@ -164,7 +166,10 @@ const Test: FC<Test> = () => {
     }
   };
 
-  const saveRecommendation = async (recommendation: any, date: string) => {
+  const saveMoviesSeriesRecommendation = async (
+    recommendation: any,
+    date: string
+  ) => {
     try {
       // Check if the recommendation object is valid
       if (!recommendation || typeof recommendation !== "object") {
@@ -223,7 +228,9 @@ const Test: FC<Test> = () => {
       console.log("Formatted Recommendation:", formattedRecommendation);
 
       const response = await fetch(
-        "http://localhost:5000/save-recommendation",
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/save-movies-series-recommendation`,
         {
           method: "POST",
           headers: {
@@ -434,7 +441,7 @@ const Test: FC<Test> = () => {
               ]);
 
               console.log("recommendationData: ", recommendationData);
-              await saveRecommendation(recommendationData, date);
+              await saveMoviesSeriesRecommendation(recommendationData, date);
             } else {
               console.log(`IMDb ID not found for ${movieName}`);
             }
@@ -476,7 +483,7 @@ const Test: FC<Test> = () => {
 
     event.preventDefault();
     generateMovieRecommendations(date);
-    saveUserPreferences(date);
+    saveMoviesSeriesUserPreferences(date);
 
     setSubmitCount((prevCount) => prevCount + 1);
     setIsModalOpen(true);

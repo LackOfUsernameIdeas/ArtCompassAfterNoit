@@ -353,7 +353,7 @@ app.get("/user-data", (req, res) => {
 });
 
 // Запазване на потребителските предпочитания
-app.post("/save-user-preferences", (req, res) => {
+app.post("/save-movies-series-user-preferences", (req, res) => {
   const {
     token,
     preferred_genres_en,
@@ -399,7 +399,7 @@ app.post("/save-user-preferences", (req, res) => {
       interests,
       date
     );
-    db.saveUserPreferences(
+    db.saveMoviesSeriesUserPreferences(
       userId,
       preferred_genres_en,
       preferred_genres_bg,
@@ -428,7 +428,7 @@ app.post("/save-user-preferences", (req, res) => {
 });
 
 // Запазване на препоръка
-app.post("/save-recommendation", (req, res) => {
+app.post("/save-movies-series-recommendation", (req, res) => {
   const {
     token,
     imdbID,
@@ -466,7 +466,7 @@ app.post("/save-recommendation", (req, res) => {
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
     const userId = decoded.id;
-    db.saveRecommendation(
+    db.saveMoviesSeriesRecommendation(
       userId,
       imdbID,
       title_en,
