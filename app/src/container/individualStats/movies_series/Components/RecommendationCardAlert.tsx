@@ -3,7 +3,7 @@ import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
 import { PlotModal } from "./PlotModal";
 import { Rating, Recommendation } from "../MoviesSeriesIndividualStats-types";
-import { translate } from "../helper_functions";
+import { translate } from "../../../helper_functions_common";
 
 interface RecommendationCardAlertProps {
   selectedItem: Recommendation | null;

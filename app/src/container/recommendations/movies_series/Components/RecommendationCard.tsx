@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
 import { RecommendationCardProps } from "../moviesSeriesRecommendations-types";
-import { translate } from "../helper_functions";
+import { translate } from "../../../helper_functions_common";
 
 const RecommendationCard: FC<RecommendationCardProps> = ({
   recommendationList,

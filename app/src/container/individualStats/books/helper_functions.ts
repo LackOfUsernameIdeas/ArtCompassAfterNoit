@@ -46,37 +46,6 @@ export const isWriter = (item: any): item is WriterData =>
 // ==============================
 
 /**
- * Превежда текста от английски на български, като използва Google Translate API.
- * Ако заявката за превод е неуспешна, се връща оригиналният текст.
- *
- * @async
- * @function translate
- * @param {string} entry - Текстът, който трябва да бъде преведен.
- * @returns {Promise<string>} - Преведеният текст на български език.
- * @throws {Error} - Хвърля грешка, ако не успее да преведе текста.
- */
-export async function translate(entry: string): Promise<string> {
-  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bg&dt=t&q=${encodeURIComponent(
-    entry
-  )}`;
-
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-
-    const flattenedTranslation = data[0]
-      .map((item: [string]) => item[0])
-      .join(" ");
-
-    const mergedTranslation = flattenedTranslation.replace(/\s+/g, " ").trim();
-    return mergedTranslation;
-  } catch (error) {
-    console.error(`Error translating entry: ${entry}`, error);
-    return entry;
-  }
-}
-
-/**
  * Извлича данни от API за платформата и ги запазва в състоянието.
  *
  * @param {string} token - Токен за удостоверяване.
