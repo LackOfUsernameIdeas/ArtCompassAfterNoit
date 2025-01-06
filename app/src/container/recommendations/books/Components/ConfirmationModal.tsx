@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { ConfirmationModalProps } from "../recommendations-types";
+import { ConfirmationModalProps } from "../booksRecommendations-types";
 
 export const ConfirmationModal: FC<ConfirmationModalProps> = ({
   setNotification,

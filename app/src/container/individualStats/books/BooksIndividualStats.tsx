@@ -1,5 +1,5 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import { DataType } from "./individualStats-types";
+import { DataType } from "./booksIndividualStats-types";
 import {
   checkRecommendationExistsInWatchlist,
   checkTokenValidity,

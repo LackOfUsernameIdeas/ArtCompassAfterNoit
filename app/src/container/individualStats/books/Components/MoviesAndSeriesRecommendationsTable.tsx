@@ -1,5 +1,5 @@
 import { FC, Fragment, useEffect, useState, useMemo, useCallback } from "react";
-import { Rating, Recommendation } from "../individualStats-types";
+import { Rating, Recommendation } from "../booksIndividualStats-types";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";

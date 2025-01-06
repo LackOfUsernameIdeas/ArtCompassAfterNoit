@@ -3,7 +3,7 @@ import {
   Category,
   DataType,
   FilteredTableData
-} from "../individualStats-types";
+} from "../booksIndividualStats-types";
 import {
   filterTableData,
   isActor,
@@ -12,7 +12,7 @@ import {
 } from "../helper_functions";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
-import { tableCategoryDisplayNames } from "../individualStats-data";
+import { tableCategoryDisplayNames } from "../booksIndividualStats-data";
 import { Tooltip } from "react-tooltip";
 import Pagination from "../../../../components/common/pagination/pagination";
 

@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
-import { RecommendationCardProps } from "../recommendations-types";
+import { RecommendationCardProps } from "../booksRecommendations-types";
 import { translate } from "../helper_functions";
 
 const RecommendationCard: FC<RecommendationCardProps> = ({

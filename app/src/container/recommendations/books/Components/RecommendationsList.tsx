@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { CSSTransition } from "react-transition-group";
-import { RecommendationsProps } from "../recommendations-types";
+import { RecommendationsProps } from "../booksRecommendations-types";
 import RecommendationCard from "./RecommendationCard";
 import { PlotModal } from "./PlotModal";
 

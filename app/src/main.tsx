@@ -7,14 +7,14 @@ import Authenticationlayout from "./pages/AuthenticationRoute.tsx";
 import Resetcover from "./container/authentication/resetpassword/Resetpassword.tsx";
 import Signupcover from "./container/authentication/signup/Signup.tsx";
 import Twostepcover from "./container/authentication/twostepverification/Twostepverification.tsx";
-import MoviesSeriesRecommendations from "./container/recommendations/movies_series/recommendations.tsx";
-import BooksRecommendations from "./container/recommendations/books/recommendations.tsx";
+import MoviesSeriesRecommendations from "./container/recommendations/movies_series/MoviesSeriesRecommendations.tsx";
+import BooksRecommendations from "./container/recommendations/books/BooksRecommendations.tsx";
 import "./index.scss";
 import ResetRequest from "./container/authentication/resetpassword/Resetrequest.tsx";
 import PrivateRoute from "./pages/PrivateRoute.tsx";
 import Home from "./container/home/Home.tsx";
-import MoviesSeriesIndividualStats from "./container/individualStats/movies_series/IndividualStats.tsx";
-import BooksIndividualStats from "./container/individualStats/books/IndividualStats.tsx";
+import MoviesSeriesIndividualStats from "./container/individualStats/movies_series/MoviesSeriesIndividualStats.tsx";
+import BooksIndividualStats from "./container/individualStats/books/BooksIndividualStats.tsx";
 import Contact from "./container/contact/Contact.tsx";
 import Test from "./container/test/test.tsx";
 

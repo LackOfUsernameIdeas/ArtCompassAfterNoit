@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { ViewRecommendationsProps } from "../recommendations-types";
+import { ViewRecommendationsProps } from "../moviesSeriesRecommendations-types";
 import { handleViewRecommendations } from "../helper_functions";
 
 export const ViewRecommendations: FC<ViewRecommendationsProps> = ({

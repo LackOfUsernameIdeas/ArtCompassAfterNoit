@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { PlotModalProps } from "../recommendations-types";
+import { PlotModalProps } from "../moviesSeriesRecommendations-types";
 
 export const PlotModal: FC<PlotModalProps> = ({
   recommendationList,

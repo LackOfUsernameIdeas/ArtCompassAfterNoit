@@ -4,8 +4,8 @@ import {
   NotificationType,
   Question,
   UserPreferences
-} from "./recommendations-types";
-import { genreOptions, openAIKey } from "./recommendations-data";
+} from "./moviesSeriesRecommendations-types";
+import { genreOptions, openAIKey } from "./moviesSeriesRecommendations-data";
 
 /**
  * Превежда текста от английски на български, като използва Google Translate API.

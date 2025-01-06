@@ -1,7 +1,7 @@
 import { Component } from "react";
 import ReactApexChart from "react-apexcharts";
 import chroma from "chroma-js";
-import { TopGenres } from "../individualStats-types";
+import { TopGenres } from "../booksIndividualStats-types";
 
 // Преобразува RGB цвят в HEX формат
 const rgbToHex = (rgb: string): string => {

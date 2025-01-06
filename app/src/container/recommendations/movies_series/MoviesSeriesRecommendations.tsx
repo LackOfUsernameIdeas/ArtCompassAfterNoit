@@ -9,12 +9,14 @@ import {
 } from "./helper_functions";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
 import Notification from "../../../components/common/notification/Notification";
-import { NotificationState } from "./recommendations-types";
+import { NotificationState } from "./moviesSeriesRecommendations-types";
 import BookmarkAlert from "./Components/BookmarkAlert";
 
-interface RecommendationsProps {}
+interface MoviesSeriesRecommendationsProps {}
 
-const Recommendations: FC<RecommendationsProps> = () => {
+const MoviesSeriesRecommendations: FC<
+  MoviesSeriesRecommendationsProps
+> = () => {
   const navigate = useNavigate();
   const [notification, setNotification] = useState<NotificationState | null>(
     null // Състояние за съхраняване на текущото известие (съобщение и тип)
@@ -116,4 +118,4 @@ const Recommendations: FC<RecommendationsProps> = () => {
   );
 };
 
-export default Recommendations;
+export default MoviesSeriesRecommendations;

@@ -1,14 +1,14 @@
 // ==============================
 // Импортиране на типове и интерфейси
 // ==============================
-import { genreOptions } from "./individualStats-data";
+import { genreOptions } from "./booksIndividualStats-data";
 import {
   FilteredTableData,
   DirectorData,
   ActorData,
   WriterData,
   DataType
-} from "./individualStats-types";
+} from "./booksIndividualStats-types";
 
 // ==============================
 // Type Guards

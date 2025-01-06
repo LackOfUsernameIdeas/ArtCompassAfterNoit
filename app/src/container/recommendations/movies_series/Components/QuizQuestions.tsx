@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { CSSTransition } from "react-transition-group";
-import { Genre, QuizQuestionProps } from "../recommendations-types";
+import { Genre, QuizQuestionProps } from "../moviesSeriesRecommendations-types";
 import {
   handleAnswerClick,
   handleInputChange,
@@ -18,7 +18,7 @@ import {
   pacingOptions,
   depthOptions,
   targetGroupOptions
-} from "../recommendations-data";
+} from "../moviesSeriesRecommendations-data";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { ViewRecommendations } from "./ViewRecommendations";
 import Notification from "../../../../components/common/notification/Notification";
