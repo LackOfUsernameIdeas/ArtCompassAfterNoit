@@ -21,7 +21,7 @@ import {
 } from "../recommendations-data";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { ViewRecommendations } from "./ViewRecommendations";
-import Notification from "../../../components/common/notification/Notification";
+import Notification from "../../../../components/common/notification/Notification";
 
 export const QuizQuestions: FC<QuizQuestionProps> = ({
   setLoading,

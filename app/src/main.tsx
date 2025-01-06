@@ -7,12 +7,14 @@ import Authenticationlayout from "./pages/AuthenticationRoute.tsx";
 import Resetcover from "./container/authentication/resetpassword/Resetpassword.tsx";
 import Signupcover from "./container/authentication/signup/Signup.tsx";
 import Twostepcover from "./container/authentication/twostepverification/Twostepverification.tsx";
-import Recommendations from "./container/recommendations/Recommendations.tsx";
+import MoviesSeriesRecommendations from "./container/recommendations/movies_series/recommendations.tsx";
+import BooksRecommendations from "./container/recommendations/books/recommendations.tsx";
 import "./index.scss";
 import ResetRequest from "./container/authentication/resetpassword/Resetrequest.tsx";
 import PrivateRoute from "./pages/PrivateRoute.tsx";
 import Home from "./container/home/Home.tsx";
-import IndividualStats from "./container/individualStats/IndividualStats.tsx";
+import MoviesSeriesIndividualStats from "./container/individualStats/movies_series/IndividualStats.tsx";
+import BooksIndividualStats from "./container/individualStats/books/IndividualStats.tsx";
 import Contact from "./container/contact/Contact.tsx";
 import Test from "./container/test/test.tsx";
 
@@ -33,8 +35,22 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           >
             {/* Default route */}
             <Route index path="home" element={<Home />} />
-            <Route path="recommendations" element={<Recommendations />} />
-            <Route path="individualStats" element={<IndividualStats />} />
+            <Route
+              path="recommendations/movies_series"
+              element={<MoviesSeriesRecommendations />}
+            />
+            <Route
+              path="recommendations/books"
+              element={<BooksRecommendations />}
+            />
+            <Route
+              path="individualStats/movies_series"
+              element={<MoviesSeriesIndividualStats />}
+            />
+            <Route
+              path="individualStats/books"
+              element={<BooksIndividualStats />}
+            />
             <Route path="test" element={<Test />} />
             <Route path="contact" element={<Contact />} />
           </Route>

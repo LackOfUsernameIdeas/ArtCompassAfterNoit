@@ -4,7 +4,7 @@ import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import RecommendationCardAlert from "./RecommendationCardAlert";
-import Pagination from "../../../components/common/pagination/pagination";
+import Pagination from "../../../../components/common/pagination/pagination";
 
 interface MoviesAndSeriesRecommendationsTableProps {
   data: Recommendation[];

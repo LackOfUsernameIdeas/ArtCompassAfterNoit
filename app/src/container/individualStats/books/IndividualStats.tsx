@@ -8,10 +8,10 @@ import {
   saveToWatchlist
 } from "./helper_functions";
 import { useNavigate } from "react-router-dom";
-import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
-import { showNotification } from "../recommendations/helper_functions";
-import Notification from "../../components/common/notification/Notification";
-import { NotificationState } from "../recommendations/recommendations-types";
+import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
+import { showNotification } from "../../recommendations/movies_series/helper_functions";
+import Notification from "../../../components/common/notification/Notification";
+import { NotificationState } from "../../recommendations/movies_series/recommendations-types";
 import ActorsDirectorsWritersTable from "./Components/ActorsDirectorsWritersTable";
 import MoviesAndSeriesRecommendationsTable from "./Components/MoviesAndSeriesRecommendationsTable";
 import GenresBarChart from "./Components/GenresBarChart";

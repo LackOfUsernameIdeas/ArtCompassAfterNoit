@@ -1,14 +1,14 @@
 import { FC, useEffect, useState } from "react";
 import { Quiz } from "./Components/Quiz";
 import { useNavigate } from "react-router-dom";
-import { checkTokenValidity } from "../home/helper_functions";
+import { checkTokenValidity } from "../../home/helper_functions";
 import {
   removeFromWatchlist,
   saveToWatchlist,
   showNotification
 } from "./helper_functions";
-import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
-import Notification from "../../components/common/notification/Notification";
+import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
+import Notification from "../../../components/common/notification/Notification";
 import { NotificationState } from "./recommendations-types";
 import BookmarkAlert from "./Components/BookmarkAlert";
 

@@ -14,7 +14,7 @@ import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { tableCategoryDisplayNames } from "../individualStats-data";
 import { Tooltip } from "react-tooltip";
-import Pagination from "../../../components/common/pagination/pagination";
+import Pagination from "../../../../components/common/pagination/pagination";
 
 interface ActorsDirectorsWritersTableProps {
   data: DataType;
