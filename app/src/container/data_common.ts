@@ -1,3 +1,8 @@
+/**
+ * Мапинг на имената за категориите на жанровете.
+ *
+ * @type {Array<{en: string, bg: string}>}
+ */
 export const genreOptions = [
   { en: "Action", bg: "Екшън" },
   { en: "Adventure", bg: "Приключенски" },

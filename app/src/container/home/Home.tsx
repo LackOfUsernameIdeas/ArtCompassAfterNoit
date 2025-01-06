@@ -1,6 +1,6 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { DataType, UserData } from "./home-types";
-import { checkTokenValidity, fetchData } from "./helper_functions";
+import { fetchData } from "./helper_functions";
 import ActorsDirectorsWritersTable from "./Components/ActorsDirectorsWritersTable";
 import ActorsDirectorsWritersTreemap from "./Components/ActorsDirectorsWritersTreemap";
 import TopRecommendationsChartComponent from "./Components/TopRecommendationsChartComponent";
@@ -11,7 +11,10 @@ import MoviesAndSeriesByRatingsChartComponent from "./Components/MoviesAndSeries
 import WidgetCards from "./Components/WidgetCardsComponent";
 import { useNavigate } from "react-router-dom";
 import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
-import { showNotification } from "../helper_functions_common";
+import {
+  checkTokenValidity,
+  showNotification
+} from "../helper_functions_common";
 import Notification from "../../components/common/notification/Notification";
 import { NotificationState } from "../types_common";
 

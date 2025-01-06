@@ -13,12 +13,12 @@ import {
 import {
   ageOptions,
   moodOptions,
-  genreOptions,
   timeAvailabilityOptions,
   pacingOptions,
   depthOptions,
   targetGroupOptions
 } from "../../movies_series/moviesSeriesRecommendations-data";
+import { genreOptions } from "../../../data_common";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { ViewRecommendations } from "./ViewRecommendations";
 import Notification from "../../../../components/common/notification/Notification";
