@@ -1,12 +1,12 @@
 import { FC, useEffect, useState } from "react";
 import { Quiz } from "./Components/Quiz";
 import { useNavigate } from "react-router-dom";
-import { checkTokenValidity } from "../../home/helper_functions";
+import { checkTokenValidity } from "../../helper_functions_common";
 import {
   removeFromWatchlist,
   saveToWatchlist,
   showNotification
-} from "./helper_functions";
+} from "../../helper_functions_common";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
 import Notification from "../../../components/common/notification/Notification";
 import { NotificationState } from "./moviesSeriesRecommendations-types";
