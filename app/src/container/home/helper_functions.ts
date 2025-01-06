@@ -3,9 +3,6 @@
 // ==============================
 import {
   FilteredTableData,
-  DirectorData,
-  ActorData,
-  WriterData,
   GenrePopularityData,
   HeatmapData,
   MovieProsperityData,
@@ -14,37 +11,6 @@ import {
   Category,
   DataType
 } from "./home-types";
-
-// ==============================
-// Type Guards
-// ==============================
-
-/**
- * Проверява дали даден обект е от тип DirectorData.
- *
- * @param {any} item - Обектът за проверка.
- * @returns {boolean} - Вярно, ако обектът е DirectorData.
- */
-export const isDirector = (item: any): item is DirectorData =>
-  item && "director" in item;
-
-/**
- * Проверява дали даден обект е от тип ActorData.
- *
- * @param {any} item - Обектът за проверка.
- * @returns {boolean} - Вярно, ако обектът е ActorData.
- */
-export const isActor = (item: any): item is ActorData =>
-  item && "actor" in item;
-
-/**
- * Проверява дали даден обект е от тип WriterData.
- *
- * @param {any} item - Обектът за проверка.
- * @returns {boolean} - Вярно, ако обектът е WriterData.
- */
-export const isWriter = (item: any): item is WriterData =>
-  item && "writer" in item;
 
 // ==============================
 // Функции за работа с данни

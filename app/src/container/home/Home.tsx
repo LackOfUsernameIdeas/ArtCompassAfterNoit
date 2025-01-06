@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 import { showNotification } from "../helper_functions_common";
 import Notification from "../../components/common/notification/Notification";
-import { NotificationState } from "../recommendations/movies_series/recommendations-types";
+import { NotificationState } from "../types_common";
 
 interface CrmProps {}
 

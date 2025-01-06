@@ -2,44 +2,7 @@
 // Импортиране на типове и интерфейси
 // ==============================
 import { genreOptions } from "./booksIndividualStats-data";
-import {
-  FilteredTableData,
-  DirectorData,
-  ActorData,
-  WriterData,
-  DataType
-} from "./booksIndividualStats-types";
-
-// ==============================
-// Type Guards
-// ==============================
-
-/**
- * Проверява дали даден обект е от тип DirectorData.
- *
- * @param {any} item - Обектът за проверка.
- * @returns {boolean} - Вярно, ако обектът е DirectorData.
- */
-export const isDirector = (item: any): item is DirectorData =>
-  item && "director_bg" in item;
-
-/**
- * Проверява дали даден обект е от тип ActorData.
- *
- * @param {any} item - Обектът за проверка.
- * @returns {boolean} - Вярно, ако обектът е ActorData.
- */
-export const isActor = (item: any): item is ActorData =>
-  item && "actor_bg" in item;
-
-/**
- * Проверява дали даден обект е от тип WriterData.
- *
- * @param {any} item - Обектът за проверка.
- * @returns {boolean} - Вярно, ако обектът е WriterData.
- */
-export const isWriter = (item: any): item is WriterData =>
-  item && "writer_bg" in item;
+import { FilteredTableData, DataType } from "./booksIndividualStats-types";
 
 // ==============================
 // Функции за работа с данни

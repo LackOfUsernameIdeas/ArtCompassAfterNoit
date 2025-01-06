@@ -1,13 +1,8 @@
 import { FC, Fragment, useEffect, useState, useMemo } from "react";
 import { Category, DataType, FilteredTableData } from "../home-types";
-import {
-  filterTableData,
-  isActor,
-  isDirector,
-  isWriter
-} from "../helper_functions";
+import { filterTableData } from "../helper_functions";
+import { isActor, isDirector, isWriter } from "../../helper_functions_common";
 import { useMediaQuery } from "react-responsive";
-import { Link } from "react-router-dom";
 import { tableCategoryDisplayNames } from "../home-data";
 import Pagination from "../../../components/common/pagination/pagination";
 

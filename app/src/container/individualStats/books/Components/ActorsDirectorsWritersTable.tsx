@@ -4,12 +4,12 @@ import {
   DataType,
   FilteredTableData
 } from "../booksIndividualStats-types";
+import { filterTableData } from "../helper_functions";
 import {
-  filterTableData,
   isActor,
   isDirector,
   isWriter
-} from "../helper_functions";
+} from "../../../helper_functions_common";
 import { useMediaQuery } from "react-responsive";
 import { tableCategoryDisplayNames } from "../booksIndividualStats-data";
 import { Tooltip } from "react-tooltip";
