@@ -9,9 +9,9 @@ import {
 } from "./helper_functions";
 import { useNavigate } from "react-router-dom";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
-import { showNotification } from "../../recommendations/movies_series/helper_functions";
+import { showNotification } from "../../helper_functions_common";
 import Notification from "../../../components/common/notification/Notification";
-import { NotificationState } from "../../recommendations/movies_series/recommendations-types";
+import { NotificationState } from "../../types_common";
 import ActorsDirectorsWritersTable from "./Components/ActorsDirectorsWritersTable";
 import MoviesAndSeriesRecommendationsTable from "./Components/MoviesAndSeriesRecommendationsTable";
 import GenresBarChart from "./Components/GenresBarChart";

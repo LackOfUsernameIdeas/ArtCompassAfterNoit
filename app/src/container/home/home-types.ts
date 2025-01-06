@@ -158,12 +158,3 @@ export type DataType = {
 
 // Категориен тип за роли
 export type Category = "Actors" | "Directors" | "Writers"; // Роли: Актьори, Режисьори, Писатели
-
-// Вида на уведомлението.
-export type NotificationType = "success" | "error" | "warning";
-
-// Интерфейс за уведомление, което съдържа съобщение и тип на уведомлението.
-export interface NotificationState {
-  message: string;
-  type: NotificationType;
-}
