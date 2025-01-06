@@ -2,11 +2,11 @@ import { FC, Fragment, useEffect, useState } from "react";
 import { DataType } from "./MoviesSeriesIndividualStats-types";
 import {
   checkRecommendationExistsInWatchlist,
-  checkTokenValidity,
   fetchData,
   removeFromWatchlist,
   saveToWatchlist
 } from "./helper_functions";
+import { checkTokenValidity } from "../../helper_functions_common";
 import { useNavigate } from "react-router-dom";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
 import { showNotification } from "../../helper_functions_common";
