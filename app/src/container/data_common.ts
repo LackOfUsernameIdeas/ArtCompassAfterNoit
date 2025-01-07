@@ -3,7 +3,7 @@
  *
  * @type {Array<{en: string, bg: string}>}
  */
-export const genreOptions = [
+export const moviesSeriesGenreOptions = [
   { en: "Action", bg: "Екшън" },
   { en: "Adventure", bg: "Приключенски" },
   { en: "Animation", bg: "Анимация" },

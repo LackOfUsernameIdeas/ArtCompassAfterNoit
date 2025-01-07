@@ -34,7 +34,7 @@ const Test: FC<Test> = () => {
 
   const typeOptions = ["Филм", "Сериал", "Нямам предпочитания"];
 
-  const genreOptions = [
+  const moviesSeriesGenreOptions = [
     { en: "Action", bg: "Екшън" },
     { en: "Adventure", bg: "Приключенски" },
     { en: "Animation", bg: "Анимация" },
@@ -182,9 +182,9 @@ const Test: FC<Test> = () => {
         ? recommendation.genre.split(", ")
         : null;
 
-      // Translate genres from English to Bulgarian using the genreOptions array
+      // Translate genres from English to Bulgarian using the moviesSeriesGenreOptions array
       const genresBg = genresEn.map((genre: string) => {
-        const matchedGenre = genreOptions.find(
+        const matchedGenre = moviesSeriesGenreOptions.find(
           (option) => option.en.trim() === genre.trim()
         );
         return matchedGenre ? matchedGenre.bg : null;
@@ -571,7 +571,7 @@ const Test: FC<Test> = () => {
                   Кои жанрове Ви се гледат в момента?
                 </label>
                 <div className="bubble right multiCh MChitem inflate-right">
-                  {genreOptions.map((genre) => (
+                  {moviesSeriesGenreOptions.map((genre) => (
                     <div key={genre.en}>
                       <label>
                         <input

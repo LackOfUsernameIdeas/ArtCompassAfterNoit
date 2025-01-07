@@ -1,4 +1,4 @@
-import { genreOptions } from "./data_common";
+import { moviesSeriesGenreOptions } from "./data_common";
 import {
   ActorData,
   DirectorData,
@@ -174,7 +174,7 @@ export const saveToWatchlist = async (
       : null;
 
     const genresBg = genresEn.map((genre: string) => {
-      const matchedGenre = genreOptions.find(
+      const matchedGenre = moviesSeriesGenreOptions.find(
         (option) => option.en.trim() === genre.trim()
       );
       return matchedGenre ? matchedGenre.bg : null;

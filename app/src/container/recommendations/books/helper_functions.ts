@@ -5,7 +5,7 @@ import {
 } from "./booksRecommendations-types";
 import { NotificationState } from "../../types_common";
 import { openAIKey } from "./booksRecommendations-data";
-import { genreOptions } from "../../data_common";
+import { moviesSeriesGenreOptions } from "../../data_common";
 import {
   checkRecommendationExistsInWatchlist,
   showNotification
@@ -412,7 +412,7 @@ export const saveMoviesSeriesRecommendation = async (
       : null;
 
     const genresBg = genresEn.map((genre: string) => {
-      const matchedGenre = genreOptions.find(
+      const matchedGenre = moviesSeriesGenreOptions.find(
         (option) => option.en.trim() === genre.trim()
       );
       return matchedGenre ? matchedGenre.bg : null;
@@ -665,7 +665,9 @@ export const handleAnswerClick = (
 ) => {
   if (currentQuestion.isMultipleChoice) {
     if (currentQuestion.setter === setGenres) {
-      const selectedGenre = genreOptions.find((genre) => genre.bg === answer);
+      const selectedGenre = moviesSeriesGenreOptions.find(
+        (genre) => genre.bg === answer
+      );
 
       if (selectedGenre) {
         toggleGenre(selectedGenre, setGenres);

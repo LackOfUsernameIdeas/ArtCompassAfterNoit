@@ -18,7 +18,7 @@ import {
   depthOptions,
   targetGroupOptions
 } from "../../movies_series/moviesSeriesRecommendations-data";
-import { genreOptions } from "../../../data_common";
+import { moviesSeriesGenreOptions } from "../../../data_common";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { ViewRecommendations } from "./ViewRecommendations";
 import Notification from "../../../../components/common/notification/Notification";
@@ -63,7 +63,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
     },
     {
       question: "Кои жанрове Ви се гледат в момента?",
-      options: genreOptions,
+      options: moviesSeriesGenreOptions,
       isMultipleChoice: true,
       value: genres,
       setter: setGenres
