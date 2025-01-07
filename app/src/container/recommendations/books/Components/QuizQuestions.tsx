@@ -11,14 +11,12 @@ import {
   getMarginClass
 } from "../helper_functions";
 import {
-  ageOptions,
   moodOptions,
-  timeAvailabilityOptions,
   pacingOptions,
   depthOptions,
   targetGroupOptions
 } from "../../movies_series/moviesSeriesRecommendations-data";
-import { moviesSeriesGenreOptions } from "../../../data_common";
+import { booksGenreOptions } from "../../../data_common";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { ViewRecommendations } from "./ViewRecommendations";
 import Notification from "../../../../components/common/notification/Notification";
@@ -31,24 +29,19 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   setRecommendationList,
   setBookmarkedMovies
 }) => {
-  const [type, setType] = useState("");
   const [genres, setGenres] = useState<Genre[]>([]);
   const [moods, setMoods] = useState<string[]>([]);
-  const [timeAvailability, setTimeAvailability] = useState("");
-  const [age, setAge] = useState("");
-  const [actors, setActors] = useState("");
-  const [directors, setDirectors] = useState("");
-  const [interests, setInterests] = useState("");
+  const [authors, setAuthors] = useState("");
   const [countries, setCountries] = useState("");
   const [pacing, setPacing] = useState("");
   const [depth, setDepth] = useState("");
   const [targetGroup, setTargetGroup] = useState("");
+  const [interests, setInterests] = useState("");
 
   const [submitCount, setSubmitCount] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showQuestion, setShowQuestion] = useState(true);
   const [selectedAnswer, setSelectedAnswer] = useState<string[] | null>(null);
-  const typeOptions = ["Филм", "Сериал"];
   const [notification, setNotification] = useState<{
     message: string;
     type: "success" | "error" | "warning";
@@ -56,14 +49,8 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
 
   const questions = [
     {
-      question: "Какво търсите - филм или сериал?",
-      options: typeOptions,
-      value: type,
-      setter: setType
-    },
-    {
-      question: "Кои жанрове Ви се гледат в момента?",
-      options: moviesSeriesGenreOptions,
+      question: "Кои жанрове Ви се четат в момента?",
+      options: booksGenreOptions,
       isMultipleChoice: true,
       value: genres,
       setter: setGenres
@@ -76,47 +63,28 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       setter: setMoods
     },
     {
-      question: "С какво време за гледане разполагате?",
-      options: timeAvailabilityOptions,
-      value: timeAvailability,
-      setter: setTimeAvailability
-    },
-    {
-      question: "Изберете приблизително време на създаване на филма/сериала?",
-      options: ageOptions,
-      value: age,
-      setter: setAge
-    },
-    {
-      question: "Кои са вашите любими актьори?",
+      question: "Кои са вашите любими автори?",
       isInput: true,
-      value: actors,
-      setter: setActors,
-      placeholder: "Пример: Брад Пит, Леонардо ди Каприо, Ема Уотсън"
+      value: authors,
+      setter: setAuthors,
+      placeholder: "Пример: Иван Вазов, Гео Милев, Уилям Шекспир"
     },
     {
-      question: "Кои филмови режисьори предпочитате?",
-      isInput: true,
-      value: directors,
-      setter: setDirectors,
-      placeholder: "Пример: Дъфър брадърс, Стивън Спилбърг, Джеки Чан"
-    },
-    {
-      question: "От кои страни предпочитате да е филмът/сериалът?",
+      question: "Какви са вашите предпочитания относно произхода на книгите?",
       isInput: true,
       value: countries,
       setter: setCountries,
-      placeholder: "Пример: България, САЩ"
+      placeholder: "Пример: Европейска, Българска, Френска литература"
     },
     {
       question:
-        "Филми/Сериали с каква бързина на развитие на сюжетното действие предпочитате?",
+        "Книги с каква бързина на развитие на сюжетното действие предпочитате?",
       options: pacingOptions,
       value: pacing,
       setter: setPacing
     },
     {
-      question: "Филми/Сериали с какво ниво на задълбочаване харесвате?",
+      question: "Книги с какво ниво на задълбочаване харесвате?",
       options: depthOptions,
       value: depth,
       setter: setDepth
@@ -128,32 +96,28 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       setter: setTargetGroup
     },
     {
-      question: "Какви теми ви интересуват?",
+      question: "Какви теми ви интересуват в книгите, които четете?",
       isInput: true,
       value: interests,
       setter: setInterests,
       placeholder: "Опишете темите, които ви интересуват",
       description:
-        "Предпочитате филм/сериал, който засяга определена историческа епоха, държава или дори представя история по действителен случай? Интересуват ви филми, в които се разследва мистерия или социален проблем, или такива, в които животни играят важна роля? А какво ще кажете за филми, свързани с пътешествия и изследване на света, или пък разкази за въображаеми светове? Дайте описание. Можете също така да споделите примери за филми/сериали, които предпочитате."
+        "Предпочитате книги, които разказват за живота на хора, които преодоляват лични или социални предизвикателства, или такива, които представят драматични семейни истории? Интересуват ви сюжети, свързани с научни открития, иновации или изследвания на космоса? А какво ще кажете за книги, вдъхновени от митове и легенди, или такива, които предлагат задълбочен поглед върху междуличностните отношения? Харесвате разкази за герои, изправени пред морални дилеми, или приключения, развиващи се в далечни, екзотични земи? Дайте описание. Можете също така да споделите примери за книги, които предпочитате."
     }
   ];
   const totalQuestions = questions.length;
   const token =
     localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
 
-  const moviesSeriesUserPreferences = {
-    type,
+  const booksUserPreferences = {
     genres,
     moods: moods?.map((mood) => mood.split(" ")[0]),
-    timeAvailability,
-    age,
-    actors,
-    directors,
-    interests,
+    authors,
     countries,
     pacing,
     depth,
-    targetGroup
+    targetGroup,
+    interests
   };
 
   const isBackDisabled = currentQuestionIndex === 0;
@@ -198,7 +162,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
           setSubmitCount,
           setRecommendationList,
           setBookmarkedMovies,
-          moviesSeriesUserPreferences,
+          booksUserPreferences,
           token,
           submitCount
         );
@@ -235,6 +199,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
             ];
 
         if (JSON.stringify(genreBgValues) !== JSON.stringify(selectedAnswer)) {
+          console.log("currentQuestion.options: ", currentQuestion.options);
           console.log("genreBgValues: ", genreBgValues);
           setSelectedAnswer(genreBgValues);
         }
@@ -255,7 +220,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       }
     }
   }, [currentQuestion, selectedAnswer]);
-  console.log("kalata test useEffect: ", moviesSeriesUserPreferences);
+  console.log("kalata test useEffect: ", booksUserPreferences);
 
   return (
     <div>
@@ -501,7 +466,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                 setRecommendationList={setRecommendationList}
                 setBookmarkedMovies={setBookmarkedMovies}
                 setSubmitCount={setSubmitCount}
-                moviesSeriesUserPreferences={moviesSeriesUserPreferences}
+                booksUserPreferences={booksUserPreferences}
                 token={token}
                 submitCount={submitCount}
               />

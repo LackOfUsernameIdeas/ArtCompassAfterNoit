@@ -69,19 +69,15 @@ export interface Movie {
 }
 
 // Интерфейс за предпочитания на потребителя.
-export interface MoviesSeriesUserPreferences {
-  type: string; // Вид на предпочитанията
+export interface BooksUserPreferences {
   genres: { en: string; bg: string }[]; // Жанрове на английски и български
   moods: string[]; // Настроения
-  timeAvailability: string; // Наличност на време
-  age: string; // Възраст
-  actors: string; // Любими актьори
-  directors: string; // Любими режисьори
-  interests: string; // Интереси
+  authors: string; // Любими актьори
   countries: string; // Предпочитани държави
   pacing: string; // Пейсинг
   depth: string; // Дълбочина на историята
   targetGroup: string; // Целева група
+  interests: string; // Интереси
 }
 
 // Пропс за компонентата Quiz, свързана с маркирането на филми.
@@ -172,7 +168,7 @@ export interface ConfirmationModalProps {
         [key: string]: any;
       }>
     >,
-    moviesSeriesUserPreferences: MoviesSeriesUserPreferences,
+    booksUserPreferences: BooksUserPreferences,
     token: string | null,
     submitCount: number
   ) => Promise<void>;
@@ -191,7 +187,7 @@ export interface ConfirmationModalProps {
   >;
 
   // Предпочитания на потребителя
-  moviesSeriesUserPreferences: MoviesSeriesUserPreferences;
+  booksUserPreferences: BooksUserPreferences;
 
   // Токен за автентикация на потребителя
   token: string | null;

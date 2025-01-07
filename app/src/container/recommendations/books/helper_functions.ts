@@ -1,11 +1,12 @@
 import {
   Genre,
   Question,
-  MoviesSeriesUserPreferences
+  BooksUserPreferences
 } from "./booksRecommendations-types";
 import { NotificationState } from "../../types_common";
 import { openAIKey } from "./booksRecommendations-data";
 import { moviesSeriesGenreOptions } from "../../data_common";
+import { booksGenreOptions } from "../../data_common";
 import {
   checkRecommendationExistsInWatchlist,
   showNotification
@@ -16,16 +17,16 @@ import {
  * Ако не успее да запише предпочитанията, се хвърля грешка.
  *
  * @async
- * @function saveMoviesSeriesUserPreferences
+ * @function saveBooksUserPreferences
  * @param {string} date - Датата на записа на предпочитанията.
- * @param {Object} moviesSeriesUserPreferences - Обект с предпочитанията на потребителя.
+ * @param {Object} booksUserPreferences - Обект с предпочитанията на потребителя.
  * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
  * @returns {Promise<void>} - Няма връщан резултат, но хвърля грешка при неуспех.
  * @throws {Error} - Хвърля грешка, ако заявката не е успешна.
  */
-export const saveMoviesSeriesUserPreferences = async (
+export const saveBooksUserPreferences = async (
   date: string,
-  moviesSeriesUserPreferences: {
+  booksUserPreferences: {
     type: string;
     genres: { en: string; bg: string }[];
     moods: string[];
@@ -55,7 +56,7 @@ export const saveMoviesSeriesUserPreferences = async (
       pacing,
       depth,
       targetGroup
-    } = moviesSeriesUserPreferences;
+    } = booksUserPreferences;
 
     const preferredGenresEn =
       genres.length > 0 ? genres.map((g) => g.en).join(", ") : null;
@@ -171,7 +172,7 @@ const fetchIMDbDataWithFailover = async (movieName: string) => {
  * @async
  * @function generateMovieRecommendations
  * @param {string} date - Датата на генерирането на препоръките.
- * @param {MoviesSeriesUserPreferences} moviesSeriesUserPreferences - Преференциите на потребителя за филми/сериали.
+ * @param {BooksUserPreferences} booksUserPreferences - Преференциите на потребителя за филми/сериали.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за задаване на препоръките в компонент.
  * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките.
@@ -179,7 +180,7 @@ const fetchIMDbDataWithFailover = async (movieName: string) => {
  */
 export const generateMovieRecommendations = async (
   date: string,
-  moviesSeriesUserPreferences: MoviesSeriesUserPreferences,
+  booksUserPreferences: BooksUserPreferences,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
   setBookmarkedMovies: React.Dispatch<
     React.SetStateAction<{
@@ -188,22 +189,9 @@ export const generateMovieRecommendations = async (
   >,
   token: string | null
 ) => {
-  const {
-    type,
-    genres,
-    moods,
-    timeAvailability,
-    age,
-    actors,
-    directors,
-    interests,
-    countries,
-    pacing,
-    depth,
-    targetGroup
-  } = moviesSeriesUserPreferences;
+  const { genres, moods, interests, countries, pacing, depth, targetGroup } =
+    booksUserPreferences;
   try {
-    const typeText = type === "Филм" ? "филма" : "сериала";
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -211,47 +199,47 @@ export const generateMovieRecommendations = async (
         Authorization: `Bearer ${openAIKey}`
       },
       body: JSON.stringify({
-        model: "gpt-4o-2024-08-06",
-        messages: [
-          {
-            role: "system",
-            content: `You are an AI that recommends movies and series based on user preferences. Provide a list of movies and series, based on what the user has chosen to watch (movie or series), that match the user's taste and preferences, formatted in Bulgarian, with detailed justifications. Return the result in JSON format as instructed.`
-          },
-          {
-            role: "user",
-            content: `Препоръчай ми 5 ${typeText} за гледане, които ЗАДЪЛЖИТЕЛНО да съвпадат с моите вкусове и предпочитания, а именно:
-                  Любими жанрове: ${genres.map((genre) => genre.bg)}.
-                  Емоционално състояние в този момент: ${moods}.
-                  Разполагаемо свободно време за гледане: ${timeAvailability}.
-                  Възрастта на ${typeText} задължително да бъде: ${age}
-                  Любими актьори: ${actors}.
-                  Любими филмови режисьори: ${directors}.
-                  Теми, които ме интересуват: ${interests}.
-                  Филмите/сериалите могат да бъдат от следните страни: ${countries}.
-                  Темпото (бързината) на филмите/сериалите предпочитам да бъде: ${pacing}.
-                  Предпочитам филмите/сериалите да са: ${depth}.
-                  Целевата група е: ${targetGroup}.
-                  Дай информация за всеки отделен филм/сериал по отделно защо той е подходящ за мен.
-                  Задължително искам имената на филмите/сериалите да бъдат абсолютно точно както са официално на български език – така, както са известни сред публиката в България.
-                  Не се допуска буквален превод на заглавията от английски, ако официалното българско заглавие се различава от буквалния превод.
-                  Не препоръчвай 18+ филми/сериали.
-                  Форматирай своя response във валиден JSON формат по този начин:
-                  {
-                    'Официално име на ${typeText} на английски, както е прието да бъде': {
-                      'bgName': 'Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод',
-                      'description': 'Описание на ${typeText}',
-                      'reason': 'Защо този филм/сериал е подходящ за мен?'
-                    },
-                    'Официално име на ${typeText} на английски, както е прието да бъде': {
-                      'bgName': 'Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод',
-                      'description': 'Описание на ${typeText}',
-                      'reason': 'Защо този филм/сериал е подходящ за мен?'
-                    },
-                    // ...additional movies
-                  }. Не добавяй излишни думи или скоби. Избягвай вложени двойни или единични кавички(кавички от един тип едно в друго, които да дават грешки на JSON.parse функцията). Увери се, че всички данни са правилно "escape-нати", за да не предизвикат грешки в JSON формата. 
-                  JSON формата трябва да е валиден за JavaScript JSON.parse() функцията.`
-          }
-        ]
+        model: "gpt-4o-2024-08-06"
+        // messages: [
+        //   {
+        //     role: "system",
+        //     content: `You are an AI that recommends movies and series based on user preferences. Provide a list of movies and series, based on what the user has chosen to watch (movie or series), that match the user's taste and preferences, formatted in Bulgarian, with detailed justifications. Return the result in JSON format as instructed.`
+        //   },
+        //   {
+        //     role: "user",
+        //     content: `Препоръчай ми 5 ${typeText} за гледане, които ЗАДЪЛЖИТЕЛНО да съвпадат с моите вкусове и предпочитания, а именно:
+        //           Любими жанрове: ${genres.map((genre) => genre.bg)}.
+        //           Емоционално състояние в този момент: ${moods}.
+        //           Разполагаемо свободно време за гледане: ${timeAvailability}.
+        //           Възрастта на ${typeText} задължително да бъде: ${age}
+        //           Любими актьори: ${actors}.
+        //           Любими филмови режисьори: ${directors}.
+        //           Теми, които ме интересуват: ${interests}.
+        //           Филмите/сериалите могат да бъдат от следните страни: ${countries}.
+        //           Темпото (бързината) на филмите/сериалите предпочитам да бъде: ${pacing}.
+        //           Предпочитам филмите/сериалите да са: ${depth}.
+        //           Целевата група е: ${targetGroup}.
+        //           Дай информация за всеки отделен филм/сериал по отделно защо той е подходящ за мен.
+        //           Задължително искам имената на филмите/сериалите да бъдат абсолютно точно както са официално на български език – така, както са известни сред публиката в България.
+        //           Не се допуска буквален превод на заглавията от английски, ако официалното българско заглавие се различава от буквалния превод.
+        //           Не препоръчвай 18+ филми/сериали.
+        //           Форматирай своя response във валиден JSON формат по този начин:
+        //           {
+        //             'Официално име на ${typeText} на английски, както е прието да бъде': {
+        //               'bgName': 'Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод',
+        //               'description': 'Описание на ${typeText}',
+        //               'reason': 'Защо този филм/сериал е подходящ за мен?'
+        //             },
+        //             'Официално име на ${typeText} на английски, както е прието да бъде': {
+        //               'bgName': 'Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод',
+        //               'description': 'Описание на ${typeText}',
+        //               'reason': 'Защо този филм/сериал е подходящ за мен?'
+        //             },
+        //             // ...additional movies
+        //           }. Не добавяй излишни думи или скоби. Избягвай вложени двойни или единични кавички(кавички от един тип едно в друго, които да дават грешки на JSON.parse функцията). Увери се, че всички данни са правилно "escape-нати", за да не предизвикат грешки в JSON формата.
+        //           JSON формата трябва да е валиден за JavaScript JSON.parse() функцията.`
+        //   }
+        // ]
       })
     });
 
@@ -490,7 +478,7 @@ export const saveMoviesSeriesRecommendation = async (
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitted - Функция за задаване на статус за подадена заявка.
  * @param {React.Dispatch<React.SetStateAction<number>>} setSubmitCount - Функция за актуализиране на броя на подадените заявки.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за актуализиране на списъка с препоръки.
- * @param {MoviesSeriesUserPreferences} moviesSeriesUserPreferences - Преференции на потребителя за филми/сериали.
+ * @param {BooksUserPreferences} booksUserPreferences - Преференции на потребителя за филми/сериали.
  * @param {string | null} token - Токенът за аутентификация на потребителя.
  * @param {number} submitCount - Броят на подадените заявки.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките и записва данни.
@@ -509,7 +497,7 @@ export const handleSubmit = async (
       [key: string]: any;
     }>
   >,
-  moviesSeriesUserPreferences: MoviesSeriesUserPreferences,
+  booksUserPreferences: BooksUserPreferences,
   token: string | null,
   submitCount: number
 ): Promise<void> => {
@@ -522,27 +510,9 @@ export const handleSubmit = async (
     return;
   }
 
-  const {
-    moods,
-    timeAvailability,
-    actors,
-    directors,
-    countries,
-    pacing,
-    depth,
-    targetGroup
-  } = moviesSeriesUserPreferences;
+  const { moods, countries, pacing, depth, targetGroup } = booksUserPreferences;
 
-  if (
-    !moods ||
-    !timeAvailability ||
-    !actors ||
-    !directors ||
-    !countries ||
-    !pacing ||
-    !depth ||
-    !targetGroup
-  ) {
+  if (!moods || !countries || !pacing || !depth || !targetGroup) {
     showNotification(
       setNotification,
       "Моля, попълнете всички задължителни полета!",
@@ -575,14 +545,14 @@ export const handleSubmit = async (
 
     if (response.status === 200) {
       setRecommendationList([]);
-      await saveMoviesSeriesUserPreferences(
-        date,
-        moviesSeriesUserPreferences,
-        token
-      );
+      // await saveMoviesSeriesUserPreferences(
+      //   date,
+      //   booksUserPreferences,
+      //   token
+      // );
       await generateMovieRecommendations(
         date,
-        moviesSeriesUserPreferences,
+        booksUserPreferences,
         setRecommendationList,
         setBookmarkedMovies,
         token
@@ -665,7 +635,7 @@ export const handleAnswerClick = (
 ) => {
   if (currentQuestion.isMultipleChoice) {
     if (currentQuestion.setter === setGenres) {
-      const selectedGenre = moviesSeriesGenreOptions.find(
+      const selectedGenre = booksGenreOptions.find(
         (genre) => genre.bg === answer
       );
 
