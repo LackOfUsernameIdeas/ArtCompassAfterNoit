@@ -122,38 +122,49 @@ app.post("/handle-submit", (req, res) => {
   const token = req.headers.authorization?.split(" ")[1]; // 'Bearer <token>'
 
   if (!token) {
-    return res.status(401).json({ error: "No token provided" });
+    return res.status(401).json({ error: "Липсва токен" });
+  }
+
+  const { type } = req.body;
+
+  if (!type || (type !== "movies_series" && type !== "books")) {
+    return res
+      .status(400)
+      .json({ error: "Невалиден или липсващ 'type' параметър в заявката" });
   }
 
   // Верификация и декодиране на токена
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) {
-      return res.status(401).json({ error: "Invalid token" });
+      return res.status(401).json({ error: "Невалиден токен" });
     }
 
-    const userId = decoded.id; // Вземане на потребителско ID
+    const userId = decoded.id; // Извличане на потребителското ID от токена
 
-    // Алгоритъм за отстраняване на спам от заявки
+    // Уверете се, че заявките се нулират ежедневно
     hf.checkAndResetRequestsDaily(userRequests);
 
-    // Ако потребителят все още няма данни, те се инициализират
+    // Инициализация на данни за потребителя, ако не съществуват
     if (!userRequests[userId]) {
-      userRequests[userId] = { count: 0, lastRequestTime: new Date() };
+      userRequests[userId] = {
+        movies_series: { count: 0 },
+        books: { count: 0 }
+      };
     }
 
-    // Проверка дали потребителя е минал лимита си от заявки
-    if (userRequests[userId].count >= MAX_REQUESTS_PER_DAY) {
+    // Проверка на броя заявки за конкретния тип
+    if (userRequests[userId][type].count >= MAX_REQUESTS_PER_DAY) {
       return res.status(400).json({
-        error: "You have exceeded the maximum request limit for today!"
+        error: `Превишихте максималния лимит от заявки за ${type} днес!`
       });
     }
 
-    // Следене на броя на заявки
-    userRequests[userId].count += 1;
-    userRequests[userId].lastRequestTime = new Date();
+    // Увеличаване на броя заявки за конкретния тип
+    userRequests[userId][type].count += 1;
+    userRequests[userId][type].lastRequestTime = new Date();
 
     console.log("userRequests: ", userRequests);
-    res.json({ message: "Request handled successfully!" });
+    res.json({ message: `Заявката за ${type} беше успешно обработена!` });
   });
 });
 

@@ -562,7 +562,10 @@ export const handleSubmit = async (
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
-        }
+        },
+        body: JSON.stringify({
+          type: "books"
+        })
       }
     );
 
