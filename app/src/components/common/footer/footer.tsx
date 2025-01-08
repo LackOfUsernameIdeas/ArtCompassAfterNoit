@@ -26,7 +26,7 @@ const Footer: FC = () => (
             <div className="footer-column">
               <div className="brand-name">
                 <span className="footer-brand-name-art dark:text-[#610000] text-[#AF0B48]">
-                  КИНО
+                  АРТ
                 </span>
                 <span className="footer-brand-name-compass">КОМПАС</span>
               </div>

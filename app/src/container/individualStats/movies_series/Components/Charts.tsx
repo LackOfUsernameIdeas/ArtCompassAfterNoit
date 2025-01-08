@@ -87,7 +87,7 @@ export class Categorybar extends Component<CategorybarProps, State> {
     return { categories, values };
   }
 
-  generateOptions(categories: string[], values: number[]) {
+  generateOptions(categories: string[], _values: number[]) {
     const primaryHex = updatePrimaryColor();
     const colorScale = chroma
       .scale([
@@ -192,7 +192,7 @@ export class Categorybar extends Component<CategorybarProps, State> {
         },
         y: {
           title: {
-            formatter: (val: any, opts: any) => {
+            formatter: (_val: any, opts: any) => {
               const genre = categories[opts.dataPointIndex];
               return `${genre}:`;
             }

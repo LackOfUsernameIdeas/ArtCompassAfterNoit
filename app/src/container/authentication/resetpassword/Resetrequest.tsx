@@ -241,7 +241,7 @@ const ResetRequest: FC<ResetRequestProps> = () => {
 
                         {/* Заглавие и описание на приложението */}
                         <h6 className="font-semibold text-[1rem] lg:text-[1.325rem] sm:text-[1.325rem]">
-                          Добре дошли в Кино Компас!
+                          Добре дошли в Арт Компас!
                         </h6>
                         <p className="font-normal text-[0.875rem] opacity-[0.7] lg:mt-6 sm:text-[1rem] ">
                           Това е вашият гид за откриване на филми и сериали за
