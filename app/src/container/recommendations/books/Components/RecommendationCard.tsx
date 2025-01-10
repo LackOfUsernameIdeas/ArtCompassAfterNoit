@@ -99,14 +99,14 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
             alt={`${recommendation.title_bg || "Book"} Poster`}
             className="rounded-lg w-[15rem] h-auto"
           />
-          <h3 className="text-lg font-semibold mt-[3rem] text-center additional-info">
+          <h3 className="text-lg font-semibold mt-[3rem] mb-[3rem] text-center additional-info">
             Допълнителна <br /> информация:
           </h3>
         </div>
 
-        <div className="flex-grow">
-          <div className="pb-4 mb-4">
-            <a href="#" className="block text-3xl font-bold mb-1">
+        <div className="flex-grow flex flex-col justify-between">
+          <div className="pb-4 mb-2">
+            <a href="#" className="block text-3xl font-bold mb-4">
               {recommendation.title_bg || "Заглавие не е налично"}
             </a>
             <a
@@ -151,8 +151,8 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
             </div>
           )}
 
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-2">Сюжет</h3>
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Описание</h3>
             <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
               <p className="text-opacity-80 italic">
                 {description && description.length > plotPreviewLength
@@ -163,24 +163,22 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
 
             {description && description.length > plotPreviewLength && (
               <button onClick={openModal} className="mt-2 underline">
-                Пълен сюжет
+                Пълно описание
               </button>
             )}
           </div>
 
-          <ul className="text-opacity-80 grid grid-cols-3">
+          <ul className="text-opacity-80 grid grid-cols-3 mt-8">
             <li>
               <strong className="text-primary">Автор:</strong> {author || "N/A"}
             </li>
             <li>
-              <strong className="text-primary">ISBN_10 (ISBN_13):</strong>{" "}
-              {`${recommendation.ISBN_10 || "N/A"} (${
-                recommendation.ISBN_13 || "N/A"
-              })`}
+              <strong className="text-primary">Държава:</strong>{" "}
+              {recommendation.country || "N/A"}
             </li>
             <li>
-              <strong className="text-primary">Адаптации:</strong>{" "}
-              {recommendation.adaptations || "N/A"}
+              <strong className="text-primary">Език:</strong>{" "}
+              {language || "N/A"}
             </li>
             <li>
               <strong className="text-primary">
@@ -195,18 +193,20 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               {recommendation.date_of_issue || "N/A"}
             </li>
             <li>
+              <strong className="text-primary">ISBN_10 (ISBN_13):</strong>{" "}
+              {`${recommendation.ISBN_10 || "N/A"} (${
+                recommendation.ISBN_13 || "N/A"
+              })`}
+            </li>
+            <li>
               <strong className="text-primary">
                 Брой принтирани страници:
               </strong>{" "}
               {recommendation.page_count || "N/A"}
             </li>
             <li>
-              <strong className="text-primary">Език:</strong>{" "}
-              {language || "N/A"}
-            </li>
-            <li>
-              <strong className="text-primary">Държава:</strong>{" "}
-              {recommendation.country || "N/A"}
+              <strong className="text-primary">Адаптации:</strong>{" "}
+              {recommendation.adaptations || "N/A"}
             </li>
           </ul>
         </div>
