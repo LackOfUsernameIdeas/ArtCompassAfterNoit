@@ -19933,6 +19933,14 @@ option.selectionList {
   background-color: rgb(var(--body-bg)); /* Normal background color */
 }
 
+.recommendation-card img {
+  margin-bottom: 1rem;
+}
+
+.recommendation-card.additional-info {
+  text-align: center;
+}
+
 .plot-modal {
   @apply flex flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative bg-white dark:bg-bodybg p-6 shadow-lg w-full max-w-lg space-y-4 z-50;
 }
