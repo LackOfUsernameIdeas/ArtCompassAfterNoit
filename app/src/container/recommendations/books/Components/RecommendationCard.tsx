@@ -96,7 +96,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
         <div className="relative flex-shrink-0 mr-8">
           <img
             src={recommendation.imageLink}
-            alt={`${recommendation.title_bg || "Movie"} Poster`}
+            alt={`${recommendation.title_bg || "Book"} Poster`}
             className="rounded-lg w-[15rem] h-auto"
           />
           <button
@@ -123,7 +123,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
         </div>
 
         <div className="flex-grow">
-          <div className="sticky top-0 z-10 pb-4 mb-4">
+          <div className="pb-4 mb-4">
             <a href="#" className="block text-3xl font-bold mb-1">
               {recommendation.title_bg || "Заглавие не е налично"}
             </a>
@@ -137,7 +137,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               <strong>Жанрове:</strong>
               <ul>
                 {genres.map((genre, index) => {
-                  const [mainCategory, subGenres] = genre.split(": "); // Split main category and sub-genres
+                  const [mainCategory, subGenres] = genre.split(": ");
                   return (
                     <li key={index}>
                       <span>- {mainCategory}</span>: <i>{subGenres}</i>
@@ -146,16 +146,17 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                 })}
               </ul>
             </p>
-            <div className="flex items-center space-x-8">
-              <div
-                className="flex items-center space-x-2"
-                title="Goodreads рейтинг: Базиран на отзиви и оценки от потребители."
-              >
-                <FaStar className="dark:text-[#FFCC33] text-[#bf9413] w-8 h-8" />
-                <span className="dark:text-[#FFCC33] text-[#bf9413] font-bold text-lg">
-                  {recommendation.goodreads_rating || "N/A"}
-                </span>
-              </div>
+          </div>
+
+          <div className="flex items-center space-x-8 mb-4">
+            <div
+              className="flex items-center space-x-2"
+              title="Goodreads рейтинг: Базиран на отзиви и оценки от потребители."
+            >
+              <FaStar className="dark:text-[#FFCC33] text-[#bf9413] w-8 h-8" />
+              <span className="dark:text-[#FFCC33] text-[#bf9413] font-bold text-lg">
+                {recommendation.goodreads_rating || "N/A"}
+              </span>
             </div>
           </div>
 
@@ -184,55 +185,51 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               </button>
             )}
           </div>
-
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-2">
-              Допълнителна информация
-            </h3>
-            <ul className="text-opacity-80 space-y-1">
-              <li>
-                <strong className="text-primary">Автор:</strong>{" "}
-                {author || "N/A"}
-              </li>
-              <li>
-                <strong className="text-primary">ISBN_10 (ISBN_13):</strong>{" "}
-                {`${recommendation.ISBN_10 || "N/A"} (${
-                  recommendation.ISBN_13 || "N/A"
-                })` || "N/A"}
-              </li>
-              <li>
-                <strong className="text-primary">Адаптации:</strong>{" "}
-                {recommendation.adaptations || "N/A"}
-              </li>
-              <li>
-                <strong className="text-primary">
-                  Година на публикуване на първо издание:
-                </strong>{" "}
-                {recommendation.date_of_first_issue || "N/A"}
-              </li>
-              <li>
-                <strong className="text-primary">
-                  Дата на публикуване на това издание:
-                </strong>{" "}
-                {recommendation.date_of_issue || "N/A"}
-              </li>
-              <li>
-                <strong className="text-primary">
-                  Брой принтирани страници:
-                </strong>{" "}
-                {recommendation.page_count || "N/A"}
-              </li>
-              <li>
-                <strong className="text-primary">Език:</strong>{" "}
-                {language || "N/A"}
-              </li>
-              <li>
-                <strong className="text-primary">Държава:</strong>{" "}
-                {recommendation.country || "N/A"}
-              </li>
-            </ul>
-          </div>
         </div>
+      </div>
+
+      <div className="mt-4">
+        <h3 className="text-lg font-semibold mb-2">
+          Допълнителна <br /> информация:
+        </h3>
+        <ul className="text-opacity-80 grid grid-cols-3 gap-4">
+          <li>
+            <strong className="text-primary">Автор:</strong> {author || "N/A"}
+          </li>
+          <li>
+            <strong className="text-primary">ISBN_10 (ISBN_13):</strong>{" "}
+            {`${recommendation.ISBN_10 || "N/A"} (${
+              recommendation.ISBN_13 || "N/A"
+            })` || "N/A"}
+          </li>
+          <li>
+            <strong className="text-primary">Адаптации:</strong>{" "}
+            {recommendation.adaptations || "N/A"}
+          </li>
+          <li>
+            <strong className="text-primary">
+              Година на публикуване на първо издание:
+            </strong>{" "}
+            {recommendation.date_of_first_issue || "N/A"}
+          </li>
+          <li>
+            <strong className="text-primary">
+              Дата на публикуване на това издание:
+            </strong>{" "}
+            {recommendation.date_of_issue || "N/A"}
+          </li>
+          <li>
+            <strong className="text-primary">Брой принтирани страници:</strong>{" "}
+            {recommendation.page_count || "N/A"}
+          </li>
+          <li>
+            <strong className="text-primary">Език:</strong> {language || "N/A"}
+          </li>
+          <li>
+            <strong className="text-primary">Държава:</strong>{" "}
+            {recommendation.country || "N/A"}
+          </li>
+        </ul>
       </div>
     </div>
   );
