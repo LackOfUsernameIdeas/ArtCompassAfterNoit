@@ -99,7 +99,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
             alt={`${recommendation.title_bg || "Book"} Poster`}
             className="rounded-lg w-[15rem] h-auto"
           />
-          <h3 className="text-lg font-semibold mt-5 text-center additional-info">
+          <h3 className="text-lg font-semibold mt-[3rem] text-center additional-info">
             Допълнителна <br /> информация:
           </h3>
         </div>
@@ -167,6 +167,48 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               </button>
             )}
           </div>
+
+          <ul className="text-opacity-80 grid grid-cols-3">
+            <li>
+              <strong className="text-primary">Автор:</strong> {author || "N/A"}
+            </li>
+            <li>
+              <strong className="text-primary">ISBN_10 (ISBN_13):</strong>{" "}
+              {`${recommendation.ISBN_10 || "N/A"} (${
+                recommendation.ISBN_13 || "N/A"
+              })`}
+            </li>
+            <li>
+              <strong className="text-primary">Адаптации:</strong>{" "}
+              {recommendation.adaptations || "N/A"}
+            </li>
+            <li>
+              <strong className="text-primary">
+                Година на публикуване на първо издание:
+              </strong>{" "}
+              {recommendation.date_of_first_issue || "N/A"}
+            </li>
+            <li>
+              <strong className="text-primary">
+                Дата на публикуване на това издание:
+              </strong>{" "}
+              {recommendation.date_of_issue || "N/A"}
+            </li>
+            <li>
+              <strong className="text-primary">
+                Брой принтирани страници:
+              </strong>{" "}
+              {recommendation.page_count || "N/A"}
+            </li>
+            <li>
+              <strong className="text-primary">Език:</strong>{" "}
+              {language || "N/A"}
+            </li>
+            <li>
+              <strong className="text-primary">Държава:</strong>{" "}
+              {recommendation.country || "N/A"}
+            </li>
+          </ul>
         </div>
       </div>
     </div>
