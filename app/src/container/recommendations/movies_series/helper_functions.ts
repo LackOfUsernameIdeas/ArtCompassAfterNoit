@@ -125,12 +125,12 @@ export const saveMoviesSeriesUserPreferences = async (
  * Ако не успее да извлече данни от всички търсачки, хвърля грешка.
  *
  * @async
- * @function fetchIMDbDataWithFailover
+ * @function fetchIMDbIDWithFailover
  * @param {string} movieName - Името на филма, за който се извличат данни.
  * @returns {Promise<Object>} - Връща обект с данни от IMDb за филма.
  * @throws {Error} - Хвърля грешка, ако не успее да извлече данни от всички търсачки.
  */
-const fetchIMDbDataWithFailover = async (movieName: string) => {
+const fetchIMDbIDWithFailover = async (movieName: string) => {
   const engines = [
     { key: "AIzaSyAUOQzjNbBnGSBVvCZkWqHX7uebGZRY0lg", cx: "244222e4658f44b78" },
     { key: "AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA", cx: "27427e59e17b74763" },
@@ -272,7 +272,7 @@ export const generateMovieRecommendations = async (
     for (const movieTitle in recommendations) {
       const movieName = movieTitle;
 
-      const imdbData = await fetchIMDbDataWithFailover(movieName);
+      const imdbData = await fetchIMDbIDWithFailover(movieName);
 
       if (Array.isArray(imdbData.items)) {
         const imdbItem = imdbData.items.find((item: { link: string }) =>

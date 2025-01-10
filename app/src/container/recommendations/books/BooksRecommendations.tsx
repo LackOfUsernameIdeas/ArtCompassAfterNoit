@@ -50,11 +50,11 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
   };
 
   const handleBookmarkClick = (movie: {
-    imdbID: string;
+    google_books_id: string;
     [key: string]: any;
   }) => {
     setBookmarkedMovies((prev) => {
-      const isBookmarked = !!prev[movie.imdbID];
+      const isBookmarked = !!prev[movie.google_books_id];
       const updatedBookmarks = { ...prev };
       const token =
         localStorage.getItem("authToken") ||
@@ -62,15 +62,15 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
 
       if (isBookmarked) {
         // Remove the movie from bookmarks if it's already bookmarked
-        delete updatedBookmarks[movie.imdbID];
+        delete updatedBookmarks[movie.google_books_id];
 
         // Call removeFromWatchlist API
-        removeFromWatchlist(movie.imdbID, token).catch((error) => {
+        removeFromWatchlist(movie.google_books_id, token).catch((error) => {
           console.error("Error removing from watchlist:", error);
         });
       } else {
         // Add the movie to bookmarks if it's not already bookmarked
-        updatedBookmarks[movie.imdbID] = movie;
+        updatedBookmarks[movie.google_books_id] = movie;
 
         // Call saveToWatchlist API
         saveToWatchlist(movie, token).catch((error) => {

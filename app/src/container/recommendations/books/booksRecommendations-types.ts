@@ -33,39 +33,30 @@ export interface Question {
   description?: string; // Допълнително описание на въпроса
 }
 
-// Интерфейс за филм с всички основни данни за филма.
-export interface Movie {
-  id: string; // ID на филма
-  user_id: string; // ID на потребителя, свързан с филма
-  imdbID: string; // IMDb идентификатор
-  title: string; // Английско заглавие на филма
-  bgName: string; // Българско заглавие на филма
-  genre: string; // Жанрове на английски
-  reason: string; // Причина за препоръката на филма
-  description: string; // Описание на филма
-  year: string; // Година на издаване
-  rated: string; // Възрастова оценка
-  released: string; // Дата на излизане
-  runtime: string; // Времетраене в минути
-  director: string; // Име на режисьора
-  writer: string; // Име на сценариста
-  actors: string; // Списък с актьори
-  plot: string; // Сюжет на филма
-  language: string; // Езици на филма
-  country: string; // Страни, участващи в производството
-  awards: string; // Награди, спечелени от филма
-  poster: string; // URL на постера
-  ratings: { Source: string; Value: string }[]; // Масив с рейтингови източници и стойности
-  metascore: string; // Метаскор стойност
-  imdbRating: string; // IMDb рейтинг
-  imdbVotes: string; // Брой IMDb гласове
-  type: string; // Вид (например, филм)
-  DVD: string; // Информация за DVD издание (ако е налично)
-  boxOffice: string; // Приходи от бокс офиса
-  production: string; // Продуцентско студио (ако е налично)
-  website: string; // Официален уебсайт (ако е наличен)
-  totalSeasons: string | null; // Общо сезони (за сериали)
-  date: string; // Дата на въвеждане на данните
+// Интерфейс за книга с всички основни данни за книгата.
+export interface Book {
+  id: string; // ID на книгата
+  user_id: string; // ID на потребителя, свързан с книгата
+  google_books_id: string; // Google Books идентификатор
+  title_en: string; // Английско заглавие на книгата
+  title_bg: string; // Българско заглавие на книгата
+  real_edition_title: string; // Реално заглавие на изданието
+  author: string | Promise<string>; // Име на автора (може да е обещание)
+  genres_en: string | Promise<string>; // Жанрове на английски (може да е обещание)
+  genres_bg: string | Promise<string>; // Жанрове на български (може да е обещание)
+  description: string | Promise<string>; // Описание на книгата (може да е обещание)
+  language: string | Promise<string>; // Езици на книгата (може да е обещание)
+  country: string; // Страна на произход
+  date_of_first_issue: string; // Дата на първо издание
+  date_of_issue: string; // Дата на издаване
+  goodreads_rating: string; // Goodreads рейтинг
+  reason: string; // Причина за препоръката
+  adaptations: string; // Адаптации на книгата
+  ISBN_10: string; // ISBN-10
+  ISBN_13: string; // ISBN-13
+  page_count: string; // Брой страници
+  imageLink: string; // Линк към изображение на книгата
+  source: string; // Източник (напр. Google Books)
 }
 
 // Интерфейс за предпочитания на потребителя.
@@ -82,8 +73,8 @@ export interface BooksUserPreferences {
 
 // Пропс за компонентата Quiz, свързана с маркирането на филми.
 export interface QuizProps {
-  handleBookmarkClick: (movie: Movie) => void; // Функция за маркиране на филм
-  bookmarkedMovies: { [key: string]: Movie }; // Списък с маркирани филми
+  handleBookmarkClick: (movie: Book) => void; // Функция за маркиране на филм
+  bookmarkedMovies: { [key: string]: Book }; // Списък с маркирани филми
   setBookmarkedMovies: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
   >; // Функция за актуализиране на маркираните филми
@@ -91,24 +82,24 @@ export interface QuizProps {
 
 // Пропс за компонентата Recommendations, отговорна за показване на препоръки.
 export interface RecommendationsProps {
-  recommendationList: Movie[]; // Списък с препоръчани филми
-  handleBookmarkClick: (movie: Movie) => void; // Функция за маркиране на филм
-  bookmarkedMovies: { [key: string]: Movie }; // Списък с маркирани филми
+  recommendationList: Book[]; // Списък с препоръчани филми
+  handleBookmarkClick: (movie: Book) => void; // Функция за маркиране на филм
+  bookmarkedMovies: { [key: string]: Book }; // Списък с маркирани филми
 }
 
 // Пропс за компонентата RecommendationCard, която показва информация за филм.
 export interface RecommendationCardProps {
-  recommendationList: Movie[]; // Списък с препоръчани филми
+  recommendationList: Book[]; // Списък с препоръчани филми
   currentIndex: number; // Текущ индекс на филма
   isExpanded: boolean; // Флаг дали картата е разширена
   openModal: () => void; // Функция за отваряне на модала
-  handleBookmarkClick: (movie: Movie) => void; // Функция за маркиране на филм
-  bookmarkedMovies: { [key: string]: Movie }; // Списък с маркирани филми
+  handleBookmarkClick: (movie: Book) => void; // Функция за маркиране на филм
+  bookmarkedMovies: { [key: string]: Book }; // Списък с маркирани филми
 }
 
 // Пропс за компонентата PlotModal, показваща сюжетната линия на филма.
 export interface PlotModalProps {
-  recommendationList: Movie[]; // Списък с препоръчани филми
+  recommendationList: Book[]; // Списък с препоръчани филми
   currentIndex: number; // Текущ индекс на филма
   closeModal: () => void; // Функция за затваряне на модала
 }
@@ -194,4 +185,12 @@ export interface ConfirmationModalProps {
 
   // Броят на изпратените заявки
   submitCount: number;
+}
+
+// Интерфейс за идентификаторите на ISBN
+export interface IndustryIdentifier {
+  // Тип на идентификатора, може да бъде ISBN_10 или ISBN_13
+  type: "ISBN_10" | "ISBN_13";
+  // Стойност на идентификатора (самият ISBN номер)
+  identifier: string;
 }

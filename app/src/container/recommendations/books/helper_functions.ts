@@ -1,7 +1,8 @@
 import {
   Genre,
   Question,
-  BooksUserPreferences
+  BooksUserPreferences,
+  IndustryIdentifier
 } from "./booksRecommendations-types";
 import { NotificationState } from "../../types_common";
 import { openAIKey } from "./booksRecommendations-data";
@@ -9,8 +10,10 @@ import { moviesSeriesGenreOptions } from "../../data_common";
 import { booksGenreOptions } from "../../data_common";
 import {
   checkRecommendationExistsInWatchlist,
-  showNotification
+  showNotification,
+  translate
 } from "../../helper_functions_common";
+import ISO6391 from "iso-639-1";
 
 /**
  * Записва предпочитанията на потребителя в базата данни чрез POST заявка.
@@ -126,16 +129,16 @@ export const saveBooksUserPreferences = async (
  * Ако не успее да извлече данни от всички търсачки, хвърля грешка.
  *
  * @async
- * @function fetchIMDbDataWithFailover
- * @param {string} movieName - Името на филма, за който се извличат данни.
+ * @function fetchGoogleBooksIDWithFailover
+ * @param {string} bookName - Името на филма, за който се извличат данни.
  * @returns {Promise<Object>} - Връща обект с данни от IMDb за филма.
  * @throws {Error} - Хвърля грешка, ако не успее да извлече данни от всички търсачки.
  */
-const fetchIMDbDataWithFailover = async (movieName: string) => {
+const fetchGoogleBooksIDWithFailover = async (bookName: string) => {
   const engines = [
-    { key: "AIzaSyAUOQzjNbBnGSBVvCZkWqHX7uebGZRY0lg", cx: "244222e4658f44b78" },
-    { key: "AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA", cx: "27427e59e17b74763" },
-    { key: "AIzaSyDqUez1TEmLSgZAvIaMkWfsq9rSm0kDjIw", cx: "e59ceff412ebc4313" }
+    { key: "AIzaSyDqUez1TEmLSgZAvIaMkWfsq9rSm0kDjIw", cx: "d059d8edb90514692" },
+    { key: "AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA", cx: "422c2707d8062436a" },
+    { key: "AIzaSyAUOQzjNbBnGSBVvCZkWqHX7uebGZRY0lg", cx: "46127fd515c5d40be" }
   ];
 
   for (let engine of engines) {
@@ -143,13 +146,13 @@ const fetchIMDbDataWithFailover = async (movieName: string) => {
       const response = await fetch(
         `https://customsearch.googleapis.com/customsearch/v1?key=${
           engine.key
-        }&cx=${engine.cx}&q=${encodeURIComponent(movieName)}`
+        }&cx=${engine.cx}&q=${encodeURIComponent(bookName)}`
       );
       const data = await response.json();
 
       if (response.ok && !data.error && data.items) {
         console.log(
-          `Fetched IMDb data successfully using engine: ${engine.cx}`
+          `Fetched Book data successfully using engine: ${engine.cx}`
         );
         return data;
       } else {
@@ -160,8 +163,107 @@ const fetchIMDbDataWithFailover = async (movieName: string) => {
     }
   }
   throw new Error(
-    `Failed to fetch IMDb data for "${movieName}" using all engines.`
+    `Failed to fetch Book data for "${bookName}" using all engines.`
   );
+};
+
+/**
+ * Обработва жанровете на книги от категориите на Google Books, като ги организира в основни категории с уникални подкатегории,
+ * включително подкатегории на подкатегориите и всички нива на вложеност.
+ *
+ * @function processBookGenres
+ * @param {string[]} categories - Списък с категории от Google Books API.
+ * @param {boolean} translateGenres - Определя дали да се преведат жанровете на български.
+ * @returns {Record<string, string[]>} - Обект, където ключовете са основните категории, а стойностите са подкатегории, включително всички нива на вложеност.
+ */
+export const processBookGenres = async (
+  categories: string[],
+  translateGenres: boolean = false
+): Promise<Record<string, string[]>> => {
+  // Инициализиране на обект за съхранение на резултатите
+  const genreMap: Record<string, string[]> = {};
+
+  // Рекурсивна функция за добавяне на подкатегории на всички нива
+  const addSubCategories = async (
+    mainCategory: string,
+    subCategories: string[]
+  ) => {
+    const translatedMain = translateGenres
+      ? await translate(mainCategory)
+      : mainCategory; // Превеждаме, ако е нужно
+
+    if (!genreMap[translatedMain]) {
+      genreMap[translatedMain] = [];
+    }
+
+    // Обхождаме всички подкатегории на дадената категория
+    for (const subCategory of subCategories) {
+      const translatedSub = translateGenres
+        ? await translate(subCategory)
+        : subCategory; // Превеждаме, ако е нужно
+      if (
+        translatedSub.toLowerCase() !== "general" &&
+        translatedSub.toLowerCase() !== "генерал" &&
+        !genreMap[translatedMain].includes(translatedSub)
+      ) {
+        genreMap[translatedMain].push(translatedSub);
+      }
+    }
+  };
+
+  // Изчакваме всички асинхронни операции да завършат
+  const promises = categories.map(async (category) => {
+    // Разделяне на категорията на различни нива по " / "
+    const parts = category.split(" / ");
+    const mainCategory = parts[0].trim(); // Основна категория
+    const subCategories = parts.slice(1).map((sub) => sub.trim()); // Всички подкатегории след първоначалната основна категория
+
+    // Рекурсивно добавяне на подкатегориите за всяка категория
+    await addSubCategories(mainCategory, subCategories);
+  });
+
+  // Изчакваме всички промиси да завършат
+  await Promise.all(promises);
+
+  // Връщане на обекта с организираните жанрове
+  return genreMap;
+};
+
+/**
+ * Функция за премахване на HTML тагове от даден текст.
+ * @param {string} text - Текстът, който трябва да бъде обработен.
+ * @returns {string} - Текстът без HTML тагове.
+ */
+export const removeHtmlTags = (text: string): string => {
+  return text.replace(/<[^>]*>/g, ""); // Регулярен израз за премахване на всички HTML тагове
+};
+
+/**
+ * Проверява и обработва всички полета от обект, като приоритет се дава на основните данни.
+ *
+ * @function processDataWithFallback
+ * @param {any} primaryData - Основните данни от първичния източник (например Google Books).
+ * @param {any} fallbackData - Данните от алтернативния източник (например AI).
+ * @returns {any} - Връща наличните данни, като приоритет се дава на основния източник.
+ */
+export const processDataWithFallback = (
+  primaryData: any,
+  fallbackData: any
+): any => {
+  // Проверка дали основните данни са дефинирани и не са null
+  if (primaryData !== undefined && primaryData !== null) {
+    // Ако данните са стринг, проверява дали са празни след trim()
+    if (typeof primaryData === "string" && primaryData.trim() !== "") {
+      return primaryData;
+    }
+    // Ако данните не са стринг, приема ги за валидни
+    if (typeof primaryData !== "string") {
+      return primaryData;
+    }
+  }
+
+  // Ако няма основни данни, използваме алтернативния източник
+  return fallbackData;
 };
 
 /**
@@ -170,7 +272,7 @@ const fetchIMDbDataWithFailover = async (movieName: string) => {
  * Връща списък с препоръки в JSON формат.
  *
  * @async
- * @function generateMovieRecommendations
+ * @function generateBooksRecommendations
  * @param {string} date - Датата на генерирането на препоръките.
  * @param {BooksUserPreferences} booksUserPreferences - Преференциите на потребителя за филми/сериали.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за задаване на препоръките в компонент.
@@ -178,7 +280,7 @@ const fetchIMDbDataWithFailover = async (movieName: string) => {
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките.
  * @throws {Error} - Хвърля грешка, ако заявката за препоръки е неуспешна.
  */
-export const generateMovieRecommendations = async (
+export const generateBooksRecommendations = async (
   date: string,
   booksUserPreferences: BooksUserPreferences,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
@@ -189,62 +291,144 @@ export const generateMovieRecommendations = async (
   >,
   token: string | null
 ) => {
-  const { genres, moods, interests, countries, pacing, depth, targetGroup } =
-    booksUserPreferences;
+  const {
+    genres,
+    moods,
+    authors,
+    countries,
+    pacing,
+    depth,
+    targetGroup,
+    interests
+  } = booksUserPreferences;
   try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${openAIKey}`
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-2024-08-06"
-        // messages: [
-        //   {
-        //     role: "system",
-        //     content: `You are an AI that recommends movies and series based on user preferences. Provide a list of movies and series, based on what the user has chosen to watch (movie or series), that match the user's taste and preferences, formatted in Bulgarian, with detailed justifications. Return the result in JSON format as instructed.`
-        //   },
-        //   {
-        //     role: "user",
-        //     content: `Препоръчай ми 5 ${typeText} за гледане, които ЗАДЪЛЖИТЕЛНО да съвпадат с моите вкусове и предпочитания, а именно:
-        //           Любими жанрове: ${genres.map((genre) => genre.bg)}.
-        //           Емоционално състояние в този момент: ${moods}.
-        //           Разполагаемо свободно време за гледане: ${timeAvailability}.
-        //           Възрастта на ${typeText} задължително да бъде: ${age}
-        //           Любими актьори: ${actors}.
-        //           Любими филмови режисьори: ${directors}.
-        //           Теми, които ме интересуват: ${interests}.
-        //           Филмите/сериалите могат да бъдат от следните страни: ${countries}.
-        //           Темпото (бързината) на филмите/сериалите предпочитам да бъде: ${pacing}.
-        //           Предпочитам филмите/сериалите да са: ${depth}.
-        //           Целевата група е: ${targetGroup}.
-        //           Дай информация за всеки отделен филм/сериал по отделно защо той е подходящ за мен.
-        //           Задължително искам имената на филмите/сериалите да бъдат абсолютно точно както са официално на български език – така, както са известни сред публиката в България.
-        //           Не се допуска буквален превод на заглавията от английски, ако официалното българско заглавие се различава от буквалния превод.
-        //           Не препоръчвай 18+ филми/сериали.
-        //           Форматирай своя response във валиден JSON формат по този начин:
-        //           {
-        //             'Официално име на ${typeText} на английски, както е прието да бъде': {
-        //               'bgName': 'Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод',
-        //               'description': 'Описание на ${typeText}',
-        //               'reason': 'Защо този филм/сериал е подходящ за мен?'
-        //             },
-        //             'Официално име на ${typeText} на английски, както е прието да бъде': {
-        //               'bgName': 'Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод',
-        //               'description': 'Описание на ${typeText}',
-        //               'reason': 'Защо този филм/сериал е подходящ за мен?'
-        //             },
-        //             // ...additional movies
-        //           }. Не добавяй излишни думи или скоби. Избягвай вложени двойни или единични кавички(кавички от един тип едно в друго, които да дават грешки на JSON.parse функцията). Увери се, че всички данни са правилно "escape-нати", за да не предизвикат грешки в JSON формата.
-        //           JSON формата трябва да е валиден за JavaScript JSON.parse() функцията.`
-        //   }
-        // ]
-      })
-    });
+    // const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: `Bearer ${openAIKey}`
+    //   },
+    //   body: JSON.stringify({
+    //     model: "gpt-4o-2024-08-06",
+    //     messages: [
+    //       {
+    //         role: "system",
+    //         content:
+    //           "Ти си изкуствен интелект, който препоръчва книги и събира подробна информация за всяка една от тях от Google Books. Цялата информация трябва да бъде представена в правилен JSON формат с всички стойности преведени на български език, като заглавието на изданието трябва да бъде точно и реално, за да може лесно да бъде намерено в Google Books."
+    //       },
+    //       {
+    //         role: "user",
+    //         content:
+    //           "Препоръчай 5 различни книги от колекцията на Google Books, като всяка трябва да бъде популярна, призната от критиката и налична за закупуване или заемане. Книгите трябва да съответстват на следните лични предпочитания:\n1. Любими жанрове: [научна фантастика, мистерия, трилър].\n2. Емоционално състояние: [Тъжен/-на, Любопитен/-на].\n3. Любими автори: [Иван Вазов].\n4. Теми, които ме интересуват: [приятелство, справедливост, предизвикателства в живота].\n5. Книгите могат да бъдат от следните страни: [България].\n6. Целева(Възрастова) група: [тийнеджъри].\n7. Предпочитам книгите да са: [бавни, концентриращи се върху разкази на героите]."
+    //       },
+    //       {
+    //         role: "user",
+    //         content:
+    //           'Събери подробна информация за всяка книга. Използвай следния JSON формат за отговор: \n\n```\n{\n  "title_en": string,\n  "title_bg": string,\n "real_edition_title": string,\n  "author": string,\n  "genres": string[],\n  "description": string,\n  "edition_language": string,\n  "language": string,\n  "country": string,\n  "date_of_first_issue": number,\n  "date_of_issue": number,\n  "goodreads_rating": string,\n  "reason": string,\n  "adaptations": string,\n  "page_count": number\n}\n```\n\nСтойностите на всички полета трябва да бъдат преведени на български език, освен ако оригиналното съдържание (например корицата или заглавието на английски) не изисква друго. Полето "real_edition_title" трябва да съдържа точния и пълен заглавие на изданието от Google Books, което ще бъде използвано за директно търсене.'
+    //       },
+    //       {
+    //         role: "user",
+    //         content:
+    //           'Ето допълнителни указания, които трябва да следваш: \n1. Книгите трябва да са разнообразни по жанр (например класика, научна фантастика, романтика и др.).\n2. Включи адаптации на книги (ако има такива) като филми, сериали или театрални постановки, посочвайки имената на тези адаптации и годините на издаване/представяне.\n3. Погрижи се информацията да бъде актуална и точна.\n4. Преведи всички текстови стойности като заглавие, резюме, жанрове, държава и автор на български език.\n5. Винаги превеждай Великобритания като "Великобритания".\n6. Полето "date_of_first_issue" е годината, в която книгата е издадена за първи път, а "date_of_issue" е годината на това конкретно издание на книгата.'
+    //       },
+    //       {
+    //         role: "user",
+    //         content:
+    //           'Отговори само с JSON обект без допълнителен текст или обяснения, който обхваща ВСИЧКИ препоръки ЗАЕДНО. Например: \n\n```\n{\n  "title_en": "To Kill a Mockingbird",\n  "title_bg": "Да убиеш присмехулник",\n  "real_edition_title": "To Kill a Mockingbird - Harper Lee - Google Books",\n  "author": "Харпър Лий",\n  "genres": ["Южен готик", "Билдунгсроман"],\n  "description": "Романът разказва историята на младата Скаут Финч в южната част на САЩ през 30-те години на XX век, докато тя и брат й Джем се сблъскват с расизъм, морал и справедливост, вдъхновени от баща си Атикус Финч, който защитава чернокож мъж, обвинен несправедливо в изнасилване на бяла жена.",\n  "edition_language": "Английски",\n  "language": "Английски",\n  "country": "САЩ",\n  "date_of_first_issue": 1960,\n  "date_of_issue": 1960,\n  "goodreads_rating": "4.27",\n  "reason": "Отговор на въпроса: Защо този филм/сериал е подходящ за мен?",\n  "adaptations": "Филмова адаптация от 1962 г. и сценична адаптация.",\n  "page_count": 281\n}\n```'
+    //       }
+    //     ]
+    //   })
+    // });
 
-    const responseData = await response.json();
-    const responseJson = responseData.choices[0].message.content;
+    // const responseData = await response.json();
+    const responseJson = `[
+  {
+    "title_en": "Foundation",
+    "title_bg": "Фондация",
+    "real_edition_title": "Foundation - Isaac Asimov - Google Books",
+    "author": "Айзък Азимов",
+    "genres": ["Научна фантастика"],
+    "description": "Фондация е първата книга от поредицата на Азимов, където ученът Хари Селдон използва психоистория, за да предвиди колапса на галактическата империя и създава фондация, която да намали Падането до само хилядолетие.",
+    "edition_language": "Английски",
+    "language": "Български",
+    "country": "САЩ",
+    "date_of_first_issue": 1951,
+    "date_of_issue": 1972,
+    "goodreads_rating": "4.15",
+    "reason": "Първостепенна научна фантастика, която се концентрира върху стратегии и социални динамики.",
+    "adaptations": "Сериал 'Foundation' от 2021 г.",
+    "page_count": 255
+  },
+  {
+    "title_en": "The Girl with the Dragon Tattoo",
+    "title_bg": "Момичето с дракона татуировка",
+    "real_edition_title": "The Girl with the Dragon Tattoo - Stieg Larsson - Google Books",
+    "author": "Стиг Ларшон",
+    "genres": ["Мистерия", "Трилър"],
+    "description": "Историята на това криминале следва разследването на изчезването на млада жена преди 40 години, което отвежда журналиста Микаел Блумиквист и хакерката Лисбет Саландер в центъра на семейство, обитавано от много тайни.",
+    "edition_language": "Английски",
+    "language": "Български",
+    "country": "Швеция",
+    "date_of_first_issue": 2005,
+    "date_of_issue": 2008,
+    "goodreads_rating": "4.13",
+    "reason": "Сложен и интригуващ трилър с акцент на героите, занимаващ се с теми за справедливост и правдоподобност.",
+    "adaptations": "Филм 'The Girl with the Dragon Tattoo' от 2011 г.",
+    "page_count": 465
+  },
+  {
+    "title_en": "The Hitchhiker's Guide to the Galaxy",
+    "title_bg": "Пътеводител на галактическия стопаджия",
+    "real_edition_title": "The Hitchhiker's Guide to the Galaxy - Douglas Adams - Google Books",
+    "author": "Дъглас Адамс",
+    "genres": ["Научна фантастика", "Комедия"],
+    "description": "Започвайки с унищожаването на Земята за небесна магистрала, Артър Дент се изплъзва на космическа одисея из космоса, ръководен от Пътеводителя на стопаджията.",
+    "edition_language": "Английски",
+    "language": "Български",
+    "country": "Великобритания",
+    "date_of_first_issue": 1979,
+    "date_of_issue": 1981,
+    "goodreads_rating": "4.20",
+    "reason": "Забавно и остроумно приключение, което разисква приятелството и безсмисленото във вселената.",
+    "adaptations": "Филм 'The Hitchhiker's Guide to the Galaxy' от 2005 г.",
+    "page_count": 193
+  },
+  {
+    "title_en": "The Shadow of the Wind",
+    "title_bg": "Сянката на вятъра",
+    "real_edition_title": "The Shadow of the Wind - Carlos Ruiz Zafón - Google Books",
+    "author": "Карлос Руис Сафон",
+    "genres": ["Мистерия", "Исторически"],
+    "description": "В Барселона през 1945 год. младеж намира мистериозна книга, която го вкарва в свят на свръхестествени събития и трагични истории.",
+    "edition_language": "Английски",
+    "language": "Български",
+    "country": "Испания",
+    "date_of_first_issue": 2001,
+    "date_of_issue": 2014,
+    "goodreads_rating": "4.30",
+    "reason": "Историческа мистерия с емоционална дълбочина и акцент на разказа на героите.",
+    "adaptations": "Аудио книга и сценична адаптация в Испания.",
+    "page_count": 487
+  },
+  {
+    "title_en": "The Maze Runner",
+    "title_bg": "Лабиринтът: Невъзможно бягство",
+    "real_edition_title": "The Maze Runner - James Dashner - Google Books",
+    "author": "Джеймс Дашнър",
+    "genres": ["Научна фантастика", "Мистерия", "Тийн"],
+    "description": "Когато Томас се събужда в загадъчен лабиринт без спомени, той се сблъсква с предизвикателства за оцеляване и търсене на истината с помощта на нови приятели.",
+    "edition_language": "Английски",
+    "language": "Български",
+    "country": "САЩ",
+    "date_of_first_issue": 2009,
+    "date_of_issue": 2014,
+    "goodreads_rating": "4.03",
+    "reason": "Вълнуваща дистопична история с акцент на приятелството и личните предизвикателства.",
+    "adaptations": "Филмова трилогия 'The Maze Runner' започваща от 2014 г.",
+    "page_count": 375
+  }
+]
+`;
     const unescapedData = responseJson
       .replace(/^```json([\s\S]*?)```$/, "$1")
       .replace(/^```JSON([\s\S]*?)```$/, "$1")
@@ -257,76 +441,90 @@ export const generateMovieRecommendations = async (
     const recommendations = JSON.parse(decodedData);
     console.log("recommendations: ", recommendations);
 
-    for (const movieTitle in recommendations) {
-      const movieName = movieTitle;
+    for (const book of recommendations) {
+      const bookName = book.real_edition_title;
+      console.log("bookName: ", bookName);
+      const bookResults = await fetchGoogleBooksIDWithFailover(bookName);
 
-      const imdbData = await fetchIMDbDataWithFailover(movieName);
-
-      if (Array.isArray(imdbData.items)) {
-        const imdbItem = imdbData.items.find((item: { link: string }) =>
-          item.link.includes("imdb.com/title/")
+      console.log(bookResults);
+      if (Array.isArray(bookResults.items)) {
+        const bookItem = bookResults.items.find((item: { link: string }) =>
+          item.link.includes("books.google.com/books/about/")
         );
+        console.log(`bookItem: ${bookItem}`);
+        if (bookItem) {
+          const googleBookUrl = bookItem.link;
+          const bookId = googleBookUrl.match(/id=([a-zA-Z0-9-_]+)/)?.[1];
 
-        if (imdbItem) {
-          const imdbUrl = imdbItem.link;
-          const imdbId = imdbUrl.match(/title\/(tt\d+)\//)?.[1];
-
-          const imdbRating = imdbItem.pagemap.metatags
-            ? imdbItem.pagemap.metatags[0]["twitter:title"]?.match(
-                /⭐ ([\d.]+)/
-              )?.[1]
-            : null;
-          const runtime = imdbItem.pagemap.metatags
-            ? imdbItem.pagemap.metatags[0]["og:description"]?.match(
-                /(\d{1,2}h \d{1,2}m|\d{1,2}h|\d{1,3}m)/
-              )?.[1]
-            : null;
-
-          const translatedRuntime = runtime
-            ? runtime.replace(/h/g, "ч").replace(/m/g, "м").replace(/s/g, "с")
-            : null;
-
-          if (imdbId) {
-            const omdbResponse = await fetch(
-              `https://www.omdbapi.com/?apikey=89cbf31c&i=${imdbId}&plot=full`
+          if (bookId) {
+            const googleBooksResponse = await fetch(
+              `https://www.googleapis.com/books/v1/volumes/${bookId}`
             );
-            const omdbData = await omdbResponse.json();
+            const googleBooksData = await googleBooksResponse.json();
 
             console.log(
-              `OMDb data for ${movieName}: ${JSON.stringify(omdbData, null, 2)}`
+              `Google Books data for ${bookName}: ${JSON.stringify(
+                googleBooksData,
+                null,
+                2
+              )}, `
+            );
+
+            const author = await processDataWithFallback(
+              translate(googleBooksData.volumeInfo?.authors.join(", ")),
+              translate(book?.author)
+            );
+            const description = await processDataWithFallback(
+              translate(
+                removeHtmlTags(googleBooksData.volumeInfo?.description)
+              ),
+              book.description
+            );
+            const genres_en = await processBookGenres(
+              googleBooksData.volumeInfo?.categories
+            );
+            const genres_bg = await processBookGenres(
+              googleBooksData.volumeInfo?.categories,
+              true
+            );
+            const language = await processDataWithFallback(
+              translate(ISO6391.getName(googleBooksData.volumeInfo?.language)),
+              book?.language
             );
 
             const recommendationData = {
-              title: omdbData.Title,
-              bgName: recommendations[movieTitle].bgName,
-              description: recommendations[movieTitle].description,
-              reason: recommendations[movieTitle].reason,
-              year: omdbData.Year,
-              rated: omdbData.Rated,
-              released: omdbData.Released,
-              runtime: omdbData.Runtime,
-              runtimeGoogle: translatedRuntime,
-              genre: omdbData.Genre,
-              director: omdbData.Director,
-              writer: omdbData.Writer,
-              actors: omdbData.Actors,
-              plot: omdbData.Plot,
-              language: omdbData.Language,
-              country: omdbData.Country,
-              awards: omdbData.Awards,
-              poster: omdbData.Poster,
-              ratings: omdbData.Ratings,
-              metascore: omdbData.Metascore,
-              imdbRating: omdbData.imdbRating,
-              imdbRatingGoogle: imdbRating,
-              imdbVotes: omdbData.imdbVotes,
-              imdbID: omdbData.imdbID,
-              type: omdbData.Type,
-              DVD: omdbData.DVD,
-              boxOffice: omdbData.BoxOffice,
-              production: omdbData.Production,
-              website: omdbData.Website,
-              totalSeasons: omdbData.totalSeasons
+              google_books_id: googleBooksData.id,
+              title_en: googleBooksData.volumeInfo.title,
+              title_bg: book.title_bg,
+              real_edition_title: book.real_edition_title,
+              author: author,
+              genres_en: genres_en,
+              genres_bg: genres_bg,
+              description: description,
+              language: language,
+              country: book.country,
+              date_of_first_issue: book.date_of_first_issue,
+              date_of_issue: processDataWithFallback(
+                googleBooksData.volumeInfo.publishedDate,
+                book.date_of_issue
+              ),
+              goodreads_rating: book.goodreads_rating,
+              reason: book.reason,
+              adaptations: book.adaptations,
+              ISBN_10: googleBooksData.volumeInfo.industryIdentifiers.find(
+                (identifier: IndustryIdentifier) =>
+                  identifier.type === "ISBN_10"
+              ).identifier,
+              ISBN_13: googleBooksData.volumeInfo.industryIdentifiers.find(
+                (identifier: IndustryIdentifier) =>
+                  identifier.type === "ISBN_13"
+              ).identifier,
+              page_count: processDataWithFallback(
+                googleBooksData.volumeInfo.printedPageCount,
+                book.page_count
+              ),
+              imageLink: googleBooksData.volumeInfo.imageLinks.thumbnail,
+              source: "Google Books"
             };
 
             // Първо, задаваме списъка с препоръки
@@ -335,33 +533,33 @@ export const generateMovieRecommendations = async (
               recommendationData
             ]);
 
-            // След това изпълняваме проверката и записа паралелно, използвайки
-            const checkAndSaveMoviesSeriesRecommendation = async () => {
-              // Проверяваме дали филмът съществува в таблицата за watchlist
-              const existsInWatchlist =
-                await checkRecommendationExistsInWatchlist(imdbId, token);
+            // // След това изпълняваме проверката и записа паралелно, използвайки
+            // const checkAndSaveMoviesSeriesRecommendation = async () => {
+            //   // Проверяваме дали филмът съществува в таблицата за watchlist
+            //   const existsInWatchlist =
+            //     await checkRecommendationExistsInWatchlist(imdbId, token);
 
-              // Ако филмът не съществува в watchlist, добавяме го към "bookmarkedMovies" с информация за ID и статус
-              if (existsInWatchlist) {
-                setBookmarkedMovies((prevMovies) => {
-                  return {
-                    ...prevMovies,
-                    [recommendationData.imdbID]: recommendationData
-                  };
-                });
-              }
-              // Записваме препоръката в базата данни
-              await saveMoviesSeriesRecommendation(
-                recommendationData,
-                date,
-                token
-              );
-            };
+            //   // Ако филмът не съществува в watchlist, добавяме го към "bookmarkedMovies" с информация за ID и статус
+            //   if (existsInWatchlist) {
+            //     setBookmarkedMovies((prevMovies) => {
+            //       return {
+            //         ...prevMovies,
+            //         [recommendationData.imdbID]: recommendationData
+            //       };
+            //     });
+            //   }
+            //   // Записваме препоръката в базата данни
+            //   await saveMoviesSeriesRecommendation(
+            //     recommendationData,
+            //     date,
+            //     token
+            //   );
+            // };
 
-            // Извикваме функцията, за да изпълним и двете операции
-            checkAndSaveMoviesSeriesRecommendation();
+            // // Извикваме функцията, за да изпълним и двете операции
+            // checkAndSaveMoviesSeriesRecommendation();
           } else {
-            console.log(`IMDb ID not found for ${movieName}`);
+            console.log(`Book ID not found for ${bookName}`);
           }
         }
       }
@@ -550,7 +748,7 @@ export const handleSubmit = async (
       //   booksUserPreferences,
       //   token
       // );
-      await generateMovieRecommendations(
+      await generateBooksRecommendations(
         date,
         booksUserPreferences,
         setRecommendationList,

@@ -15,6 +15,8 @@ export const Quiz: FC<QuizProps> = ({
   const [submitted, setSubmitted] = useState(false);
   const [recommendationList, setRecommendationList] = useState<any[]>([]);
 
+  console.log("recommendationList: ", recommendationList);
+
   const alreadyHasRecommendations = recommendationList.length > 0;
   return (
     <div className="flex items-center justify-center px-4">
