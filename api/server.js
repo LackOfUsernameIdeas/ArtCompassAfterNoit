@@ -461,15 +461,19 @@ app.post("/save-to-list", (req, res) => {
         if (err) {
           return res.status(500).json({ error: err.message });
         }
-        res.status(201).json({ message: "Recommendation added successfully!" });
+        res
+          .status(201)
+          .json({ message: "Movie/Series recommendation added successfully!" });
       });
     } else {
-      console.log(
-        "Booklist (save-to-list) -> ",
-        "Google Books ID: ",
-        data.google_books_id
-      );
-      res.status(201).json({ message: "Recommendation added successfully!" });
+      db.saveToReadlist(userId, data, (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        res
+          .status(201)
+          .json({ message: "Book recommendation added successfully!" });
+      });
     }
   });
 });
@@ -506,19 +510,28 @@ app.delete("/remove-from-list", (req, res) => {
           return res.status(500).json({ error: err.message });
         }
         if (result.affectedRows === 0) {
-          return res.status(404).json({ error: "Recommendation not found" });
+          return res
+            .status(404)
+            .json({ error: "Movie/Series recommendation not found" });
+        }
+        res.status(200).json({
+          message: "Movie/Series recommendation removed successfully!"
+        });
+      });
+    } else {
+      db.removeFromReadlist(userId, google_books_id, (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        if (result.affectedRows === 0) {
+          return res
+            .status(404)
+            .json({ error: "Book recommendation not found" });
         }
         res
           .status(200)
-          .json({ message: "Recommendation removed successfully!" });
+          .json({ message: "Book recommendation removed successfully!" });
       });
-    } else {
-      console.log(
-        "Booklist (remove-from-list) -> ",
-        "Google Books ID: ",
-        google_books_id
-      );
-      res.status(200).json({ message: "Recommendation removed successfully!" });
     }
   });
 });
@@ -568,26 +581,20 @@ app.post("/check-for-recommendation-in-list", (req, res) => {
         }
       );
     } else {
-      // db.checkRecommendationExistsInWatchlist(
-      //   userId,
-      //   google_books_id,
-      //   (error, results) => {
-      //     if (error) {
-      //       return res
-      //         .status(500)
-      //         .json({ error: "Database error", details: error });
-      //     }
+      db.checkRecommendationExistsInReadlist(
+        userId,
+        google_books_id,
+        (error, results) => {
+          if (error) {
+            return res
+              .status(500)
+              .json({ error: "Database error", details: error });
+          }
 
-      //     // Always respond with 200 and include the 'exists' flag
-      //     return res.status(200).json({ exists: results.length > 0 });
-      //   }
-      // );
-      console.log(
-        "Booklist (check-for-recommendation-in-list) -> ",
-        "Google Books ID: ",
-        google_books_id
+          // Always respond with 200 and include the 'exists' flag
+          return res.status(200).json({ exists: results.length > 0 });
+        }
       );
-      return res.status(200).json({ exists: false });
     }
   });
 });
