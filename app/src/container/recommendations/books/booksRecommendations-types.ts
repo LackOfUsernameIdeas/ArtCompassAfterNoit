@@ -15,7 +15,7 @@ export interface Genre {
   bg: string; // Българско име на жанра
 }
 
-// Интерфейс за рейтинг на филм с източник и стойност.
+// Интерфейс за рейтинг на книга с източник и стойност.
 export interface Rating {
   Source: string; // Източник на рейтинга
   Value: string; // Стойност на рейтинга
@@ -71,36 +71,36 @@ export interface BooksUserPreferences {
   interests: string; // Интереси
 }
 
-// Пропс за компонентата Quiz, свързана с маркирането на филми.
+// Пропс за компонентата Quiz, свързана с маркирането на книги.
 export interface QuizProps {
-  handleBookmarkClick: (book: Book) => void; // Функция за маркиране на филм
-  bookmarkedBooks: { [key: string]: Book }; // Списък с маркирани филми
+  handleBookmarkClick: (book: Book) => void; // Функция за маркиране на книга
+  bookmarkedBooks: { [key: string]: Book }; // Списък с маркирани книги
   setBookmarkedBooks: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
-  >; // Функция за актуализиране на маркираните филми
+  >; // Функция за актуализиране на маркираните книги
 }
 
 // Пропс за компонентата Recommendations, отговорна за показване на препоръки.
 export interface RecommendationsProps {
-  recommendationList: Book[]; // Списък с препоръчани филми
-  handleBookmarkClick: (book: Book) => void; // Функция за маркиране на филм
-  bookmarkedBooks: { [key: string]: Book }; // Списък с маркирани филми
+  recommendationList: Book[]; // Списък с препоръчани книги
+  handleBookmarkClick: (book: Book) => void; // Функция за маркиране на книга
+  bookmarkedBooks: { [key: string]: Book }; // Списък с маркирани книги
 }
 
-// Пропс за компонентата RecommendationCard, която показва информация за филм.
+// Пропс за компонентата RecommendationCard, която показва информация за книга.
 export interface RecommendationCardProps {
-  recommendationList: Book[]; // Списък с препоръчани филми
-  currentIndex: number; // Текущ индекс на филма
+  recommendationList: Book[]; // Списък с препоръчани книги
+  currentIndex: number; // Текущ индекс на книга
   isExpanded: boolean; // Флаг дали картата е разширена
   openModal: () => void; // Функция за отваряне на модала
-  handleBookmarkClick: (book: Book) => void; // Функция за маркиране на филм
-  bookmarkedBooks: { [key: string]: Book }; // Списък с маркирани филми
+  handleBookmarkClick: (book: Book) => void; // Функция за маркиране на книга
+  bookmarkedBooks: { [key: string]: Book }; // Списък с маркирани книги
 }
 
-// Пропс за компонентата PlotModal, показваща сюжетната линия на филма.
+// Пропс за компонентата PlotModal, показваща сюжетната линия на книга.
 export interface PlotModalProps {
-  recommendationList: Book[]; // Списък с препоръчани филми
-  currentIndex: number; // Текущ индекс на филма
+  recommendationList: Book[]; // Списък с препоръчани книги
+  currentIndex: number; // Текущ индекс на книга
   closeModal: () => void; // Функция за затваряне на модала
 }
 
@@ -113,7 +113,7 @@ export interface QuizQuestionProps {
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>; // Функция за задаване на списък с препоръки
   setBookmarkedBooks: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
-  >; // Функция за актуализиране на маркираните филми
+  >; // Функция за актуализиране на маркираните книги
 }
 
 // Пропс за компонентата ViewRecommendations, която показва резултатите от препоръките.
@@ -170,7 +170,7 @@ export interface ConfirmationModalProps {
   // Функция за задаване на списък с препоръки
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>;
 
-  // Функция за задаване на списък с любими филми
+  // Функция за задаване на списък с любими книги
   setBookmarkedBooks: React.Dispatch<
     React.SetStateAction<{
       [key: string]: any;

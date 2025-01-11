@@ -39,31 +39,42 @@ export const MENUITEMS = [
       }
     ]
   },
+  // {
+  //   icon: <i className="side-menu__icon bx bx-bar-chart-alt-2"></i>,
+  //   type: "sub",
+  //   Name: "",
+  //   active: false,
+  //   selected: false,
+  //   title: "Индивидуални Статистики",
+  //   class:
+  //     "badge !bg-warning/10 !text-warning !py-[0.25rem] !px-[0.45rem] !text-[0.75em] ms-2",
+  //   children: [
+  //     {
+  //       path: `${import.meta.env.BASE_URL}app/individualStats/movies_series`,
+  //       type: "link",
+  //       active: false,
+  //       selected: false,
+  //       title: "За Филми/Сериали"
+  //     },
+  //     {
+  //       path: `${import.meta.env.BASE_URL}app/individualStats/books`,
+  //       type: "link",
+  //       active: false,
+  //       selected: false,
+  //       title: "За Книги"
+  //     }
+  //   ]
+  // },
   {
+    path: `${import.meta.env.BASE_URL}app/individualStats/movies_series`,
     icon: <i className="side-menu__icon bx bx-bar-chart-alt-2"></i>,
-    type: "sub",
+    type: "link",
     Name: "",
     active: false,
     selected: false,
     title: "Индивидуални Статистики",
     class:
-      "badge !bg-warning/10 !text-warning !py-[0.25rem] !px-[0.45rem] !text-[0.75em] ms-2",
-    children: [
-      {
-        path: `${import.meta.env.BASE_URL}app/individualStats/movies_series`,
-        type: "link",
-        active: false,
-        selected: false,
-        title: "За Филми/Сериали"
-      },
-      {
-        path: `${import.meta.env.BASE_URL}app/individualStats/books`,
-        type: "link",
-        active: false,
-        selected: false,
-        title: "За Книги"
-      }
-    ]
+      "badge !bg-warning/10 !text-warning !py-[0.25rem] !px-[0.45rem] !text-[0.75em] ms-2"
   },
   {
     menutitle: "КОНТАКТ"

@@ -139,7 +139,6 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
         // Remove the movie from bookmarks if it's already bookmarked
         delete updatedBookmarks[movie.imdbID];
 
-        // Call removeFromWatchlist API
         removeFromWatchlist(movie.imdbID, token).catch((error) => {
           console.error("Error removing from watchlist:", error);
         });
@@ -147,7 +146,6 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
         // Add the movie to bookmarks if it's not already bookmarked
         updatedBookmarks[movie.imdbID] = movie;
 
-        // Call saveToWatchlist API
         saveToWatchlist(movie, token).catch((error) => {
           console.error("Error saving to watchlist:", error);
         });

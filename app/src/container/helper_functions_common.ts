@@ -215,16 +215,25 @@ export const saveToWatchlist = async (
       return;
     }
 
-    const genresEn = recommendation.genre
+    const title_en = recommendation.title_en || recommendation.title || null;
+    const title_bg = recommendation.title_bg || recommendation.bgName || null;
+    const genresEn = recommendation.genre_en || recommendation.genre || null;
+
+    const genresEnArray = recommendation.genre
       ? recommendation.genre.split(", ")
       : null;
 
-    const genresBg = genresEn.map((genre: string) => {
-      const matchedGenre = moviesSeriesGenreOptions.find(
-        (option) => option.en.trim() === genre.trim()
-      );
-      return matchedGenre ? matchedGenre.bg : null;
-    });
+    const genresBg =
+      recommendation.genre_bg ||
+      genresEnArray
+        .map((genre: string) => {
+          const matchedGenre = moviesSeriesGenreOptions.find(
+            (option) => option.en.trim() === genre.trim()
+          );
+          return matchedGenre ? matchedGenre.bg : null;
+        })
+        .join(", ") ||
+      null;
 
     const runtime = recommendation.runtimeGoogle || recommendation.runtime;
     const imdbRating =
@@ -233,10 +242,10 @@ export const saveToWatchlist = async (
     const formattedRecommendation = {
       token,
       imdbID: recommendation.imdbID || null,
-      title_en: recommendation.title || null,
-      title_bg: recommendation.bgName || null,
-      genre_en: genresEn.join(", "),
-      genre_bg: genresBg.join(", "),
+      title_en: title_en,
+      title_bg: title_bg,
+      genre_en: genresEn,
+      genre_bg: genresBg,
       reason: recommendation.reason || null,
       description: recommendation.description || null,
       year: recommendation.year || null,
@@ -263,6 +272,7 @@ export const saveToWatchlist = async (
       totalSeasons: recommendation.totalSeasons || null
     };
 
+    console.log("formattedRecommendation: ", formattedRecommendation);
     const response = await fetch(
       `${import.meta.env.VITE_API_BASE_URL}/save-to-list`,
       {

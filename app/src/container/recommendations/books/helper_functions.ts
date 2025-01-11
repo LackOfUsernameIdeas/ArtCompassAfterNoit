@@ -8,7 +8,7 @@ import { NotificationState } from "../../types_common";
 import { openAIKey } from "./booksRecommendations-data";
 import { booksGenreOptions } from "../../data_common";
 import {
-  checkRecommendationExistsInWatchlist,
+  checkRecommendationExistsInReadlist,
   showNotification,
   translate
 } from "../../helper_functions_common";
@@ -89,13 +89,13 @@ export const saveBooksUserPreferences = async (
 };
 
 /**
- * Извлича данни за филм от IMDb чрез няколко различни търсачки в случай на неуспех.
+ * Извлича данни за книга от Google Books чрез няколко различни търсачки в случай на неуспех.
  * Ако не успее да извлече данни от всички търсачки, хвърля грешка.
  *
  * @async
  * @function fetchGoogleBooksIDWithFailover
- * @param {string} bookName - Името на филма, за който се извличат данни.
- * @returns {Promise<Object>} - Връща обект с данни от IMDb за филма.
+ * @param {string} bookName - Името на книгата, за който се извличат данни.
+ * @returns {Promise<Object>} - Връща обект с данни от Google Books за книгата.
  * @throws {Error} - Хвърля грешка, ако не успее да извлече данни от всички търсачки.
  */
 const fetchGoogleBooksIDWithFailover = async (bookName: string) => {
@@ -231,14 +231,14 @@ export const processDataWithFallback = (
 };
 
 /**
- * Генерира препоръки за филми или сериали, базирани на предпочитанията на потребителя,
+ * Генерира препоръки за книги, базирани на предпочитанията на потребителя,
  * като използва OpenAI API за създаване на списък с препоръки.
  * Връща списък с препоръки в JSON формат.
  *
  * @async
  * @function generateBooksRecommendations
  * @param {string} date - Датата на генерирането на препоръките.
- * @param {BooksUserPreferences} booksUserPreferences - Преференциите на потребителя за филми/сериали.
+ * @param {BooksUserPreferences} booksUserPreferences - Преференциите на потребителя за книги.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за задаване на препоръките в компонент.
  * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките.
@@ -499,15 +499,15 @@ export const generateBooksRecommendations = async (
 
             // След това изпълняваме проверката и записа паралелно, използвайки
             const checkAndSaveBooksRecommendation = async () => {
-              // Проверяваме дали филмът съществува в таблицата за watchlist
-              const existsInWatchlist =
-                await checkRecommendationExistsInWatchlist(
+              // Проверяваме дали книгата съществува в таблицата за readlist
+              const existsInReadlist =
+                await checkRecommendationExistsInReadlist(
                   googleBooksData.id,
                   token
                 );
 
-              // Ако филмът не съществува в watchlist, добавяме го към "bookmarkedBooks" с информация за ID и статус
-              if (existsInWatchlist) {
+              // Ако книгата не съществува в readlist, добавяме я към "bookmarkedBooks" с информация за ID и статус
+              if (existsInReadlist) {
                 setBookmarkedBooks((prevBooks) => {
                   return {
                     ...prevBooks,
@@ -533,13 +533,13 @@ export const generateBooksRecommendations = async (
 };
 
 /**
- * Записва препоръка за филм или сериал в базата данни.
- * Препоръката съдържа подробности за филма/сериала като заглавие, жанр, рейтинг и други.
+ * Записва препоръка за книга в базата данни.
+ * Препоръката съдържа подробности за книгата като заглавие, жанр, рейтинг и други.
  * След успешното записване, препоръката се изпраща в сървъра.
  *
  * @async
  * @function saveBookRecommendation
- * @param {any} recommendation - Обект, съдържащ данни за препоръчания филм или сериал.
+ * @param {any} recommendation - Обект, съдържащ данни за препоръчаната книга.
  * @param {string} date - Дата на генерирането на препоръката.
  * @param {string | null} token - Токенът на потребителя за аутентификация.
  * @returns {Promise<void>} - Няма връщан резултат, но извършва записване на препоръката.
@@ -618,7 +618,7 @@ export const saveBookRecommendation = async (
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitted - Функция за задаване на статус за подадена заявка.
  * @param {React.Dispatch<React.SetStateAction<number>>} setSubmitCount - Функция за актуализиране на броя на подадените заявки.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за актуализиране на списъка с препоръки.
- * @param {BooksUserPreferences} booksUserPreferences - Преференции на потребителя за филми/сериали.
+ * @param {BooksUserPreferences} booksUserPreferences - Преференции на потребителя за книги.
  * @param {string | null} token - Токенът за аутентификация на потребителя.
  * @param {number} submitCount - Броят на подадените заявки.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките и записва данни.
