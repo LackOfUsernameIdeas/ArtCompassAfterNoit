@@ -110,15 +110,17 @@ export const checkRecommendationExistsInWatchlist = async (
 ): Promise<boolean> => {
   try {
     const response = await fetch(
-      `${
-        import.meta.env.VITE_API_BASE_URL
-      }/check-for-recommendation-in-watchlist`,
+      `${import.meta.env.VITE_API_BASE_URL}/check-for-recommendation-in-list`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ token, imdbID })
+        body: JSON.stringify({
+          token,
+          imdbID,
+          recommendationType: "movies_series"
+        })
       }
     );
 
@@ -137,18 +139,62 @@ export const checkRecommendationExistsInWatchlist = async (
 };
 
 /**
+ * Проверява дали препоръката вече съществува в списъка за четене на потребителя.
+ *
+ * @async
+ * @function checkRecommendationExistsInWatchlist
+ * @param {string} google_books_id - google_books_id на препоръката.
+ * @param {string | null} token - Токен за автентикация на потребителя.
+ * @returns {Promise<boolean>} - Връща true, ако препоръката вече съществува.
+ * @throws {Error} - Хвърля грешка, ако проверката не може да бъде извършена.
+ */
+export const checkRecommendationExistsInReadlist = async (
+  google_books_id: string,
+  token: string | null
+): Promise<boolean> => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/check-for-recommendation-in-list`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          token,
+          google_books_id,
+          recommendationType: "books"
+        })
+      }
+    );
+
+    if (response.status === 404) {
+      throw new Error("Грешка при проверка на списъка за четене.");
+    }
+
+    const result = await response.json();
+    console.log("result: ", result.exists, google_books_id);
+
+    return result.exists || false;
+  } catch (error) {
+    console.error("Грешка при проверката:", error);
+    return false;
+  }
+};
+
+/**
  * Записва препоръка за филм или сериал в списъка за гледане на потребителя.
  * Препоръката съдържа подробности като заглавие, жанр, рейтинг и други.
  * След успешното записване, данните се изпращат до сървъра чрез съответния API маршрут.
  *
  * @async
- * @function saveToReadlist
+ * @function saveToWatchlist
  * @param {any} recommendation - Обект с данни за препоръката (филм или сериал).
  * @param {string | null} token - Токен за автентикация на потребителя.
  * @returns {Promise<void>} - Няма върнат резултат, но изпраща заявка към сървъра.
  * @throws {Error} - Хвърля грешка, ако данните не могат да бъдат записани.
  */
-export const saveToReadlist = async (
+export const saveToWatchlist = async (
   recommendation: any,
   token: string | null
 ): Promise<void> => {
@@ -218,13 +264,16 @@ export const saveToReadlist = async (
     };
 
     const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/save-to-watchlist`,
+      `${import.meta.env.VITE_API_BASE_URL}/save-to-list`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(formattedRecommendation)
+        body: JSON.stringify({
+          recommendationType: "movies_series",
+          recommendation: formattedRecommendation
+        })
       }
     );
 
@@ -238,6 +287,90 @@ export const saveToReadlist = async (
     console.log("Препоръката е успешно добавена:", result);
   } catch (error) {
     console.error("Грешка при записването в списъка за гледане:", error);
+  }
+};
+
+/**
+ * Записва препоръка за книга в списъка за четене на потребителя.
+ * Препоръката съдържа подробности като заглавие, жанр, рейтинг и други.
+ * След успешното записване, данните се изпращат до сървъра чрез съответния API маршрут.
+ *
+ * @async
+ * @function saveToReadlist
+ * @param {any} recommendation - Обект с данни за препоръката (книга).
+ * @param {string | null} token - Токен за автентикация на потребителя.
+ * @returns {Promise<void>} - Няма върнат резултат, но изпраща заявка към сървъра.
+ * @throws {Error} - Хвърля грешка, ако данните не могат да бъдат записани.
+ */
+export const saveToReadlist = async (
+  recommendation: any,
+  token: string | null
+): Promise<void> => {
+  try {
+    if (!recommendation || typeof recommendation !== "object") {
+      console.warn("Няма валидни данни за препоръката.");
+      return;
+    }
+
+    // Проверка дали съществува в списъка за четене
+    const exists = await checkRecommendationExistsInReadlist(
+      recommendation.google_books_id,
+      token
+    );
+
+    if (exists) {
+      console.log("Препоръката вече е добавена в списъка за четене.");
+      return;
+    }
+
+    const formattedRecommendation = {
+      token,
+      google_books_id: recommendation.google_books_id || null,
+      title_en: recommendation.title_en || null,
+      title_bg: recommendation.title_bg || null,
+      real_edition_title: recommendation.real_edition_title || null,
+      author: recommendation.author || null,
+      genre_en: recommendation.genres_en || null,
+      genre_bg: recommendation.genres_bg || null,
+      description: recommendation.description || null,
+      language: recommendation.language || null,
+      country: recommendation.country || null,
+      date_of_first_issue: recommendation.date_of_first_issue || null,
+      date_of_issue: recommendation.date_of_issue || null,
+      goodreads_rating: recommendation.goodreads_rating || null,
+      reason: recommendation.reason || null,
+      adaptations: recommendation.adaptations || null,
+      ISBN_10: recommendation.ISBN_10 || null,
+      ISBN_13: recommendation.ISBN_13 || null,
+      page_count: recommendation.page_count || null,
+      imageLink: recommendation.imageLink || null,
+      source: recommendation.source || null
+    };
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/save-to-list`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          recommendationType: "books",
+          recommendation: formattedRecommendation
+        })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        "Неуспешно записване на препоръката в списъка за четене."
+      );
+    }
+
+    const result = await response.json();
+    console.log("Препоръката е успешно добавена:", result);
+  } catch (error) {
+    console.error("Грешка при записването в списъка за четене:", error);
   }
 };
 
@@ -262,13 +395,17 @@ export const removeFromWatchlist = async (
     }
 
     const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/remove-from-watchlist`,
+      `${import.meta.env.VITE_API_BASE_URL}/remove-from-list`,
       {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ token, imdbID })
+        body: JSON.stringify({
+          token,
+          imdbID,
+          recommendationType: "movies_series"
+        })
       }
     );
 
@@ -282,6 +419,54 @@ export const removeFromWatchlist = async (
     console.log("Successfully removed from watchlist:", result);
   } catch (error) {
     console.error("Error removing from watchlist:", error);
+  }
+};
+
+/**
+ * Премахва книга от списъка за четене на потребителя.
+ *
+ * @async
+ * @function removeFromReadlist
+ * @param {string} google_books_id - Уникален идентификатор на книгата.
+ * @param {string | null} token - Токен за автентикация на потребителя.
+ * @returns {Promise<void>} - Няма върнат резултат, но изпраща заявка към сървъра.
+ * @throws {Error} - Хвърля грешка, ако данните не могат да бъдат премахнати.
+ */
+export const removeFromReadlist = async (
+  google_books_id: string,
+  token: string | null
+): Promise<void> => {
+  try {
+    if (!google_books_id) {
+      console.warn(
+        "google_books_id is required to remove a book from the readlist."
+      );
+      return;
+    }
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/remove-from-list`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          token,
+          google_books_id,
+          recommendationType: "books"
+        })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to remove the book from the readlist.");
+    }
+
+    const result = await response.json();
+    console.log("Successfully removed from readlist:", result);
+  } catch (error) {
+    console.error("Error removing from readlist:", error);
   }
 };
 

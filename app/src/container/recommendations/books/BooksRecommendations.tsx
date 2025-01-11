@@ -3,7 +3,7 @@ import { Quiz } from "./Components/Quiz";
 import { useNavigate } from "react-router-dom";
 import { checkTokenValidity } from "../../helper_functions_common";
 import {
-  removeFromWatchlist,
+  removeFromReadlist,
   saveToReadlist,
   showNotification
 } from "../../helper_functions_common";
@@ -64,8 +64,7 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
         // Remove the movie from bookmarks if it's already bookmarked
         delete updatedBookmarks[movie.google_books_id];
 
-        // Call removeFromWatchlist API
-        removeFromWatchlist(movie.google_books_id, token).catch((error) => {
+        removeFromReadlist(movie.google_books_id, token).catch((error) => {
           console.error("Error removing from watchlist:", error);
         });
       } else {
