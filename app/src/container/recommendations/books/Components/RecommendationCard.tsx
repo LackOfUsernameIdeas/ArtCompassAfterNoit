@@ -195,7 +195,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
             </li>
             <li>
               <strong className="text-primary">Държава:</strong>{" "}
-              {recommendation.country || "N/A"}
+              {recommendation.origin || "N/A"}
             </li>
             <li>
               <strong className="text-primary">Език:</strong>{" "}

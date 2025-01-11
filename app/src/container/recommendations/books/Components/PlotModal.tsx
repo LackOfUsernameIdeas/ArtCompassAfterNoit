@@ -17,7 +17,9 @@ export const PlotModal: FC<PlotModalProps> = ({
       <div className="fixed inset-0 bg-black bg-opacity-70 z-40"></div>
       <div className="plot-modal">
         <h2 className="text-lg font-semibold">Пълен сюжет</h2>
-        <p className="text-sm">{movie.description}</p>
+        <p className="text-sm">
+          {typeof movie.description === "string" && movie.description}
+        </p>
         <div className="flex justify-end space-x-4">
           <button
             onClick={closeModal}

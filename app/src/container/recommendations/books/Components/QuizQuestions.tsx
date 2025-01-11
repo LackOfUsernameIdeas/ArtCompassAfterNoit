@@ -32,7 +32,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   const [genres, setGenres] = useState<Genre[]>([]);
   const [moods, setMoods] = useState<string[]>([]);
   const [authors, setAuthors] = useState("");
-  const [countries, setCountries] = useState("");
+  const [origin, setOrigin] = useState("");
   const [pacing, setPacing] = useState("");
   const [depth, setDepth] = useState("");
   const [targetGroup, setTargetGroup] = useState("");
@@ -72,8 +72,8 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
     {
       question: "Какви са вашите предпочитания относно произхода на книгите?",
       isInput: true,
-      value: countries,
-      setter: setCountries,
+      value: origin,
+      setter: setOrigin,
       placeholder: "Пример: Европейска, Българска, Френска литература"
     },
     {
@@ -113,7 +113,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
     genres,
     moods: moods?.map((mood) => mood.split(" ")[0]),
     authors,
-    countries,
+    origin,
     pacing,
     depth,
     targetGroup,

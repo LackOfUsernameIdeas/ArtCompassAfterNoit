@@ -39,40 +39,7 @@ const getUserById = (userId, callback) => {
   db.query(query, [userId], callback);
 };
 
-const saveMoviesSeriesRecommendation = (
-  userId,
-  imdbID,
-  title_en,
-  title_bg,
-  genre_en,
-  genre_bg,
-  reason,
-  description,
-  year,
-  rated,
-  released,
-  runtime,
-  director,
-  writer,
-  actors,
-  plot,
-  language,
-  country,
-  awards,
-  poster,
-  ratings,
-  metascore,
-  imdbRating,
-  imdbVotes,
-  type,
-  DVD,
-  boxOffice,
-  production,
-  website,
-  totalSeasons,
-  date,
-  callback
-) => {
+const saveMovieSeriesRecommendation = (userId, data, callback) => {
   const query = `INSERT INTO movies_series_recommendations (
   user_id, imdbID, title_en, title_bg, genre_en, genre_bg, reason, description, year,
   rated, released, runtime, director, writer, actors, plot, language, 
@@ -82,36 +49,72 @@ const saveMoviesSeriesRecommendation = (
 
   const values = [
     userId,
-    imdbID,
-    title_en,
-    title_bg,
-    genre_en,
-    genre_bg,
-    reason,
-    description,
-    year,
-    rated,
-    released,
-    runtime,
-    director,
-    writer,
-    actors,
-    plot,
-    language,
-    country,
-    awards,
-    poster,
-    JSON.stringify(ratings),
-    metascore,
-    imdbRating,
-    imdbVotes,
-    type,
-    DVD,
-    boxOffice,
-    production,
-    website,
-    totalSeasons,
-    date
+    data.imdbID,
+    data.title_en,
+    data.title_bg,
+    data.genre_en,
+    data.genre_bg,
+    data.reason,
+    data.description,
+    data.year,
+    data.rated,
+    data.released,
+    data.runtime,
+    data.director,
+    data.writer,
+    data.actors,
+    data.plot,
+    data.language,
+    data.country,
+    data.awards,
+    data.poster,
+    JSON.stringify(data.ratings),
+    data.metascore,
+    data.imdbRating,
+    data.imdbVotes,
+    data.type,
+    data.DVD,
+    data.boxOffice,
+    data.production,
+    data.website,
+    data.totalSeasons,
+    data.date
+  ];
+
+  db.query(query, values, callback);
+};
+
+const saveBookRecommendation = (userId, data, callback) => {
+  const query = `INSERT INTO books_recommendations (
+    user_id, google_books_id, title_en, title_bg, real_edition_title, author, 
+    genre_en, genre_bg, description, language, country, date_of_first_issue, 
+    date_of_issue, goodreads_rating, reason, adaptations, ISBN_10, ISBN_13, 
+    page_count, imageLink, date, source
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+
+  const values = [
+    userId,
+    data.google_books_id || null,
+    data.title_en || null,
+    data.title_bg || null,
+    data.real_edition_title || null,
+    data.author || null,
+    JSON.stringify(data.genre_en) || null,
+    JSON.stringify(data.genre_bg) || null,
+    data.description || null,
+    data.language || null,
+    data.country || null,
+    data.date_of_first_issue || null,
+    data.date_of_issue || null,
+    data.goodreads_rating || null,
+    data.reason || null,
+    data.adaptations || null,
+    data.ISBN_10 || null,
+    data.ISBN_13 || null,
+    data.page_count || null,
+    data.imageLink || null,
+    data.date || null,
+    data.source || null
   ];
 
   db.query(query, values, callback);
@@ -205,43 +208,49 @@ const checkRecommendationExistsInWatchlist = (userId, imdbID, callback) => {
   db.query(query, [userId, imdbID], callback);
 };
 
-const saveMoviesSeriesUserPreferences = (
-  userId,
-  preferred_genres_en,
-  preferred_genres_bg,
-  mood,
-  timeAvailability,
-  preferred_age,
-  preferred_type,
-  preferred_actors,
-  preferred_directors,
-  preferred_countries,
-  preferred_pacing,
-  preferred_depth,
-  preferred_target_group,
-  interests,
-  date,
-  callback
-) => {
+const saveMoviesSeriesUserPreferences = (userId, preferences, callback) => {
   const sql = `INSERT INTO movies_series_user_preferences (user_id, preferred_genres_en, preferred_genres_bg, mood, timeAvailability, preferred_age, preferred_type, preferred_actors, preferred_directors, preferred_countries, preferred_pacing, preferred_depth, preferred_target_group, interests, date)
                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   const values = [
     userId,
-    preferred_genres_en,
-    preferred_genres_bg,
-    mood,
-    timeAvailability,
-    preferred_age,
-    preferred_type,
-    preferred_actors,
-    preferred_directors,
-    preferred_countries,
-    preferred_pacing,
-    preferred_depth,
-    preferred_target_group,
-    interests,
-    date
+    preferences.preferred_genres_en,
+    preferences.preferred_genres_bg,
+    preferences.mood,
+    preferences.timeAvailability,
+    preferences.preferred_age,
+    preferences.preferred_type,
+    preferences.preferred_actors,
+    preferences.preferred_directors,
+    preferences.preferred_countries,
+    preferences.preferred_pacing,
+    preferences.preferred_depth,
+    preferences.preferred_target_group,
+    preferences.interests,
+    preferences.date
+  ];
+
+  db.query(sql, values, (err, result) => {
+    callback(err, result);
+  });
+};
+
+const saveBooksUserPreferences = (userId, preferences, callback) => {
+  const sql = `INSERT INTO books_user_preferences (user_id, preferred_genres_en, preferred_genres_bg, mood, preferred_authors, preferred_origin, preferred_pacing, preferred_depth, preferred_target_group, interests, date)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+  const values = [
+    userId,
+    preferences.preferred_genres_en,
+    preferences.preferred_genres_bg,
+    preferences.mood,
+    preferences.preferred_authors,
+    preferences.preferred_origin,
+    preferences.preferred_pacing,
+    preferences.preferred_depth,
+    preferences.preferred_target_group,
+    preferences.interests,
+    preferences.date
   ];
 
   db.query(sql, values, (err, result) => {
@@ -847,16 +856,6 @@ const getSortedDirectorsByProsperity = (callback) => {
       })
     );
 
-    console.log(
-      Math.max(
-        ...results.map((director) => {
-          const totalBoxOffice =
-            parseFloat(director.total_box_office.replace(/[$,]/g, "")) || 0;
-          return totalBoxOffice;
-        })
-      )
-    );
-
     const directorsWithProsperity = results.map((director) => {
       const totalWins = director.total_wins || 0;
       const totalNominations = director.total_nominations || 0;
@@ -871,18 +870,6 @@ const getSortedDirectorsByProsperity = (callback) => {
         ? parseFloat(director.avg_rotten_tomatoes.replace("%", "")) / 100
         : 0;
 
-      console.log(
-        "getSortedDirectorsByProsperity",
-        director.director,
-        totalWins,
-        totalNominations,
-        totalBoxOffice,
-        maxBoxOffice,
-        normalizedBoxOffice,
-        avgMetascore,
-        avgIMDbRating,
-        avgRottenTomatoes
-      );
       const prosperityScore =
         totalWins * weights.total_wins +
         totalNominations * weights.total_nominations +
@@ -1984,8 +1971,6 @@ const getUsersTopActors = (userId, limit, callback) => {
       .map((actor) => `'${actor.actor_en.replace(/'/g, "''")}'`)
       .join(",");
 
-    console.log("actors: ", actors);
-
     const prosperityQuery = `
       WITH RECURSIVE ActorSplit AS (
         SELECT 
@@ -2232,8 +2217,6 @@ const getUsersTopActorsFromWatchlist = (userId, limit, callback) => {
     const actors = translatedResults
       .map((actor) => `'${actor.actor_en.replace(/'/g, "''")}'`)
       .join(",");
-
-    console.log("actors: ", actors);
 
     const prosperityQuery = `
       WITH RECURSIVE ActorSplit AS (
@@ -2599,14 +2582,6 @@ const getUsersTopDirectors = (userId, limit, callback) => {
         })
       );
 
-      console.log(
-        ...prosperityResults.map((director) => {
-          const totalBoxOffice =
-            parseFloat(director.total_box_office.replace(/[$,]/g, "")) || 0;
-          return totalBoxOffice;
-        })
-      );
-
       const weights = {
         total_wins: 0.3,
         total_nominations: 0.25,
@@ -2632,18 +2607,6 @@ const getUsersTopDirectors = (userId, limit, callback) => {
           ? parseFloat(director.avg_rotten_tomatoes.replace("%", "")) / 100
           : 0;
 
-        console.log(
-          "getUsersTopDirectors",
-          director.director,
-          totalWins,
-          totalNominations,
-          totalBoxOffice,
-          maxBoxOffice,
-          normalizedBoxOffice,
-          avgMetascore,
-          avgIMDbRating,
-          avgRottenTomatoes
-        );
         const prosperityScore =
           totalWins * weights.total_wins +
           totalNominations * weights.total_nominations +
@@ -3440,11 +3403,13 @@ module.exports = {
   findUserByEmail,
   updateUserPassword,
   getUserById,
-  saveMoviesSeriesRecommendation,
+  saveMovieSeriesRecommendation,
+  saveBookRecommendation,
   saveToWatchlist,
   removeFromWatchlist,
   checkRecommendationExistsInWatchlist,
   saveMoviesSeriesUserPreferences,
+  saveBooksUserPreferences,
   getUsersCount,
   getAverageBoxOfficeAndScores,
   getTopRecommendationsPlatform,

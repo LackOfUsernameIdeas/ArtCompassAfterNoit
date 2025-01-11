@@ -142,13 +142,13 @@ export const checkRecommendationExistsInWatchlist = async (
  * След успешното записване, данните се изпращат до сървъра чрез съответния API маршрут.
  *
  * @async
- * @function saveToWatchlist
+ * @function saveToReadlist
  * @param {any} recommendation - Обект с данни за препоръката (филм или сериал).
  * @param {string | null} token - Токен за автентикация на потребителя.
  * @returns {Promise<void>} - Няма върнат резултат, но изпраща заявка към сървъра.
  * @throws {Error} - Хвърля грешка, ако данните не могат да бъдат записани.
  */
-export const saveToWatchlist = async (
+export const saveToReadlist = async (
   recommendation: any,
   token: string | null
 ): Promise<void> => {

@@ -364,25 +364,16 @@ app.get("/user-data", (req, res) => {
 });
 
 // Запазване на потребителските предпочитания
-app.post("/save-movies-series-user-preferences", (req, res) => {
-  const {
-    token,
-    preferred_genres_en,
-    preferred_genres_bg,
-    mood,
-    timeAvailability,
-    preferred_age,
-    preferred_type,
-    preferred_actors,
-    preferred_directors,
-    preferred_countries,
-    preferred_pacing,
-    preferred_depth,
-    preferred_target_group,
-    interests,
-    date
-  } = req.body;
+app.post("/save-preferences", (req, res) => {
+  const { preferencesType, preferences } = req.body;
 
+  if (!preferencesType || !preferences) {
+    return res
+      .status(400)
+      .json({ error: "Preferences type and preferences are required" });
+  }
+
+  const { token, ...data } = preferences;
   // Верификация на токена и вземане на потребителското ID
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) {
@@ -391,144 +382,62 @@ app.post("/save-movies-series-user-preferences", (req, res) => {
     }
 
     const userId = decoded.id;
-
-    console.log(
-      "data: ",
-      userId,
-      preferred_genres_en,
-      preferred_genres_bg,
-      mood,
-      timeAvailability,
-      preferred_age,
-      preferred_type,
-      preferred_actors,
-      preferred_directors,
-      preferred_countries,
-      preferred_pacing,
-      preferred_depth,
-      preferred_target_group,
-      interests,
-      date
-    );
-    db.saveMoviesSeriesUserPreferences(
-      userId,
-      preferred_genres_en,
-      preferred_genres_bg,
-      mood,
-      timeAvailability,
-      preferred_age,
-      preferred_type,
-      preferred_actors,
-      preferred_directors,
-      preferred_countries,
-      preferred_pacing,
-      preferred_depth,
-      preferred_target_group,
-      interests,
-      date,
-      (err, result) => {
+    if (preferencesType === "movies_series") {
+      db.saveMoviesSeriesUserPreferences(userId, data, (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        res.status(201).json({
+          message: "User preferences for movies/series saved successfully!"
+        });
+      });
+    } else {
+      db.saveBooksUserPreferences(userId, data, (err, result) => {
         if (err) {
           return res.status(500).json({ error: err.message });
         }
         res
           .status(201)
-          .json({ message: "User preferences saved successfully!" });
-      }
-    );
+          .json({ message: "User preferences for books saved successfully!" });
+      });
+    }
   });
 });
 
 // Запазване на препоръка
-app.post("/save-movies-series-recommendation", (req, res) => {
-  const {
-    token,
-    imdbID,
-    title_en,
-    title_bg,
-    genre_en,
-    genre_bg,
-    reason,
-    description,
-    year,
-    rated,
-    released,
-    runtime,
-    director,
-    writer,
-    actors,
-    plot,
-    language,
-    country,
-    awards,
-    poster,
-    ratings,
-    metascore,
-    imdbRating,
-    imdbVotes,
-    type,
-    DVD,
-    boxOffice,
-    production,
-    website,
-    totalSeasons,
-    date
-  } = req.body;
+app.post("/save-recommendation", (req, res) => {
+  const { recommendationType, recommendation } = req.body;
+
+  if (!recommendationType || !recommendation) {
+    return res
+      .status(400)
+      .json({ error: "Recommendation type and recommendation are required" });
+  }
+
+  const { token, ...data } = recommendation;
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
     const userId = decoded.id;
-    db.saveMoviesSeriesRecommendation(
-      userId,
-      imdbID,
-      title_en,
-      title_bg,
-      genre_en,
-      genre_bg,
-      reason,
-      description,
-      year,
-      rated,
-      released,
-      runtime,
-      director,
-      writer,
-      actors,
-      plot,
-      language,
-      country,
-      awards,
-      poster,
-      ratings,
-      metascore,
-      imdbRating,
-      imdbVotes,
-      type,
-      DVD,
-      boxOffice,
-      production,
-      website,
-      totalSeasons,
-      date,
-      (err, result) => {
-        console.log(
-          "title_en: \n" +
-            title_en +
-            "\n" +
-            "title_bg: \n" +
-            title_bg +
-            "\n" +
-            "genre_en: \n" +
-            genre_en +
-            "\n" +
-            "genre_bg: \n" +
-            genre_bg
-        );
+    if (recommendationType === "movies_series") {
+      db.saveMovieSeriesRecommendation(userId, data, (err, result) => {
         if (err) {
           return res.status(500).json({ error: err.message });
         }
-        res.status(201).json({ message: "Recommendation added successfully!" });
-      }
-    );
+        res.status(201).json({
+          message: "Movie/series recommendation added successfully!"
+        });
+      });
+    } else {
+      db.saveBookRecommendation(userId, data, (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        res.status(201).json({
+          message: "Book recommendation added successfully!"
+        });
+      });
+    }
   });
 });
 
@@ -602,19 +511,6 @@ app.post("/save-to-watchlist", (req, res) => {
       website,
       totalSeasons,
       (err, result) => {
-        console.log(
-          "title_en: \n" +
-            title_en +
-            "\n" +
-            "title_bg: \n" +
-            title_bg +
-            "\n" +
-            "genre_en: \n" +
-            genre_en +
-            "\n" +
-            "genre_bg: \n" +
-            genre_bg
-        );
         if (err) {
           return res.status(500).json({ error: err.message });
         }

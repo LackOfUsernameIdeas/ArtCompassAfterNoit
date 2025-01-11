@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { checkTokenValidity } from "../../helper_functions_common";
 import {
   removeFromWatchlist,
-  saveToWatchlist,
+  saveToReadlist,
   showNotification
 } from "../../helper_functions_common";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
@@ -72,8 +72,7 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
         // Add the movie to bookmarks if it's not already bookmarked
         updatedBookmarks[movie.google_books_id] = movie;
 
-        // Call saveToWatchlist API
-        saveToWatchlist(movie, token).catch((error) => {
+        saveToReadlist(movie, token).catch((error) => {
           console.error("Error saving to watchlist:", error);
         });
       }

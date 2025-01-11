@@ -6,7 +6,6 @@ import {
 } from "./booksRecommendations-types";
 import { NotificationState } from "../../types_common";
 import { openAIKey } from "./booksRecommendations-data";
-import { moviesSeriesGenreOptions } from "../../data_common";
 import { booksGenreOptions } from "../../data_common";
 import {
   checkRecommendationExistsInWatchlist,
@@ -29,36 +28,19 @@ import ISO6391 from "iso-639-1";
  */
 export const saveBooksUserPreferences = async (
   date: string,
-  booksUserPreferences: {
-    type: string;
-    genres: { en: string; bg: string }[];
-    moods: string[];
-    timeAvailability: string;
-    age: string;
-    actors: string;
-    directors: string;
-    interests: string;
-    countries: string;
-    pacing: string;
-    depth: string;
-    targetGroup: string;
-  },
+  booksUserPreferences: BooksUserPreferences,
   token: string | null
 ): Promise<void> => {
   try {
     const {
-      type,
       genres,
       moods,
-      timeAvailability,
-      age,
-      actors,
-      directors,
-      interests,
-      countries,
+      authors,
+      origin,
       pacing,
       depth,
-      targetGroup
+      targetGroup,
+      interests
     } = booksUserPreferences;
 
     const preferredGenresEn =
@@ -66,49 +48,31 @@ export const saveBooksUserPreferences = async (
     const preferredGenresBg =
       genres.length > 0 ? genres.map((g) => g.bg).join(", ") : null;
 
-    console.log("preferences: ", {
+    const formattedPreferences = {
       token: token,
       preferred_genres_en: preferredGenresEn,
       preferred_genres_bg: preferredGenresBg,
       mood: Array.isArray(moods) ? moods.join(", ") : null,
-      timeAvailability,
-      preferred_age: age,
-      preferred_type: type,
-      preferred_actors: actors,
-      preferred_directors: directors,
-      preferred_countries: countries,
+      preferred_authors: authors,
+      preferred_origin: origin,
       preferred_pacing: pacing,
       preferred_depth: depth,
       preferred_target_group: targetGroup,
       interests: interests || null,
       date: date
-    });
+    };
+    console.log("preferences: ", formattedPreferences);
 
     const response = await fetch(
-      `${
-        import.meta.env.VITE_API_BASE_URL
-      }/save-movies-series-user-preferences`,
+      `${import.meta.env.VITE_API_BASE_URL}/save-preferences`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          token: token,
-          preferred_genres_en: preferredGenresEn,
-          preferred_genres_bg: preferredGenresBg,
-          mood: Array.isArray(moods) ? moods.join(", ") : null,
-          timeAvailability,
-          preferred_age: age,
-          preferred_type: type,
-          preferred_actors: actors,
-          preferred_directors: directors,
-          preferred_countries: countries,
-          preferred_pacing: pacing,
-          preferred_depth: depth,
-          preferred_target_group: targetGroup,
-          interests: interests || null,
-          date: date
+          preferencesType: "books",
+          preferences: formattedPreferences
         })
       }
     );
@@ -295,7 +259,7 @@ export const generateBooksRecommendations = async (
     genres,
     moods,
     authors,
-    countries,
+    origin,
     pacing,
     depth,
     targetGroup,
@@ -533,31 +497,30 @@ export const generateBooksRecommendations = async (
               recommendationData
             ]);
 
-            // // След това изпълняваме проверката и записа паралелно, използвайки
-            // const checkAndSaveMoviesSeriesRecommendation = async () => {
-            //   // Проверяваме дали филмът съществува в таблицата за watchlist
-            //   const existsInWatchlist =
-            //     await checkRecommendationExistsInWatchlist(imdbId, token);
+            // След това изпълняваме проверката и записа паралелно, използвайки
+            const checkAndSaveBooksRecommendation = async () => {
+              // Проверяваме дали филмът съществува в таблицата за watchlist
+              const existsInWatchlist =
+                await checkRecommendationExistsInWatchlist(
+                  googleBooksData.id,
+                  token
+                );
 
-            //   // Ако филмът не съществува в watchlist, добавяме го към "bookmarkedMovies" с информация за ID и статус
-            //   if (existsInWatchlist) {
-            //     setBookmarkedMovies((prevMovies) => {
-            //       return {
-            //         ...prevMovies,
-            //         [recommendationData.imdbID]: recommendationData
-            //       };
-            //     });
-            //   }
-            //   // Записваме препоръката в базата данни
-            //   await saveMoviesSeriesRecommendation(
-            //     recommendationData,
-            //     date,
-            //     token
-            //   );
-            // };
+              // Ако филмът не съществува в watchlist, добавяме го към "bookmarkedMovies" с информация за ID и статус
+              if (existsInWatchlist) {
+                setBookmarkedMovies((prevMovies) => {
+                  return {
+                    ...prevMovies,
+                    [recommendationData.google_books_id]: recommendationData
+                  };
+                });
+              }
+              // Записваме препоръката в базата данни
+              await saveBookRecommendation(recommendationData, date, token);
+            };
 
-            // // Извикваме функцията, за да изпълним и двете операции
-            // checkAndSaveMoviesSeriesRecommendation();
+            // Извикваме функцията, за да изпълним и двете операции
+            checkAndSaveBooksRecommendation();
           } else {
             console.log(`Book ID not found for ${bookName}`);
           }
@@ -575,14 +538,14 @@ export const generateBooksRecommendations = async (
  * След успешното записване, препоръката се изпраща в сървъра.
  *
  * @async
- * @function saveMoviesSeriesRecommendation
+ * @function saveBookRecommendation
  * @param {any} recommendation - Обект, съдържащ данни за препоръчания филм или сериал.
  * @param {string} date - Дата на генерирането на препоръката.
  * @param {string | null} token - Токенът на потребителя за аутентификация.
  * @returns {Promise<void>} - Няма връщан резултат, но извършва записване на препоръката.
  * @throws {Error} - Хвърля грешка, ако не може да се запази препоръката в базата данни.
  */
-export const saveMoviesSeriesRecommendation = async (
+export const saveBookRecommendation = async (
   recommendation: any,
   date: string,
   token: string | null
@@ -593,65 +556,44 @@ export const saveMoviesSeriesRecommendation = async (
       return;
     }
 
-    const genresEn = recommendation.genre
-      ? recommendation.genre.split(", ")
-      : null;
-
-    const genresBg = genresEn.map((genre: string) => {
-      const matchedGenre = moviesSeriesGenreOptions.find(
-        (option) => option.en.trim() === genre.trim()
-      );
-      return matchedGenre ? matchedGenre.bg : null;
-    });
-
-    const runtime = recommendation.runtimeGoogle || recommendation.runtime;
-    const imdbRating =
-      recommendation.imdbRatingGoogle || recommendation.imdbRating;
-
     const formattedRecommendation = {
       token,
-      imdbID: recommendation.imdbID || null,
-      title_en: recommendation.title || null,
-      title_bg: recommendation.bgName || null,
-      genre_en: genresEn.join(", "),
-      genre_bg: genresBg.join(", "),
-      reason: recommendation.reason || null,
+      google_books_id: recommendation.google_books_id || null,
+      title_en: recommendation.title_en || null,
+      title_bg: recommendation.title_bg || null,
+      real_edition_title: recommendation.real_edition_title || null,
+      author: recommendation.author || null,
+      genre_en: recommendation.genres_en || null,
+      genre_bg: recommendation.genres_bg || null,
       description: recommendation.description || null,
-      year: recommendation.year || null,
-      rated: recommendation.rated || null,
-      released: recommendation.released || null,
-      runtime: runtime || null,
-      director: recommendation.director || null,
-      writer: recommendation.writer || null,
-      actors: recommendation.actors || null,
-      plot: recommendation.plot || null,
       language: recommendation.language || null,
       country: recommendation.country || null,
-      awards: recommendation.awards || null,
-      poster: recommendation.poster || null,
-      ratings: recommendation.ratings || [],
-      metascore: recommendation.metascore || null,
-      imdbRating: imdbRating || null,
-      imdbVotes: recommendation.imdbVotes || null,
-      type: recommendation.type || null,
-      DVD: recommendation.DVD || null,
-      boxOffice: recommendation.boxOffice || null,
-      production: recommendation.production || null,
-      website: recommendation.website || null,
-      totalSeasons: recommendation.totalSeasons || null,
-      date: date
+      date_of_first_issue: recommendation.date_of_first_issue || null,
+      date_of_issue: recommendation.date_of_issue || null,
+      goodreads_rating: recommendation.goodreads_rating || null,
+      reason: recommendation.reason || null,
+      adaptations: recommendation.adaptations || null,
+      ISBN_10: recommendation.ISBN_10 || null,
+      ISBN_13: recommendation.ISBN_13 || null,
+      page_count: recommendation.page_count || null,
+      imageLink: recommendation.imageLink || null,
+      date: date,
+      source: recommendation.source || null
     };
 
     console.log("Formatted Recommendation:", formattedRecommendation);
 
     const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/save-movies-series-recommendation`,
+      `${import.meta.env.VITE_API_BASE_URL}/save-recommendation`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(formattedRecommendation)
+        body: JSON.stringify({
+          recommendationType: "books",
+          recommendation: formattedRecommendation
+        })
       }
     );
 
@@ -708,9 +650,9 @@ export const handleSubmit = async (
     return;
   }
 
-  const { moods, countries, pacing, depth, targetGroup } = booksUserPreferences;
+  const { moods, origin, pacing, depth, targetGroup } = booksUserPreferences;
 
-  if (!moods || !countries || !pacing || !depth || !targetGroup) {
+  if (!moods || !origin || !pacing || !depth || !targetGroup) {
     showNotification(
       setNotification,
       "Моля, попълнете всички задължителни полета!",
@@ -743,11 +685,7 @@ export const handleSubmit = async (
 
     if (response.status === 200) {
       setRecommendationList([]);
-      // await saveMoviesSeriesUserPreferences(
-      //   date,
-      //   booksUserPreferences,
-      //   token
-      // );
+      await saveBooksUserPreferences(date, booksUserPreferences, token);
       await generateBooksRecommendations(
         date,
         booksUserPreferences,

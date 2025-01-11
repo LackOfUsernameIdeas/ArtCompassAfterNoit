@@ -25,20 +25,7 @@ import {
  */
 export const saveMoviesSeriesUserPreferences = async (
   date: string,
-  moviesSeriesUserPreferences: {
-    type: string;
-    genres: { en: string; bg: string }[];
-    moods: string[];
-    timeAvailability: string;
-    age: string;
-    actors: string;
-    directors: string;
-    interests: string;
-    countries: string;
-    pacing: string;
-    depth: string;
-    targetGroup: string;
-  },
+  moviesSeriesUserPreferences: MoviesSeriesUserPreferences,
   token: string | null
 ): Promise<void> => {
   try {
@@ -62,7 +49,7 @@ export const saveMoviesSeriesUserPreferences = async (
     const preferredGenresBg =
       genres.length > 0 ? genres.map((g) => g.bg).join(", ") : null;
 
-    console.log("preferences: ", {
+    const formattedPreferences = {
       token: token,
       preferred_genres_en: preferredGenresEn,
       preferred_genres_bg: preferredGenresBg,
@@ -78,33 +65,19 @@ export const saveMoviesSeriesUserPreferences = async (
       preferred_target_group: targetGroup,
       interests: interests || null,
       date: date
-    });
+    };
+    console.log("preferences: ", formattedPreferences);
 
     const response = await fetch(
-      `${
-        import.meta.env.VITE_API_BASE_URL
-      }/save-movies-series-user-preferences`,
+      `${import.meta.env.VITE_API_BASE_URL}/save-preferences`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          token: token,
-          preferred_genres_en: preferredGenresEn,
-          preferred_genres_bg: preferredGenresBg,
-          mood: Array.isArray(moods) ? moods.join(", ") : null,
-          timeAvailability,
-          preferred_age: age,
-          preferred_type: type,
-          preferred_actors: actors,
-          preferred_directors: directors,
-          preferred_countries: countries,
-          preferred_pacing: pacing,
-          preferred_depth: depth,
-          preferred_target_group: targetGroup,
-          interests: interests || null,
-          date: date
+          preferencesType: "movies_series",
+          preferences: formattedPreferences
         })
       }
     );
@@ -459,13 +432,16 @@ export const saveMoviesSeriesRecommendation = async (
     console.log("Formatted Recommendation:", formattedRecommendation);
 
     const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/save-movies-series-recommendation`,
+      `${import.meta.env.VITE_API_BASE_URL}/save-recommendation`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(formattedRecommendation)
+        body: JSON.stringify({
+          recommendationType: "movies_series",
+          recommendation: formattedRecommendation
+        })
       }
     );
 

@@ -46,7 +46,7 @@ export interface Book {
   genres_bg: string | Promise<string>; // Жанрове на български (може да е обещание)
   description: string | Promise<string>; // Описание на книгата (може да е обещание)
   language: string | Promise<string>; // Езици на книгата (може да е обещание)
-  country: string; // Страна на произход
+  origin: string; // Страна на произход
   date_of_first_issue: string; // Дата на първо издание
   date_of_issue: string; // Дата на издаване
   goodreads_rating: string; // Goodreads рейтинг
@@ -64,7 +64,7 @@ export interface BooksUserPreferences {
   genres: { en: string; bg: string }[]; // Жанрове на английски и български
   moods: string[]; // Настроения
   authors: string; // Любими актьори
-  countries: string; // Предпочитани държави
+  origin: string; // Предпочитани държави
   pacing: string; // Пейсинг
   depth: string; // Дълбочина на историята
   targetGroup: string; // Целева група
