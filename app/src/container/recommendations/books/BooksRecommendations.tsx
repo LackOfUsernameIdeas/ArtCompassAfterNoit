@@ -20,7 +20,7 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
     null // Състояние за съхраняване на текущото известие (съобщение и тип)
   );
 
-  const [bookmarkedMovies, setBookmarkedMovies] = useState<{
+  const [bookmarkedBooks, setBookmarkedBooks] = useState<{
     [key: string]: any;
   }>({});
 
@@ -49,29 +49,29 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
     setNotification(null);
   };
 
-  const handleBookmarkClick = (movie: {
+  const handleBookmarkClick = (book: {
     google_books_id: string;
     [key: string]: any;
   }) => {
-    setBookmarkedMovies((prev) => {
-      const isBookmarked = !!prev[movie.google_books_id];
+    setBookmarkedBooks((prev) => {
+      const isBookmarked = !!prev[book.google_books_id];
       const updatedBookmarks = { ...prev };
       const token =
         localStorage.getItem("authToken") ||
         sessionStorage.getItem("authToken");
 
       if (isBookmarked) {
-        // Remove the movie from bookmarks if it's already bookmarked
-        delete updatedBookmarks[movie.google_books_id];
+        // Remove the book from bookmarks if it's already bookmarked
+        delete updatedBookmarks[book.google_books_id];
 
-        removeFromReadlist(movie.google_books_id, token).catch((error) => {
+        removeFromReadlist(book.google_books_id, token).catch((error) => {
           console.error("Error removing from watchlist:", error);
         });
       } else {
-        // Add the movie to bookmarks if it's not already bookmarked
-        updatedBookmarks[movie.google_books_id] = movie;
+        // Add the book to bookmarks if it's not already bookmarked
+        updatedBookmarks[book.google_books_id] = book;
 
-        saveToReadlist(movie, token).catch((error) => {
+        saveToReadlist(book, token).catch((error) => {
           console.error("Error saving to watchlist:", error);
         });
       }
@@ -82,7 +82,7 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
       return updatedBookmarks; // Return the updated bookmarks object
     });
   };
-  console.log("bookmarkedMovies: ", bookmarkedMovies);
+  console.log("bookmarkedBooks: ", bookmarkedBooks);
 
   const handleDismiss = () => {
     setAlertVisible(false);
@@ -105,9 +105,9 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
       )}
       <FadeInWrapper>
         <Quiz
-          bookmarkedMovies={bookmarkedMovies}
+          bookmarkedBooks={bookmarkedBooks}
           handleBookmarkClick={handleBookmarkClick}
-          setBookmarkedMovies={setBookmarkedMovies}
+          setBookmarkedBooks={setBookmarkedBooks}
         />
       </FadeInWrapper>
     </>

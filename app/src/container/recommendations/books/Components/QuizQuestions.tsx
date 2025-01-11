@@ -15,7 +15,7 @@ import {
   pacingOptions,
   depthOptions,
   targetGroupOptions
-} from "../../movies_series/moviesSeriesRecommendations-data";
+} from "../booksRecommendations-data";
 import { booksGenreOptions } from "../../../data_common";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { ViewRecommendations } from "./ViewRecommendations";
@@ -27,7 +27,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   showViewRecommendations,
   alreadyHasRecommendations,
   setRecommendationList,
-  setBookmarkedMovies
+  setBookmarkedBooks
 }) => {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [moods, setMoods] = useState<string[]>([]);
@@ -161,7 +161,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
           setSubmitted,
           setSubmitCount,
           setRecommendationList,
-          setBookmarkedMovies,
+          setBookmarkedBooks,
           booksUserPreferences,
           token,
           submitCount
@@ -220,7 +220,6 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       }
     }
   }, [currentQuestion, selectedAnswer]);
-  console.log("kalata test useEffect: ", booksUserPreferences);
 
   return (
     <div>
@@ -464,7 +463,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                 setSubmitted={setSubmitted}
                 handleSubmit={handleSubmit}
                 setRecommendationList={setRecommendationList}
-                setBookmarkedMovies={setBookmarkedMovies}
+                setBookmarkedBooks={setBookmarkedBooks}
                 setSubmitCount={setSubmitCount}
                 booksUserPreferences={booksUserPreferences}
                 token={token}

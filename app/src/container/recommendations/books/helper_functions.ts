@@ -248,7 +248,7 @@ export const generateBooksRecommendations = async (
   date: string,
   booksUserPreferences: BooksUserPreferences,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
-  setBookmarkedMovies: React.Dispatch<
+  setBookmarkedBooks: React.Dispatch<
     React.SetStateAction<{
       [key: string]: any;
     }>
@@ -506,11 +506,11 @@ export const generateBooksRecommendations = async (
                   token
                 );
 
-              // Ако филмът не съществува в watchlist, добавяме го към "bookmarkedMovies" с информация за ID и статус
+              // Ако филмът не съществува в watchlist, добавяме го към "bookmarkedBooks" с информация за ID и статус
               if (existsInWatchlist) {
-                setBookmarkedMovies((prevMovies) => {
+                setBookmarkedBooks((prevBooks) => {
                   return {
-                    ...prevMovies,
+                    ...prevBooks,
                     [recommendationData.google_books_id]: recommendationData
                   };
                 });
@@ -632,7 +632,7 @@ export const handleSubmit = async (
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
   setSubmitCount: React.Dispatch<React.SetStateAction<number>>,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
-  setBookmarkedMovies: React.Dispatch<
+  setBookmarkedBooks: React.Dispatch<
     React.SetStateAction<{
       [key: string]: any;
     }>
@@ -690,7 +690,7 @@ export const handleSubmit = async (
         date,
         booksUserPreferences,
         setRecommendationList,
-        setBookmarkedMovies,
+        setBookmarkedBooks,
         token
       );
       setSubmitCount((prevCount) => prevCount + 1);

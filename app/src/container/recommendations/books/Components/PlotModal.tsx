@@ -10,7 +10,7 @@ export const PlotModal: FC<PlotModalProps> = ({
     return <div>No recommendations available.</div>;
   }
 
-  const movie = recommendationList[currentIndex];
+  const book = recommendationList[currentIndex];
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -18,7 +18,7 @@ export const PlotModal: FC<PlotModalProps> = ({
       <div className="plot-modal">
         <h2 className="text-lg font-semibold">Пълен сюжет</h2>
         <p className="text-sm">
-          {typeof movie.description === "string" && movie.description}
+          {typeof book.description === "string" && book.description}
         </p>
         <div className="flex justify-end space-x-4">
           <button

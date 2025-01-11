@@ -73,9 +73,9 @@ export interface BooksUserPreferences {
 
 // Пропс за компонентата Quiz, свързана с маркирането на филми.
 export interface QuizProps {
-  handleBookmarkClick: (movie: Book) => void; // Функция за маркиране на филм
-  bookmarkedMovies: { [key: string]: Book }; // Списък с маркирани филми
-  setBookmarkedMovies: React.Dispatch<
+  handleBookmarkClick: (book: Book) => void; // Функция за маркиране на филм
+  bookmarkedBooks: { [key: string]: Book }; // Списък с маркирани филми
+  setBookmarkedBooks: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
   >; // Функция за актуализиране на маркираните филми
 }
@@ -83,8 +83,8 @@ export interface QuizProps {
 // Пропс за компонентата Recommendations, отговорна за показване на препоръки.
 export interface RecommendationsProps {
   recommendationList: Book[]; // Списък с препоръчани филми
-  handleBookmarkClick: (movie: Book) => void; // Функция за маркиране на филм
-  bookmarkedMovies: { [key: string]: Book }; // Списък с маркирани филми
+  handleBookmarkClick: (book: Book) => void; // Функция за маркиране на филм
+  bookmarkedBooks: { [key: string]: Book }; // Списък с маркирани филми
 }
 
 // Пропс за компонентата RecommendationCard, която показва информация за филм.
@@ -93,8 +93,8 @@ export interface RecommendationCardProps {
   currentIndex: number; // Текущ индекс на филма
   isExpanded: boolean; // Флаг дали картата е разширена
   openModal: () => void; // Функция за отваряне на модала
-  handleBookmarkClick: (movie: Book) => void; // Функция за маркиране на филм
-  bookmarkedMovies: { [key: string]: Book }; // Списък с маркирани филми
+  handleBookmarkClick: (book: Book) => void; // Функция за маркиране на филм
+  bookmarkedBooks: { [key: string]: Book }; // Списък с маркирани филми
 }
 
 // Пропс за компонентата PlotModal, показваща сюжетната линия на филма.
@@ -111,7 +111,7 @@ export interface QuizQuestionProps {
   showViewRecommendations: boolean; // Флаг за показване на препоръките
   alreadyHasRecommendations: boolean; // Флаг за проверка дали вече има препоръки
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>; // Функция за задаване на списък с препоръки
-  setBookmarkedMovies: React.Dispatch<
+  setBookmarkedBooks: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
   >; // Функция за актуализиране на маркираните филми
 }
@@ -154,7 +154,7 @@ export interface ConfirmationModalProps {
     setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
     setSubmitCount: React.Dispatch<React.SetStateAction<number>>,
     setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
-    setBookmarkedMovies: React.Dispatch<
+    setBookmarkedBooks: React.Dispatch<
       React.SetStateAction<{
         [key: string]: any;
       }>
@@ -171,7 +171,7 @@ export interface ConfirmationModalProps {
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>;
 
   // Функция за задаване на списък с любими филми
-  setBookmarkedMovies: React.Dispatch<
+  setBookmarkedBooks: React.Dispatch<
     React.SetStateAction<{
       [key: string]: any;
     }>

@@ -1,15 +1,13 @@
 import { FC, useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
-import { SiRottentomatoes } from "react-icons/si";
 import { RecommendationCardProps } from "../booksRecommendations-types";
-import { translate } from "../../../helper_functions_common";
 
 const RecommendationCard: FC<RecommendationCardProps> = ({
   recommendationList,
   currentIndex,
   openModal,
   handleBookmarkClick,
-  bookmarkedMovies
+  bookmarkedBooks
 }) => {
   const [description, setDescription] = useState<string | null>(null);
   const [author, setAuthor] = useState<string | null>(null);
@@ -96,7 +94,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
         <div className="relative flex-shrink-0 mr-8 flex flex-col items-center">
           <img
             src={recommendation.imageLink}
-            alt={`${recommendation.title_bg || "Movie"} Poster`}
+            alt={`${recommendation.title_bg || "Book"} Poster`}
             className="rounded-lg w-[15rem] h-auto"
           />
           <button
@@ -110,7 +108,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               viewBox="0 0 24 24"
               fill="currentColor"
             >
-              {bookmarkedMovies[recommendation.google_books_id] ? (
+              {bookmarkedBooks[recommendation.google_books_id] ? (
                 <>
                   <path d="M18 2H6c-1.103 0-2 .897-2 2v18l8-4.572L20 22V4c0-1.103-.897-2-2-2zm0 16.553L12 15.125 6 18.553V4h12v14.553z"></path>
                   <path d="M6 18.553V4h12v14.553L12 15.125l-6 3.428z"></path>

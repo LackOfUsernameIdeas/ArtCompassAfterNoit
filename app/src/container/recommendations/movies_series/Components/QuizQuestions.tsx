@@ -255,7 +255,6 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       }
     }
   }, [currentQuestion, selectedAnswer]);
-  console.log("kalata test useEffect: ", moviesSeriesUserPreferences);
 
   return (
     <div>
