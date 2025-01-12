@@ -16,7 +16,6 @@ const MoreInfo: React.FC<Movie> = ({
   actors,
   country,
   metascore,
-  type,
   boxOffice,
   totalSeasons
 }) => {
