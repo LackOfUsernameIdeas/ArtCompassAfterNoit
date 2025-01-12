@@ -49,7 +49,7 @@ export interface Book {
   origin: string; // Страна на произход
   date_of_first_issue: string; // Дата на първо издание
   date_of_issue: string; // Дата на издаване
-  goodreads_rating: string; // Goodreads рейтинг
+  goodreads_rating: number; // Goodreads рейтинг
   reason: string; // Причина за препоръката
   adaptations: string; // Адаптации на книгата
   ISBN_10: string; // ISBN-10

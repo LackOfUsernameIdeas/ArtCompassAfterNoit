@@ -318,7 +318,7 @@ export const generateBooksRecommendations = async (
     "country": "САЩ",
     "date_of_first_issue": 1951,
     "date_of_issue": 1972,
-    "goodreads_rating": "4.15",
+    "goodreads_rating": 4.15,
     "reason": "Първостепенна научна фантастика, която се концентрира върху стратегии и социални динамики.",
     "adaptations": "Сериал 'Foundation' от 2021 г.",
     "page_count": 255
@@ -335,7 +335,7 @@ export const generateBooksRecommendations = async (
     "country": "Швеция",
     "date_of_first_issue": 2005,
     "date_of_issue": 2008,
-    "goodreads_rating": "4.13",
+    "goodreads_rating": 4.13,
     "reason": "Сложен и интригуващ трилър с акцент на героите, занимаващ се с теми за справедливост и правдоподобност.",
     "adaptations": "Филм 'The Girl with the Dragon Tattoo' от 2011 г.",
     "page_count": 465
@@ -352,7 +352,7 @@ export const generateBooksRecommendations = async (
     "country": "Великобритания",
     "date_of_first_issue": 1979,
     "date_of_issue": 1981,
-    "goodreads_rating": "4.20",
+    "goodreads_rating": 4.20,
     "reason": "Забавно и остроумно приключение, което разисква приятелството и безсмисленото във вселената.",
     "adaptations": "Филм 'The Hitchhiker's Guide to the Galaxy' от 2005 г.",
     "page_count": 193
@@ -369,7 +369,7 @@ export const generateBooksRecommendations = async (
     "country": "Испания",
     "date_of_first_issue": 2001,
     "date_of_issue": 2014,
-    "goodreads_rating": "4.30",
+    "goodreads_rating": 4.30,
     "reason": "Историческа мистерия с емоционална дълбочина и акцент на разказа на героите.",
     "adaptations": "Аудио книга и сценична адаптация в Испания.",
     "page_count": 487
@@ -386,7 +386,7 @@ export const generateBooksRecommendations = async (
     "country": "САЩ",
     "date_of_first_issue": 2009,
     "date_of_issue": 2014,
-    "goodreads_rating": "4.03",
+    "goodreads_rating": 4.03,
     "reason": "Вълнуваща дистопична история с акцент на приятелството и личните предизвикателства.",
     "adaptations": "Филмова трилогия 'The Maze Runner' започваща от 2014 г.",
     "page_count": 375
