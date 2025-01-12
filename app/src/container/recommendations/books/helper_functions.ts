@@ -6,7 +6,7 @@ import {
 } from "./booksRecommendations-types";
 import { NotificationState } from "../../types_common";
 import { openAIKey } from "./booksRecommendations-data";
-import { booksGenreOptions } from "../../data_common";
+import { googleBooksGenreOptions } from "../../data_common";
 import {
   checkRecommendationExistsInReadlist,
   showNotification,
@@ -771,7 +771,7 @@ export const handleAnswerClick = (
 ) => {
   if (currentQuestion.isMultipleChoice) {
     if (currentQuestion.setter === setGenres) {
-      const selectedGenre = booksGenreOptions.find(
+      const selectedGenre = googleBooksGenreOptions.find(
         (genre) => genre.bg === answer
       );
 

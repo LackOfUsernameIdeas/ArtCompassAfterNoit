@@ -16,7 +16,7 @@ import {
   depthOptions,
   targetGroupOptions
 } from "../booksRecommendations-data";
-import { booksGenreOptions } from "../../../data_common";
+import { googleBooksGenreOptions } from "../../../data_common";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { ViewRecommendations } from "./ViewRecommendations";
 import Notification from "../../../../components/common/notification/Notification";
@@ -50,7 +50,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   const questions = [
     {
       question: "Кои жанрове Ви се четат в момента?",
-      options: booksGenreOptions,
+      options: googleBooksGenreOptions,
       isMultipleChoice: true,
       value: genres,
       setter: setGenres
