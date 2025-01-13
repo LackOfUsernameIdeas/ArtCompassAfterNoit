@@ -86,15 +86,16 @@ const saveMovieSeriesRecommendation = (userId, data, callback) => {
 
 const saveBookRecommendation = (userId, data, callback) => {
   const query = `INSERT INTO books_recommendations (
-    user_id, google_books_id, title_en, title_bg, real_edition_title, author, 
+    user_id, google_books_id, goodreads_id, title_en, title_bg, real_edition_title, author, 
     genre_en, genre_bg, description, language, country, date_of_first_issue, 
     date_of_issue, goodreads_rating, reason, adaptations, ISBN_10, ISBN_13, 
     page_count, imageLink, date, source
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
 
   const values = [
     userId,
     data.google_books_id || null,
+    data.goodreads_id || null,
     data.title_en || null,
     data.title_bg || null,
     data.real_edition_title || null,
@@ -166,15 +167,16 @@ const saveToWatchlist = (userId, data, callback) => {
 
 const saveToReadlist = (userId, data, callback) => {
   const query = `INSERT INTO readlist (
-    user_id, google_books_id, title_en, title_bg, real_edition_title, author, 
+    user_id, google_books_id, goodreads_id, title_en, title_bg, real_edition_title, author, 
     genre_en, genre_bg, description, language, country, date_of_first_issue, 
     date_of_issue, goodreads_rating, reason, adaptations, ISBN_10, ISBN_13, 
     page_count, imageLink, source
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
 
   const values = [
     userId,
     data.google_books_id || null,
+    data.goodreads_id || null,
     data.title_en || null,
     data.title_bg || null,
     data.real_edition_title || null,
@@ -206,9 +208,11 @@ const removeFromWatchlist = (userId, imdbID, callback) => {
   db.query(query, values, callback);
 };
 
-const removeFromReadlist = (userId, google_books_id, callback) => {
-  const query = `DELETE FROM readlist WHERE user_id = ? AND google_books_id = ?;`;
-  const values = [userId, google_books_id];
+const removeFromReadlist = (userId, source, book_id, callback) => {
+  const query = `DELETE FROM readlist WHERE user_id = ? AND ${
+    source === "GoogleBooks" ? "google_books_id = ?" : "	goodreads_id = ?"
+  };`;
+  const values = [userId, book_id];
 
   db.query(query, values, callback);
 };
@@ -220,12 +224,14 @@ const checkRecommendationExistsInWatchlist = (userId, imdbID, callback) => {
 
 const checkRecommendationExistsInReadlist = (
   userId,
-  google_books_id,
+  source,
+  book_id,
   callback
 ) => {
-  const query =
-    "SELECT * FROM readlist WHERE user_id = ? AND google_books_id = ?";
-  db.query(query, [userId, google_books_id], callback);
+  const query = `SELECT * FROM readlist WHERE user_id = ? AND ${
+    source === "GoogleBooks" ? "google_books_id = ?" : "	goodreads_id = ?"
+  }`;
+  db.query(query, [userId, book_id], callback);
 };
 
 const saveMoviesSeriesUserPreferences = (userId, preferences, callback) => {

@@ -108,7 +108,9 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               viewBox="0 0 24 24"
               fill="currentColor"
             >
-              {bookmarkedBooks[recommendation.google_books_id] ? (
+              {bookmarkedBooks[
+                recommendation.google_books_id || recommendation.goodreads_id
+              ] ? (
                 <>
                   <path d="M18 2H6c-1.103 0-2 .897-2 2v18l8-4.572L20 22V4c0-1.103-.897-2-2-2zm0 16.553L12 15.125 6 18.553V4h12v14.553z"></path>
                   <path d="M6 18.553V4h12v14.553L12 15.125l-6 3.428z"></path>

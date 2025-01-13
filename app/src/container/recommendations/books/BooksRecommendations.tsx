@@ -51,10 +51,11 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
 
   const handleBookmarkClick = (book: {
     google_books_id: string;
+    goodreads_id: string;
     [key: string]: any;
   }) => {
     setBookmarkedBooks((prev) => {
-      const isBookmarked = !!prev[book.google_books_id];
+      const isBookmarked = !!prev[book.google_books_id || book.goodreads_id];
       const updatedBookmarks = { ...prev };
       const token =
         localStorage.getItem("authToken") ||
@@ -62,14 +63,17 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
 
       if (isBookmarked) {
         // Remove the book from bookmarks if it's already bookmarked
-        delete updatedBookmarks[book.google_books_id];
+        delete updatedBookmarks[book.google_books_id || book.goodreads_id];
 
-        removeFromReadlist(book.google_books_id, token).catch((error) => {
+        removeFromReadlist(
+          book.google_books_id || book.goodreads_id,
+          token
+        ).catch((error) => {
           console.error("Error removing from watchlist:", error);
         });
       } else {
         // Add the book to bookmarks if it's not already bookmarked
-        updatedBookmarks[book.google_books_id] = book;
+        updatedBookmarks[book.google_books_id || book.goodreads_id] = book;
 
         saveToReadlist(book, token).catch((error) => {
           console.error("Error saving to watchlist:", error);

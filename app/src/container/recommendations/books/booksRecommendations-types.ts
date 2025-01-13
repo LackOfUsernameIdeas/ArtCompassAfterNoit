@@ -38,6 +38,7 @@ export interface Book {
   id: string; // ID на книгата
   user_id: string; // ID на потребителя, свързан с книгата
   google_books_id: string; // Google Books идентификатор
+  goodreads_id: string; // Goodreads идентификатор
   title_en: string; // Английско заглавие на книгата
   title_bg: string; // Българско заглавие на книгата
   real_edition_title: string; // Реално заглавие на изданието

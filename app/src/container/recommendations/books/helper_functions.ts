@@ -98,14 +98,25 @@ export const saveBooksUserPreferences = async (
  * @returns {Promise<Object>} - Връща обект с данни от Google Books за книгата.
  * @throws {Error} - Хвърля грешка, ако не успее да извлече данни от всички търсачки.
  */
-const fetchGoogleBooksIDWithFailover = async (bookName: string) => {
-  const engines = [
+const fetchGoogleBooksIDWithFailover = async (
+  bookName: string,
+  source: string
+): Promise<any> => {
+  const enginesGoogleBooks = [
     { key: "AIzaSyDqUez1TEmLSgZAvIaMkWfsq9rSm0kDjIw", cx: "d059d8edb90514692" },
     { key: "AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA", cx: "422c2707d8062436a" },
     { key: "AIzaSyAUOQzjNbBnGSBVvCZkWqHX7uebGZRY0lg", cx: "46127fd515c5d40be" }
   ];
 
-  for (let engine of engines) {
+  const enginesGoodreads = [
+    { key: "AIzaSyAefnCBUG8640RF8b2pd1cWyS6ZBXBXIeQ", cx: "16d236f4de37240b0" },
+    { key: "AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA", cx: "450bbb0da19164cf6" },
+    { key: "AIzaSyAUOQzjNbBnGSBVvCZkWqHX7uebGZRY0lg", cx: "727f76a1178b143c3" }
+  ];
+
+  for (let engine of source == "GoogleBooks"
+    ? enginesGoogleBooks
+    : enginesGoodreads) {
     try {
       const response = await fetch(
         `https://customsearch.googleapis.com/customsearch/v1?key=${
@@ -266,6 +277,7 @@ export const generateBooksRecommendations = async (
     interests
   } = booksUserPreferences;
   try {
+    //TO DO: VITE_BOOKS_SOURCE
     // const response = await fetch("https://api.openai.com/v1/chat/completions", {
     //   method: "POST",
     //   headers: {
@@ -408,19 +420,27 @@ export const generateBooksRecommendations = async (
     for (const book of recommendations) {
       const bookName = book.real_edition_title;
       console.log("bookName: ", bookName);
-      const bookResults = await fetchGoogleBooksIDWithFailover(bookName);
+      const bookResults = await fetchGoogleBooksIDWithFailover(
+        bookName,
+        import.meta.env.VITE_BOOKS_SOURCE
+      );
 
       console.log(bookResults);
       if (Array.isArray(bookResults.items)) {
         const bookItem = bookResults.items.find((item: { link: string }) =>
-          item.link.includes("books.google.com/books/about/")
+          import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
+            ? item.link.includes("books.google.com/books/about/")
+            : item.link.includes("goodreads.com/book/show/")
         );
         console.log(`bookItem: ${bookItem}`);
         if (bookItem) {
           const googleBookUrl = bookItem.link;
-          const bookId = googleBookUrl.match(/id=([a-zA-Z0-9-_]+)/)?.[1];
+          const bookId =
+            import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
+              ? googleBookUrl.match(/id=([a-zA-Z0-9-_]+)/)?.[1]
+              : googleBookUrl.match(/show\/(\d+)/)?.[1];
 
-          if (bookId) {
+          if (bookId && import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks") {
             const googleBooksResponse = await fetch(
               `https://www.googleapis.com/books/v1/volumes/${bookId}`
             );
@@ -521,8 +541,83 @@ export const generateBooksRecommendations = async (
 
             // Извикваме функцията, за да изпълним и двете операции
             checkAndSaveBooksRecommendation();
+          } else if (bookId) {
+            const recommendationData = {
+              token:
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzM2Nzg3NTcwLCJleHAiOjE3MzY3OTQ3NzB9.QPfFDRWwzqa-Ncz_ynK_4oGcK9yr3XtldJ0r-2Mp40c",
+              goodreads_id: "6gfDfhmmHxMC",
+              title_en: "The Maze Runner",
+              title_bg: "Лабиринтът: Невъзможно бягство",
+              real_edition_title:
+                "The Maze Runner - James Dashner - Google Books",
+              author: "Джеймс Дашнър",
+              genre_en: {
+                "Young Adult Fiction": [
+                  "Dystopian",
+                  "Science Fiction",
+                  "Apocalyptic & Post-Apocalyptic",
+                  "Action & Adventure",
+                  "Survival Stories"
+                ]
+              },
+              genre_bg: {
+                "Художествена литература за младежи": [
+                  "Екшън и приключения",
+                  "Научна фантастика",
+                  "антиутопичен",
+                  "Истории за оцеляване",
+                  "Апокалипсис и пост-апокалиптик"
+                ]
+              },
+              description:
+                "НОМЕР 1 НА NEW YORK TIMES БЕСТЕЛЪР ПОРЕДИЦА БЕГАЩ В ЛАБИРИНТ • Тийнейджър без памет трябва да се ориентира в смъртоносен лабиринт, за да оцелее в първа книга на този пост-апокалиптичен феномен.“ [Една] мистериозна сага за оцеляване, която страстните фенове описват като сливане на Lord of мухите [и] Игрите на глада” (Entertainment Weekly) Кога Томас се събужда в асансьора, единственото нещо, което помни е името си. Той е заобиколен от непознати - момчета, чиито спомени също са изчезнали. Извън извисяващите се каменни стени, които ги заобикалят, е неограничен, постоянно променящ се лабиринт. Това е единственият изход - и никой никога не е успял да го преживее. Тогава пристига едно момиче. Първото момиче в историята. И посланието, което предава, е ужасяващо: Запомнете. оцелее. Бягай. Потърсете още книги от блокбъстъра Maze Runner поредица: THE MAZE RUNNER • ИЗПИТВАНИЯТА НА ОПАЛ • ЛЕКА ЗА СМЪРТ • ПОРЪЧКАТА ЗА УБИЙСТВО • КОДЪТ ЗА ТРЕСКА",
+              language: "английски",
+              country: "САЩ",
+              date_of_first_issue: 2009,
+              date_of_issue: "2009-10-06",
+              goodreads_rating: 4.03,
+              reason:
+                "Вълнуваща дистопична история с акцент на приятелството и личните предизвикателства.",
+              adaptations:
+                "Филмова трилогия 'The Maze Runner' започваща от 2014 г.",
+              ISBN_10: "0375893776",
+              ISBN_13: "9780375893773",
+              page_count: 386,
+              imageLink:
+                "http://books.google.com/books/content?id=6gfDfhmmHxMC&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE71yr9zuZjXlL4ijCQTGwYgroBpDZPhCbh0bciZUsXk4_VMrO6lR6ZTl8EFwjsODtLWCV2EHZJmPA56HOLc33pZqwEZZnjD042YgOJD-odqYXjV28lqmtPn32DzCRGg1UUlNH_0e&source=gbs_api",
+              date: "2025-01-13T17:39:27.946Z",
+              source: "Goodreads"
+            };
+
+            // Първо, задаваме списъка с препоръки
+            setRecommendationList((prevRecommendations) => [
+              ...prevRecommendations,
+              recommendationData
+            ]);
+
+            // След това изпълняваме проверката и записа паралелно, използвайки
+            const checkAndSaveBooksRecommendation = async () => {
+              // Проверяваме дали книгата съществува в таблицата за readlist
+              const existsInReadlist =
+                await checkRecommendationExistsInReadlist(bookId, token);
+
+              // Ако книгата не съществува в readlist, добавяме я към "bookmarkedBooks" с информация за ID и статус
+              if (existsInReadlist) {
+                setBookmarkedBooks((prevBooks) => {
+                  return {
+                    ...prevBooks,
+                    [recommendationData.goodreads_id]: recommendationData
+                  };
+                });
+              }
+              // Записваме препоръката в базата данни
+              await saveBookRecommendation(recommendationData, date, token);
+            };
+
+            // Извикваме функцията, за да изпълним и двете операции
+            checkAndSaveBooksRecommendation();
           } else {
-            console.log(`Book ID not found for ${bookName}`);
+            console.log(`Book ID not found for ${bookName}!111`);
           }
         }
       }
@@ -559,6 +654,7 @@ export const saveBookRecommendation = async (
     const formattedRecommendation = {
       token,
       google_books_id: recommendation.google_books_id || null,
+      goodreads_id: recommendation.goodreads_id || null,
       title_en: recommendation.title_en || null,
       title_bg: recommendation.title_bg || null,
       real_edition_title: recommendation.real_edition_title || null,

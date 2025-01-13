@@ -149,7 +149,7 @@ export const checkRecommendationExistsInWatchlist = async (
  * @throws {Error} - Хвърля грешка, ако проверката не може да бъде извършена.
  */
 export const checkRecommendationExistsInReadlist = async (
-  google_books_id: string,
+  book_id: string,
   token: string | null
 ): Promise<boolean> => {
   try {
@@ -162,7 +162,8 @@ export const checkRecommendationExistsInReadlist = async (
         },
         body: JSON.stringify({
           token,
-          google_books_id,
+          source: import.meta.env.VITE_BOOKS_SOURCE,
+          book_id,
           recommendationType: "books"
         })
       }
@@ -173,7 +174,13 @@ export const checkRecommendationExistsInReadlist = async (
     }
 
     const result = await response.json();
-    console.log("result: ", result.exists, google_books_id);
+    console.log(
+      "result: ",
+      result.exists,
+      book_id,
+      "source: ",
+      import.meta.env.VITE_BOOKS_SOURCE
+    );
 
     return result.exists || false;
   } catch (error) {
@@ -324,7 +331,7 @@ export const saveToReadlist = async (
 
     // Проверка дали съществува в списъка за четене
     const exists = await checkRecommendationExistsInReadlist(
-      recommendation.google_books_id,
+      recommendation.google_books_id || recommendation.goodreads_id,
       token
     );
 
@@ -336,6 +343,7 @@ export const saveToReadlist = async (
     const formattedRecommendation = {
       token,
       google_books_id: recommendation.google_books_id || null,
+      goodreads_id: recommendation.goodreads_id || null,
       title_en: recommendation.title_en || null,
       title_bg: recommendation.title_bg || null,
       real_edition_title: recommendation.real_edition_title || null,
@@ -443,14 +451,12 @@ export const removeFromWatchlist = async (
  * @throws {Error} - Хвърля грешка, ако данните не могат да бъдат премахнати.
  */
 export const removeFromReadlist = async (
-  google_books_id: string,
+  book_id: string,
   token: string | null
 ): Promise<void> => {
   try {
-    if (!google_books_id) {
-      console.warn(
-        "google_books_id is required to remove a book from the readlist."
-      );
+    if (!book_id) {
+      console.warn("book_id is required to remove a book from the readlist.");
       return;
     }
 
@@ -463,7 +469,8 @@ export const removeFromReadlist = async (
         },
         body: JSON.stringify({
           token,
-          google_books_id,
+          source: import.meta.env.VITE_BOOKS_SOURCE,
+          book_id,
           recommendationType: "books"
         })
       }

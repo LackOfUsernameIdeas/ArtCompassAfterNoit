@@ -480,7 +480,7 @@ app.post("/save-to-list", (req, res) => {
 
 // Изтриване на препоръка от списъка за гледане
 app.delete("/remove-from-list", (req, res) => {
-  const { token, imdbID, google_books_id, recommendationType } = req.body;
+  const { token, imdbID, source, book_id, recommendationType } = req.body;
 
   if (!token) {
     return res.status(401).json({ error: "Token is required" });
@@ -494,7 +494,7 @@ app.delete("/remove-from-list", (req, res) => {
     return res.status(400).json({ error: "IMDb ID is required for movies" });
   }
 
-  if (recommendationType === "books" && !google_books_id) {
+  if (recommendationType === "books" && !book_id) {
     return res
       .status(400)
       .json({ error: "Google Books ID is required for books" });
@@ -519,7 +519,7 @@ app.delete("/remove-from-list", (req, res) => {
         });
       });
     } else {
-      db.removeFromReadlist(userId, google_books_id, (err, result) => {
+      db.removeFromReadlist(userId, source, book_id, (err, result) => {
         if (err) {
           return res.status(500).json({ error: err.message });
         }
@@ -538,7 +538,7 @@ app.delete("/remove-from-list", (req, res) => {
 
 // Изтриване на препоръка от списъка за гледане
 app.post("/check-for-recommendation-in-list", (req, res) => {
-  const { token, imdbID, google_books_id, recommendationType } = req.body;
+  const { token, imdbID, source, book_id, recommendationType } = req.body;
 
   if (!token) {
     return res.status(401).json({ error: "Token is required" });
@@ -552,7 +552,7 @@ app.post("/check-for-recommendation-in-list", (req, res) => {
     return res.status(400).json({ error: "IMDb ID is required for movies" });
   }
 
-  if (recommendationType === "books" && !google_books_id) {
+  if (recommendationType === "books" && !book_id) {
     return res
       .status(400)
       .json({ error: "Google Books ID is required for books" });
@@ -583,7 +583,8 @@ app.post("/check-for-recommendation-in-list", (req, res) => {
     } else {
       db.checkRecommendationExistsInReadlist(
         userId,
-        google_books_id,
+        source,
+        book_id,
         (error, results) => {
           if (error) {
             return res
