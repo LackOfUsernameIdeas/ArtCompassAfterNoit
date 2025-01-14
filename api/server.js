@@ -1,5 +1,5 @@
 const express = require("express");
-const mysql = require("mysql2");
+const { spawn } = require("child_process");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
@@ -1114,6 +1114,38 @@ app.post("/stats/individual/watchlist-top-writers", (req, res) => {
       }
       res.json(result);
     });
+  });
+});
+
+app.get("/get-goodreads-data-for-a-book", (req, res) => {
+  const { url } = req.query;
+
+  if (!url) {
+    return res.status(400).send("Error: URL query parameter is required.");
+  }
+
+  // Spawn the Python process and pass the URL as an argument
+  const pythonProcess = spawn("python", ["./scraping/scraper.py", url]);
+
+  let response = "";
+
+  // Capture stdout data
+  pythonProcess.stdout.on("data", (data) => {
+    response += data.toString();
+  });
+
+  // Capture stderr data (optional for debugging)
+  pythonProcess.stderr.on("data", (data) => {
+    console.error("Python script stderr:", data.toString());
+  });
+
+  // Handle process close
+  pythonProcess.on("close", (code) => {
+    if (code === 0) {
+      res.status(200).send(response.trim());
+    } else {
+      res.status(500).send("Error: Python script execution failed");
+    }
   });
 });
 
