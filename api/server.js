@@ -1142,7 +1142,8 @@ app.get("/get-goodreads-data-for-a-book", (req, res) => {
   // Handle process close
   pythonProcess.on("close", (code) => {
     if (code === 0) {
-      res.status(200).send(response.trim());
+      const jsonResponse = JSON.parse(response.trim());
+      res.status(200).json(jsonResponse);
     } else {
       res.status(500).send("Error: Python script execution failed");
     }
