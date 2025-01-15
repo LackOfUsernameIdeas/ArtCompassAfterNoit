@@ -1,6 +1,7 @@
 import sys
 import json
 import requests
+import re
 from bs4 import BeautifulSoup
 
 # Check if a URL argument is passed
@@ -103,16 +104,26 @@ def scrape_contributor():
             if genre_name:
                 genres.append(genre_name)
 
-    # Extract Pages count separately
+    # Extract Pages count and format
     pages_format_div = soup.find('p', {'data-testid': 'pagesFormat'})
     pages_count = "N/A"
-    if pages_format_div:
-        pages_count = pages_format_div.get_text(strip=True)
+    book_format = "N/A"
 
+    if pages_format_div:
+        pages_text = pages_format_div.get_text(strip=True)
+        match = re.match(r"(\d+)\s+pages,\s+(.+)", pages_text)
+        if match:
+            pages_count = match.group(1)  # Numeric pages count
+            book_format = match.group(2)  # Format (e.g., Hardcover, Paperback)
+
+    # Extract publication info
     first_publication_info_div = soup.find('p', {'data-testid': 'publicationInfo'})
     first_publication_info = "N/A"
+
     if first_publication_info_div:
-        first_publication_info = first_publication_info_div.get_text(strip=True)
+        full_text = first_publication_info_div.get_text(strip=True)
+        # Remove "First published" prefix
+        first_publication_info = full_text.replace("First published", "").strip()
 
     # Extract Literary Awards
     literary_awards_div = soup.find('div', class_='TruncatedContent')
@@ -148,12 +159,6 @@ def scrape_contributor():
         for character in character_links:
             characters.append(character.get_text(strip=True))
 
-    # Extract Published date
-    published_div = soup.find('div', {'data-testid': 'contentContainer'})
-    published = "N/A"
-    if published_div:
-        published = published_div.get_text(strip=True)
-
     # Extract ISBNs (both ISBN10 and ISBN13)
     isbn13 = "N/A"
     isbn10 = "N/A"
@@ -184,6 +189,7 @@ def scrape_contributor():
         "description": description,
         "genres": genres,
         "pages_count": pages_count,
+        "book_format": book_format,
         "first_publication_info": first_publication_info,
         "literary_awards": literary_awards,
         "original_title": original_title,
@@ -193,7 +199,6 @@ def scrape_contributor():
         "isbn13": isbn13,
         "isbn10": isbn10,
         "language": language,
-        "published": published
     }
     print(json.dumps(result))
 
