@@ -1124,8 +1124,17 @@ app.get("/get-goodreads-data-for-a-book", (req, res) => {
     return res.status(400).send("Error: URL query parameter is required.");
   }
 
+  // Extract the book ID from the URL using a regular expression
+  const match = url.match(/book\/show\/(\d+)/); // Match the numeric ID after "book/show/"
+
+  if (!match) {
+    return res.status(400).send("Error: Invalid Goodreads URL format.");
+  }
+
+  const bookId = match[1]; // Extracted book ID
+
   // Spawn the Python process and pass the URL as an argument
-  const pythonProcess = spawn("python", ["./scraping/scraper.py", url]);
+  const pythonProcess = spawn("python", ["./scraping/scraperHTML.py", url]);
 
   let response = "";
 
@@ -1139,11 +1148,18 @@ app.get("/get-goodreads-data-for-a-book", (req, res) => {
     console.error("Python script stderr:", data.toString());
   });
 
+  console.log("bookId", bookId);
   // Handle process close
   pythonProcess.on("close", (code) => {
     if (code === 0) {
       const jsonResponse = JSON.parse(response.trim());
-      res.status(200).json(jsonResponse); // jsonResponse.html
+      const apolloState = jsonResponse.props.pageProps.apolloState;
+      const bookDetailsKey = Object.keys(apolloState).find((key) => {
+        const book = apolloState[key];
+        return book.webUrl && book.webUrl.includes(bookId);
+      });
+
+      res.status(200).json(apolloState[bookDetailsKey]); // jsonResponse.html
     } else {
       res.status(500).send("Error: Python script execution failed");
     }

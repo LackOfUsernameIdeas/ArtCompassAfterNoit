@@ -125,59 +125,110 @@ def scrape_contributor():
         # Remove "First published" prefix
         first_publication_info = full_text.replace("First published", "").strip()
 
-    # Extract Literary Awards
-    literary_awards_div = soup.find('div', class_='TruncatedContent')
-    literary_awards = []
-    if literary_awards_div:
-        awards = literary_awards_div.find_all('a', {'data-testid': 'award'})
-        for award in awards:
-            literary_awards.append(award.get_text(strip=True))
 
-    # Extract Original Title
-    original_title_div = soup.find('div', {'data-testid': 'originalTitle'})
-    original_title = "N/A"
-    if original_title_div:
-        original_title = original_title_div.get_text(strip=True)
 
-    # Extract Series Information
-    series_div = soup.find('div', {'data-testid': 'series'})
-    series = "N/A"
-    if series_div:
-        series = series_div.get_text(strip=True)
 
-    # Extract Setting
-    setting_div = soup.find('div', {'data-testid': 'setting'})
-    setting = "N/A"
-    if setting_div:
-        setting = setting_div.get_text(strip=True)
 
-    # Extract Characters
-    characters_div = soup.find('div', {'data-testid': 'characters'})
-    characters = []
-    if characters_div:
-        character_links = characters_div.find_all('a')
-        for character in character_links:
-            characters.append(character.get_text(strip=True))
 
-    # Extract ISBNs (both ISBN10 and ISBN13)
-    isbn13 = "N/A"
-    isbn10 = "N/A"
+
+
+    # Find the script tag with the JSON data
+    script_tag = soup.find('script', {'id': '__NEXT_DATA__', 'type': 'application/json'})
+
+    if not script_tag:
+        print("Error: JSON data not found in the page.")
+        sys.exit(1)
+
+    # Extract and parse the JSON data from the script tag
+    try:
+        json_data = json.loads(script_tag.string)
+    except json.JSONDecodeError:
+        print("Error: Failed to parse JSON.")
+        sys.exit(1)
+
+    # Now you can access the data in the JSON
+    props = json_data.get('props', {})
+    apollo_state = props.get('apolloState', {})
+    root_query = apollo_state.get('ROOT_QUERY', {})
+    book_details_key = 'Book:kca://book/amzn1.gr.book.v1.T6MR0Dd-QX_Yhq-Ma8I4_A.details'
+
+    # Safely retrieve the details object by the complex key path.
+    details = root_query.get(book_details_key, {})
+
+
+    # Extract relevant information from the details object
+    publication_time = details.get('publicationTime', 'N/A')
+    publisher = details.get('publisher', 'N/A')
+    isbn10 = details.get('isbn', 'N/A')
+    isbn13 = details.get('isbn13', 'N/A')
+    language = details.get('language', {}).get('name', 'N/A')
+
+    # # Convert publicationTime to a readable format if it's a Unix timestamp
+    # if publication_time != "N/A":
+    #     from datetime import datetime
+    #     try:
+    #         publication_time = datetime.utcfromtimestamp(publication_time / 1000).strftime('%Y-%m-%d %H:%M:%S')
+    #     except Exception as e:
+    #         publication_time = "Invalid timestamp"
+
+
+
+
+
+
+    # # Extract Literary Awards
+    # literary_awards_div = soup.find('div', class_='TruncatedContent')
+    # literary_awards = []
+    # if literary_awards_div:
+    #     awards = literary_awards_div.find_all('a', {'data-testid': 'award'})
+    #     for award in awards:
+    #         literary_awards.append(award.get_text(strip=True))
+
+    # # Extract Original Title
+    # original_title_div = soup.find('div', {'data-testid': 'originalTitle'})
+    # original_title = "N/A"
+    # if original_title_div:
+    #     original_title = original_title_div.get_text(strip=True)
+
+    # # Extract Series Information
+    # series_div = soup.find('div', {'data-testid': 'series'})
+    # series = "N/A"
+    # if series_div:
+    #     series = series_div.get_text(strip=True)
+
+    # # Extract Setting
+    # setting_div = soup.find('div', {'data-testid': 'setting'})
+    # setting = "N/A"
+    # if setting_div:
+    #     setting = setting_div.get_text(strip=True)
+
+    # # Extract Characters
+    # characters_div = soup.find('div', {'data-testid': 'characters'})
+    # characters = []
+    # if characters_div:
+    #     character_links = characters_div.find_all('a')
+    #     for character in character_links:
+    #         characters.append(character.get_text(strip=True))
+
+    # # Extract ISBNs (both ISBN10 and ISBN13)
+    # isbn13 = "N/A"
+    # isbn10 = "N/A"
     
-    isbn_section = soup.find('div', class_='DescListItem')
-    if isbn_section:
-        isbn13_tag = isbn_section.find('span', class_='Text Text__subdued')
-        if isbn13_tag:
-            isbn13 = isbn13_tag.get_text(strip=True)
+    # isbn_section = soup.find('div', class_='DescListItem')
+    # if isbn_section:
+    #     isbn13_tag = isbn_section.find('span', class_='Text Text__subdued')
+    #     if isbn13_tag:
+    #         isbn13 = isbn13_tag.get_text(strip=True)
 
-        isbn10_tag = isbn_section.find('div', {'data-testid': 'contentContainer'})
-        if isbn10_tag:
-            isbn10 = isbn10_tag.get_text(strip=True)
+    #     isbn10_tag = isbn_section.find('div', {'data-testid': 'contentContainer'})
+    #     if isbn10_tag:
+    #         isbn10 = isbn10_tag.get_text(strip=True)
 
-    # Extract Language
-    language_div = soup.find('div', {'data-testid': 'contentContainer'})
-    language = "N/A"
-    if language_div:
-        language = language_div.get_text(strip=True)
+    # # Extract Language
+    # language_div = soup.find('div', {'data-testid': 'contentContainer'})
+    # language = "N/A"
+    # if language_div:
+    #     language = language_div.get_text(strip=True)
 
     # Print the result
     result = {
@@ -191,11 +242,13 @@ def scrape_contributor():
         "pages_count": pages_count,
         "book_format": book_format,
         "first_publication_info": first_publication_info,
-        "literary_awards": literary_awards,
-        "original_title": original_title,
-        "series": series,
-        "setting": setting,
-        "characters": characters,
+        "publisher": publisher,
+        "publication_time": publication_time,
+        # "literary_awards": literary_awards,
+        # "original_title": original_title,
+        # "series": series,
+        # "setting": setting,
+        # "characters": characters,
         "isbn13": isbn13,
         "isbn10": isbn10,
         "language": language,

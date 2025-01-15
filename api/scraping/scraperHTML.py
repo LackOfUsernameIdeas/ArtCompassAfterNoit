@@ -1,6 +1,6 @@
 import requests
 import sys
-from bs4 import BeautifulSoup
+import re
 import json
 
 # Check if a URL argument is passed
@@ -17,15 +17,18 @@ try:
 
     # Check if the request was successful
     if response.status_code == 200:
-        # Parse the page content with BeautifulSoup
-        soup = BeautifulSoup(response.content, 'html.parser')
+        # Look for the <script id="__NEXT_DATA__" tag
+        match = re.search(r'<script id="__NEXT_DATA__" type="application/json">(.+?)</script>', response.text, re.DOTALL)
 
-        # Get the entire HTML DOM
-        html_content = soup.prettify()
+        if match:
+            # Extract the JSON string from the script tag
+            json_data = json.loads(match.group(1))
 
-        # In case you want to extract specific data, you can modify this to return only the necessary content
-        json_response = {"html": html_content}  # Example, you can modify as needed
-        print(json.dumps(json_response))
+            # Print the parsed JSON data in a readable format
+            print(json.dumps(json_data, indent=2))  # This will print the parsed JSON as a formatted string
+
+        else:
+            print(json.dumps({"error": "Failed to find the __NEXT_DATA__ JSON data in the page."}))
 
     else:
         print(json.dumps({"error": f"Failed to retrieve the page, status code: {response.status_code}"}))
