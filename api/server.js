@@ -1134,7 +1134,7 @@ app.get("/get-goodreads-data-for-a-book", (req, res) => {
   const bookId = match[1]; // Extracted book ID
 
   // Spawn the Python process and pass the URL as an argument
-  const pythonProcess = spawn("python", ["./scraping/scraperHTML.py", url]);
+  const pythonProcess = spawn("python", ["./scraping/scraper.py", url]);
 
   let response = "";
 
@@ -1153,13 +1153,14 @@ app.get("/get-goodreads-data-for-a-book", (req, res) => {
   pythonProcess.on("close", (code) => {
     if (code === 0) {
       const jsonResponse = JSON.parse(response.trim());
-      const apolloState = jsonResponse.props.pageProps.apolloState;
-      const bookDetailsKey = Object.keys(apolloState).find((key) => {
-        const book = apolloState[key];
-        return book.webUrl && book.webUrl.includes(bookId);
-      });
+      // const apolloState = jsonResponse.props.pageProps.apolloState;
+      // const bookDetailsKey = Object.keys(apolloState).find((key) => {
+      //   const book = apolloState[key];
+      //   return book.webUrl && book.webUrl.includes(bookId);
+      // });
 
-      res.status(200).json(apolloState[bookDetailsKey]); // jsonResponse.html
+      res.status(200).json(jsonResponse);
+      // res.status(200).json(apolloState[bookDetailsKey]); // jsonResponse.html
     } else {
       res.status(500).send("Error: Python script execution failed");
     }

@@ -3,6 +3,7 @@ import json
 import requests
 import re
 from bs4 import BeautifulSoup
+from datetime import datetime, timezone
 
 # Check if a URL argument is passed
 if len(sys.argv) < 2:
@@ -90,19 +91,19 @@ def scrape_contributor():
         description_text = description_div.get_text(strip=True)
         description = description_text
 
-    # Extract genres
-    genres_list = soup.find('div', {'data-testid': 'genresList'})
-    genres = []
-    # If the genresList div exists, extract the genres from it
-    if genres_list:
-        # Find all the genre buttons (both visible and hidden)
-        genre_buttons = genres_list.find_all('a', class_='Button--tag')
+    # # Extract genres
+    # genres_list = soup.find('div', {'data-testid': 'genresList'})
+    # genres = []
+    # # If the genresList div exists, extract the genres from it
+    # if genres_list:
+    #     # Find all the genre buttons (both visible and hidden)
+    #     genre_buttons = genres_list.find_all('a', class_='Button--tag')
         
-        # Iterate through each genre button and get the genre name
-        for genre_button in genre_buttons:
-            genre_name = genre_button.get_text(strip=True)
-            if genre_name:
-                genres.append(genre_name)
+    #     # Iterate through each genre button and get the genre name
+    #     for genre_button in genre_buttons:
+    #         genre_name = genre_button.get_text(strip=True)
+    #         if genre_name:
+    #             genres.append(genre_name)
 
     # Extract Pages count and format
     pages_format_div = soup.find('p', {'data-testid': 'pagesFormat'})
@@ -125,55 +126,56 @@ def scrape_contributor():
         # Remove "First published" prefix
         first_publication_info = full_text.replace("First published", "").strip()
 
+    # Look for the <script id="__NEXT_DATA__" tag
+    match = re.search(r'<script id="__NEXT_DATA__" type="application/json">(.+?)</script>', response.text, re.DOTALL)
+    details = {};
+    book_information = {};
+    if match:
+        # Extract the JSON string from the script tag
+        json_data = json.loads(match.group(1))
+        props = json_data.get('props', None)
+        page_props = props.get('pageProps', {})
+        apollo_state = page_props.get('apolloState', {})
 
+        # Dynamic search for the book details key based on a condition
+        book_id = "N/A"
 
+        match = re.search(r'book/show/(\d+)', URL)
+        if match:
+            book_id = match.group(1)  # Extracted book ID
 
+        book_details_key = next(
+            (key for key, value in apollo_state.items() if value.get('webUrl', '').find(book_id) != -1),
+            None
+        )
 
+        book_information = apollo_state.get(book_details_key, {})
+        details = book_information.get('details', {})
 
-
-
-    # Find the script tag with the JSON data
-    script_tag = soup.find('script', {'id': '__NEXT_DATA__', 'type': 'application/json'})
-
-    if not script_tag:
-        print("Error: JSON data not found in the page.")
-        sys.exit(1)
-
-    # Extract and parse the JSON data from the script tag
-    try:
-        json_data = json.loads(script_tag.string)
-    except json.JSONDecodeError:
-        print("Error: Failed to parse JSON.")
-        sys.exit(1)
-
-    # Now you can access the data in the JSON
-    props = json_data.get('props', {})
-    apollo_state = props.get('apolloState', {})
-    root_query = apollo_state.get('ROOT_QUERY', {})
-    book_details_key = 'Book:kca://book/amzn1.gr.book.v1.T6MR0Dd-QX_Yhq-Ma8I4_A.details'
-
-    # Safely retrieve the details object by the complex key path.
-    details = root_query.get(book_details_key, {})
+        # print(json.dumps({"book_details_key": details}))  
+        # print(json.dumps(apollo_state, indent=2))
+    else:
+        print(json.dumps({"error": "Failed to find the __NEXT_DATA__ JSON data in the page."}))
 
 
     # Extract relevant information from the details object
-    publication_time = details.get('publicationTime', 'N/A')
-    publisher = details.get('publisher', 'N/A')
-    isbn10 = details.get('isbn', 'N/A')
-    isbn13 = details.get('isbn13', 'N/A')
-    language = details.get('language', {}).get('name', 'N/A')
 
-    # # Convert publicationTime to a readable format if it's a Unix timestamp
-    # if publication_time != "N/A":
-    #     from datetime import datetime
-    #     try:
-    #         publication_time = datetime.utcfromtimestamp(publication_time / 1000).strftime('%Y-%m-%d %H:%M:%S')
-    #     except Exception as e:
-    #         publication_time = "Invalid timestamp"
+    # Given timestamp in milliseconds
+    publication_time = details.get('publicationTime', None)
 
+    # Convert to seconds (divide by 1000) if publication_time is not "N/A"
+    if publication_time != "N/A":
+        timestamp_sec = publication_time / 1000
+        publication_time = datetime.fromtimestamp(timestamp_sec, tz=timezone.utc).strftime('%B %d, %Y')
 
-
-
+    publisher = details.get('publisher', None)
+    isbn13 = details.get('isbn13', None)
+    isbn10 = details.get('isbn', None)
+    asin = details.get('asin', None)
+    language = details.get('language', {}).get('name', None)
+    
+    genresList = book_information.get('bookGenres', [])
+    genres = [genre_info['genre']['name'] for genre_info in genresList]
 
 
     # # Extract Literary Awards
@@ -251,6 +253,7 @@ def scrape_contributor():
         # "characters": characters,
         "isbn13": isbn13,
         "isbn10": isbn10,
+        "asin": asin,
         "language": language,
     }
     print(json.dumps(result))
