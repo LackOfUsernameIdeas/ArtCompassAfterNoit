@@ -91,20 +91,6 @@ def scrape_contributor():
         description_text = description_div.get_text(strip=True)
         description = description_text
 
-    # # Extract genres
-    # genres_list = soup.find('div', {'data-testid': 'genresList'})
-    # genres = []
-    # # If the genresList div exists, extract the genres from it
-    # if genres_list:
-    #     # Find all the genre buttons (both visible and hidden)
-    #     genre_buttons = genres_list.find_all('a', class_='Button--tag')
-        
-    #     # Iterate through each genre button and get the genre name
-    #     for genre_button in genre_buttons:
-    #         genre_name = genre_button.get_text(strip=True)
-    #         if genre_name:
-    #             genres.append(genre_name)
-
     # Extract Pages count and format
     pages_format_div = soup.find('p', {'data-testid': 'pagesFormat'})
     pages_count = "N/A"
@@ -128,8 +114,11 @@ def scrape_contributor():
 
     # Look for the <script id="__NEXT_DATA__" tag
     match = re.search(r'<script id="__NEXT_DATA__" type="application/json">(.+?)</script>', response.text, re.DOTALL)
-    details = {};
-    book_information = {};
+    book_property = {};
+    book_details = {};
+    work_property = {};
+    work_details = {};
+    series_property = {};
     if match:
         # Extract the JSON string from the script tag
         json_data = json.loads(match.group(1))
@@ -145,14 +134,32 @@ def scrape_contributor():
             book_id = match.group(1)  # Extracted book ID
 
         book_details_key = next(
-            (key for key, value in apollo_state.items() if value.get('webUrl', '').find(book_id) != -1),
+            (key for key, value in apollo_state.items() if value.get('webUrl', '').find(book_id) != -1 and value.get('__typename') == 'Book'),
             None
         )
 
-        book_information = apollo_state.get(book_details_key, {})
-        details = book_information.get('details', {})
+        work_details_key = next(
+            (key for key, value in apollo_state.items() if value.get('__typename') == 'Work'),
+            None
+        )
 
-        # print(json.dumps({"book_details_key": details}))  
+        series_details_key = next(
+            (key for key, value in apollo_state.items() if value.get('__typename') == 'Series'),
+            None
+        )
+
+        book_property = apollo_state.get(book_details_key, {})
+        book_details = book_property.get('details', {})
+
+        work_property = apollo_state.get(work_details_key, {})
+        work_details = work_property.get('details', {})
+
+        series_property = apollo_state.get(series_details_key, {})
+
+        genresList = book_property.get('bookGenres', [])
+        genres = [genre_info['genre']['name'] for genre_info in genresList]
+        # --- Testing the output ---
+        # print(json.dumps({"book_details_key": book_details_key}))  
         # print(json.dumps(apollo_state, indent=2))
     else:
         print(json.dumps({"error": "Failed to find the __NEXT_DATA__ JSON data in the page."}))
@@ -161,80 +168,48 @@ def scrape_contributor():
     # Extract relevant information from the details object
 
     # Given timestamp in milliseconds
-    publication_time = details.get('publicationTime', None)
+    publication_time = book_details.get('publicationTime', None)
 
-    # Convert to seconds (divide by 1000) if publication_time is not "N/A"
-    if publication_time != "N/A":
+    # Convert to seconds (divide by 1000) if publication_time is not defined
+    if publication_time != None:
         timestamp_sec = publication_time / 1000
         publication_time = datetime.fromtimestamp(timestamp_sec, tz=timezone.utc).strftime('%B %d, %Y')
 
-    publisher = details.get('publisher', None)
-    isbn13 = details.get('isbn13', None)
-    isbn10 = details.get('isbn', None)
-    asin = details.get('asin', None)
-    language = details.get('language', {}).get('name', None)
+    publisher = book_details.get('publisher', None)
+    isbn13 = book_details.get('isbn13', None)
+    isbn10 = book_details.get('isbn', None)
+    asin = book_details.get('asin', None)
+    language = book_details.get('language', {}).get('name', None)
     
-    genresList = book_information.get('bookGenres', [])
+    genresList = book_property.get('bookGenres', [])
     genres = [genre_info['genre']['name'] for genre_info in genresList]
 
+    literary_awards = work_details.get('awardsWon', [])
+    formatted_awards = [
+        f"{award['name']} ({datetime.fromtimestamp(award['awardedAt'] / 1000, tz=timezone.utc).strftime('%Y')})"
+        for award in literary_awards
+    ]
 
-    # # Extract Literary Awards
-    # literary_awards_div = soup.find('div', class_='TruncatedContent')
-    # literary_awards = []
-    # if literary_awards_div:
-    #     awards = literary_awards_div.find_all('a', {'data-testid': 'award'})
-    #     for award in awards:
-    #         literary_awards.append(award.get_text(strip=True))
+    original_title = work_details.get('originalTitle', None)
 
-    # # Extract Original Title
-    # original_title_div = soup.find('div', {'data-testid': 'originalTitle'})
-    # original_title = "N/A"
-    # if original_title_div:
-    #     original_title = original_title_div.get_text(strip=True)
+    places = work_details.get('places', [])
+    formatted_places = [
+        f"{place['name']} ({', '.join(filter(None, [place['countryName'], str(place['year'])]))})"
+        if place['countryName'] or place['year'] else place['name']
+        for place in places
+    ]
 
-    # # Extract Series Information
-    # series_div = soup.find('div', {'data-testid': 'series'})
-    # series = "N/A"
-    # if series_div:
-    #     series = series_div.get_text(strip=True)
+    characters = work_details.get('characters', [])
+    formatted_characters = [character['name'] for character in characters]
 
-    # # Extract Setting
-    # setting_div = soup.find('div', {'data-testid': 'setting'})
-    # setting = "N/A"
-    # if setting_div:
-    #     setting = setting_div.get_text(strip=True)
+    image_url = book_property.get('imageUrl', None)
 
-    # # Extract Characters
-    # characters_div = soup.find('div', {'data-testid': 'characters'})
-    # characters = []
-    # if characters_div:
-    #     character_links = characters_div.find_all('a')
-    #     for character in character_links:
-    #         characters.append(character.get_text(strip=True))
-
-    # # Extract ISBNs (both ISBN10 and ISBN13)
-    # isbn13 = "N/A"
-    # isbn10 = "N/A"
-    
-    # isbn_section = soup.find('div', class_='DescListItem')
-    # if isbn_section:
-    #     isbn13_tag = isbn_section.find('span', class_='Text Text__subdued')
-    #     if isbn13_tag:
-    #         isbn13 = isbn13_tag.get_text(strip=True)
-
-    #     isbn10_tag = isbn_section.find('div', {'data-testid': 'contentContainer'})
-    #     if isbn10_tag:
-    #         isbn10 = isbn10_tag.get_text(strip=True)
-
-    # # Extract Language
-    # language_div = soup.find('div', {'data-testid': 'contentContainer'})
-    # language = "N/A"
-    # if language_div:
-    #     language = language_div.get_text(strip=True)
+    series_title = series_property.get('title', None)
 
     # Print the result
     result = {
         "title": book_title,
+        "original_title": original_title,
         "contributors": contributors,
         "rating": rating,
         "ratings_count": ratings_count,
@@ -246,11 +221,11 @@ def scrape_contributor():
         "first_publication_info": first_publication_info,
         "publisher": publisher,
         "publication_time": publication_time,
-        # "literary_awards": literary_awards,
-        # "original_title": original_title,
-        # "series": series,
-        # "setting": setting,
-        # "characters": characters,
+        "literary_awards": formatted_awards,
+        "setting": formatted_places,
+        "characters": formatted_characters,
+        "image_url": image_url,
+        "series": series_title,
         "isbn13": isbn13,
         "isbn10": isbn10,
         "asin": asin,
