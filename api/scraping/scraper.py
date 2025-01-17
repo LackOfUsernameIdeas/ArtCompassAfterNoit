@@ -54,13 +54,17 @@ def scrape_contributor():
                 contributor_info["role"] = role.get_text(strip=True)
             contributors.append(contributor_info)
 
+    # Format contributors into a single string
+    formatted_contributors = ", ".join(
+        f"{contributor['name']} {contributor['role']}" if "role" in contributor else contributor["name"]
+        for contributor in contributors
+    )
 
     # Extract the exact rating value
     rating_div = soup.find('div', class_='RatingStatistics__rating')
     rating = "N/A"
     if rating_div:
-        rating = rating_div.get_text(strip=True)
-        rating = f"{rating} от 5"
+        rating = float(rating_div.get_text(strip=True))
 
     # Extract the rating count and reviews count
     ratings_count = "N/A"
@@ -75,14 +79,15 @@ def scrape_contributor():
         if ratings_count_elem:
             ratings_count = ratings_count_elem.get_text(strip=True)
             # Remove any unwanted text like "ratings"
-            ratings_count = ratings_count.replace('ratings', '').strip()
+            ratings_count = float(ratings_count.replace(',', '').replace('ratings', '').strip())
+
 
         # Extract reviews count
         reviews_count_elem = rating_stats_div.find('span', {'data-testid': 'reviewsCount'})
         if reviews_count_elem:
             reviews_count = reviews_count_elem.get_text(strip=True)
             # Remove any unwanted text like "reviews"
-            reviews_count = reviews_count.replace('reviews', '').strip()
+            reviews_count = float(reviews_count.replace(',', '').replace('reviews', '').strip())
 
     # Extract the description
     description_div = soup.find('div', {'data-testid': 'description'})
@@ -100,7 +105,7 @@ def scrape_contributor():
         pages_text = pages_format_div.get_text(strip=True)
         match = re.match(r"(\d+)\s+pages,\s+(.+)", pages_text)
         if match:
-            pages_count = match.group(1)  # Numeric pages count
+            pages_count = float(match.group(1))  # Numeric pages count
             book_format = match.group(2)  # Format (e.g., Hardcover, Paperback)
 
     # Extract publication info
@@ -156,8 +161,6 @@ def scrape_contributor():
 
         series_property = apollo_state.get(series_details_key, {})
 
-        genresList = book_property.get('bookGenres', [])
-        genres = [genre_info['genre']['name'] for genre_info in genresList]
         # --- Testing the output ---
         # print(json.dumps({"book_details_key": book_details_key}))  
         # print(json.dumps(apollo_state, indent=2))
@@ -182,25 +185,25 @@ def scrape_contributor():
     language = book_details.get('language', {}).get('name', None)
     
     genresList = book_property.get('bookGenres', [])
-    genres = [genre_info['genre']['name'] for genre_info in genresList]
+    genres = ", ".join([genre_info['genre']['name'] for genre_info in genresList])
 
     literary_awards = work_details.get('awardsWon', [])
-    formatted_awards = [
+    formatted_awards = ", ".join([
         f"{award['name']} ({datetime.fromtimestamp(award['awardedAt'] / 1000, tz=timezone.utc).strftime('%Y')})"
         for award in literary_awards
-    ]
+    ])
 
     original_title = work_details.get('originalTitle', None)
 
     places = work_details.get('places', [])
-    formatted_places = [
+    formatted_places = ", ".join([
         f"{place['name']} ({', '.join(filter(None, [place['countryName'], str(place['year'])]))})"
         if place['countryName'] or place['year'] else place['name']
         for place in places
-    ]
+    ])
 
     characters = work_details.get('characters', [])
-    formatted_characters = [character['name'] for character in characters]
+    formatted_characters = ", ".join([character['name'] for character in characters])
 
     image_url = book_property.get('imageUrl', None)
 
@@ -210,7 +213,7 @@ def scrape_contributor():
     result = {
         "title": book_title,
         "original_title": original_title,
-        "contributors": contributors,
+        "contributors": formatted_contributors,
         "rating": rating,
         "ratings_count": ratings_count,
         "reviews_count": reviews_count,
