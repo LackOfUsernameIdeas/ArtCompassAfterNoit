@@ -95,6 +95,38 @@ export async function translate(entry: string): Promise<string> {
 }
 
 /**
+ * Превежда текст от чужд език на български, използвайки Google Translate API.
+ * Детектира входния език.
+ * Ако заявката за превод е неуспешна, се връща оригиналният текст.
+ *
+ * @async
+ * @function translateWithDetection
+ * @param {string} entry - Текстът, който трябва да бъде преведен.
+ * @returns {Promise<string>} - Преведеният текст на български език, или оригиналният текст, ако не е на английски или при грешка.
+ * @throws {Error} - Хвърля грешка, ако не успее да преведе текста.
+ */
+export async function translateWithDetection(entry: string): Promise<string> {
+  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=bg&dt=t&q=${encodeURIComponent(
+    entry
+  )}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    const flattenedTranslation = data[0]
+      .map((item: [string]) => item[0])
+      .join(" ");
+
+    const mergedTranslation = flattenedTranslation.replace(/\s+/g, " ").trim();
+    return mergedTranslation;
+  } catch (error) {
+    console.error(`Error translating entry: ${entry}`, error);
+    return entry;
+  }
+}
+
+/**
  * Проверява дали препоръката вече съществува в списъка за гледане на потребителя.
  *
  * @async
@@ -345,6 +377,7 @@ export const saveToReadlist = async (
       google_books_id: recommendation.google_books_id || null,
       goodreads_id: recommendation.goodreads_id || null,
       title_en: recommendation.title_en || null,
+      original_title: recommendation.original_title || null,
       title_bg: recommendation.title_bg || null,
       real_edition_title: recommendation.real_edition_title || null,
       author: recommendation.author || null,
@@ -352,16 +385,24 @@ export const saveToReadlist = async (
       genre_bg: recommendation.genres_bg || null,
       description: recommendation.description || null,
       language: recommendation.language || null,
-      country: recommendation.country || null,
+      origin: recommendation.origin || null,
       date_of_first_issue: recommendation.date_of_first_issue || null,
       date_of_issue: recommendation.date_of_issue || null,
+      publisher: recommendation.publisher || null,
       goodreads_rating: recommendation.goodreads_rating || null,
+      goodreads_ratings_count: recommendation.goodreads_ratings_count || null,
+      goodreads_reviews_count: recommendation.goodreads_reviews_count || null,
       reason: recommendation.reason || null,
       adaptations: recommendation.adaptations || null,
       ISBN_10: recommendation.ISBN_10 || null,
       ISBN_13: recommendation.ISBN_13 || null,
       page_count: recommendation.page_count || null,
+      book_format: recommendation.book_format || null,
       imageLink: recommendation.imageLink || null,
+      literary_awards: recommendation.literary_awards || null,
+      setting: recommendation.setting || null,
+      characters: recommendation.characters || null,
+      series: recommendation.series || null,
       source: recommendation.source || null
     };
 

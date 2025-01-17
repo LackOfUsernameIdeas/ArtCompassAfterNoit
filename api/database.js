@@ -86,34 +86,47 @@ const saveMovieSeriesRecommendation = (userId, data, callback) => {
 
 const saveBookRecommendation = (userId, data, callback) => {
   const query = `INSERT INTO books_recommendations (
-    user_id, google_books_id, goodreads_id, title_en, title_bg, real_edition_title, author, 
-    genre_en, genre_bg, description, language, country, date_of_first_issue, 
-    date_of_issue, goodreads_rating, reason, adaptations, ISBN_10, ISBN_13, 
-    page_count, imageLink, date, source
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+    user_id, google_books_id, goodreads_id, title_en, original_title, title_bg, real_edition_title, author, 
+    genre_en, genre_bg, description, language, origin, date_of_first_issue, 
+    date_of_issue, publisher, goodreads_rating, goodreads_ratings_count, goodreads_reviews_count, reason, adaptations, ISBN_10, ISBN_13, 
+    page_count, book_format, imageLink, literary_awards, setting, characters, series, date, source
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+
+  function conditionalStringify(data) {
+    return typeof data === "string" ? data : JSON.stringify(data);
+  }
 
   const values = [
     userId,
     data.google_books_id || null,
     data.goodreads_id || null,
     data.title_en || null,
+    data.original_title || null,
     data.title_bg || null,
     data.real_edition_title || null,
     data.author || null,
-    JSON.stringify(data.genre_en) || null,
-    JSON.stringify(data.genre_bg) || null,
+    conditionalStringify(data.genre_en) || null,
+    conditionalStringify(data.genre_bg) || null,
     data.description || null,
     data.language || null,
-    data.country || null,
+    data.origin || null,
     data.date_of_first_issue || null,
     data.date_of_issue || null,
+    data.publisher || null,
     data.goodreads_rating || null,
+    data.goodreads_ratings_count || null,
+    data.goodreads_reviews_count || null,
     data.reason || null,
     data.adaptations || null,
     data.ISBN_10 || null,
     data.ISBN_13 || null,
     data.page_count || null,
+    data.book_format || null,
     data.imageLink || null,
+    data.literary_awards || null,
+    data.setting || null,
+    data.characters || null,
+    data.series || null,
     data.date || null,
     data.source || null
   ];
@@ -167,34 +180,47 @@ const saveToWatchlist = (userId, data, callback) => {
 
 const saveToReadlist = (userId, data, callback) => {
   const query = `INSERT INTO readlist (
-    user_id, google_books_id, goodreads_id, title_en, title_bg, real_edition_title, author, 
-    genre_en, genre_bg, description, language, country, date_of_first_issue, 
-    date_of_issue, goodreads_rating, reason, adaptations, ISBN_10, ISBN_13, 
-    page_count, imageLink, source
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+    user_id, google_books_id, goodreads_id, title_en, original_title, title_bg, real_edition_title, author, 
+    genre_en, genre_bg, description, language, origin, date_of_first_issue, 
+    date_of_issue, publisher, goodreads_rating, goodreads_ratings_count, goodreads_reviews_count, reason, adaptations, ISBN_10, ISBN_13, 
+    page_count, book_format, imageLink, literary_awards, setting, characters, series, source
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+
+  function conditionalStringify(data) {
+    return typeof data === "string" ? data : JSON.stringify(data);
+  }
 
   const values = [
     userId,
     data.google_books_id || null,
     data.goodreads_id || null,
     data.title_en || null,
+    data.original_title || null,
     data.title_bg || null,
     data.real_edition_title || null,
     data.author || null,
-    JSON.stringify(data.genre_en) || null,
-    JSON.stringify(data.genre_bg) || null,
+    conditionalStringify(data.genre_en) || null,
+    conditionalStringify(data.genre_bg) || null,
     data.description || null,
     data.language || null,
-    data.country || null,
+    data.origin || null,
     data.date_of_first_issue || null,
     data.date_of_issue || null,
+    data.publisher || null,
     data.goodreads_rating || null,
+    data.goodreads_ratings_count || null,
+    data.goodreads_reviews_count || null,
     data.reason || null,
     data.adaptations || null,
     data.ISBN_10 || null,
     data.ISBN_13 || null,
     data.page_count || null,
+    data.book_format || null,
     data.imageLink || null,
+    data.literary_awards || null,
+    data.setting || null,
+    data.characters || null,
+    data.series || null,
     data.source || null
   ];
 

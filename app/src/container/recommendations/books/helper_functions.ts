@@ -5,12 +5,19 @@ import {
   IndustryIdentifier
 } from "./booksRecommendations-types";
 import { NotificationState } from "../../types_common";
-import { openAIKey } from "./booksRecommendations-data";
+import {
+  goodreadsExampleResponse,
+  goodreadsPrompt,
+  googleBooksExampleResponse,
+  googleBooksPrompt,
+  openAIKey
+} from "./booksRecommendations-data";
 import { googleBooksGenreOptions } from "../../data_common";
 import {
   checkRecommendationExistsInReadlist,
   showNotification,
-  translate
+  translate,
+  translateWithDetection
 } from "../../helper_functions_common";
 import ISO6391 from "iso-639-1";
 
@@ -93,12 +100,12 @@ export const saveBooksUserPreferences = async (
  * Ако не успее да извлече данни от всички търсачки, хвърля грешка.
  *
  * @async
- * @function fetchGoogleBooksIDWithFailover
+ * @function fetchBooksIDWithFailover
  * @param {string} bookName - Името на книгата, за който се извличат данни.
  * @returns {Promise<Object>} - Връща обект с данни от Google Books за книгата.
  * @throws {Error} - Хвърля грешка, ако не успее да извлече данни от всички търсачки.
  */
-const fetchGoogleBooksIDWithFailover = async (
+const fetchBooksIDWithFailover = async (
   bookName: string,
   source: string
 ): Promise<any> => {
@@ -277,134 +284,26 @@ export const generateBooksRecommendations = async (
     interests
   } = booksUserPreferences;
   try {
-    //TO DO: VITE_BOOKS_SOURCE
     // const response = await fetch("https://api.openai.com/v1/chat/completions", {
     //   method: "POST",
     //   headers: {
     //     "Content-Type": "application/json",
     //     Authorization: `Bearer ${openAIKey}`
     //   },
-    //   body: JSON.stringify({
-    //     model: "gpt-4o-2024-08-06",
-    //     messages: [
-    //       {
-    //         role: "system",
-    //         content:
-    //           "Ти си изкуствен интелект, който препоръчва книги и събира подробна информация за всяка една от тях от Google Books. Цялата информация трябва да бъде представена в правилен JSON формат с всички стойности преведени на български език, като заглавието на изданието трябва да бъде точно и реално, за да може лесно да бъде намерено в Google Books."
-    //       },
-    //       {
-    //         role: "user",
-    //         content:
-    //           "Препоръчай 5 различни книги от колекцията на Google Books, като всяка трябва да бъде популярна, призната от критиката и налична за закупуване или заемане. Книгите трябва да съответстват на следните лични предпочитания:\n1. Любими жанрове: [научна фантастика, мистерия, трилър].\n2. Емоционално състояние: [Тъжен/-на, Любопитен/-на].\n3. Любими автори: [Иван Вазов].\n4. Теми, които ме интересуват: [приятелство, справедливост, предизвикателства в живота].\n5. Книгите могат да бъдат от следните страни: [България].\n6. Целева(Възрастова) група: [тийнеджъри].\n7. Предпочитам книгите да са: [бавни, концентриращи се върху разкази на героите]."
-    //       },
-    //       {
-    //         role: "user",
-    //         content:
-    //           'Събери подробна информация за всяка книга. Използвай следния JSON формат за отговор: \n\n```\n{\n  "title_en": string,\n  "title_bg": string,\n "real_edition_title": string,\n  "author": string,\n  "genres": string[],\n  "description": string,\n  "edition_language": string,\n  "language": string,\n  "country": string,\n  "date_of_first_issue": number,\n  "date_of_issue": number,\n  "goodreads_rating": string,\n  "reason": string,\n  "adaptations": string,\n  "page_count": number\n}\n```\n\nСтойностите на всички полета трябва да бъдат преведени на български език, освен ако оригиналното съдържание (например корицата или заглавието на английски) не изисква друго. Полето "real_edition_title" трябва да съдържа точния и пълен заглавие на изданието от Google Books, което ще бъде използвано за директно търсене.'
-    //       },
-    //       {
-    //         role: "user",
-    //         content:
-    //           'Ето допълнителни указания, които трябва да следваш: \n1. Книгите трябва да са разнообразни по жанр (например класика, научна фантастика, романтика и др.).\n2. Включи адаптации на книги (ако има такива) като филми, сериали или театрални постановки, посочвайки имената на тези адаптации и годините на издаване/представяне.\n3. Погрижи се информацията да бъде актуална и точна.\n4. Преведи всички текстови стойности като заглавие, резюме, жанрове, държава и автор на български език.\n5. Винаги превеждай Великобритания като "Великобритания".\n6. Полето "date_of_first_issue" е годината, в която книгата е издадена за първи път, а "date_of_issue" е годината на това конкретно издание на книгата.'
-    //       },
-    //       {
-    //         role: "user",
-    //         content:
-    //           'Отговори само с JSON обект без допълнителен текст или обяснения, който обхваща ВСИЧКИ препоръки ЗАЕДНО. Например: \n\n```\n{\n  "title_en": "To Kill a Mockingbird",\n  "title_bg": "Да убиеш присмехулник",\n  "real_edition_title": "To Kill a Mockingbird - Harper Lee - Google Books",\n  "author": "Харпър Лий",\n  "genres": ["Южен готик", "Билдунгсроман"],\n  "description": "Романът разказва историята на младата Скаут Финч в южната част на САЩ през 30-те години на XX век, докато тя и брат й Джем се сблъскват с расизъм, морал и справедливост, вдъхновени от баща си Атикус Финч, който защитава чернокож мъж, обвинен несправедливо в изнасилване на бяла жена.",\n  "edition_language": "Английски",\n  "language": "Английски",\n  "country": "САЩ",\n  "date_of_first_issue": 1960,\n  "date_of_issue": 1960,\n  "goodreads_rating": "4.27",\n  "reason": "Отговор на въпроса: Защо този филм/сериал е подходящ за мен?",\n  "adaptations": "Филмова адаптация от 1962 г. и сценична адаптация.",\n  "page_count": 281\n}\n```'
-    //       }
-    //     ]
-    //   })
+    //   body: JSON.stringify(
+    //     import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
+    //       ? googleBooksPrompt
+    //       : goodreadsPrompt
+    //   )
     // });
 
     // const responseData = await response.json();
-    const responseJson = `[
-  {
-    "title_en": "Foundation",
-    "title_bg": "Фондация",
-    "real_edition_title": "Foundation - Isaac Asimov - Google Books",
-    "author": "Айзък Азимов",
-    "genres": ["Научна фантастика"],
-    "description": "Фондация е първата книга от поредицата на Азимов, където ученът Хари Селдон използва психоистория, за да предвиди колапса на галактическата империя и създава фондация, която да намали Падането до само хилядолетие.",
-    "edition_language": "Английски",
-    "language": "Български",
-    "country": "САЩ",
-    "date_of_first_issue": 1951,
-    "date_of_issue": 1972,
-    "goodreads_rating": 4.15,
-    "reason": "Първостепенна научна фантастика, която се концентрира върху стратегии и социални динамики.",
-    "adaptations": "Сериал 'Foundation' от 2021 г.",
-    "page_count": 255
-  },
-  {
-    "title_en": "The Girl with the Dragon Tattoo",
-    "title_bg": "Момичето с дракона татуировка",
-    "real_edition_title": "The Girl with the Dragon Tattoo - Stieg Larsson - Google Books",
-    "author": "Стиг Ларшон",
-    "genres": ["Мистерия", "Трилър"],
-    "description": "Историята на това криминале следва разследването на изчезването на млада жена преди 40 години, което отвежда журналиста Микаел Блумиквист и хакерката Лисбет Саландер в центъра на семейство, обитавано от много тайни.",
-    "edition_language": "Английски",
-    "language": "Български",
-    "country": "Швеция",
-    "date_of_first_issue": 2005,
-    "date_of_issue": 2008,
-    "goodreads_rating": 4.13,
-    "reason": "Сложен и интригуващ трилър с акцент на героите, занимаващ се с теми за справедливост и правдоподобност.",
-    "adaptations": "Филм 'The Girl with the Dragon Tattoo' от 2011 г.",
-    "page_count": 465
-  },
-  {
-    "title_en": "The Hitchhiker's Guide to the Galaxy",
-    "title_bg": "Пътеводител на галактическия стопаджия",
-    "real_edition_title": "The Hitchhiker's Guide to the Galaxy - Douglas Adams - Google Books",
-    "author": "Дъглас Адамс",
-    "genres": ["Научна фантастика", "Комедия"],
-    "description": "Започвайки с унищожаването на Земята за небесна магистрала, Артър Дент се изплъзва на космическа одисея из космоса, ръководен от Пътеводителя на стопаджията.",
-    "edition_language": "Английски",
-    "language": "Български",
-    "country": "Великобритания",
-    "date_of_first_issue": 1979,
-    "date_of_issue": 1981,
-    "goodreads_rating": 4.20,
-    "reason": "Забавно и остроумно приключение, което разисква приятелството и безсмисленото във вселената.",
-    "adaptations": "Филм 'The Hitchhiker's Guide to the Galaxy' от 2005 г.",
-    "page_count": 193
-  },
-  {
-    "title_en": "The Shadow of the Wind",
-    "title_bg": "Сянката на вятъра",
-    "real_edition_title": "The Shadow of the Wind - Carlos Ruiz Zafón - Google Books",
-    "author": "Карлос Руис Сафон",
-    "genres": ["Мистерия", "Исторически"],
-    "description": "В Барселона през 1945 год. младеж намира мистериозна книга, която го вкарва в свят на свръхестествени събития и трагични истории.",
-    "edition_language": "Английски",
-    "language": "Български",
-    "country": "Испания",
-    "date_of_first_issue": 2001,
-    "date_of_issue": 2014,
-    "goodreads_rating": 4.30,
-    "reason": "Историческа мистерия с емоционална дълбочина и акцент на разказа на героите.",
-    "adaptations": "Аудио книга и сценична адаптация в Испания.",
-    "page_count": 487
-  },
-  {
-    "title_en": "The Maze Runner",
-    "title_bg": "Лабиринтът: Невъзможно бягство",
-    "real_edition_title": "The Maze Runner - James Dashner - Google Books",
-    "author": "Джеймс Дашнър",
-    "genres": ["Научна фантастика", "Мистерия", "Тийн"],
-    "description": "Когато Томас се събужда в загадъчен лабиринт без спомени, той се сблъсква с предизвикателства за оцеляване и търсене на истината с помощта на нови приятели.",
-    "edition_language": "Английски",
-    "language": "Български",
-    "country": "САЩ",
-    "date_of_first_issue": 2009,
-    "date_of_issue": 2014,
-    "goodreads_rating": 4.03,
-    "reason": "Вълнуваща дистопична история с акцент на приятелството и личните предизвикателства.",
-    "adaptations": "Филмова трилогия 'The Maze Runner' започваща от 2014 г.",
-    "page_count": 375
-  }
-]
-`;
+    // const responseJson = responseData.choices[0].message.content;
+    const responseJson =
+      import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
+        ? googleBooksExampleResponse
+        : goodreadsExampleResponse;
+
     const unescapedData = responseJson
       .replace(/^```json([\s\S]*?)```$/, "$1")
       .replace(/^```JSON([\s\S]*?)```$/, "$1")
@@ -420,7 +319,7 @@ export const generateBooksRecommendations = async (
     for (const book of recommendations) {
       const bookName = book.real_edition_title;
       console.log("bookName: ", bookName);
-      const bookResults = await fetchGoogleBooksIDWithFailover(
+      const bookResults = await fetchBooksIDWithFailover(
         bookName,
         import.meta.env.VITE_BOOKS_SOURCE
       );
@@ -434,11 +333,11 @@ export const generateBooksRecommendations = async (
         );
         console.log(`bookItem: ${bookItem}`);
         if (bookItem) {
-          const googleBookUrl = bookItem.link;
+          const bookUrl = bookItem.link;
           const bookId =
             import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
-              ? googleBookUrl.match(/id=([a-zA-Z0-9-_]+)/)?.[1]
-              : googleBookUrl.match(/show\/(\d+)/)?.[1];
+              ? bookUrl.match(/id=([a-zA-Z0-9-_]+)/)?.[1]
+              : bookUrl.match(/show\/(\d+)/)?.[1];
 
           if (bookId && import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks") {
             const googleBooksResponse = await fetch(
@@ -486,12 +385,13 @@ export const generateBooksRecommendations = async (
               genres_bg: genres_bg,
               description: description,
               language: language,
-              country: book.country,
+              origin: book.origin,
               date_of_first_issue: book.date_of_first_issue,
               date_of_issue: processDataWithFallback(
                 googleBooksData.volumeInfo.publishedDate,
                 book.date_of_issue
               ),
+              publisher: googleBooksData.volumeInfo.publisher,
               goodreads_rating: book.goodreads_rating,
               reason: book.reason,
               adaptations: book.adaptations,
@@ -542,50 +442,70 @@ export const generateBooksRecommendations = async (
             // Извикваме функцията, за да изпълним и двете операции
             checkAndSaveBooksRecommendation();
           } else if (bookId) {
+            const goodreadsResponse = await fetch(
+              `${
+                import.meta.env.VITE_API_BASE_URL
+              }/get-goodreads-data-for-a-book?url=${bookUrl}`
+            );
+            const goodreadsData = await goodreadsResponse.json();
+
+            console.log(
+              `Google Books data for ${bookName}: ${JSON.stringify(
+                goodreadsData,
+                null,
+                2
+              )}, `
+            );
+
+            const author = await translate(goodreadsData.contributors);
+            const description = await translateWithDetection(
+              goodreadsData.description
+            );
+
+            const genres_en = goodreadsData.genres;
+
+            const genres_bg_raw = await translate(goodreadsData.genres);
+            const genres_bg = genres_bg_raw
+              .split(",") // Split the string by commas into an array
+              .map(
+                (genre) =>
+                  genre.trim().charAt(0).toUpperCase() + genre.trim().slice(1)
+              ) // Capitalize the first letter of each word
+              .join(", "); // Join the array back into a string
+
+            const language = await translate(goodreadsData.language);
+
+            const publisher = await translate(goodreadsData.publisher);
+
             const recommendationData = {
-              token:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzM2Nzg3NTcwLCJleHAiOjE3MzY3OTQ3NzB9.QPfFDRWwzqa-Ncz_ynK_4oGcK9yr3XtldJ0r-2Mp40c",
-              goodreads_id: "6gfDfhmmHxMC",
-              title_en: "The Maze Runner",
-              title_bg: "Лабиринтът: Невъзможно бягство",
-              real_edition_title:
-                "The Maze Runner - James Dashner - Google Books",
-              author: "Джеймс Дашнър",
-              genre_en: {
-                "Young Adult Fiction": [
-                  "Dystopian",
-                  "Science Fiction",
-                  "Apocalyptic & Post-Apocalyptic",
-                  "Action & Adventure",
-                  "Survival Stories"
-                ]
-              },
-              genre_bg: {
-                "Художествена литература за младежи": [
-                  "Екшън и приключения",
-                  "Научна фантастика",
-                  "антиутопичен",
-                  "Истории за оцеляване",
-                  "Апокалипсис и пост-апокалиптик"
-                ]
-              },
-              description:
-                "НОМЕР 1 НА NEW YORK TIMES БЕСТЕЛЪР ПОРЕДИЦА БЕГАЩ В ЛАБИРИНТ • Тийнейджър без памет трябва да се ориентира в смъртоносен лабиринт, за да оцелее в първа книга на този пост-апокалиптичен феномен.“ [Една] мистериозна сага за оцеляване, която страстните фенове описват като сливане на Lord of мухите [и] Игрите на глада” (Entertainment Weekly) Кога Томас се събужда в асансьора, единственото нещо, което помни е името си. Той е заобиколен от непознати - момчета, чиито спомени също са изчезнали. Извън извисяващите се каменни стени, които ги заобикалят, е неограничен, постоянно променящ се лабиринт. Това е единственият изход - и никой никога не е успял да го преживее. Тогава пристига едно момиче. Първото момиче в историята. И посланието, което предава, е ужасяващо: Запомнете. оцелее. Бягай. Потърсете още книги от блокбъстъра Maze Runner поредица: THE MAZE RUNNER • ИЗПИТВАНИЯТА НА ОПАЛ • ЛЕКА ЗА СМЪРТ • ПОРЪЧКАТА ЗА УБИЙСТВО • КОДЪТ ЗА ТРЕСКА",
-              language: "английски",
-              country: "САЩ",
-              date_of_first_issue: 2009,
-              date_of_issue: "2009-10-06",
-              goodreads_rating: 4.03,
-              reason:
-                "Вълнуваща дистопична история с акцент на приятелството и личните предизвикателства.",
-              adaptations:
-                "Филмова трилогия 'The Maze Runner' започваща от 2014 г.",
-              ISBN_10: "0375893776",
-              ISBN_13: "9780375893773",
-              page_count: 386,
-              imageLink:
-                "http://books.google.com/books/content?id=6gfDfhmmHxMC&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE71yr9zuZjXlL4ijCQTGwYgroBpDZPhCbh0bciZUsXk4_VMrO6lR6ZTl8EFwjsODtLWCV2EHZJmPA56HOLc33pZqwEZZnjD042YgOJD-odqYXjV28lqmtPn32DzCRGg1UUlNH_0e&source=gbs_api",
-              date: "2025-01-13T17:39:27.946Z",
+              goodreads_id: bookId,
+              title_en: goodreadsData.title,
+              original_title: goodreadsData.original_title,
+              title_bg: book.title_bg,
+              real_edition_title: book.real_edition_title,
+              author: author,
+              genres_en: genres_en,
+              genres_bg: genres_bg,
+              description: description,
+              language: language,
+              origin: book.origin,
+              date_of_first_issue: goodreadsData.first_publication_info,
+              date_of_issue: goodreadsData.publication_time,
+              publisher: publisher,
+              goodreads_rating: goodreadsData.rating,
+              goodreads_ratings_count: goodreadsData.ratings_count,
+              goodreads_reviews_count: goodreadsData.reviews_count,
+              reason: book.reason,
+              adaptations: book.adaptations,
+              ISBN_10: goodreadsData.isbn10 || goodreadsData.asin,
+              ISBN_13: goodreadsData.isbn13,
+              page_count: goodreadsData.pages_count,
+              book_format: goodreadsData.book_format,
+              imageLink: goodreadsData.image_url,
+              literary_awards: goodreadsData.literary_awards,
+              setting: goodreadsData.setting,
+              characters: goodreadsData.characters,
+              series: goodreadsData.series,
               source: "Goodreads"
             };
 
@@ -656,6 +576,7 @@ export const saveBookRecommendation = async (
       google_books_id: recommendation.google_books_id || null,
       goodreads_id: recommendation.goodreads_id || null,
       title_en: recommendation.title_en || null,
+      original_title: recommendation.original_title || null,
       title_bg: recommendation.title_bg || null,
       real_edition_title: recommendation.real_edition_title || null,
       author: recommendation.author || null,
@@ -663,16 +584,24 @@ export const saveBookRecommendation = async (
       genre_bg: recommendation.genres_bg || null,
       description: recommendation.description || null,
       language: recommendation.language || null,
-      country: recommendation.country || null,
+      origin: recommendation.origin || null,
       date_of_first_issue: recommendation.date_of_first_issue || null,
       date_of_issue: recommendation.date_of_issue || null,
+      publisher: recommendation.publisher || null,
       goodreads_rating: recommendation.goodreads_rating || null,
+      goodreads_ratings_count: recommendation.goodreads_ratings_count || null,
+      goodreads_reviews_count: recommendation.goodreads_reviews_count || null,
       reason: recommendation.reason || null,
       adaptations: recommendation.adaptations || null,
       ISBN_10: recommendation.ISBN_10 || null,
       ISBN_13: recommendation.ISBN_13 || null,
       page_count: recommendation.page_count || null,
+      book_format: recommendation.book_format || null,
       imageLink: recommendation.imageLink || null,
+      literary_awards: recommendation.literary_awards || null,
+      setting: recommendation.setting || null,
+      characters: recommendation.characters || null,
+      series: recommendation.series || null,
       date: date,
       source: recommendation.source || null
     };
