@@ -22,7 +22,6 @@ if len(sys.argv) < 2:
 URL = sys.argv[1]
 
 # Функция за скрипване на данни
-
 def scrape_contributor():
     # Изпращане на GET заявка за получаване на съдържанието на страницата
     response = requests.get(URL)
