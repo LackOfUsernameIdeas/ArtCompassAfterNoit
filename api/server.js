@@ -1117,46 +1117,37 @@ app.post("/stats/individual/watchlist-top-writers", (req, res) => {
   });
 });
 
+// Вземане на данни за книга от Goodreads
 app.get("/get-goodreads-data-for-a-book", (req, res) => {
   const { url } = req.query;
 
+  // Проверка дали е подаден URL параметър в заявката
   if (!url) {
-    return res.status(400).send("Error: URL query parameter is required.");
+    return res.status(400).send("Грешка: URL параметър е необходим.");
   }
 
-  // Extract the book ID from the URL using a regular expression
-  const match = url.match(/book\/show\/(\d+)/); // Match the numeric ID after "book/show/"
-
-  if (!match) {
-    return res.status(400).send("Error: Invalid Goodreads URL format.");
-  }
-
-  const bookId = match[1]; // Extracted book ID
-
-  // Spawn the Python process and pass the URL as an argument
+  // Стартиране на Python процес и подаване на URL като аргумент
   const pythonProcess = spawn("python", ["./scraping/scraper.py", url]);
 
   let response = "";
 
-  // Capture stdout data
+  // Улавяне на данни от стандартния изход (stdout)
   pythonProcess.stdout.on("data", (data) => {
     response += data.toString();
   });
 
-  // Capture stderr data (optional for debugging)
+  // Улавяне на грешки от стандартния изход за грешки (stderr) - по избор за дебъгване
   pythonProcess.stderr.on("data", (data) => {
-    console.error("Python script stderr:", data.toString());
+    console.error("Python скрипт stderr:", data.toString());
   });
 
-  console.log("bookId", bookId);
-  // Handle process close
+  // Обработка на затварянето на процеса
   pythonProcess.on("close", (code) => {
     if (code === 0) {
       const jsonResponse = JSON.parse(response.trim());
-      res.status(200).json(jsonResponse);
-      // res.status(200).json(apolloState); // jsonResponse.html
+      res.status(200).json(jsonResponse); // Връща JSON отговор на клиента
     } else {
-      res.status(500).send("Error: Python script execution failed");
+      res.status(500).send("Грешка: Изпълнението на Python скрипта неуспешно");
     }
   });
 });

@@ -375,6 +375,10 @@ export const generateBooksRecommendations = async (
               book?.language
             );
 
+            const publisher = await translate(
+              googleBooksData.volumeInfo.publisher
+            );
+
             const recommendationData = {
               google_books_id: googleBooksData.id,
               title_en: googleBooksData.volumeInfo.title,
@@ -391,7 +395,7 @@ export const generateBooksRecommendations = async (
                 googleBooksData.volumeInfo.publishedDate,
                 book.date_of_issue
               ),
-              publisher: googleBooksData.volumeInfo.publisher,
+              publisher: publisher,
               goodreads_rating: book.goodreads_rating,
               reason: book.reason,
               adaptations: book.adaptations,
