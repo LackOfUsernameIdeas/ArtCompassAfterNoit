@@ -313,7 +313,7 @@ const Signincover: FC<SignincoverProps> = () => {
                           type="submit"
                           className="ti-btn ti-btn-lg bg-primary text-white !font-medium dark:border-defaultborder/10"
                         >
-                          Влезни
+                          Влез
                         </button>
                       </div>
                     </div>
