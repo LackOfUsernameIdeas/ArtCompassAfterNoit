@@ -1,37 +1,42 @@
+# Описание на целта на скрипта:
+# Този скрипт приема URL като аргумент от командния ред и прави GET заявка към страницата.
+# След това търси JSON данни, които се намират в таг <script id="__NEXT_DATA__"> на страницата.
+# Ако бъдат открити, тези данни се парсират и показват в четим формат. В противен случай се извежда грешка.
+
 import requests
 import sys
 import re
 import json
 
-# Check if a URL argument is passed
+# Проверка дали е подаден URL като аргумент
 if len(sys.argv) < 2:
-    print(json.dumps({"error": "Error: URL is required."}))
+    print(json.dumps({"error": "Грешка: Не е предоставен URL."}))
     sys.exit(1)
 
-# Get the URL from command-line argument
+# Вземане на URL от аргумента на командния ред
 URL = sys.argv[1]
 
-# Send a GET request to fetch the page content
+# Изпращане на GET заявка за получаване на съдържанието на страницата
 try:
     response = requests.get(URL)
 
-    # Check if the request was successful
+    # Проверка дали заявката е успешна (статус код 200)
     if response.status_code == 200:
-        # Look for the <script id="__NEXT_DATA__" tag
+        # Търсене на таг <script id="__NEXT_DATA__" с помощта на регулярни изрази
         match = re.search(r'<script id="__NEXT_DATA__" type="application/json">(.+?)</script>', response.text, re.DOTALL)
 
         if match:
-            # Extract the JSON string from the script tag
+            # Извличане на JSON данните от таг-а
             json_data = json.loads(match.group(1))
 
-            # Print the parsed JSON data in a readable format
-            print(json.dumps(json_data, indent=2))  # This will print the parsed JSON as a formatted string
+            # Печатане на парсираните JSON данни във формат, който е лесен за четене
+            print(json.dumps(json_data, indent=2))  # Това ще отпечата парсирания JSON като форматиран низ
 
         else:
-            print(json.dumps({"error": "Failed to find the __NEXT_DATA__ JSON data in the page."}))
+            print(json.dumps({"error": "Не успяхме да намерим JSON данни в таг <script id='__NEXT_DATA__'>."}))
 
     else:
-        print(json.dumps({"error": f"Failed to retrieve the page, status code: {response.status_code}"}))
+        print(json.dumps({"error": f"Не успяхме да извлечем страницата, статус код: {response.status_code}"}))
 
 except Exception as e:
-    print(json.dumps({"error": f"An error occurred: {str(e)}"}))
+    print(json.dumps({"error": f"Възникна грешка: {str(e)}"}))
