@@ -31,7 +31,7 @@ export default {
     },
     fontFamily: {
       Opsilon: ["Opsilon", "sans-serif"],
-      Equilibrist: ["Equilibrist", "sans-serif"],
+      Equilibrist: ["Equilibrist", "serif"],
       SerifBold: ["SerifBold", "serif"]
     },
     fontSize: {

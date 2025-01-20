@@ -692,11 +692,11 @@ export class MoviesByProsperityBubbleChart extends Component<
           labels: {
             // Форматиране на стойностите в милиони долари
             formatter: (val: any) => `$${Math.round(val)}M`,
-            style: { colors: "#8c9097", fontSize: "11px", fontWeight: 600 }
+            style: { fontFamily: "Equilibrist !important", colors: "#8c9097", fontSize: "11px", fontWeight: 600 }
           },
           title: {
             text: "Приходи от боксофиса (в милиони)",
-            style: { fontSize: "12px", fontWeight: "bold", color: "#8c9097" }
+            style: { fontFamily: "Opsilon", letterSpacing: "1.5em", fontSize: "12px", color: "#8c9097" }
           }
         },
         yaxis: {
@@ -704,11 +704,11 @@ export class MoviesByProsperityBubbleChart extends Component<
           max: 10, // Максимална стойност
           min: 5, // Минимална стойност
           labels: {
-            style: { colors: "#8c9097", fontSize: "11px", fontWeight: 600 }
+            style: { fontFamily: "Equilibrist !important", colors: "#8c9097", fontSize: "11px", fontWeight: 600 }
           },
           title: {
             text: "IMDb рейтинг",
-            style: { fontSize: "12px", fontWeight: "bold", color: "#8c9097" }
+            style: { fontFamily: "Opsilon", letterSpacing: "2em", fontSize: "12px", color: "#8c9097" }
           }
         },
         legend: {
@@ -743,8 +743,10 @@ export class MoviesByProsperityBubbleChart extends Component<
                 boxOffice !== "N/A" ? `$${boxOffice.toLocaleString()}` : "N/A";
 
               return `
-                <div style="padding: 10px;">
-                  <strong>${movieTitleBg} (${movieTitleEn})</strong><br />
+                <div style="padding: 10px; font-family: Opsilon; letter-spacing: 0.01em;">
+                  ${movieTitleBg} (${movieTitleEn})<br />
+                </div>
+                <div style="padding: 10px; font-family: Equilibrist !important;">
                   IMDb рейтинг: ${imdbRating}/10<br />
                   Боксофис: ${formattedBoxOffice}
                 </div>
@@ -1128,14 +1130,14 @@ export class TopRecommendationsBarChart extends Component<
         <div className="flex justify-center items-center">
           <div className="flex items-center mr-4">
             <span
-              className="w-3 h-3 mr-1 rounded-full inline-block"
+              className="!font-Opsilon tracking-wider w-3 h-3 mr-1 rounded-full inline-block"
               style={{ backgroundColor: movieColor }}
             ></span>
             <span>Филм</span>
           </div>
           <div className="flex items-center">
             <span
-              className="w-3 h-3 mr-1 rounded-full inline-block"
+              className="!font-Opsilon tracking-wider w-3 h-3 mr-1 rounded-full inline-block"
               style={{ backgroundColor: seriesColor }}
             ></span>
             <span>Сериал</span>
