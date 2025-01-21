@@ -1,89 +1,89 @@
 import { FC, Fragment, useEffect, useState } from "react"; 
-// Import necessary React modules and hooks
+// Импорт на необходими модули и хукове от React
 
 import { DataType } from "../home-types"; 
-// Importing a type definition for the data structure
+// Импорт на типова дефиниция за структурата на данните
 
 import { handleDropdownClick } from "../helper_functions"; 
-// Importing a helper function to handle dropdown interactions
+// Импорт на помощна функция за обработка на взаимодействия с падащи менюта
 
 import { useMediaQuery } from "react-responsive"; 
-// Importing a library for handling responsive design
+// Импорт на библиотека за обработка на отзивчив дизайн
 
 import { Link } from "react-router-dom"; 
-// Importing Link for navigation without reloading the page
+// Импорт на Link за навигация без презареждане на страницата
 
 import { getAveragesOptions, getAwardOptions } from "../home-data"; 
-// Importing functions to generate options for dropdowns
+// Импорт на функции за генериране на опции за падащи менюта
 
-// Define the type for the props passed to this component
+// Дефиниране на типа за пропсвете, предавани на този компонент
 interface WidgetCardsComponentProps {
-  data: DataType; // Expecting data of type `DataType`
+  data: DataType; // Очакваме данни от тип `DataType`
 }
 
-// Main functional component
+// Основен функционален компонент
 const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
-  // States to manage the displayed names and values for averages and awards
+  // Състояния за управление на показваните имена и стойности за средни и награди
   const [displayedNameAverages, setDisplayedNameAverages] =
-    useState("Среден Боксофис"); // Default display name for averages
+    useState("Среден Боксофис"); // По подразбиране име за показване на средни
   const [displayedValueAverages, setDisplayedValueAverages] =
-    useState<number>(0); // Default value for averages
+    useState<number>(0); // По подразбиране стойност за средни
 
   const [displayedNameAwards, setDisplayedNameAwards] = useState(
     "Общ брой спечелени награди"
-  ); // Default display name for awards
-  const [displayedValueAwards, setDisplayedValueAwards] = useState<number>(0); // Default value for awards
+  ); // По подразбиране име за показване на награди
+  const [displayedValueAwards, setDisplayedValueAwards] = useState<number>(0); // По подразбиране стойност за награди
 
-  // States to manage whether dropdown menus are open
+  // Състояния за управление на отворените падащи менюта
   const [isAveragesMenuOpen, setIsAveragesMenuOpen] = useState(false);
   const [isAwardsMenuOpen, setIsAwardsMenuOpen] = useState(false);
 
-  // Effect to initialize displayed values from data
+  // Ефект за инициализиране на показваните стойности от данните
   useEffect(() => {
     if (
-      data.totalAwards.length > 0 && // Ensure awards data is available
-      data.averageBoxOfficeAndScores.length > 0 // Ensure averages data is available
+      data.totalAwards.length > 0 && //  Подсигурява данните за наградите
+      data.averageBoxOfficeAndScores.length > 0 // Подсигурява данните за средните стойности
     ) {
       setDisplayedValueAwards(data.totalAwards[0].total_awards_wins); 
-      // Set initial awards value
+      // Задайте началната стойност за наградите
       setDisplayedValueAverages(
         data.averageBoxOfficeAndScores[0].average_box_office
       ); 
-      // Set initial averages value
+      // Задайте началната стойност за средните
     }
-  }, [data]); // Dependency array ensures this runs when `data` changes
+  }, [data]); // Масив на зависимости, който осигурява изпълнението при промяна на `data`
 
-  // Toggles the awards dropdown menu
+  // Превключва падащото меню за наградите
   const toggleAwardsMenu = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault(); // Prevent default link behavior
-    setIsAwardsMenuOpen((prev) => !prev); // Toggle the state
+    e.preventDefault(); // Предотвратете стандартното поведение на линка
+    setIsAwardsMenuOpen((prev) => !prev); // Превключете състоянието
   };
 
-  // Toggles the averages dropdown menu
+  // Превключва падащото меню за средните
   const toggleAveragesMenu = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault(); // Prevent default link behavior
-    setIsAveragesMenuOpen((prev) => !prev); // Toggle the state
+    e.preventDefault(); // Предотвратете стандартното поведение на линка
+    setIsAveragesMenuOpen((prev) => !prev); // Превключете състоянието
   };
 
-  // Generate options for the awards dropdown
+  // Генерира опции за падащото меню за наградите
   const awardOptions = getAwardOptions(data); 
-  // Generate options for the averages dropdown
+  // Генерира опции за падащото меню за средните
   const averagesOptions = getAveragesOptions(data);
 
-  // Media query breakpoints for responsive design
+  // Медийни заявки за отзивчив дизайн
   const is1856 = useMediaQuery({ query: "(max-width: 1856px)" });
   const is1532 = useMediaQuery({ query: "(max-width: 1532px)" });
   const is1966 = useMediaQuery({ query: "(max-width: 1966px)" });
 
-  // Return JSX for rendering the component
+  // Връща JSX за рендиране на компонента
   return (
     <Fragment>
-      {/* Card 1: Total Users */}
+      {/* Карта 1: Общ брой потребители */}
       <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
         <div className="box custom-box">
           <div className="box-body h-[5.5rem]">
             <div className="flex items-center justify-between">
-              {/* Left section showing the total user count */}
+              {/* Лява секция, показваща общия брой потребители */}
               <div className="flex-grow">
                 <p
                   className={`mb-0 text-[#8c9097] dark:text-white/50 ${
@@ -98,11 +98,11 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                       is1856 ? "1.25rem" : "1.125rem"
                     }] !font-Opsilon tracking-wider`}
                   >
-                    {data.usersCount?.[0]?.user_count || 0} {/* Display the total user count or fallback to 0 */}
+                    {data.usersCount?.[0]?.user_count || 0} {/* Показва общия брой потребители или 0 */}
                   </span>
                 </div>
               </div>
-              {/* Right section showing an icon */}
+              {/* Дясна секция, показваща икона */}
               <div>
                 <span className="avatar avatar-md !rounded-full bg-primary/10 !text-secondary text-[1.125rem]">
                   <i
@@ -117,7 +117,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
         </div>
       </div>
 
-      {/* Card 2: Top Recommended Genre */}
+      {/* Карта 2: Най-препоръчван жанр */}
       <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
         <div className="box custom-box">
           <div className="box-body h-[5.5rem]">
@@ -136,7 +136,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                       is1856 ? "1.25rem" : "1.125rem"
                     }] !font-Opsilon tracking-wider`}
                   >
-                    {data.topGenres[0]?.genre_bg} {/* Display the top genre in Bulgarian */}
+                    {data.topGenres[0]?.genre_bg} {/* Показва най-препоръчвания жанр на български */}
                   </span>
                 </div>
               </div>
@@ -154,7 +154,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
         </div>
       </div>
 
-      {/* Card 3: Sreden boxoffice */}
+      {/* Карта 3: Среден боксофис */}
       <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
         <div className="box custom-box">
           <div className="box-body h-[5.5rem]">
@@ -252,7 +252,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
         </div>
       </div>
 
-      {/* Card 4: Awards */}
+      {/* Карта 4: Награди */}
       <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
         <div className="box custom-box">
           <div className="box-body h-[5.5rem]">

@@ -866,6 +866,7 @@ Background Image
 
 .apexcharts-legend-text {
   @apply text-defaulttextcolor ps-[0.9375rem] -ms-[0.625rem] !important;
+  font-family: Equilibrist !important;
 }
 
 .apexcharts-text.apexcharts-yaxis-label tspan,

@@ -36,7 +36,7 @@ const ActorsDirectorsWritersTreemap: FC<ActorsDirectorsWritersTreemapProps> = ({
       <div className="xl:col-span-6 col-span-12">
         <div className="box custom-box h-[30rem]">
           <div className="box-header justify-between">
-            <div className="box-title">
+            <div className="box-title !font-Opsilon !font-light !tracking-wide">
               Най-често препоръчвани{" "}
               {
                 tableCategoryDisplayNames[
