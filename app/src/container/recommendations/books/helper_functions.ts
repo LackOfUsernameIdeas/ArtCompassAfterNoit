@@ -17,7 +17,8 @@ import {
   checkRecommendationExistsInReadlist,
   showNotification,
   translate,
-  translateWithDetection
+  translateWithDetection,
+  validateToken
 } from "../../helper_functions_common";
 import ISO6391 from "iso-639-1";
 
@@ -670,6 +671,8 @@ export const handleSubmit = async (
   token: string | null,
   submitCount: number
 ): Promise<void> => {
+  validateToken(setNotification); // Стартиране на проверката на токена при първоначално зареждане
+
   if (submitCount >= 20) {
     showNotification(
       setNotification,

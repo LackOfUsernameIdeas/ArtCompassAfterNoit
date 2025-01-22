@@ -8,7 +8,8 @@ import { openAIKey } from "./moviesSeriesRecommendations-data";
 import { moviesSeriesGenreOptions } from "../../data_common";
 import {
   checkRecommendationExistsInWatchlist,
-  showNotification
+  showNotification,
+  validateToken
 } from "../../helper_functions_common";
 
 /**
@@ -489,6 +490,8 @@ export const handleSubmit = async (
   token: string | null,
   submitCount: number
 ): Promise<void> => {
+  validateToken(setNotification); // Стартиране на проверката на токена при първоначално зареждане на компонента
+
   if (submitCount >= 20) {
     showNotification(
       setNotification,

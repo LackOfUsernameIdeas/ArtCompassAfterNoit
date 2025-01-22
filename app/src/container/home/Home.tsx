@@ -11,10 +11,7 @@ import MoviesAndSeriesByRatingsChartComponent from "./Components/MoviesAndSeries
 import WidgetCards from "./Components/WidgetCardsComponent";
 import { useNavigate } from "react-router-dom";
 import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
-import {
-  checkTokenValidity,
-  showNotification
-} from "../helper_functions_common";
+import { validateToken } from "../helper_functions_common";
 import Notification from "../../components/common/notification/Notification";
 import { NotificationState } from "../types_common";
 
@@ -68,20 +65,7 @@ const Home: FC<CrmProps> = () => {
   };
 
   useEffect(() => {
-    const validateToken = async () => {
-      // Функция за проверка валидността на потребителския токен
-      const redirectUrl = await checkTokenValidity(); // Извикване на помощна функция за валидиране на токена
-      if (redirectUrl) {
-        // Ако токенът е невалиден, показване на известие
-        showNotification(
-          setNotification, // Функция за задаване на известие
-          "Вашата сесия е изтекла. Моля, влезте в профила Ви отново.", // Съобщение за известието
-          "error" // Типът на известието (грешка)
-        );
-      }
-    };
-
-    validateToken(); // Стартиране на проверката на токена при първоначално зареждане на компонента
+    validateToken(setNotification); // Стартиране на проверката на токена при първоначално зареждане на компонента
   }, []);
 
   useEffect(() => {

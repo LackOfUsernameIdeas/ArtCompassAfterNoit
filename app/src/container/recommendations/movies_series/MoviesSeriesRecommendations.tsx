@@ -1,11 +1,10 @@
 import { FC, useEffect, useState } from "react";
 import { Quiz } from "./Components/Quiz";
 import { useNavigate } from "react-router-dom";
-import { checkTokenValidity } from "../../helper_functions_common";
+import { validateToken } from "../../helper_functions_common";
 import {
   removeFromWatchlist,
-  saveToWatchlist,
-  showNotification
+  saveToWatchlist
 } from "../../helper_functions_common";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
 import Notification from "../../../components/common/notification/Notification";
@@ -30,18 +29,7 @@ const MoviesSeriesRecommendations: FC<
   const [currentBookmarkStatus, setCurrentBookmarkStatus] = useState(false); // Track current bookmark status
 
   useEffect(() => {
-    const validateToken = async () => {
-      const redirectUrl = await checkTokenValidity();
-      if (redirectUrl) {
-        showNotification(
-          setNotification,
-          "Вашата сесия е изтекла. Моля, влезте в профила Ви отново.",
-          "error"
-        );
-      }
-    };
-
-    validateToken();
+    validateToken(setNotification); // Стартиране на проверката на токена при първоначално зареждане на компонента
   }, []);
 
   const handleNotificationClose = () => {
