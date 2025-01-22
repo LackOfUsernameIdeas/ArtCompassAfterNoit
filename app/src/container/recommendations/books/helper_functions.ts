@@ -671,7 +671,10 @@ export const handleSubmit = async (
   token: string | null,
   submitCount: number
 ): Promise<void> => {
-  validateToken(setNotification); // Стартиране на проверката на токена при първоначално зареждане
+  const isInvalidToken = await validateToken(setNotification); // Стартиране на проверката на токена при първоначално зареждане
+  if (isInvalidToken) {
+    return;
+  }
 
   if (submitCount >= 20) {
     showNotification(

@@ -146,16 +146,12 @@ export interface ConfirmationModalProps {
       type: "success" | "error" | "warning";
     } | null>
   >;
-
   // Функция за задаване на състоянието за зареждане
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-
   // Функция за задаване на състоянието за изпращане
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
-
   // Функция за задаване на състоянието за отваряне на модала
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-
   // Функция за обработка на изпращането на заявка
   handleSubmit: (
     setNotification: React.Dispatch<

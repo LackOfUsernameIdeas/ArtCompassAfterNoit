@@ -68,7 +68,7 @@ export const showNotification = (
  *
  * @async
  * @param setNotification - Функция за задаване на състоянието на уведомлението в React.
- * @returns {Promise<void>} - Промис, който се изпълнява, когато проверката на токена приключи.
+ * @returns {Promise<string | null>} - Промис, който се изпълнява, когато проверката на токена приключи.
  * @remarks
  * Ако токенът е невалиден, се показва уведомление на потребителя, че сесията му е изтекла и трябва да влезе отново.
  */
@@ -76,7 +76,7 @@ export const validateToken = async (
   setNotification: React.Dispatch<
     React.SetStateAction<NotificationState | null>
   >
-): Promise<void> => {
+): Promise<string | null> => {
   const redirectUrl = await checkTokenValidity();
   if (redirectUrl) {
     showNotification(
@@ -84,7 +84,9 @@ export const validateToken = async (
       "Вашата сесия е изтекла. Моля, влезте в профила Ви отново.",
       "error"
     );
+    return redirectUrl;
   }
+  return null;
 };
 
 /**

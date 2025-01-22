@@ -22,6 +22,7 @@ import { moviesSeriesGenreOptions } from "../../../data_common";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { ViewRecommendations } from "./ViewRecommendations";
 import Notification from "../../../../components/common/notification/Notification";
+import { useNavigate } from "react-router-dom";
 
 export const QuizQuestions: FC<QuizQuestionProps> = ({
   setLoading,
@@ -159,6 +160,8 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   const isBackDisabled = currentQuestionIndex === 0;
   const currentQuestion = questions[currentQuestionIndex];
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     setSelectedAnswer(null);
   }, [currentQuestionIndex]);
@@ -211,6 +214,13 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
         questions
       );
     }
+  };
+
+  const handleNotificationClose = () => {
+    if (notification?.type === "error") {
+      navigate("/signin");
+    }
+    setNotification(null);
   };
 
   useEffect(() => {
@@ -269,10 +279,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
         <Notification
           message={notification.message}
           type={notification.type}
-          onClose={() => {
-            console.log("Notification closed!");
-            setNotification(null);
-          }}
+          onClose={handleNotificationClose}
         />
       )}
       <CSSTransition
