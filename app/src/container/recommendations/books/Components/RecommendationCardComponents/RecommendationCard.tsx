@@ -6,6 +6,7 @@ import {
 } from "../../booksRecommendations-types";
 import Genres from "./Genres";
 import AwardsSection from "./Awards";
+import ErrorCard from "../../../../../components/common/error/error";
 
 const RecommendationCard: FC<RecommendationCardProps> = ({
   recommendationList,
@@ -19,9 +20,6 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   const [language, setLanguage] = useState<string | null>(null);
   const [genres, setGenres] = useState<string[]>([]);
   const plotPreviewLength = 150;
-  if (!recommendationList.length) {
-    return <div>No recommendations available.</div>;
-  }
 
   const recommendation = recommendationList[currentIndex];
   const source = recommendation.source;
@@ -153,7 +151,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
           {isGoodreads && (
             <div>
               <strong className="text-xl text-defaulttextcolor/85 block text-center">
-                Герои
+                Герои:
               </strong>
               {recommendation.characters ? (
                 <ul className="list-none">

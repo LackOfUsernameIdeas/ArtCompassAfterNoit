@@ -3,6 +3,7 @@ import { CSSTransition } from "react-transition-group";
 import { RecommendationsProps } from "../moviesSeriesRecommendations-types";
 import RecommendationCard from "./RecommendationCard";
 import { PlotModal } from "./PlotModal";
+import ErrorCard from "../../../../components/common/error/error";
 
 export const RecommendationsList: FC<RecommendationsProps> = ({
   recommendationList,
@@ -17,7 +18,12 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
   const animationDuration = 500;
 
   if (!recommendationList.length) {
-    return <div>No recommendations available.</div>;
+    return (
+      <ErrorCard
+        message={`Няма налични препоръки :(\nМоля, опитайте отново. 🔄`}
+        mt={10}
+      />
+    );
   }
 
   const handleNext = () => {

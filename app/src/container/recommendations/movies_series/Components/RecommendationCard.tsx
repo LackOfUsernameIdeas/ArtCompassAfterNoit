@@ -21,10 +21,6 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   const [translatedLanguage, setTranslatedLanguage] = useState<string>("");
   const plotPreviewLength = 150;
 
-  if (!recommendationList.length) {
-    return <div>No recommendations available.</div>;
-  }
-
   const recommendation = recommendationList[currentIndex];
   const isMovie = recommendation.type === "movie";
   const rottenTomatoesRating =

@@ -17,6 +17,7 @@ import MoviesAndSeriesRecommendationsTable from "./Components/MoviesAndSeriesRec
 import GenresBarChart from "./Components/GenresBarChart";
 import CountWidgets from "./Components/CountWidgets";
 import BookmarkAlert from "./Components/BookmarkAlert";
+import ErrorCard from "../../../components/common/error/error";
 
 interface IndividualStatsProps {}
 
@@ -179,16 +180,13 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
     !data.sortedWritersByRecommendationCount.length
   ) {
     return (
-      <FadeInWrapper>
-        <div className="flex justify-center items-center bg-bodybg mt-[15rem] text-center p-6 rounded-lg shadow-xl">
-          <p className="text-2xl font-extrabold text-defaulttextcolor drop-shadow-lg">
-            🔍 За да можете да разгледате Вашите индивидуални статистики, моля,
-            първо генерирайте препоръки. Това ще ни позволи да съберем
-            необходимите данни и да Ви предоставим подробен анализ 📊, съобразен
-            с Вашите предпочитания. ⚙️
-          </p>
-        </div>
-      </FadeInWrapper>
+      <ErrorCard
+        message="🔍 За да можете да разгледате Вашите индивидуални статистики, моля,
+          първо генерирайте препоръки. Това ще ни позволи да съберем
+          необходимите данни и да Ви предоставим подробен анализ 📊, съобразен с
+          Вашите предпочитания. ⚙️"
+        mt={10}
+      />
     );
   }
 

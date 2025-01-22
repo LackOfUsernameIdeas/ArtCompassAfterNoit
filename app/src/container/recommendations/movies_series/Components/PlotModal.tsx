@@ -6,10 +6,6 @@ export const PlotModal: FC<PlotModalProps> = ({
   currentIndex,
   closeModal
 }) => {
-  if (!recommendationList.length) {
-    return <div>No recommendations available.</div>;
-  }
-
   const movie = recommendationList[currentIndex];
 
   return (
