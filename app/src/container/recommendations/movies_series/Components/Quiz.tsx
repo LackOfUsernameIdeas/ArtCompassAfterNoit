@@ -4,7 +4,7 @@ import { RecommendationsList } from "./RecommendationsList";
 import { QuizQuestions } from "./QuizQuestions";
 import { handleRetakeQuiz } from "../helper_functions";
 import Loader from "../../../../components/common/loader/Loader";
-import { QuizProps } from "../moviesSeriesRecommendations-types";
+import { Movie, QuizProps } from "../moviesSeriesRecommendations-types";
 
 export const Quiz: FC<QuizProps> = ({
   handleBookmarkClick,

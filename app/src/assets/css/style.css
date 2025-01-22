@@ -19945,10 +19945,6 @@ option.selectionList {
   @apply flex flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative bg-white dark:bg-bodybg p-6 shadow-lg w-full max-w-lg space-y-4 z-50;
 }
 
-.recommendation-small-details {
-  @apply text-sm text-primary mb-4;
-}
-
 .spinner {
   width: 80px; /* Increased size for better visibility */
   height: 80px; /* Increased size for better visibility */

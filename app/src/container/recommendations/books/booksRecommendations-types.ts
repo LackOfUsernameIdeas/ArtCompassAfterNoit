@@ -43,23 +43,38 @@ export interface Book {
   title_bg: string; // Българско заглавие на книгата
   real_edition_title: string; // Реално заглавие на изданието
   author: string | Promise<string>; // Име на автора (може да е обещание)
+  publisher: string; // Издателство
   genres_en: string | Promise<string>; // Жанрове на английски (може да е обещание)
   genres_bg: string | Promise<string>; // Жанрове на български (може да е обещание)
   description: string | Promise<string>; // Описание на книгата (може да е обещание)
   language: string | Promise<string>; // Езици на книгата (може да е обещание)
   origin: string; // Страна на произход
+  literary_awards: string; // Награди на книгата
+  setting: string; // Мястото, в което се развива сюжета
+  characters: string; // Героите в сюжета
+  series: string; // Поредица
   date_of_first_issue: string; // Дата на първо издание
   date_of_issue: string; // Дата на издаване
   goodreads_rating: number; // Goodreads рейтинг
+  goodreads_ratings_count: number; // Брой гласове в Goodreads
+  goodreads_reviews_count: number; // Брой ревюта в Goodreads
   reason: string; // Причина за препоръката
   adaptations: string; // Адаптации на книгата
   ISBN_10: string; // ISBN-10
   ISBN_13: string; // ISBN-13
   page_count: string; // Брой страници
+  book_format: string; // Вид на книгата (тип корица, е-книги)
   imageLink: string; // Линк към изображение на книгата
   source: string; // Източник (напр. Google Books)
 }
 
+// Enum за видовете книги
+export enum BookFormat {
+  "Paperback" = "Мека корица",
+  "Hardcover" = "Твърда корица",
+  "ebook" = "Е-книга",
+  "Kindle Edition" = "Kindle е-книга"
+}
 // Интерфейс за предпочитания на потребителя.
 export interface BooksUserPreferences {
   genres: { en: string; bg: string }[]; // Жанрове на английски и български
