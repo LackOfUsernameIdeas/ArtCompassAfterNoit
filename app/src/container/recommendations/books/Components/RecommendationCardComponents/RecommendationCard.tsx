@@ -115,7 +115,6 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
     resolveGenres();
   }, [recommendation.genres_bg]);
 
-  console.log("recommendation: ", recommendation);
   return (
     <div className="recommendation-card">
       <div className="flex w-full items-start">
@@ -153,22 +152,23 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               <strong className="text-xl text-defaulttextcolor/85 block text-center">
                 Герои:
               </strong>
-              {recommendation.characters ? (
-                <ul className="list-none">
-                  {recommendation.characters
-                    .split(", ")
-                    .map((character, index, array) => (
-                      <li key={index}>
-                        <span className="text-sm font-semibold text-defaulttextcolor/70">
-                          {character}
-                          {index < array.length - 1 && ","}
-                        </span>
-                      </li>
-                    ))}
-                </ul>
-              ) : (
-                <p className="text-center">Няма информация за героите</p>
-              )}
+              <div className="mt-5">
+                {recommendation.characters ? (
+                  <ul className="list-disc list-inside">
+                    {recommendation.characters
+                      .split(", ")
+                      .map((character, index) => (
+                        <li key={index}>
+                          <span className="text-sm font-semibold text-defaulttextcolor/70">
+                            {character}
+                          </span>
+                        </li>
+                      ))}
+                  </ul>
+                ) : (
+                  <p className="text-center">Няма информация за героите</p>
+                )}
+              </div>
             </div>
           )}
         </div>
