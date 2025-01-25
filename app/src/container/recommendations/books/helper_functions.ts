@@ -285,25 +285,27 @@ export const generateBooksRecommendations = async (
     interests
   } = booksUserPreferences;
   try {
-    // const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: `Bearer ${openAIKey}`
-    //   },
-    //   body: JSON.stringify(
-    //     import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
-    //       ? googleBooksPrompt
-    //       : goodreadsPrompt
-    //   )
-    // });
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${openAIKey}`
+      },
+      body: JSON.stringify(
+        import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
+          ? googleBooksPrompt(booksUserPreferences)
+          : goodreadsPrompt(booksUserPreferences)
+      )
+    });
 
-    // const responseData = await response.json();
-    // const responseJson = responseData.choices[0].message.content;
-    const responseJson =
-      import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
-        ? googleBooksExampleResponse
-        : goodreadsExampleResponse;
+    const responseData = await response.json();
+    const responseJson = responseData.choices[0].message.content;
+
+    // --- HARDCODED RESPONSE ЗА ТЕСТВАНЕ ---
+    // const responseJson =
+    //   import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
+    //     ? googleBooksExampleResponse
+    //     : goodreadsExampleResponse;
 
     const unescapedData = responseJson
       .replace(/^```json([\s\S]*?)```$/, "$1")
