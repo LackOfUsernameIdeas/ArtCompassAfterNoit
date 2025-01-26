@@ -10,7 +10,7 @@ const ChooseRecommendations: FC = () => {
   const navigate = useNavigate();
 
   const question = {
-    question: "Какво искате да разгледате? Филми и сериали или Книги?",
+    question: "Какво искате да разгледате в момента?",
     options: ["Филми и сериали", "Книги"]
   };
 
