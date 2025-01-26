@@ -42,7 +42,7 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
       localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     if (token) {
       // Препраща към приложението, ако съществува токен
-      navigate(`${import.meta.env.BASE_URL}app/home/`);
+      navigate(`${import.meta.env.BASE_URL}app/recommendations`);
     }
   }, [navigate]);
 

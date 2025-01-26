@@ -26,3 +26,10 @@ export type DataType = {
   topCountries: any[]; // Топ страни
   [key: `sorted${string}ByProsperity`]: any[]; // Подредени данни по просперитет
 };
+
+export interface UserData {
+  id: number; // Идентификатор на потребителя
+  first_name: string; // Първо име
+  last_name: string; // Фамилно име
+  email: string; // Имейл адрес
+}

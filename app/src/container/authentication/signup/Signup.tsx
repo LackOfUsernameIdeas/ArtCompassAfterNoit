@@ -47,7 +47,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
     const token =
       localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     if (token) {
-      navigate(`${import.meta.env.BASE_URL}app/home/`);
+      navigate(`${import.meta.env.BASE_URL}app/recommendations`);
     }
   }, [navigate]);
 

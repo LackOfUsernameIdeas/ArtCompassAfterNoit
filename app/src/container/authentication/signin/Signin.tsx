@@ -60,7 +60,7 @@ const Signincover: FC<SignincoverProps> = () => {
           const result = await response.json();
 
           if (result.valid) {
-            navigate(`${import.meta.env.BASE_URL}app/home`);
+            navigate(`${import.meta.env.BASE_URL}app/recommendations`);
           } else {
             console.log("Invalid token");
             localStorage.removeItem("authToken");
@@ -151,7 +151,7 @@ const Signincover: FC<SignincoverProps> = () => {
         sessionStorage.setItem("authToken", data.token);
       }
 
-      navigate(`${import.meta.env.BASE_URL}app/home`);
+      navigate(`${import.meta.env.BASE_URL}app/recommendations`);
     } catch (error: any) {
       setAlerts([
         {

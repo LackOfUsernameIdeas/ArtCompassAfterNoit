@@ -4,7 +4,7 @@ import { CSSTransition } from "react-transition-group";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
 import Loader from "../../../components/common/loader/Loader";
 import WidgetCards from "./components/WidgetCardsComponents";
-import { DataType } from "./choose-types";
+import { DataType, UserData } from "./choose-types";
 import { fetchData } from "./helper_functions";
 
 const ChooseRecommendations: FC = () => {
@@ -35,6 +35,14 @@ const ChooseRecommendations: FC = () => {
     topCountries: [] // Топ държави
   });
 
+  // Състояние за потребителски данни
+  const [userData, setUserData] = useState<UserData>({
+    id: 0, // ID на потребителя
+    first_name: "", // Име на потребителя
+    last_name: "", // Фамилия на потребителя
+    email: "" // Имейл на потребителя
+  });
+
   const question = {
     question: "Какво искате да разгледате в момента?",
     options: ["Филми и сериали", "Книги"]
@@ -63,7 +71,7 @@ const ChooseRecommendations: FC = () => {
     const token =
       localStorage.getItem("authToken") || sessionStorage.getItem("authToken"); // Вземане на токен от localStorage или sessionStorage
     if (token) {
-      fetchData(token, setData); // Извличане на данни с помощта на fetchData функцията
+      fetchData(token, setData, setUserData); // Извличане на данни с помощта на fetchData функцията
       console.log("fetching"); // Лог за следене на извличането на данни
     }
   }, []); // Празен масив като зависимост, за да се извика само веднъж при рендиране на компонента
@@ -76,7 +84,14 @@ const ChooseRecommendations: FC = () => {
         classNames="fade"
         unmountOnExit
       >
-        <div>
+        <div className="mt-auto">
+          <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">
+            <div>
+              <p className="font-semibold text-[1.125rem] text-defaulttextcolor dark:text-defaulttextcolor/70 !mb-0 ">
+                Здравейте, {userData.first_name} {userData.last_name}!
+              </p>
+            </div>
+          </div>
           <div className="grid grid-cols-12 gap-x-6">
             <WidgetCards data={data} />
           </div>
