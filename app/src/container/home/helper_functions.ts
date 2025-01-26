@@ -26,8 +26,8 @@ import {
  */
 export const fetchData = async (
   token: string,
-  setUserData: React.Dispatch<React.SetStateAction<any>>,
-  setData: React.Dispatch<React.SetStateAction<any>>
+  setData: React.Dispatch<React.SetStateAction<any>>,
+  setUserData?: React.Dispatch<React.SetStateAction<any>>
 ): Promise<void> => {
   try {
     // Fetch user data independently
@@ -39,7 +39,7 @@ export const fetchData = async (
       }
     })
       .then((res) => res.json())
-      .then((userData) => setUserData(userData)) // Set userData independently here
+      .then((userData) => (setUserData ? setUserData(userData) : null))
       .catch((error) => console.error("Error fetching user data:", error));
 
     // Fetch statistics data independently

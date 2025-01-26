@@ -72,7 +72,7 @@ const Home: FC<CrmProps> = () => {
     const token =
       localStorage.getItem("authToken") || sessionStorage.getItem("authToken"); // Вземане на токен от localStorage или sessionStorage
     if (token) {
-      fetchData(token, setUserData, setData); // Извличане на данни с помощта на fetchData функцията
+      fetchData(token, setData, setUserData); // Извличане на данни с помощта на fetchData функцията
       console.log("fetching"); // Лог за следене на извличането на данни
     }
   }, []); // Празен масив като зависимост, за да се извика само веднъж при рендиране на компонента

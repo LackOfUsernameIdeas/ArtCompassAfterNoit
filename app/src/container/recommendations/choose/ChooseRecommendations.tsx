@@ -1,13 +1,39 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CSSTransition } from "react-transition-group";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
 import Loader from "../../../components/common/loader/Loader";
+import WidgetCards from "./components/WidgetCardsComponents";
+import { DataType } from "./choose-types";
+import { fetchData } from "./helper_functions";
 
 const ChooseRecommendations: FC = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Състояния за задържане на извлечени данни
+  const [data, setData] = useState<DataType>({
+    usersCount: [], // Броя на потребителите
+    topRecommendations: [], // Топ препоръки
+    topGenres: [], // Топ жанрове
+    genrePopularityOverTime: {}, // Популярност на жанровете през времето
+    topActors: [], // Топ актьори
+    topDirectors: [], // Топ режисьори
+    topWriters: [], // Топ сценаристи
+    oscarsByMovie: [], // Оскари по филми
+    totalAwardsByMovieOrSeries: [], // Общо награди по филми или сериали
+    totalAwards: [], // Общо награди
+    sortedDirectorsByProsperity: [], // Режисьори, сортирани по просперитет
+    sortedActorsByProsperity: [], // Актьори, сортирани по просперитет
+    sortedWritersByProsperity: [], // Сценаристи, сортирани по просперитет
+    sortedMoviesByProsperity: [], // Филми, сортирани по процъфтяване
+    sortedMoviesAndSeriesByMetascore: [], // Филми и сериали, сортирани по Metascore
+    sortedMoviesAndSeriesByIMDbRating: [], // Филми и сериали, сортирани по IMDb рейтинг
+    sortedMoviesAndSeriesByRottenTomatoesRating: [], // Филми и сериали, сортирани по Rotten Tomatoes рейтинг
+    averageBoxOfficeAndScores: [], // Среден боксофис и оценки
+    topCountries: [] // Топ държави
+  });
 
   const question = {
     question: "Какво искате да разгледате в момента?",
@@ -33,6 +59,15 @@ const ChooseRecommendations: FC = () => {
     setLoading(false); // Stop loading after navigation
   };
 
+  useEffect(() => {
+    const token =
+      localStorage.getItem("authToken") || sessionStorage.getItem("authToken"); // Вземане на токен от localStorage или sessionStorage
+    if (token) {
+      fetchData(token, setData); // Извличане на данни с помощта на fetchData функцията
+      console.log("fetching"); // Лог за следене на извличането на данни
+    }
+  }, []); // Празен масив като зависимост, за да се извика само веднъж при рендиране на компонента
+
   return (
     <FadeInWrapper>
       <CSSTransition
@@ -43,6 +78,7 @@ const ChooseRecommendations: FC = () => {
       >
         <div className="flex items-center justify-center px-4">
           <div className="w-full max-w-4xl py-8 px-4">
+            <WidgetCards data={data} />
             <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
               <h2 className="text-xl font-semibold break-words">
                 {question.question}
@@ -85,6 +121,7 @@ const ChooseRecommendations: FC = () => {
           </div>
         </div>
       </CSSTransition>
+
       <CSSTransition
         in={loading}
         timeout={500}
