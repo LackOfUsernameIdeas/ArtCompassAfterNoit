@@ -211,6 +211,7 @@ def scrape_contributor():
     # Форматиране на наградите като низ с име и година (пример: "Награда (2020)")
     formatted_awards = ", ".join([
         f"{award['name']} ({datetime.fromtimestamp(award['awardedAt'] / 1000, tz=timezone.utc).strftime('%Y')})"
+        if award.get('awardedAt') is not None else f"{award['name']}"
         for award in literary_awards
     ])
 
