@@ -76,48 +76,53 @@ const ChooseRecommendations: FC = () => {
         classNames="fade"
         unmountOnExit
       >
-        <div className="flex items-center justify-center px-4">
-          <div className="w-full max-w-4xl py-8 px-4">
+        <div>
+          <div className="grid grid-cols-12 gap-x-6">
             <WidgetCards data={data} />
-            <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
-              <h2 className="text-xl font-semibold break-words">
-                {question.question}
-              </h2>
-            </div>
+          </div>
 
-            <div
-              className={`grid gap-4 mt-8 ${
-                (question.options.length ?? 0) > 6
-                  ? "grid-cols-2 md:grid-cols-5"
-                  : "grid-cols-1"
-              }`}
-            >
-              {question.options.map((option) => (
-                <div
-                  key={option}
-                  onClick={() => handleAnswerClick(option)}
-                  className={`${
-                    selectedAnswer === option
-                      ? "selected-answer transform scale-105"
-                      : "question hover:bg-secondary hover:text-white"
-                  } bg-opacity-70 p-6 text-white rounded-lg glow-effect transition-all duration-300 cursor-pointer flex justify-center items-center text-center`}
-                >
-                  {option}
-                </div>
-              ))}
-            </div>
+          <div className="flex items-center justify-center px-4">
+            <div className="w-full max-w-4xl py-8 px-4">
+              <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
+                <h2 className="text-xl font-semibold break-words">
+                  {question.question}
+                </h2>
+              </div>
 
-            <button
-              onClick={handleClick}
-              className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center w-full transition-all duration-300 ease-in-out transform ${
-                selectedAnswer
-                  ? "opacity-100 pointer-events-auto cursor-pointer hover:scale-105"
-                  : "opacity-50 pointer-events-none cursor-not-allowed"
-              }`}
-              disabled={!selectedAnswer}
-            >
-              Следващ въпрос
-            </button>
+              <div
+                className={`grid gap-4 mt-8 ${
+                  (question.options.length ?? 0) > 6
+                    ? "grid-cols-2 md:grid-cols-5"
+                    : "grid-cols-1"
+                }`}
+              >
+                {question.options.map((option) => (
+                  <div
+                    key={option}
+                    onClick={() => handleAnswerClick(option)}
+                    className={`${
+                      selectedAnswer === option
+                        ? "selected-answer transform scale-105"
+                        : "question hover:bg-secondary hover:text-white"
+                    } bg-opacity-70 p-6 text-white rounded-lg glow-effect transition-all duration-300 cursor-pointer flex justify-center items-center text-center`}
+                  >
+                    {option}
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={handleClick}
+                className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center w-full transition-all duration-300 ease-in-out transform ${
+                  selectedAnswer
+                    ? "opacity-100 pointer-events-auto cursor-pointer hover:scale-105"
+                    : "opacity-50 pointer-events-none cursor-not-allowed"
+                }`}
+                disabled={!selectedAnswer}
+              >
+                Следващ въпрос
+              </button>
+            </div>
           </div>
         </div>
       </CSSTransition>
