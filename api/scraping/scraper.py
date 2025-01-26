@@ -184,7 +184,7 @@ def scrape_contributor():
 
     # Ако времето на публикация е дефинирано, конвертираме от милисекунди в секунди
     # и го форматираме като четлива дата (пример: 'January 01, 2000')
-    if publication_time is not None:
+    if publication_time is not None and publication_time > 0:
         timestamp_sec = publication_time / 1000  # Преобразуване в секунди
         # Конвертиране на времевия маркер в UTC дата и форматиране на датата
         publication_time = datetime.fromtimestamp(timestamp_sec, tz=timezone.utc).strftime('%B %d, %Y')
@@ -210,8 +210,10 @@ def scrape_contributor():
     literary_awards = work_details.get('awardsWon', [])
     # Форматиране на наградите като низ с име и година (пример: "Награда (2020)")
     formatted_awards = ", ".join([
-        f"{award['name']} ({datetime.fromtimestamp(award['awardedAt'] / 1000, tz=timezone.utc).strftime('%Y')})"
-        if award.get('awardedAt') is not None else f"{award['name']}"
+        (
+            f"{award['name']} ({datetime.fromtimestamp(award['awardedAt'] / 1000, tz=timezone.utc).strftime('%Y')})"
+            if award.get('awardedAt') is not None and award['awardedAt'] > 0 else f"{award['name']}"
+        )
         for award in literary_awards
     ])
 

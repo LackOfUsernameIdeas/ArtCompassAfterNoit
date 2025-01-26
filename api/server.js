@@ -1152,6 +1152,44 @@ app.get("/get-goodreads-data-for-a-book", (req, res) => {
   });
 });
 
+// Вземане на JSON обект за книга от Goodreads
+app.get("/get-goodreads-json-object-for-a-book", (req, res) => {
+  const { url } = req.query;
+
+  // Проверка дали е подаден URL параметър в заявката
+  if (!url) {
+    return res.status(400).send("Грешка: URL параметър е необходим.");
+  }
+
+  // Стартиране на Python процес и подаване на URL като аргумент
+  const pythonProcess = spawn("python", [
+    "./scraping/scraper_script_tag_json.py",
+    url
+  ]);
+
+  let response = "";
+
+  // Улавяне на данни от стандартния изход (stdout)
+  pythonProcess.stdout.on("data", (data) => {
+    response += data.toString();
+  });
+
+  // Улавяне на грешки от стандартния изход за грешки (stderr) - по избор за дебъгване
+  pythonProcess.stderr.on("data", (data) => {
+    console.error("Python скрипт stderr:", data.toString());
+  });
+
+  // Обработка на затварянето на процеса
+  pythonProcess.on("close", (code) => {
+    if (code === 0) {
+      const jsonResponse = JSON.parse(response.trim());
+      res.status(200).json(jsonResponse); // Връща JSON отговор на клиента
+    } else {
+      res.status(500).send("Грешка: Изпълнението на Python скрипта неуспешно");
+    }
+  });
+});
+
 // Стартиране на сървъра
 app.listen(5000, () => {
   console.log("Server started on port 5000.");
