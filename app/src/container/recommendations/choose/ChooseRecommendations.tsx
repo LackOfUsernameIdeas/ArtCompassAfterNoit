@@ -15,24 +15,10 @@ const ChooseRecommendations: FC = () => {
   // Състояния за задържане на извлечени данни
   const [data, setData] = useState<DataType>({
     usersCount: [], // Броя на потребителите
-    topRecommendations: [], // Топ препоръки
     topGenres: [], // Топ жанрове
-    genrePopularityOverTime: {}, // Популярност на жанровете през времето
-    topActors: [], // Топ актьори
-    topDirectors: [], // Топ режисьори
-    topWriters: [], // Топ сценаристи
     oscarsByMovie: [], // Оскари по филми
-    totalAwardsByMovieOrSeries: [], // Общо награди по филми или сериали
     totalAwards: [], // Общо награди
-    sortedDirectorsByProsperity: [], // Режисьори, сортирани по просперитет
-    sortedActorsByProsperity: [], // Актьори, сортирани по просперитет
-    sortedWritersByProsperity: [], // Сценаристи, сортирани по просперитет
-    sortedMoviesByProsperity: [], // Филми, сортирани по процъфтяване
-    sortedMoviesAndSeriesByMetascore: [], // Филми и сериали, сортирани по Metascore
-    sortedMoviesAndSeriesByIMDbRating: [], // Филми и сериали, сортирани по IMDb рейтинг
-    sortedMoviesAndSeriesByRottenTomatoesRating: [], // Филми и сериали, сортирани по Rotten Tomatoes рейтинг
-    averageBoxOfficeAndScores: [], // Среден боксофис и оценки
-    topCountries: [] // Топ държави
+    averageBoxOfficeAndScores: [] // Среден боксофис и оценки
   });
 
   // Състояние за потребителски данни
@@ -84,7 +70,7 @@ const ChooseRecommendations: FC = () => {
         classNames="fade"
         unmountOnExit
       >
-        <div className="mt-auto">
+        <div>
           <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">
             <div>
               <p className="font-semibold text-[1.125rem] text-defaulttextcolor dark:text-defaulttextcolor/70 !mb-0 ">

@@ -44,11 +44,6 @@ export type RoleData = DirectorData[] | ActorData[] | WriterData[];
 // Тип данни за филтрирани таблици (съюз от данни за режисьори, актьори и писатели)
 export type FilteredTableData = (DirectorData | ActorData | WriterData)[];
 
-// Данни за потребителите
-export type UsersCountData = {
-  user_count: number; // Брой потребители
-};
-
 export interface UserData {
   id: number; // Идентификатор на потребителя
   first_name: string; // Първо име
@@ -134,16 +129,12 @@ export type HeatmapData = GenreSeriesData[];
 
 // Обобщени данни за платформата (топ препоръки, жанрове и др.)
 export type DataType = {
-  usersCount: UsersCountData[]; // Брой потребители
   topRecommendations: any[]; // Топ препоръки
-  topGenres: any[]; // Топ жанрове
   genrePopularityOverTime: Record<string, any>; // Популярност на жанровете през времето
   topActors: any[]; // Топ актьори
   topDirectors: any[]; // Топ режисьори
   topWriters: any[]; // Топ писатели
-  oscarsByMovie: any[]; // Оскари по филми
   totalAwardsByMovieOrSeries: any[]; // Общо награди по филми или сериали
-  totalAwards: any[]; // Общо награди
   sortedDirectorsByProsperity: any[]; // Подредени режисьори по просперитет
   sortedActorsByProsperity: any[]; // Подредени актьори по просперитет
   sortedWritersByProsperity: any[]; // Подредени писатели по просперитет
@@ -151,7 +142,6 @@ export type DataType = {
   sortedMoviesAndSeriesByMetascore: any[]; // Подредени филми и сериали по Metascore
   sortedMoviesAndSeriesByIMDbRating: any[]; // Подредени филми и сериали по IMDb рейтинг
   sortedMoviesAndSeriesByRottenTomatoesRating: any[]; // Подредени филми и сериали по Rotten Tomatoes рейтинг
-  averageBoxOfficeAndScores: any[]; // Средни стойности за бокс офис и рейтинги
   topCountries: any[]; // Топ страни
   [key: `sorted${string}ByProsperity`]: any[]; // Подредени данни по просперитет
 };

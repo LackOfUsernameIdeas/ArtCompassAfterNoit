@@ -47,57 +47,12 @@ export const fetchData = async (
     // Fetch statistics data independently
     const endpoints = [
       { key: "usersCount", endpoint: "/stats/platform/users-count" },
-      {
-        key: "topRecommendations",
-        endpoint: "/stats/platform/top-recommendations"
-      },
       { key: "topGenres", endpoint: "/stats/platform/top-genres" },
-      {
-        key: "genrePopularityOverTime",
-        endpoint: "/stats/platform/genre-popularity-over-time"
-      },
-      { key: "topActors", endpoint: "/stats/platform/top-actors" },
+      { key: "oscarsByMovie", endpoint: "/stats/platform/oscars-by-movie" },
+      { key: "totalAwards", endpoint: "/stats/platform/total-awards" },
       {
         key: "averageBoxOfficeAndScores",
         endpoint: "/stats/platform/average-scores"
-      },
-      { key: "topCountries", endpoint: "/stats/platform/top-countries" },
-      { key: "topDirectors", endpoint: "/stats/platform/top-directors" },
-      { key: "topWriters", endpoint: "/stats/platform/top-writers" },
-      { key: "oscarsByMovie", endpoint: "/stats/platform/oscars-by-movie" },
-      {
-        key: "totalAwardsByMovieOrSeries",
-        endpoint: "/stats/platform/total-awards-by-movie"
-      },
-      { key: "totalAwards", endpoint: "/stats/platform/total-awards" },
-      {
-        key: "sortedDirectorsByProsperity",
-        endpoint: "/stats/platform/sorted-directors-by-prosperity"
-      },
-      {
-        key: "sortedActorsByProsperity",
-        endpoint: "/stats/platform/sorted-actors-by-prosperity"
-      },
-      {
-        key: "sortedWritersByProsperity",
-        endpoint: "/stats/platform/sorted-writers-by-prosperity"
-      },
-      {
-        key: "sortedMoviesByProsperity",
-        endpoint: "/stats/platform/sorted-movies-by-prosperity"
-      },
-      {
-        key: "sortedMoviesAndSeriesByMetascore",
-        endpoint: "/stats/platform/sorted-movies-and-series-by-metascore"
-      },
-      {
-        key: "sortedMoviesAndSeriesByIMDbRating",
-        endpoint: "/stats/platform/sorted-movies-and-series-by-imdb-rating"
-      },
-      {
-        key: "sortedMoviesAndSeriesByRottenTomatoesRating",
-        endpoint:
-          "/stats/platform/sorted-movies-and-series-by-rotten-tomatoes-rating"
       }
     ];
 
