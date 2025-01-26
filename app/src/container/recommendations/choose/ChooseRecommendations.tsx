@@ -73,10 +73,10 @@ const ChooseRecommendations: FC = () => {
           <div className="mt-8">
             <button
               onClick={handleClick}
-              className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center transition-all duration-200 ${
+              className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center transition-all duration-300 ease-in-out transform ${
                 selectedAnswer
-                  ? "opacity-100 pointer-events-auto cursor-pointer"
-                  : "opacity-0 pointer-events-none"
+                  ? "opacity-100 pointer-events-auto cursor-pointer hover:scale-105"
+                  : "opacity-50 pointer-events-none cursor-not-allowed"
               }`}
               disabled={!selectedAnswer}
             >

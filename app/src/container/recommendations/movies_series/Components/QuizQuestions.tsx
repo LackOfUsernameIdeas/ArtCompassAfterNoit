@@ -484,13 +484,13 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
 
           <div
             onClick={handleClick}
-            className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center transition-all duration-200 ${
+            className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center transition-all duration-300 ease-in-out transform ${
               (selectedAnswer && selectedAnswer.length > 0) ||
               (currentQuestion.isInput &&
                 typeof currentQuestion.value === "string" &&
                 currentQuestion.value.trim() !== "")
-                ? "opacity-100 pointer-events-auto cursor-pointer"
-                : "opacity-0 pointer-events-none"
+                ? "opacity-100 pointer-events-auto cursor-pointer hover:scale-105"
+                : "opacity-50 pointer-events-none cursor-not-allowed"
             }`}
           >
             {currentQuestionIndex === totalQuestions - 1
