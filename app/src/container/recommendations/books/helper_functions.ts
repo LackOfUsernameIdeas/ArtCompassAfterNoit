@@ -12,7 +12,10 @@ import {
   googleBooksPrompt,
   openAIKey
 } from "./booksRecommendations-data";
-import { googleBooksGenreOptions } from "../../data_common";
+import {
+  goodreadsGenreOptions,
+  googleBooksGenreOptions
+} from "../../data_common";
 import {
   checkRecommendationExistsInReadlist,
   showNotification,
@@ -274,16 +277,6 @@ export const generateBooksRecommendations = async (
   >,
   token: string | null
 ) => {
-  const {
-    genres,
-    moods,
-    authors,
-    origin,
-    pacing,
-    depth,
-    targetGroup,
-    interests
-  } = booksUserPreferences;
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -449,100 +442,113 @@ export const generateBooksRecommendations = async (
             // Извикваме функцията, за да изпълним и двете операции
             checkAndSaveBooksRecommendation();
           } else if (bookId) {
-            const goodreadsResponse = await fetch(
-              `${
-                import.meta.env.VITE_API_BASE_URL
-              }/get-goodreads-data-for-a-book?url=${bookUrl}`
-            );
-            const goodreadsData = await goodreadsResponse.json();
+            try {
+              const goodreadsResponse = await fetch(
+                `${
+                  import.meta.env.VITE_API_BASE_URL
+                }/get-goodreads-data-for-a-book?url=${bookUrl}`
+              );
 
-            console.log(
-              `Google Books data for ${bookName}: ${JSON.stringify(
-                goodreadsData,
-                null,
-                2
-              )}, `
-            );
-
-            const author = await translate(goodreadsData.contributors);
-            const description = await translateWithDetection(
-              goodreadsData.description
-            );
-
-            const genres_en = goodreadsData.genres;
-
-            const genres_bg_raw = await translate(goodreadsData.genres);
-            const genres_bg = genres_bg_raw
-              .split(",") // Split the string by commas into an array
-              .map(
-                (genre) =>
-                  genre.trim().charAt(0).toUpperCase() + genre.trim().slice(1)
-              ) // Capitalize the first letter of each word
-              .join(", "); // Join the array back into a string
-
-            const language = await translate(goodreadsData.language);
-
-            const publisher = await translate(goodreadsData.publisher);
-
-            const recommendationData = {
-              goodreads_id: bookId,
-              title_en: goodreadsData.title,
-              original_title: goodreadsData.original_title,
-              title_bg: book.title_bg,
-              real_edition_title: book.real_edition_title,
-              author: author,
-              genres_en: genres_en,
-              genres_bg: genres_bg,
-              description: description,
-              language: language,
-              origin: book.origin,
-              date_of_first_issue: goodreadsData.first_publication_info,
-              date_of_issue: goodreadsData.publication_time,
-              publisher: publisher,
-              goodreads_rating: goodreadsData.rating,
-              goodreads_ratings_count: goodreadsData.ratings_count,
-              goodreads_reviews_count: goodreadsData.reviews_count,
-              reason: book.reason,
-              adaptations: book.adaptations,
-              ISBN_10: goodreadsData.isbn10 || goodreadsData.asin,
-              ISBN_13: goodreadsData.isbn13,
-              page_count: goodreadsData.pages_count,
-              book_format: goodreadsData.book_format,
-              imageLink: goodreadsData.image_url,
-              literary_awards: goodreadsData.literary_awards,
-              setting: goodreadsData.setting,
-              characters: goodreadsData.characters,
-              series: goodreadsData.series,
-              source: "Goodreads"
-            };
-
-            // Първо, задаваме списъка с препоръки
-            setRecommendationList((prevRecommendations) => [
-              ...prevRecommendations,
-              recommendationData
-            ]);
-
-            // След това изпълняваме проверката и записа паралелно, използвайки
-            const checkAndSaveBooksRecommendation = async () => {
-              // Проверяваме дали книгата съществува в таблицата за readlist
-              const existsInReadlist =
-                await checkRecommendationExistsInReadlist(bookId, token);
-
-              // Ако книгата не съществува в readlist, добавяме я към "bookmarkedBooks" с информация за ID и статус
-              if (existsInReadlist) {
-                setBookmarkedBooks((prevBooks) => {
-                  return {
-                    ...prevBooks,
-                    [recommendationData.goodreads_id]: recommendationData
-                  };
-                });
+              if (!goodreadsResponse.ok) {
+                console.error(
+                  `Failed to fetch Goodreads data for ${bookName}. Status: ${goodreadsResponse.status}`
+                );
+                return; // Skip this book
               }
-              // Записваме препоръката в базата данни
-              await saveBookRecommendation(recommendationData, date, token);
-            };
 
-            // Извикваме функцията, за да изпълним и двете операции
-            checkAndSaveBooksRecommendation();
+              const goodreadsData = await goodreadsResponse.json();
+
+              console.log(
+                `Goodreads data for ${bookName}: ${JSON.stringify(
+                  goodreadsData,
+                  null,
+                  2
+                )}, `
+              );
+
+              const author = await translate(goodreadsData.contributors);
+              const description = await translateWithDetection(
+                goodreadsData.description
+              );
+
+              const genres_en = goodreadsData.genres;
+
+              const genres_bg_raw = await translate(goodreadsData.genres);
+              const genres_bg = genres_bg_raw
+                .split(",") // Split the string by commas into an array
+                .map(
+                  (genre) =>
+                    genre.trim().charAt(0).toUpperCase() + genre.trim().slice(1)
+                ) // Capitalize the first letter of each word
+                .join(", "); // Join the array back into a string
+
+              const language = await translate(goodreadsData.language);
+
+              const publisher = await translate(goodreadsData.publisher);
+
+              const recommendationData = {
+                goodreads_id: bookId,
+                title_en: goodreadsData.title,
+                original_title: goodreadsData.original_title,
+                title_bg: book.title_bg,
+                real_edition_title: book.real_edition_title,
+                author: author,
+                genres_en: genres_en,
+                genres_bg: genres_bg,
+                description: description,
+                language: language,
+                origin: book.origin,
+                date_of_first_issue: goodreadsData.first_publication_info,
+                date_of_issue: goodreadsData.publication_time,
+                publisher: publisher,
+                goodreads_rating: goodreadsData.rating,
+                goodreads_ratings_count: goodreadsData.ratings_count,
+                goodreads_reviews_count: goodreadsData.reviews_count,
+                reason: book.reason,
+                adaptations: book.adaptations,
+                ISBN_10: goodreadsData.isbn10 || goodreadsData.asin,
+                ISBN_13: goodreadsData.isbn13,
+                page_count: goodreadsData.pages_count,
+                book_format: goodreadsData.book_format,
+                imageLink: goodreadsData.image_url,
+                literary_awards: goodreadsData.literary_awards,
+                setting: goodreadsData.setting,
+                characters: goodreadsData.characters,
+                series: goodreadsData.series,
+                source: "Goodreads"
+              };
+
+              // Първо, задаваме списъка с препоръки
+              setRecommendationList((prevRecommendations) => [
+                ...prevRecommendations,
+                recommendationData
+              ]);
+
+              // След това изпълняваме проверката и записа паралелно, използвайки
+              const checkAndSaveBooksRecommendation = async () => {
+                // Проверяваме дали книгата съществува в таблицата за readlist
+                const existsInReadlist =
+                  await checkRecommendationExistsInReadlist(bookId, token);
+
+                // Ако книгата не съществува в readlist, добавяме я към "bookmarkedBooks" с информация за ID и статус
+                if (existsInReadlist) {
+                  setBookmarkedBooks((prevBooks) => {
+                    return {
+                      ...prevBooks,
+                      [recommendationData.goodreads_id]: recommendationData
+                    };
+                  });
+                }
+                // Записваме препоръката в базата данни
+                await saveBookRecommendation(recommendationData, date, token);
+              };
+
+              // Извикваме функцията, за да изпълним и двете операции
+              checkAndSaveBooksRecommendation();
+            } catch (err) {
+              console.error(`Error processing book ${bookName}:`, err);
+              return; // Skip this book if any unexpected error occurs
+            }
           } else {
             console.log(`Book ID not found for ${bookName}!111`);
           }
@@ -808,9 +814,11 @@ export const handleAnswerClick = (
 ) => {
   if (currentQuestion.isMultipleChoice) {
     if (currentQuestion.setter === setGenres) {
-      const selectedGenre = googleBooksGenreOptions.find(
-        (genre) => genre.bg === answer
-      );
+      const selectedGenre = (
+        import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
+          ? googleBooksGenreOptions
+          : goodreadsGenreOptions
+      ).find((genre) => genre.bg === answer);
 
       if (selectedGenre) {
         toggleGenre(selectedGenre, setGenres);

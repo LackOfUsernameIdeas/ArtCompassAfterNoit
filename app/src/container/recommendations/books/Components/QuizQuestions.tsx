@@ -16,7 +16,10 @@ import {
   depthOptions,
   targetGroupOptions
 } from "../booksRecommendations-data";
-import { googleBooksGenreOptions } from "../../../data_common";
+import {
+  goodreadsGenreOptions,
+  googleBooksGenreOptions
+} from "../../../data_common";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { ViewRecommendations } from "./ViewRecommendations";
 import Notification from "../../../../components/common/notification/Notification";
@@ -51,7 +54,10 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   const questions = [
     {
       question: "Кои жанрове Ви се четат в момента?",
-      options: googleBooksGenreOptions,
+      options:
+        import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
+          ? googleBooksGenreOptions
+          : goodreadsGenreOptions,
       isMultipleChoice: true,
       value: genres,
       setter: setGenres
@@ -231,6 +237,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
     }
   }, [currentQuestion, selectedAnswer]);
 
+  console.log("user preferences: ", booksUserPreferences);
   return (
     <div>
       {showViewRecommendations && (
