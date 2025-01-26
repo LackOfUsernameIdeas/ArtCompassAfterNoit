@@ -482,35 +482,45 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
             </div>
           )}
 
-          <div
-            onClick={handleClick}
-            className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center transition-all duration-300 ease-in-out transform ${
-              (selectedAnswer && selectedAnswer.length > 0) ||
-              (currentQuestion.isInput &&
-                typeof currentQuestion.value === "string" &&
-                currentQuestion.value.trim() !== "")
-                ? "opacity-100 pointer-events-auto cursor-pointer hover:scale-105"
-                : "opacity-50 pointer-events-none cursor-not-allowed"
-            }`}
-          >
-            {currentQuestionIndex === totalQuestions - 1
-              ? "Изпрати"
-              : "Следващ въпрос"}
-
+          <div>
+            <div
+              onClick={handleClick}
+              className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center transition-all duration-300 ease-in-out transform ${
+                (selectedAnswer && selectedAnswer.length > 0) ||
+                (currentQuestion.isInput &&
+                  typeof currentQuestion.value === "string" &&
+                  currentQuestion.value.trim() !== "")
+                  ? "opacity-100 pointer-events-auto cursor-pointer hover:scale-105"
+                  : "opacity-50 pointer-events-none cursor-not-allowed"
+              }`}
+            >
+              {currentQuestionIndex === totalQuestions - 1
+                ? "Изпрати"
+                : "Следващ въпрос"}
+            </div>
+            {/* Modal Component */}
             {isModalOpen && alreadyHasRecommendations && (
-              <ConfirmationModal
-                setNotification={setNotification}
-                setIsModalOpen={setIsModalOpen}
-                setLoading={setLoading}
-                setSubmitted={setSubmitted}
-                handleSubmit={handleSubmit}
-                setRecommendationList={setRecommendationList}
-                setBookmarkedMovies={setBookmarkedMovies}
-                setSubmitCount={setSubmitCount}
-                moviesSeriesUserPreferences={moviesSeriesUserPreferences}
-                token={token}
-                submitCount={submitCount}
-              />
+              <div
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+                role="dialog"
+                aria-modal="true"
+              >
+                <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+                  <ConfirmationModal
+                    setNotification={setNotification}
+                    setIsModalOpen={setIsModalOpen}
+                    setLoading={setLoading}
+                    setSubmitted={setSubmitted}
+                    handleSubmit={handleSubmit}
+                    setRecommendationList={setRecommendationList}
+                    setBookmarkedMovies={setBookmarkedMovies}
+                    setSubmitCount={setSubmitCount}
+                    moviesSeriesUserPreferences={moviesSeriesUserPreferences}
+                    token={token}
+                    submitCount={submitCount}
+                  />
+                </div>
+              </div>
             )}
           </div>
         </div>
