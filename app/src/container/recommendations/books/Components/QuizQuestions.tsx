@@ -277,7 +277,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
           </div>
           <div className={isBackDisabled ? "my-8" : "mb-2"}>
             {!isBackDisabled && (
-              <div className="flex justify-start ">
+              <div className="flex justify-start">
                 <button
                   onClick={() =>
                     handleBack(

@@ -72,7 +72,11 @@ const ChooseRecommendations: FC = () => {
             <div className="mt-8">
               <button
                 onClick={handleClick}
-                className="w-full py-2 px-4 bg-primary text-white rounded-lg transition-all duration-300"
+                className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center transition-all duration-200 ${
+                  selectedAnswer && selectedAnswer.length > 0
+                    ? "opacity-100 pointer-events-auto cursor-pointer"
+                    : "opacity-0 pointer-events-none"
+                }`}
                 disabled={!selectedAnswer}
               >
                 Следващ въпрос
