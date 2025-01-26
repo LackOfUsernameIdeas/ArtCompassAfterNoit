@@ -120,9 +120,12 @@ const fetchBooksIDWithFailover = async (
   ];
 
   const enginesGoodreads = [
+    { key: "AIzaSyDx1TITxqoRZR3stELH_EKM4CRFIihcrUE", cx: "16d236f4de37240b0" },
     { key: "AIzaSyAefnCBUG8640RF8b2pd1cWyS6ZBXBXIeQ", cx: "16d236f4de37240b0" },
     { key: "AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA", cx: "450bbb0da19164cf6" },
-    { key: "AIzaSyAUOQzjNbBnGSBVvCZkWqHX7uebGZRY0lg", cx: "727f76a1178b143c3" }
+    { key: "AIzaSyAUOQzjNbBnGSBVvCZkWqHX7uebGZRY0lg", cx: "727f76a1178b143c3" },
+    { key: "AIzaSyDoOjTIaxiG8b8fmuIbUAVHTQBzubTsYso", cx: "450bbb0da19164cf6" },
+    { key: "AIzaSyB7Sal-d83t6ksI7vePRehZcWgYf42q-Tg", cx: "727f76a1178b143c3" }
   ];
 
   for (let engine of source == "GoogleBooks"
