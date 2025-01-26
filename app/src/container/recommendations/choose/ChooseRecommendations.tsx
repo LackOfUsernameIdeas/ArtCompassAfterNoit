@@ -1,7 +1,6 @@
 import { FC, useState, useEffect } from "react";
 import { CSSTransition } from "react-transition-group";
 import { useNavigate } from "react-router-dom";
-import Loader from "../../../components/common/loader/Loader";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
 
 const ChooseRecommendations: FC = () => {
