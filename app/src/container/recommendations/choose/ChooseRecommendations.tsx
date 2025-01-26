@@ -12,14 +12,6 @@ const ChooseRecommendations: FC = () => {
     options: ["Филми и сериали", "Книги"]
   };
 
-  // Simulating a page load delay
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 100);
-    return () => clearTimeout(timer);
-  }, []);
-
   const handleAnswerClick = (answer: string) => {
     setSelectedAnswer(answer);
   };
@@ -39,14 +31,12 @@ const ChooseRecommendations: FC = () => {
     <FadeInWrapper>
       <div className="flex items-center justify-center px-4">
         <div className="w-full max-w-4xl py-8 px-4">
-          {/* Question Header */}
           <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
             <h2 className="text-xl font-semibold break-words">
               {question.question}
             </h2>
           </div>
 
-          {/* Grid Layout for Options */}
           <div
             className={`grid gap-4 mt-8 ${
               (question.options.length ?? 0) > 6
@@ -69,20 +59,17 @@ const ChooseRecommendations: FC = () => {
             ))}
           </div>
 
-          {/* Next Button */}
-          <div className="mt-8">
-            <button
-              onClick={handleClick}
-              className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center transition-all duration-300 ease-in-out transform ${
-                selectedAnswer
-                  ? "opacity-100 pointer-events-auto cursor-pointer hover:scale-105"
-                  : "opacity-50 pointer-events-none cursor-not-allowed"
-              }`}
-              disabled={!selectedAnswer}
-            >
-              Следващ въпрос
-            </button>
-          </div>
+          <button
+            onClick={handleClick}
+            className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center w-full transition-all duration-300 ease-in-out transform ${
+              selectedAnswer
+                ? "opacity-100 pointer-events-auto cursor-pointer hover:scale-105"
+                : "opacity-50 pointer-events-none cursor-not-allowed"
+            }`}
+            disabled={!selectedAnswer}
+          >
+            Следващ въпрос
+          </button>
         </div>
       </div>
     </FadeInWrapper>
