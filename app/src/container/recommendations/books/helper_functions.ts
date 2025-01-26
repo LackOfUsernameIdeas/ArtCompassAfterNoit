@@ -314,244 +314,262 @@ export const generateBooksRecommendations = async (
 
     for (const book of recommendations) {
       const bookName = book.real_edition_title;
-      console.log("bookName: ", bookName);
+      console.log("Processing book: ", bookName);
       const bookResults = await fetchBooksIDWithFailover(
         bookName,
         import.meta.env.VITE_BOOKS_SOURCE
       );
 
-      console.log(bookResults);
-      if (Array.isArray(bookResults.items)) {
-        const bookItem = bookResults.items.find((item: { link: string }) =>
-          import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
-            ? item.link.includes("books.google.com/books/about/")
-            : item.link.includes("goodreads.com/book/show/")
+      console.log("Book results: ", bookResults);
+      if (!Array.isArray(bookResults.items)) {
+        console.warn(
+          `No items found for book: ${bookName} in Google Custom Search Engine.`
         );
-        console.log(`bookItem: ${bookItem}`);
-        if (bookItem) {
-          const bookUrl = bookItem.link;
-          const bookId =
-            import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
-              ? bookUrl.match(/id=([a-zA-Z0-9-_]+)/)?.[1]
-              : bookUrl.match(/show\/(\d+)/)?.[1];
+        continue; // Skip to the next book
+      }
 
-          if (bookId && import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks") {
-            const googleBooksResponse = await fetch(
-              `https://www.googleapis.com/books/v1/volumes/${bookId}`
-            );
-            const googleBooksData = await googleBooksResponse.json();
+      const bookItem = bookResults.items.find((item: { link: string }) =>
+        import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
+          ? item.link.includes("books.google.com/books/about/")
+          : item.link.includes("goodreads.com/book/show/")
+      );
+      console.log(`bookItem: ${bookItem}`);
 
-            console.log(
-              `Google Books data for ${bookName}: ${JSON.stringify(
-                googleBooksData,
-                null,
-                2
-              )}, `
-            );
+      if (!bookItem) {
+        console.warn(`No valid book item found for: ${bookName}`);
+        continue; // Skip to the next book
+      }
 
-            const author = await processDataWithFallback(
-              translate(googleBooksData.volumeInfo?.authors.join(", ")),
-              translate(book?.author)
-            );
-            const description = await processDataWithFallback(
-              translate(
-                removeHtmlTags(googleBooksData.volumeInfo?.description)
-              ),
-              book.description
-            );
-            const genres_en = await processBookGenres(
-              googleBooksData.volumeInfo?.categories
-            );
-            const genres_bg = await processBookGenres(
-              googleBooksData.volumeInfo?.categories,
-              true
-            );
-            const language = await processDataWithFallback(
-              translate(ISO6391.getName(googleBooksData.volumeInfo?.language)),
-              book?.language
-            );
+      const bookUrl = bookItem.link;
+      const bookId =
+        import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
+          ? bookUrl.match(/id=([a-zA-Z0-9-_]+)/)?.[1]
+          : bookUrl.match(/show\/(\d+)/)?.[1];
 
-            const publisher = await translate(
-              googleBooksData.volumeInfo.publisher
-            );
+      if (!bookId) {
+        console.warn(`No valid book ID found for: ${bookName}`);
+        continue; // Skip to the next book
+      }
 
-            const recommendationData = {
-              google_books_id: googleBooksData.id,
-              title_en: googleBooksData.volumeInfo.title,
-              title_bg: book.title_bg,
-              real_edition_title: book.real_edition_title,
-              author: author,
-              genres_en: genres_en,
-              genres_bg: genres_bg,
-              description: description,
-              language: language,
-              origin: book.origin,
-              date_of_first_issue: book.date_of_first_issue,
-              date_of_issue: processDataWithFallback(
-                googleBooksData.volumeInfo.publishedDate,
-                book.date_of_issue
-              ),
-              publisher: publisher,
-              goodreads_rating: book.goodreads_rating,
-              reason: book.reason,
-              adaptations: book.adaptations,
-              ISBN_10: googleBooksData.volumeInfo.industryIdentifiers.find(
-                (identifier: IndustryIdentifier) =>
-                  identifier.type === "ISBN_10"
-              ).identifier,
-              ISBN_13: googleBooksData.volumeInfo.industryIdentifiers.find(
-                (identifier: IndustryIdentifier) =>
-                  identifier.type === "ISBN_13"
-              ).identifier,
-              page_count: processDataWithFallback(
-                googleBooksData.volumeInfo.printedPageCount,
-                book.page_count
-              ),
-              imageLink: googleBooksData.volumeInfo.imageLinks.thumbnail,
-              source: "Google Books"
-            };
+      if (import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks") {
+        const googleBooksResponse = await fetch(
+          `https://www.googleapis.com/books/v1/volumes/${bookId}`
+        );
 
-            // Първо, задаваме списъка с препоръки
-            setRecommendationList((prevRecommendations) => [
-              ...prevRecommendations,
-              recommendationData
-            ]);
+        if (!googleBooksResponse.ok) {
+          console.error(
+            `Failed to fetch Google Books data for ${bookName}. Status: ${googleBooksResponse.status}`
+          );
+          continue; // Skip to the next book
+        }
 
-            // След това изпълняваме проверката и записа паралелно, използвайки
-            const checkAndSaveBooksRecommendation = async () => {
-              // Проверяваме дали книгата съществува в таблицата за readlist
-              const existsInReadlist =
-                await checkRecommendationExistsInReadlist(
-                  googleBooksData.id,
-                  token
-                );
+        const googleBooksData = await googleBooksResponse.json();
 
-              // Ако книгата не съществува в readlist, добавяме я към "bookmarkedBooks" с информация за ID и статус
-              if (existsInReadlist) {
-                setBookmarkedBooks((prevBooks) => {
-                  return {
-                    ...prevBooks,
-                    [recommendationData.google_books_id]: recommendationData
-                  };
-                });
-              }
-              // Записваме препоръката в базата данни
-              await saveBookRecommendation(recommendationData, date, token);
-            };
+        console.log(
+          `Google Books data for ${bookName}: ${JSON.stringify(
+            googleBooksData,
+            null,
+            2
+          )}, `
+        );
 
-            // Извикваме функцията, за да изпълним и двете операции
-            checkAndSaveBooksRecommendation();
-          } else if (bookId) {
-            try {
-              const goodreadsResponse = await fetch(
-                `${
-                  import.meta.env.VITE_API_BASE_URL
-                }/get-goodreads-data-for-a-book?url=${bookUrl}`
-              );
+        const author = await processDataWithFallback(
+          translate(googleBooksData.volumeInfo?.authors.join(", ")),
+          translate(book?.author)
+        );
+        const description = await processDataWithFallback(
+          translate(removeHtmlTags(googleBooksData.volumeInfo?.description)),
+          book.description
+        );
+        const genres_en = await processBookGenres(
+          googleBooksData.volumeInfo?.categories
+        );
+        const genres_bg = await processBookGenres(
+          googleBooksData.volumeInfo?.categories,
+          true
+        );
+        const language = await processDataWithFallback(
+          translate(ISO6391.getName(googleBooksData.volumeInfo?.language)),
+          book?.language
+        );
 
-              if (!goodreadsResponse.ok) {
-                console.error(
-                  `Failed to fetch Goodreads data for ${bookName}. Status: ${goodreadsResponse.status}`
-                );
-                return; // Skip this book
-              }
+        const publisher = await translate(googleBooksData.volumeInfo.publisher);
 
-              const goodreadsData = await goodreadsResponse.json();
+        const recommendationData = {
+          google_books_id: googleBooksData.id,
+          title_en: googleBooksData.volumeInfo.title,
+          title_bg: book.title_bg,
+          real_edition_title: book.real_edition_title,
+          author: author,
+          genres_en: genres_en,
+          genres_bg: genres_bg,
+          description: description,
+          language: language,
+          origin: book.origin,
+          date_of_first_issue: book.date_of_first_issue,
+          date_of_issue: processDataWithFallback(
+            googleBooksData.volumeInfo.publishedDate,
+            book.date_of_issue
+          ),
+          publisher: publisher,
+          goodreads_rating: book.goodreads_rating,
+          reason: book.reason,
+          adaptations: book.adaptations,
+          ISBN_10: googleBooksData.volumeInfo.industryIdentifiers.find(
+            (identifier: IndustryIdentifier) => identifier.type === "ISBN_10"
+          ).identifier,
+          ISBN_13: googleBooksData.volumeInfo.industryIdentifiers.find(
+            (identifier: IndustryIdentifier) => identifier.type === "ISBN_13"
+          ).identifier,
+          page_count: processDataWithFallback(
+            googleBooksData.volumeInfo.printedPageCount,
+            book.page_count
+          ),
+          imageLink: googleBooksData.volumeInfo.imageLinks.thumbnail,
+          source: "Google Books"
+        };
 
-              console.log(
-                `Goodreads data for ${bookName}: ${JSON.stringify(
-                  goodreadsData,
-                  null,
-                  2
-                )}, `
-              );
+        // Първо, задаваме списъка с препоръки
+        setRecommendationList((prevRecommendations) => [
+          ...prevRecommendations,
+          recommendationData
+        ]);
 
-              const author = await translate(goodreadsData.contributors);
-              const description = await translateWithDetection(
-                goodreadsData.description
-              );
+        // След това изпълняваме проверката и записа паралелно, използвайки
+        const checkAndSaveBooksRecommendation = async () => {
+          // Проверяваме дали книгата съществува в таблицата за readlist
+          const existsInReadlist = await checkRecommendationExistsInReadlist(
+            googleBooksData.id,
+            token
+          );
 
-              const genres_en = goodreadsData.genres;
-
-              const genres_bg_raw = await translate(goodreadsData.genres);
-              const genres_bg = genres_bg_raw
-                .split(",") // Split the string by commas into an array
-                .map(
-                  (genre) =>
-                    genre.trim().charAt(0).toUpperCase() + genre.trim().slice(1)
-                ) // Capitalize the first letter of each word
-                .join(", "); // Join the array back into a string
-
-              const language = await translate(goodreadsData.language);
-
-              const publisher = await translate(goodreadsData.publisher);
-
-              const recommendationData = {
-                goodreads_id: bookId,
-                title_en: goodreadsData.title,
-                original_title: goodreadsData.original_title,
-                title_bg: book.title_bg,
-                real_edition_title: book.real_edition_title,
-                author: author,
-                genres_en: genres_en,
-                genres_bg: genres_bg,
-                description: description,
-                language: language,
-                origin: book.origin,
-                date_of_first_issue: goodreadsData.first_publication_info,
-                date_of_issue: goodreadsData.publication_time,
-                publisher: publisher,
-                goodreads_rating: goodreadsData.rating,
-                goodreads_ratings_count: goodreadsData.ratings_count,
-                goodreads_reviews_count: goodreadsData.reviews_count,
-                reason: book.reason,
-                adaptations: book.adaptations,
-                ISBN_10: goodreadsData.isbn10 || goodreadsData.asin,
-                ISBN_13: goodreadsData.isbn13,
-                page_count: goodreadsData.pages_count,
-                book_format: goodreadsData.book_format,
-                imageLink: goodreadsData.image_url,
-                literary_awards: goodreadsData.literary_awards,
-                setting: goodreadsData.setting,
-                characters: goodreadsData.characters,
-                series: goodreadsData.series,
-                source: "Goodreads"
+          // Ако книгата не съществува в readlist, добавяме я към "bookmarkedBooks" с информация за ID и статус
+          if (existsInReadlist) {
+            setBookmarkedBooks((prevBooks) => {
+              return {
+                ...prevBooks,
+                [recommendationData.google_books_id]: recommendationData
               };
-
-              // Първо, задаваме списъка с препоръки
-              setRecommendationList((prevRecommendations) => [
-                ...prevRecommendations,
-                recommendationData
-              ]);
-
-              // След това изпълняваме проверката и записа паралелно, използвайки
-              const checkAndSaveBooksRecommendation = async () => {
-                // Проверяваме дали книгата съществува в таблицата за readlist
-                const existsInReadlist =
-                  await checkRecommendationExistsInReadlist(bookId, token);
-
-                // Ако книгата не съществува в readlist, добавяме я към "bookmarkedBooks" с информация за ID и статус
-                if (existsInReadlist) {
-                  setBookmarkedBooks((prevBooks) => {
-                    return {
-                      ...prevBooks,
-                      [recommendationData.goodreads_id]: recommendationData
-                    };
-                  });
-                }
-                // Записваме препоръката в базата данни
-                await saveBookRecommendation(recommendationData, date, token);
-              };
-
-              // Извикваме функцията, за да изпълним и двете операции
-              checkAndSaveBooksRecommendation();
-            } catch (err) {
-              console.error(`Error processing book ${bookName}:`, err);
-              return; // Skip this book if any unexpected error occurs
-            }
-          } else {
-            console.log(`Book ID not found for ${bookName}!111`);
+            });
           }
+          // Записваме препоръката в базата данни
+          await saveBookRecommendation(recommendationData, date, token);
+        };
+
+        // Извикваме функцията, за да изпълним и двете операции
+        checkAndSaveBooksRecommendation();
+      } else {
+        try {
+          const goodreadsResponse = await fetch(
+            `${
+              import.meta.env.VITE_API_BASE_URL
+            }/get-goodreads-data-for-a-book?url=${bookUrl}`
+          );
+
+          if (!goodreadsResponse.ok) {
+            console.error(
+              `Failed to fetch Goodreads data for ${bookName}. Status: ${goodreadsResponse.status}`
+            );
+            continue; // Skip to the next book
+          }
+
+          const goodreadsData = await goodreadsResponse.json();
+
+          console.log(
+            `Goodreads data for ${bookName}: ${JSON.stringify(
+              goodreadsData,
+              null,
+              2
+            )}, `
+          );
+
+          const author = await translate(goodreadsData.contributors);
+          const description = await translateWithDetection(
+            goodreadsData.description
+          );
+
+          const genres_en = goodreadsData.genres;
+
+          const genres_bg_raw = await translate(goodreadsData.genres);
+          const genres_bg = genres_bg_raw
+            .split(",") // Split the string by commas into an array
+            .map(
+              (genre) =>
+                genre.trim().charAt(0).toUpperCase() + genre.trim().slice(1)
+            ) // Capitalize the first letter of each word
+            .join(", "); // Join the array back into a string
+
+          const language = await translate(goodreadsData.language);
+
+          const publisher = await translate(goodreadsData.publisher);
+
+          const recommendationData = {
+            goodreads_id: bookId,
+            title_en: goodreadsData.title,
+            original_title: goodreadsData.original_title,
+            title_bg: book.title_bg,
+            real_edition_title: book.real_edition_title,
+            author: author,
+            genres_en: genres_en,
+            genres_bg: genres_bg,
+            description: description,
+            language: language,
+            origin: book.origin,
+            date_of_first_issue: goodreadsData.first_publication_info,
+            date_of_issue: goodreadsData.publication_time,
+            publisher: publisher,
+            goodreads_rating: goodreadsData.rating,
+            goodreads_ratings_count: goodreadsData.ratings_count,
+            goodreads_reviews_count: goodreadsData.reviews_count,
+            reason: book.reason,
+            adaptations: book.adaptations,
+            ISBN_10: goodreadsData.isbn10 || goodreadsData.asin,
+            ISBN_13: goodreadsData.isbn13,
+            page_count: goodreadsData.pages_count,
+            book_format: goodreadsData.book_format,
+            imageLink: goodreadsData.image_url,
+            literary_awards: goodreadsData.literary_awards,
+            setting: goodreadsData.setting,
+            characters: goodreadsData.characters,
+            series: goodreadsData.series,
+            source: "Goodreads"
+          };
+
+          // Първо, задаваме списъка с препоръки
+          setRecommendationList((prevRecommendations) => [
+            ...prevRecommendations,
+            recommendationData
+          ]);
+
+          // След това изпълняваме проверката и записа паралелно, използвайки
+          const checkAndSaveBooksRecommendation = async () => {
+            // Проверяваме дали книгата съществува в таблицата за readlist
+            const existsInReadlist = await checkRecommendationExistsInReadlist(
+              bookId,
+              token
+            );
+
+            // Ако книгата не съществува в readlist, добавяме я към "bookmarkedBooks" с информация за ID и статус
+            if (existsInReadlist) {
+              setBookmarkedBooks((prevBooks) => {
+                return {
+                  ...prevBooks,
+                  [recommendationData.goodreads_id]: recommendationData
+                };
+              });
+            }
+            // Записваме препоръката в базата данни
+            await saveBookRecommendation(recommendationData, date, token);
+          };
+
+          // Извикваме функцията, за да изпълним и двете операции
+          checkAndSaveBooksRecommendation();
+        } catch (error) {
+          console.error(
+            `Error processing book: ${book.real_edition_title}`,
+            error
+          );
+          continue; // Skip to the next book
         }
       }
     }
