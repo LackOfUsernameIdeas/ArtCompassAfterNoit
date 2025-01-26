@@ -15,7 +15,8 @@ export const MENUITEMS = [
   },
   {
     icon: <i className="side-menu__icon bx bx-movie-play"></i>,
-    type: "sub",
+    path: `${import.meta.env.BASE_URL}app/recommendations`,
+    type: "link",
     Name: "",
     active: false,
     selected: false,
