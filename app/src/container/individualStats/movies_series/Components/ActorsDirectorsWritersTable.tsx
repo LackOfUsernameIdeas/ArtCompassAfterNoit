@@ -3,7 +3,7 @@ import {
   Category,
   DataType,
   FilteredTableData
-} from "../MoviesSeriesIndividualStats-types";
+} from "../moviesSeriesIndividualStats-types";
 import { filterTableData } from "../helper_functions";
 import {
   isActor,
@@ -11,7 +11,7 @@ import {
   isWriter
 } from "../../../helper_functions_common";
 import { useMediaQuery } from "react-responsive";
-import { tableCategoryDisplayNames } from "../MoviesSeriesIndividualStats-data";
+import { tableCategoryDisplayNames } from "../moviesSeriesIndividualStats-data";
 import { Tooltip } from "react-tooltip";
 import Pagination from "../../../../components/common/pagination/pagination";
 

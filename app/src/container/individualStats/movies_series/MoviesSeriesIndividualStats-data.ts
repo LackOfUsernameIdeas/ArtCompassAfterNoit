@@ -1,4 +1,4 @@
-import { Category } from "./MoviesSeriesIndividualStats-types";
+import { Category } from "./moviesSeriesIndividualStats-types";
 
 /**
  * Мапинг на имената за категориите на таблицата.

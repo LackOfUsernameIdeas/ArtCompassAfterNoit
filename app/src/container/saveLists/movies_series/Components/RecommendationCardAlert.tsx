@@ -2,7 +2,7 @@ import { FC, useState, useEffect } from "react";
 import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
 import { PlotModal } from "./PlotModal";
-import { Rating, Recommendation } from "../moviesSeriesIndividualStats-types";
+import { Rating, Recommendation } from "../watchlist-types";
 import { translate } from "../../../helper_functions_common";
 
 interface RecommendationCardAlertProps {

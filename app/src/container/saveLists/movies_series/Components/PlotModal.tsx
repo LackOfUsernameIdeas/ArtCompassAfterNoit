@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from "react";
 import { CSSTransition } from "react-transition-group";
-import { PlotModalProps } from "../moviesSeriesIndividualStats-types";
+import { PlotModalProps } from "../watchlist-types";
 
 export const PlotModal: FC<PlotModalProps> = ({ isOpen, onClose, plot }) => {
   const [animationState, setAnimationState] = useState({

@@ -1,21 +1,24 @@
 import { FC, Fragment, useEffect, useState, useMemo, useCallback } from "react";
-import { Rating, Recommendation } from "../moviesSeriesIndividualStats-types";
+import { Rating, Recommendation } from "../watchlist-types";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import RecommendationCardAlert from "./RecommendationCardAlert";
 import Pagination from "../../../../components/common/pagination/pagination";
 
-interface MoviesAndSeriesRecommendationsTableProps {
+interface MoviesAndSeriesTableProps {
   data: Recommendation[];
   type: "recommendations" | "watchlist";
   handleBookmarkClick: (movie: Recommendation) => void;
   bookmarkedMovies: { [key: string]: Recommendation };
 }
 
-const MoviesAndSeriesRecommendationsTable: FC<
-  MoviesAndSeriesRecommendationsTableProps
-> = ({ data, type, handleBookmarkClick, bookmarkedMovies }) => {
+const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
+  data,
+  type,
+  handleBookmarkClick,
+  bookmarkedMovies
+}) => {
   const [currentTablePage, setCurrentTablePage] = useState(1);
   const itemsPerTablePage = 5;
   const [sortBy, setSortBy] = useState<keyof Recommendation | "default">(
@@ -238,12 +241,11 @@ const MoviesAndSeriesRecommendationsTable: FC<
                   <tr className="border border-inherit">
                     <th>#</th>
                     <th>Заглавие</th>
+                    <th>Заглавие - Английски</th>
                     <th>Тип</th>
                     {type === "recommendations" && <th>Брой Препоръки</th>}
                     <th>Просперитет</th>
                     <th>Боксофис</th>
-                    <th>Оскар Победи</th>
-                    <th>Оскар Номинации</th>
                     <th>Общо Победи</th>
                     <th>Общо Номинации</th>
                     <th>IMDb Рейтинг</th>
@@ -261,6 +263,7 @@ const MoviesAndSeriesRecommendationsTable: FC<
                         {(currentTablePage - 1) * itemsPerTablePage + index + 1}
                       </td>
                       <td>{item.title_bg}</td>
+                      <td>{item.title_en}</td>
                       <td>{getTranslatedType(item.type)}</td>
                       {type == "recommendations" &&
                         "recommendations" in item && (
@@ -268,8 +271,6 @@ const MoviesAndSeriesRecommendationsTable: FC<
                         )}
                       <td>{item.prosperityScore}</td>
                       <td>{item.boxOffice}</td>
-                      <td>{item.oscar_wins}</td>
-                      <td>{item.oscar_nominations}</td>
                       <td>{item.total_wins}</td>
                       <td>{item.total_nominations}</td>
                       <td>{item.imdbRating}</td>
@@ -298,4 +299,4 @@ const MoviesAndSeriesRecommendationsTable: FC<
   );
 };
 
-export default MoviesAndSeriesRecommendationsTable;
+export default MoviesAndSeriesTable;

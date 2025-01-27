@@ -1,5 +1,5 @@
 import { FC, Fragment } from "react";
-import { Count } from "../MoviesSeriesIndividualStats-types";
+import { Count } from "../moviesSeriesIndividualStats-types";
 
 interface CountWidgetsProps {
   recommendationsCount: Count;

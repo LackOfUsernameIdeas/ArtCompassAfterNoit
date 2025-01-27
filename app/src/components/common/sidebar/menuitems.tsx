@@ -14,6 +14,34 @@ export const MENUITEMS = [
       "badge !bg-warning/10 !text-warning !py-[0.25rem] !px-[0.45rem] !text-[0.75em] ms-2"
   },
   {
+    icon: <i className="side-menu__icon ti ti-list-details"></i>,
+    type: "sub",
+    Name: "",
+    active: false,
+    selected: false,
+    title: "СПИСЪЦИ",
+    class:
+      "badge !bg-warning/10 !text-warning !py-[0.25rem] !px-[0.45rem] !text-[0.75em] ms-2",
+    children: [
+      {
+        path: `${import.meta.env.BASE_URL}app/saveLists/movies_series`,
+        icon: <i className="side-menu__icon ti ti-movie"></i>,
+        type: "link",
+        active: false,
+        selected: false,
+        title: "ЗА ГЛЕДАНЕ"
+      },
+      {
+        path: `${import.meta.env.BASE_URL}app/saveLists/books`,
+        icon: <i className="side-menu__icon ti ti-book"></i>,
+        type: "link",
+        active: false,
+        selected: false,
+        title: "ЗА ЧЕТЕНЕ"
+      }
+    ]
+  },
+  {
     path: `${import.meta.env.BASE_URL}app/platformStats`,
     icon: <i className="side-menu__icon bx bx-line-chart"></i>,
     type: "link",
