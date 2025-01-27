@@ -1,16 +1,3 @@
-// Данни за потребителите
-export type UsersCountData = {
-  user_count: number; // Брой на регистрираните потребители
-};
-
-// Данни за потребител
-export interface UserData {
-  id: number; // Уникален идентификатор на потребителя
-  first_name: string; // Първо име на потребителя
-  last_name: string; // Фамилно име на потребителя
-  email: string; // Имейл адрес на потребителя
-}
-
 // Пропси за модала, показващ сюжета на филма/сериала
 export interface PlotModalProps {
   isOpen: boolean; // Статус на модала (отворен/затворен)

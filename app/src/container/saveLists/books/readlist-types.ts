@@ -1,8 +1,3 @@
-// Данни за потребителите
-export type UsersCountData = {
-  user_count: number; // Брой на регистрираните потребители
-};
-
 // Данни за потребител
 export interface UserData {
   id: number; // Уникален идентификатор на потребителя
