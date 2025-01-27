@@ -1,7 +1,7 @@
 import { FC, Fragment, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { MoviesAndSeriesByRatingsChart } from "./Charts";
-import { DataType } from "../home-types";
+import { DataType } from "../platformStats-types";
 import {
   paginateBarChartData,
   getTotalBarChartPages,
@@ -9,7 +9,7 @@ import {
   handleMoviesAndSeriesSortCategory
 } from "../helper_functions";
 import { useMediaQuery } from "react-responsive";
-import { moviesAndSeriesCategoryDisplayNames } from "../home-data";
+import { moviesAndSeriesCategoryDisplayNames } from "../platformStats-data";
 import { Tooltip } from "react-tooltip";
 import Pagination from "../../../components/common/pagination/pagination";
 

@@ -12,7 +12,7 @@ import BooksRecommendations from "./container/recommendations/books/BooksRecomme
 import "./index.scss";
 import ResetRequest from "./container/authentication/resetpassword/Resetrequest.tsx";
 import PrivateRoute from "./pages/PrivateRoute.tsx";
-import Home from "./container/home/Home.tsx";
+import PlatformStats from "./container/platformStats/PlatformStats.tsx";
 import MoviesSeriesIndividualStats from "./container/individualStats/movies_series/MoviesSeriesIndividualStats.tsx";
 import BooksIndividualStats from "./container/individualStats/books/BooksIndividualStats.tsx";
 import Contact from "./container/contact/Contact.tsx";
@@ -35,8 +35,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             }
           >
             {/* Default route */}
-            <Route index path="home" element={<Home />} />
             <Route path="recommendations" element={<ChooseRecommendations />} />
+            <Route index path="platformStats" element={<PlatformStats />} />
+
             <Route
               path="recommendations/movies_series"
               element={<MoviesSeriesRecommendations />}

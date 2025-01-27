@@ -1,4 +1,4 @@
-import { Category, DataType } from "./home-types";
+import { Category, DataType } from "./platformStats-types";
 
 /**
  * Мапинг на имената за категорията на рейтингите.

@@ -11,7 +11,7 @@ import {
   RecommendationData,
   RoleData,
   WriterData
-} from "../home-types";
+} from "../platformStats-types";
 import { Link } from "react-router-dom";
 
 // Генерира данни за heatmap диаграмата
@@ -126,7 +126,7 @@ export class GenrePopularityOverTime extends Component<
           labels: {
             show: true,
             style: {
-              fontFamily: "Opsilon !important", 
+              fontFamily: "Opsilon !important",
               letterSpacing: "0.04em !important",
               colors: "#8c9097",
               fontSize: "11px",
@@ -144,7 +144,7 @@ export class GenrePopularityOverTime extends Component<
           labels: {
             show: true,
             style: {
-              fontFamily: "Opsilon !important", 
+              fontFamily: "Opsilon !important",
               letterSpacing: "0.04em !important",
               colors: "#8c9097",
               fontSize: "11px",
@@ -696,11 +696,21 @@ export class MoviesByProsperityBubbleChart extends Component<
           labels: {
             // Форматиране на стойностите в милиони долари
             formatter: (val: any) => `$${Math.round(val)}M`,
-            style: { fontFamily: "Equilibrist !important", colors: "#8c9097", fontSize: "11px", fontWeight: 600 }
+            style: {
+              fontFamily: "Equilibrist !important",
+              colors: "#8c9097",
+              fontSize: "11px",
+              fontWeight: 600
+            }
           },
           title: {
             text: "Приходи от боксофиса (в милиони)",
-            style: { fontFamily: "Opsilon", letterSpacing: "0.04em !important", fontSize: "12px", color: "#8c9097" }
+            style: {
+              fontFamily: "Opsilon",
+              letterSpacing: "0.04em !important",
+              fontSize: "12px",
+              color: "#8c9097"
+            }
           }
         },
         yaxis: {
@@ -708,17 +718,27 @@ export class MoviesByProsperityBubbleChart extends Component<
           max: 10, // Максимална стойност
           min: 5, // Минимална стойност
           labels: {
-            style: { fontFamily: "Equilibrist !important", colors: "#8c9097", fontSize: "11px", fontWeight: 600 }
+            style: {
+              fontFamily: "Equilibrist !important",
+              colors: "#8c9097",
+              fontSize: "11px",
+              fontWeight: 600
+            }
           },
           title: {
             text: "IMDb рейтинг",
-            style: { fontFamily: "Opsilon", letterSpacing: "0.04em !important", fontSize: "12px", color: "#8c9097" }
+            style: {
+              fontFamily: "Opsilon",
+              letterSpacing: "0.04em !important",
+              fontSize: "12px",
+              color: "#8c9097"
+            }
           }
         },
         legend: {
           show: true, // Показване на легендата
           position: "top", // Позиция - горе
-          style: { fontFamily: "Equilibrist !important"},
+          style: { fontFamily: "Equilibrist !important" },
           markers: {
             width: 10, // Ширина на маркерите
             height: 10, // Височина на маркерите
@@ -1024,11 +1044,17 @@ export class TopRecommendationsBarChart extends Component<
         xaxis: {
           title: { text: "Брой препоръчвания" }, // Заглавие на оста X
           categories: [], // Категории, които ще бъдат зададени динамично
-          style: { fontFamily: "Opsilon !important", letterSpacing: "0.04em !important"},
+          style: {
+            fontFamily: "Opsilon !important",
+            letterSpacing: "0.04em !important"
+          }
         },
-        yaxis: { 
-          title: { text: "Заглавие" },// Заглавие на оста Y
-          style: { fontFamily: "Opsilon !important", letterSpacing: "0.04em !important"},
+        yaxis: {
+          title: { text: "Заглавие" }, // Заглавие на оста Y
+          style: {
+            fontFamily: "Opsilon !important",
+            letterSpacing: "0.04em !important"
+          }
         },
         colors: [
           chroma(initialColor).darken(0.6).hex(), // По-ярък цвят за филми
@@ -1067,7 +1093,7 @@ export class TopRecommendationsBarChart extends Component<
           x: `${movie.title_bg} (${movie.title_en})`, // Заглавие (на български и английски)
           y: movie.recommendations, // Брой препоръчвания
           fillColor: color, // Цвят на колоната
-          style: { fontFamily: "Opsilon", letterSpacing: "0.04em !important"},
+          style: { fontFamily: "Opsilon", letterSpacing: "0.04em !important" }
         };
       });
 

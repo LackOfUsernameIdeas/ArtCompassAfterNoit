@@ -1,5 +1,5 @@
 import { FC, Fragment } from "react";
-import { DataType } from "../home-types";
+import { DataType } from "../platformStats-types";
 
 import { MoviesByProsperityBubbleChart } from "./Charts";
 

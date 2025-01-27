@@ -157,7 +157,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                   >
                     <p
                       className={`mb-0 text-[#8c9097] dark:text-white/50 ${
-                        is1856 &&
+                        is1966 &&
                         "truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs"
                       }`}
                     >

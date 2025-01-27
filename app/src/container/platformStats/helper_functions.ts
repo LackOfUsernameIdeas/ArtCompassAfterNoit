@@ -10,7 +10,7 @@ import {
   RecommendationData,
   Category,
   DataType
-} from "./home-types";
+} from "./platformStats-types";
 
 // ==============================
 // Функции за работа с данни

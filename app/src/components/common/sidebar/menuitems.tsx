@@ -14,7 +14,7 @@ export const MENUITEMS = [
       "badge !bg-warning/10 !text-warning !py-[0.25rem] !px-[0.45rem] !text-[0.75em] ms-2"
   },
   {
-    path: `${import.meta.env.BASE_URL}app/home`,
+    path: `${import.meta.env.BASE_URL}app/platformStats`,
     icon: <i className="side-menu__icon bx bx-line-chart"></i>,
     type: "link",
     Name: "",
@@ -76,7 +76,7 @@ export const MENUITEMS = [
         type: "link",
         active: false,
         selected: false,
-        title: "Жанрове",
+        title: "Жанрове"
       },
       {
         path: ``,

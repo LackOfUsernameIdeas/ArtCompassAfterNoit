@@ -1,9 +1,9 @@
 import { FC, Fragment, useEffect, useState, useMemo } from "react";
-import { Category, DataType, FilteredTableData } from "../home-types";
+import { Category, DataType, FilteredTableData } from "../platformStats-types";
 import { filterTableData } from "../helper_functions";
 import { isActor, isDirector, isWriter } from "../../helper_functions_common";
 import { useMediaQuery } from "react-responsive";
-import { tableCategoryDisplayNames } from "../home-data";
+import { tableCategoryDisplayNames } from "../platformStats-data";
 import Pagination from "../../../components/common/pagination/pagination";
 
 interface ActorsDirectorsWritersTableProps {

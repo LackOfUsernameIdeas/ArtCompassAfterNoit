@@ -1,5 +1,5 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import { DataType, UserData } from "./home-types";
+import { DataType, UserData } from "./platformStats-types";
 import { fetchData } from "./helper_functions";
 import ActorsDirectorsWritersTable from "./Components/ActorsDirectorsWritersTable";
 import ActorsDirectorsWritersTreemap from "./Components/ActorsDirectorsWritersTreemap";

@@ -70,7 +70,7 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
               <div className="header-element">
                 <div className="horizontal-logo">
                   <a
-                    href={`${import.meta.env.BASE_URL}app/home/`}
+                    href={`${import.meta.env.BASE_URL}app/recommendations/`}
                     className="header-logo"
                     onMouseEnter={() => setIsLogoHovered(true)}
                     onMouseLeave={() => setIsLogoHovered(false)}
