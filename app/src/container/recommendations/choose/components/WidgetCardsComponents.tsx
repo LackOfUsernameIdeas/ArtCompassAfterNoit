@@ -5,77 +5,94 @@ import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { getAveragesOptions, getAwardOptions } from "../choose-data";
 
+// Дефиниране на типа за пропсвете, предавани на този компонент
 interface WidgetCardsComponentProps {
   data: DataType;
 }
 
+// Основен функционален компонент
 const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
+  // Състояния за управление на показваните имена и стойности за средни и награди
   const [displayedNameAverages, setDisplayedNameAverages] =
-    useState("Среден Боксофис");
+    useState("Среден Боксофис"); // По подразбиране име за показване на средни
   const [displayedValueAverages, setDisplayedValueAverages] =
-    useState<number>(0);
+    useState<number>(0); // По подразбиране стойност за средни
 
   const [displayedNameAwards, setDisplayedNameAwards] = useState(
     "Общ брой спечелени награди"
-  );
-  const [displayedValueAwards, setDisplayedValueAwards] = useState<number>(0);
+  ); // По подразбиране име за показване на награди
+  const [displayedValueAwards, setDisplayedValueAwards] = useState<number>(0); // По подразбиране стойност за награди
 
+  // Състояния за управление на отворените падащи менюта
   const [isAveragesMenuOpen, setIsAveragesMenuOpen] = useState(false);
   const [isAwardsMenuOpen, setIsAwardsMenuOpen] = useState(false);
 
+  // Ефект за инициализиране на показваните стойности от данните
   useEffect(() => {
     if (
-      data.totalAwards.length > 0 &&
-      data.averageBoxOfficeAndScores.length > 0
+      data.totalAwards.length > 0 && //  Подсигурява данните за наградите
+      data.averageBoxOfficeAndScores.length > 0 // Подсигурява данните за средните стойности
     ) {
       setDisplayedValueAwards(data.totalAwards[0].total_awards_wins);
+      // Задайте началната стойност за наградите
       setDisplayedValueAverages(
         data.averageBoxOfficeAndScores[0].average_box_office
       );
+      // Задайте началната стойност за средните
     }
-  }, [data]);
+  }, [data]); // Масив на зависимости, който осигурява изпълнението при промяна на `data`
 
+  // Превключва падащото меню за наградите
   const toggleAwardsMenu = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    setIsAwardsMenuOpen((prev) => !prev);
+    e.preventDefault(); // Предотвратете стандартното поведение на линка
+    setIsAwardsMenuOpen((prev) => !prev); // Превключете състоянието
   };
 
+  // Превключва падащото меню за средните
   const toggleAveragesMenu = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    setIsAveragesMenuOpen((prev) => !prev);
+    e.preventDefault(); // Предотвратете стандартното поведение на линка
+    setIsAveragesMenuOpen((prev) => !prev); // Превключете състоянието
   };
 
+  // Генерира опции за падащото меню за наградите
   const awardOptions = getAwardOptions(data);
+  // Генерира опции за падащото меню за средните
   const averagesOptions = getAveragesOptions(data);
 
+  // Медийни заявки за отзивчив дизайн
   const is1856 = useMediaQuery({ query: "(max-width: 1856px)" });
   const is1532 = useMediaQuery({ query: "(max-width: 1532px)" });
   const is1966 = useMediaQuery({ query: "(max-width: 1966px)" });
 
+  // Връща JSX за рендиране на компонента
   return (
     <Fragment>
+      {/* Карта 1: Общ брой потребители */}
       <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
         <div className="box custom-box">
           <div className="box-body h-[5.5rem]">
             <div className="flex items-center justify-between">
+              {/* Лява секция, показваща общия брой потребители */}
               <div className="flex-grow">
                 <p
                   className={`mb-0 text-[#8c9097] dark:text-white/50 ${
                     is1856 && "text-xs"
                   }`}
                 >
-                  Общ брой потребители
+                  Общ брой потребители {/* "Total Users" label */}
                 </p>
                 <div className="flex items-center">
                   <span
                     className={`text-[${
                       is1856 ? "1.25rem" : "1.125rem"
-                    }] font-semibold`}
+                    }] !font-Opsilon tracking-wider`}
                   >
-                    {data.usersCount?.[0]?.user_count || 0}
+                    {data.usersCount?.[0]?.user_count || 0}{" "}
+                    {/* Показва общия брой потребители или 0 */}
                   </span>
                 </div>
               </div>
+              {/* Дясна секция, показваща икона */}
               <div>
                 <span className="avatar avatar-md !rounded-full bg-primary/10 !text-secondary text-[1.125rem]">
                   <i
@@ -89,6 +106,8 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
           </div>
         </div>
       </div>
+
+      {/* Карта 2: Най-препоръчван жанр */}
       <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
         <div className="box custom-box">
           <div className="box-body h-[5.5rem]">
@@ -99,15 +118,16 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                     is1856 && "text-xs"
                   }`}
                 >
-                  Най-препоръчан жанр
+                  Най-препоръчван жанр {/* "Top Recommended Genre" label */}
                 </p>
                 <div className="flex items-center">
                   <span
                     className={`text-[${
                       is1856 ? "1.25rem" : "1.125rem"
-                    }] font-semibold`}
+                    }] !font-Opsilon tracking-wider`}
                   >
-                    {data.topGenres[0]?.genre_bg}
+                    {data.topGenres[0]?.genre_bg}{" "}
+                    {/* Показва най-препоръчвания жанр на български */}
                   </span>
                 </div>
               </div>
@@ -124,6 +144,8 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
           </div>
         </div>
       </div>
+
+      {/* Карта 3: Среден боксофис */}
       <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
         <div className="box custom-box">
           <div className="box-body h-[5.5rem]">
@@ -199,7 +221,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                   <span
                     className={`text-[${
                       is1856 ? "1.25rem" : "1.125rem"
-                    }] font-semibold`}
+                    }] !font-Opsilon tracking-wider`}
                   >
                     {displayedValueAverages}
                   </span>
@@ -220,6 +242,8 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
           </div>
         </div>
       </div>
+
+      {/* Карта 4: Награди */}
       <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
         <div className="box custom-box">
           <div className="box-body h-[5.5rem]">
@@ -289,7 +313,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                   <span
                     className={`text-[${
                       is1966 ? "1.25rem" : "1.125rem"
-                    }] font-semibold`}
+                    }] !font-Opsilon tracking-wider`}
                   >
                     {displayedValueAwards}
                   </span>
