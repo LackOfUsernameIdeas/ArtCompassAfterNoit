@@ -341,20 +341,10 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                       aria-labelledby="hs-basic-with-title-and-arrow-stretched-heading-two"
                     >
                       <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5">
-                        <div className="xxl:col-span-6 col-span-12">
-                          <MoviesAndSeriesRecommendationsTable
-                            type="watchlist"
-                            data={data.topRecommendationsWatchlist.watchlist}
-                            handleBookmarkClick={handleBookmarkClick}
-                            bookmarkedMovies={bookmarkedMovies}
-                          />
-                        </div>
-                        <div className="xxl:col-span-6 col-span-12">
-                          <ActorsDirectorsWritersTable
-                            data={data}
-                            type="watchlist"
-                          />
-                        </div>
+                        <ActorsDirectorsWritersTable
+                          data={data}
+                          type="watchlist"
+                        />
                       </div>
                       <div className="grid grid-cols-12 gap-x-6 ml-5 mr-5">
                         <div className="xxl:col-span-6 col-span-12">
