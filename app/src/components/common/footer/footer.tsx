@@ -64,7 +64,10 @@ const Footer: FC = () => (
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    OpenAI API
+                    <div className="space-x-1">
+                      <i className="ti ti-brand-openai text-lg sm:text-xs"></i>
+                      <span>OpenAI API</span>
+                    </div>
                   </a>
                 </li>
                 <li>
@@ -73,7 +76,10 @@ const Footer: FC = () => (
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    OMDb API
+                    <div className="space-x-1">
+                      <i className="ti ti-api text-lg sm:text-xs"></i>
+                      <span>OMDb API</span>
+                    </div>
                   </a>
                 </li>
                 <li>
@@ -82,18 +88,59 @@ const Footer: FC = () => (
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Google Custom Search JSON API
+                    <div className="space-x-1">
+                      <i className="ti ti-world-search text-lg sm:text-xs"></i>
+                      <span>Google Custom Search JSON API</span>
+                    </div>
                   </a>
                 </li>
               </ul>
             </div>
 
-            <div className="footer-column tech-stack">
-              <img
-                src={techStack}
-                alt="Основни технологии"
-                className="tech-stack-image"
-              />
+            <div className="footer-column">
+              <h3 className="footer-title">Използвани технологии</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 auto-rows-min footer-links">
+                <div className="flex items-center space-x-2 ml-[2rem]">
+                  <i className="ti ti-brand-python text-xs"></i>
+                  <span>Python</span>
+                </div>
+                <div className="flex items-center space-x-2 ml-[2rem]">
+                  <i className="ti ti-brand-react text-lg sm:text-xs"></i>
+                  <span>React</span>
+                </div>
+                <div className="flex items-center space-x-[0.40rem] ml-[2rem]">
+                  <i className="ti ti-brand-tailwind text-lg sm:text-xs"></i>
+                  <span>Tailwind CSS</span>
+                </div>
+                <div className="flex items-center space-x-2 ml-[2rem]">
+                  <i className="ti ti-brand-typescript text-lg sm:text-xs"></i>
+                  <span>TypeScript</span>
+                </div>
+                <div className="flex items-center space-x-2 ml-[2rem]">
+                  <i className="ti ti-brand-nodejs text-lg sm:text-xs"></i>
+                  <span>NodeJS</span>
+                </div>
+                <div className="flex items-center space-x-2 ml-[2rem]">
+                  <i className="ti ti-brand-vite text-lg sm:text-xs"></i>
+                  <span>Vite</span>
+                </div>
+                <div className="flex items-center space-x-2 ml-[2rem]">
+                  <i className="ti ti-brand-javascript text-lg sm:text-xs"></i>
+                  <span>Express JS</span>
+                </div>
+                <div className="flex items-center space-x-2 ml-[2rem]">
+                  <i className="ti ti-database text-lg sm:text-xs"></i>
+                  <span>MySQL</span>
+                </div>
+                <div className="flex items-center space-x-2 ml-[2rem]">
+                  <i className="ti ti-brand-adobe text-lg sm:text-xs"></i>
+                  <span>Apex Charts</span>
+                </div>
+                <div className="flex items-center space-x-2 ml-[2rem]">
+                  <i className="ti ti-lock-open text-lg sm:text-xs"></i>
+                  <span>JWT</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
