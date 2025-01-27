@@ -31,7 +31,7 @@ const Footer: FC = () => (
                 <span className="footer-brand-name-compass">КОМПАС</span>
               </div>
               <ul className="footer-links">
-                <li>НЕТИТ „Джон Атанасов” 2024</li>
+                <li>НОИТ 2025</li>
                 <li>Калоян Костадинов</li>
                 <li>Мария Малчева</li>
                 <li>
