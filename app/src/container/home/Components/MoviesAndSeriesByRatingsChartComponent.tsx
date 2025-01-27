@@ -83,7 +83,7 @@ const MoviesAndSeriesByRatingsChartComponent: FC<
         <div className="box custom-box">
           <div className="custom-box-header justify-between">
             <div
-              className={`box-title whitespace-nowrap overflow-hidden text-ellipsis`}
+              className={`box-title whitespace-nowrap overflow-hidden text-ellipsis !font-Opsilon !font-light !tracking-wide`}
               data-tooltip-id="box-title-tooltip"
               data-tooltip-content={`Филми и сериали по ${
                 moviesAndSeriesCategoryDisplayNames[

@@ -126,9 +126,10 @@ export class GenrePopularityOverTime extends Component<
           labels: {
             show: true,
             style: {
+              fontFamily: "Opsilon !important", 
+              letterSpacing: "0.04em !important",
               colors: "#8c9097",
               fontSize: "11px",
-              fontWeight: 600,
               cssClass: "apexcharts-xaxis-label"
             },
             margin: 10
@@ -143,9 +144,10 @@ export class GenrePopularityOverTime extends Component<
           labels: {
             show: true,
             style: {
+              fontFamily: "Opsilon !important", 
+              letterSpacing: "0.04em !important",
               colors: "#8c9097",
               fontSize: "11px",
-              fontWeight: 600,
               cssClass: "apexcharts-yaxis-label"
             }
           }
@@ -163,8 +165,10 @@ export class GenrePopularityOverTime extends Component<
             const genre = w.config.series[seriesIndex].name;
             const count = w.config.series[seriesIndex].data[dataPointIndex].y;
 
-            return `<div style="padding: 10px;">
+            return `<div style="padding: 10px; font-family: Opsilon; letter-spacing: 0.05em;">
                       <strong>Жанр: ${genre}</strong><br>
+                    </div>
+                    <div style="padding: 10px; font-family: Equilibrist !important;">
                       <span>Брой препоръчвания: ${count}</span>
                     </div>`;
           }
@@ -527,7 +531,7 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
           return (
             <div
               key={country.country_en}
-              className="flex flex-col justify-center overflow-hidden"
+              className="flex flex-col justify-center overflow-hidden "
               style={{
                 width: `${widthPercentage}%`,
                 backgroundColor: color
@@ -535,7 +539,7 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
               aria-valuenow={widthPercentage}
               aria-valuemin={0}
               aria-valuemax={100}
-              title={`${country.country_bg}: ${country.count}`}
+              title={`<strong>${country.country_bg}:</strong> ${country.count}`}
             ></div>
           );
         })}
@@ -646,9 +650,9 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
   );
 };
 
-// Интерфейс за параметрите на графиката "Филми по благополучие"
+// Интерфейс за параметрите на графиката "Филми по просперитет"
 interface MoviesByProsperityBubbleChartProps {
-  sortedMoviesByProsperity: MovieProsperityData[]; // Сортирани филми по критерий за благополучие
+  sortedMoviesByProsperity: MovieProsperityData[]; // Сортирани филми по критерий за просперитет
 }
 
 // Компонент за визуализация на балонна графика за филми
@@ -692,11 +696,11 @@ export class MoviesByProsperityBubbleChart extends Component<
           labels: {
             // Форматиране на стойностите в милиони долари
             formatter: (val: any) => `$${Math.round(val)}M`,
-            style: { colors: "#8c9097", fontSize: "11px", fontWeight: 600 }
+            style: { fontFamily: "Equilibrist !important", colors: "#8c9097", fontSize: "11px", fontWeight: 600 }
           },
           title: {
             text: "Приходи от боксофиса (в милиони)",
-            style: { fontSize: "12px", fontWeight: "bold", color: "#8c9097" }
+            style: { fontFamily: "Opsilon", letterSpacing: "0.04em !important", fontSize: "12px", color: "#8c9097" }
           }
         },
         yaxis: {
@@ -704,16 +708,17 @@ export class MoviesByProsperityBubbleChart extends Component<
           max: 10, // Максимална стойност
           min: 5, // Минимална стойност
           labels: {
-            style: { colors: "#8c9097", fontSize: "11px", fontWeight: 600 }
+            style: { fontFamily: "Equilibrist !important", colors: "#8c9097", fontSize: "11px", fontWeight: 600 }
           },
           title: {
             text: "IMDb рейтинг",
-            style: { fontSize: "12px", fontWeight: "bold", color: "#8c9097" }
+            style: { fontFamily: "Opsilon", letterSpacing: "0.04em !important", fontSize: "12px", color: "#8c9097" }
           }
         },
         legend: {
           show: true, // Показване на легендата
           position: "top", // Позиция - горе
+          style: { fontFamily: "Equilibrist !important"},
           markers: {
             width: 10, // Ширина на маркерите
             height: 10, // Височина на маркерите
@@ -743,8 +748,10 @@ export class MoviesByProsperityBubbleChart extends Component<
                 boxOffice !== "N/A" ? `$${boxOffice.toLocaleString()}` : "N/A";
 
               return `
-                <div style="padding: 10px;">
-                  <strong>${movieTitleBg} (${movieTitleEn})</strong><br />
+                <div style="padding: 10px; font-family: Opsilon; letter-spacing: 0.05em;">
+                  ${movieTitleBg} (${movieTitleEn})<br />
+                </div>
+                <div style="padding: 10px; font-family: Equilibrist !important;">
                   IMDb рейтинг: ${imdbRating}/10<br />
                   Боксофис: ${formattedBoxOffice}
                 </div>
@@ -1016,9 +1023,13 @@ export class TopRecommendationsBarChart extends Component<
         dataLabels: { enabled: false }, // Скриване на стойностите върху колоните
         xaxis: {
           title: { text: "Брой препоръчвания" }, // Заглавие на оста X
-          categories: [] // Категории, които ще бъдат зададени динамично
+          categories: [], // Категории, които ще бъдат зададени динамично
+          style: { fontFamily: "Opsilon !important", letterSpacing: "0.04em !important"},
         },
-        yaxis: { title: { text: "Заглавие" } }, // Заглавие на оста Y
+        yaxis: { 
+          title: { text: "Заглавие" },// Заглавие на оста Y
+          style: { fontFamily: "Opsilon !important", letterSpacing: "0.04em !important"},
+        },
         colors: [
           chroma(initialColor).darken(0.6).hex(), // По-ярък цвят за филми
           chroma(initialColor).brighten(0.6).hex() // По-тъмен цвят за сериали
@@ -1055,7 +1066,8 @@ export class TopRecommendationsBarChart extends Component<
         return {
           x: `${movie.title_bg} (${movie.title_en})`, // Заглавие (на български и английски)
           y: movie.recommendations, // Брой препоръчвания
-          fillColor: color // Цвят на колоната
+          fillColor: color, // Цвят на колоната
+          style: { fontFamily: "Opsilon", letterSpacing: "0.04em !important"},
         };
       });
 
@@ -1128,14 +1140,14 @@ export class TopRecommendationsBarChart extends Component<
         <div className="flex justify-center items-center">
           <div className="flex items-center mr-4">
             <span
-              className="w-3 h-3 mr-1 rounded-full inline-block"
+              className="!font-Opsilon tracking-wider w-3 h-3 mr-1 rounded-full inline-block"
               style={{ backgroundColor: movieColor }}
             ></span>
             <span>Филм</span>
           </div>
           <div className="flex items-center">
             <span
-              className="w-3 h-3 mr-1 rounded-full inline-block"
+              className="!font-Opsilon tracking-wider w-3 h-3 mr-1 rounded-full inline-block"
               style={{ backgroundColor: seriesColor }}
             ></span>
             <span>Сериал</span>

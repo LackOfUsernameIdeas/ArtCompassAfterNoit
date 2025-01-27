@@ -15,7 +15,7 @@ const MoviesByProsperityBubbleChartComponent: FC<
       <div className="xl:col-span-6 col-span-12">
         <div className="box custom-box h-[27.75rem]">
           <div className="box-header">
-            <div className="box-title">
+            <div className="box-title !font-Opsilon !font-light !tracking-wide">
               Най-успешни филми по Просперитет, IMDb Рейтинг и Боксофис
             </div>
           </div>

@@ -66,7 +66,7 @@ const TopRecommendationsChartComponent: FC<
         <div className="xl:col-span-6 col-span-12">
           <div className="box custom-box">
             <div className="custom-box-header">
-              <div className="box-title">
+              <div className="box-title !font-Opsilon !font-light !tracking-wide">
                 Най-често препоръчвани филми и сериали
               </div>
             </div>

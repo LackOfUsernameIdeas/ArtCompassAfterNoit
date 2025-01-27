@@ -634,7 +634,7 @@ Background Image
   font-family: "Equilibrist", sans-serif;
   font-weight: bold;
   font-size: 1.8rem;
-  color: #c5750d;
+  color: #C67512;
   margin-left: 0.5rem;
 }
 
@@ -866,6 +866,7 @@ Background Image
 
 .apexcharts-legend-text {
   @apply text-defaulttextcolor ps-[0.9375rem] -ms-[0.625rem] !important;
+  font-family: Equilibrist !important;
 }
 
 .apexcharts-text.apexcharts-yaxis-label tspan,
