@@ -33,7 +33,7 @@ export const moviesSeriesGenreOptions: Array<{ en: string; bg: string }> = [
  *
  * @type {Array<{en: string, bg: string}>}
  */
-export const booksGenreOptions: Array<{ en: string; bg: string }> = [
+export const googleBooksGenreOptions: Array<{ en: string; bg: string }> = [
   { en: "Action & Adventure", bg: "Екшън и приключения" },
   { en: "Anthology", bg: "Антология" },
   { en: "Art", bg: "Изкуство" },
@@ -65,5 +65,52 @@ export const booksGenreOptions: Array<{ en: string; bg: string }> = [
   { en: "Short Stories", bg: "Кратки разкази" },
   { en: "Suspense", bg: "Напрежение" },
   { en: "Thriller", bg: "Трилър" },
+  { en: "Young Adult", bg: "Младежка литература" }
+];
+
+/**
+ * Мапинг на имената за категориите на жанровете на Goodreads.
+ *
+ * @type {Array<{en: string, bg: string}>}
+ */
+export const goodreadsGenreOptions: Array<{ en: string; bg: string }> = [
+  { en: "Art", bg: "Изкуство" },
+  { en: "Biography", bg: "Биография" },
+  { en: "Business", bg: "Бизнес" },
+  { en: "Chick Lit", bg: "Дамска литература" },
+  { en: "Children's", bg: "Детски книги" },
+  { en: "Christian", bg: "Християнска литература" },
+  { en: "Classics", bg: "Класика" },
+  { en: "Comics", bg: "Комикси" },
+  { en: "Contemporary", bg: "Съвременна литература" },
+  { en: "Cookbooks", bg: "Готварски книги" },
+  { en: "Crime", bg: "Криминален" },
+  { en: "Ebooks", bg: "Електронни книги" },
+  { en: "Fantasy", bg: "Фентъзи" },
+  { en: "Fiction", bg: "Художествена литература" },
+  { en: "Graphic Novels", bg: "Графични новели" },
+  { en: "Historical Fiction", bg: "Историческа художествена литература" },
+  { en: "History", bg: "История" },
+  { en: "Horror", bg: "Ужаси" },
+  { en: "Humor and Comedy", bg: "Хумор и комедия" },
+  { en: "Manga", bg: "Манга" },
+  { en: "Memoir", bg: "Мемоари" },
+  { en: "Music", bg: "Музика" },
+  { en: "Mystery", bg: "Мистерия" },
+  { en: "Nonfiction", bg: "Нехудожествена литература" },
+  { en: "Paranormal", bg: "Паранормално" },
+  { en: "Philosophy", bg: "Философия" },
+  { en: "Poetry", bg: "Поезия" },
+  { en: "Psychology", bg: "Психология" },
+  { en: "Religion", bg: "Религия" },
+  { en: "Romance", bg: "Романтика" },
+  { en: "Science", bg: "Наука" },
+  { en: "Science Fiction", bg: "Научна фантастика" },
+  { en: "Self Help", bg: "Самопомощ" },
+  { en: "Suspense", bg: "Напрежение" },
+  { en: "Spirituality", bg: "Духовност" },
+  { en: "Sports", bg: "Спорт" },
+  { en: "Thriller", bg: "Трилър" },
+  { en: "Travel", bg: "Пътешествия" },
   { en: "Young Adult", bg: "Младежка литература" }
 ];

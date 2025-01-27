@@ -51,6 +51,9 @@ export default {
       "9xl": "8rem"
     },
     extend: {
+      textUnderlineOffset: {
+        lower: "3px"
+      },
       colors: {
         gray: {
           100: "#f9fafb",

@@ -1,13 +1,14 @@
 import { FC, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { RecommendationsProps } from "../booksRecommendations-types";
-import RecommendationCard from "./RecommendationCard";
+import RecommendationCard from "./RecommendationCardComponents/RecommendationCard";
 import { PlotModal } from "./PlotModal";
+import ErrorCard from "../../../../components/common/error/error";
 
 export const RecommendationsList: FC<RecommendationsProps> = ({
   recommendationList,
   handleBookmarkClick,
-  bookmarkedMovies
+  bookmarkedBooks
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [inTransition, setInTransition] = useState(false);
@@ -17,7 +18,12 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
   const animationDuration = 500;
 
   if (!recommendationList.length) {
-    return <div>No recommendations available.</div>;
+    return (
+      <ErrorCard
+        message={`Няма налични препоръки :(\nМоля, опитайте отново. 🔄`}
+        mt={10}
+      />
+    );
   }
 
   const handleNext = () => {
@@ -96,7 +102,7 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
           isExpanded={isExpanded}
           openModal={openModal}
           handleBookmarkClick={handleBookmarkClick}
-          bookmarkedMovies={bookmarkedMovies}
+          bookmarkedBooks={bookmarkedBooks}
         />
       </CSSTransition>
 

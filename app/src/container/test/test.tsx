@@ -128,9 +128,7 @@ const Test: FC<Test> = () => {
         genres.length > 0 ? genres.map((g) => g.bg).join(", ") : null;
 
       const response = await fetch(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/save-movies-series-recommendation`,
+        `${import.meta.env.VITE_API_BASE_URL}/save-recommendation`,
         {
           method: "POST",
           headers: {
@@ -228,9 +226,7 @@ const Test: FC<Test> = () => {
       console.log("Formatted Recommendation:", formattedRecommendation);
 
       const response = await fetch(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/save-movies-series-recommendation`,
+        `${import.meta.env.VITE_API_BASE_URL}/save-recommendation`,
         {
           method: "POST",
           headers: {

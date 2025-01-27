@@ -22,6 +22,7 @@ import { moviesSeriesGenreOptions } from "../../../data_common";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { ViewRecommendations } from "./ViewRecommendations";
 import Notification from "../../../../components/common/notification/Notification";
+import { useNavigate } from "react-router-dom";
 
 export const QuizQuestions: FC<QuizQuestionProps> = ({
   setLoading,
@@ -159,6 +160,8 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   const isBackDisabled = currentQuestionIndex === 0;
   const currentQuestion = questions[currentQuestionIndex];
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     setSelectedAnswer(null);
   }, [currentQuestionIndex]);
@@ -213,6 +216,13 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
     }
   };
 
+  const handleNotificationClose = () => {
+    if (notification?.type === "error") {
+      navigate("/signin");
+    }
+    setNotification(null);
+  };
+
   useEffect(() => {
     if (currentQuestion?.value) {
       if (
@@ -255,7 +265,6 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       }
     }
   }, [currentQuestion, selectedAnswer]);
-  console.log("kalata test useEffect: ", moviesSeriesUserPreferences);
 
   return (
     <div>
@@ -270,10 +279,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
         <Notification
           message={notification.message}
           type={notification.type}
-          onClose={() => {
-            console.log("Notification closed!");
-            setNotification(null);
-          }}
+          onClose={handleNotificationClose}
         />
       )}
       <CSSTransition
@@ -476,35 +482,45 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
             </div>
           )}
 
-          <div
-            onClick={handleClick}
-            className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center transition-all duration-200 ${
-              (selectedAnswer && selectedAnswer.length > 0) ||
-              (currentQuestion.isInput &&
-                typeof currentQuestion.value === "string" &&
-                currentQuestion.value.trim() !== "")
-                ? "opacity-100 pointer-events-auto cursor-pointer"
-                : "opacity-0 pointer-events-none"
-            }`}
-          >
-            {currentQuestionIndex === totalQuestions - 1
-              ? "Изпрати"
-              : "Следващ въпрос"}
-
+          <div>
+            <div
+              onClick={handleClick}
+              className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center transition-all duration-300 ease-in-out transform ${
+                (selectedAnswer && selectedAnswer.length > 0) ||
+                (currentQuestion.isInput &&
+                  typeof currentQuestion.value === "string" &&
+                  currentQuestion.value.trim() !== "")
+                  ? "opacity-100 pointer-events-auto cursor-pointer hover:scale-105"
+                  : "opacity-50 pointer-events-none cursor-not-allowed"
+              }`}
+            >
+              {currentQuestionIndex === totalQuestions - 1
+                ? "Изпрати"
+                : "Следващ въпрос"}
+            </div>
+            {/* Modal Component */}
             {isModalOpen && alreadyHasRecommendations && (
-              <ConfirmationModal
-                setNotification={setNotification}
-                setIsModalOpen={setIsModalOpen}
-                setLoading={setLoading}
-                setSubmitted={setSubmitted}
-                handleSubmit={handleSubmit}
-                setRecommendationList={setRecommendationList}
-                setBookmarkedMovies={setBookmarkedMovies}
-                setSubmitCount={setSubmitCount}
-                moviesSeriesUserPreferences={moviesSeriesUserPreferences}
-                token={token}
-                submitCount={submitCount}
-              />
+              <div
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+                role="dialog"
+                aria-modal="true"
+              >
+                <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+                  <ConfirmationModal
+                    setNotification={setNotification}
+                    setIsModalOpen={setIsModalOpen}
+                    setLoading={setLoading}
+                    setSubmitted={setSubmitted}
+                    handleSubmit={handleSubmit}
+                    setRecommendationList={setRecommendationList}
+                    setBookmarkedMovies={setBookmarkedMovies}
+                    setSubmitCount={setSubmitCount}
+                    moviesSeriesUserPreferences={moviesSeriesUserPreferences}
+                    token={token}
+                    submitCount={submitCount}
+                  />
+                </div>
+              </div>
             )}
           </div>
         </div>

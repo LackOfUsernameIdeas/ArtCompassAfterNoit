@@ -1,5 +1,5 @@
 const express = require("express");
-const mysql = require("mysql2");
+const { spawn } = require("child_process");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
@@ -364,25 +364,16 @@ app.get("/user-data", (req, res) => {
 });
 
 // Запазване на потребителските предпочитания
-app.post("/save-movies-series-user-preferences", (req, res) => {
-  const {
-    token,
-    preferred_genres_en,
-    preferred_genres_bg,
-    mood,
-    timeAvailability,
-    preferred_age,
-    preferred_type,
-    preferred_actors,
-    preferred_directors,
-    preferred_countries,
-    preferred_pacing,
-    preferred_depth,
-    preferred_target_group,
-    interests,
-    date
-  } = req.body;
+app.post("/save-preferences", (req, res) => {
+  const { preferencesType, preferences } = req.body;
 
+  if (!preferencesType || !preferences) {
+    return res
+      .status(400)
+      .json({ error: "Preferences type and preferences are required" });
+  }
+
+  const { token, ...data } = preferences;
   // Верификация на токена и вземане на потребителското ID
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) {
@@ -391,273 +382,180 @@ app.post("/save-movies-series-user-preferences", (req, res) => {
     }
 
     const userId = decoded.id;
-
-    console.log(
-      "data: ",
-      userId,
-      preferred_genres_en,
-      preferred_genres_bg,
-      mood,
-      timeAvailability,
-      preferred_age,
-      preferred_type,
-      preferred_actors,
-      preferred_directors,
-      preferred_countries,
-      preferred_pacing,
-      preferred_depth,
-      preferred_target_group,
-      interests,
-      date
-    );
-    db.saveMoviesSeriesUserPreferences(
-      userId,
-      preferred_genres_en,
-      preferred_genres_bg,
-      mood,
-      timeAvailability,
-      preferred_age,
-      preferred_type,
-      preferred_actors,
-      preferred_directors,
-      preferred_countries,
-      preferred_pacing,
-      preferred_depth,
-      preferred_target_group,
-      interests,
-      date,
-      (err, result) => {
+    if (preferencesType === "movies_series") {
+      db.saveMoviesSeriesUserPreferences(userId, data, (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        res.status(201).json({
+          message: "User preferences for movies/series saved successfully!"
+        });
+      });
+    } else {
+      db.saveBooksUserPreferences(userId, data, (err, result) => {
         if (err) {
           return res.status(500).json({ error: err.message });
         }
         res
           .status(201)
-          .json({ message: "User preferences saved successfully!" });
-      }
-    );
+          .json({ message: "User preferences for books saved successfully!" });
+      });
+    }
   });
 });
 
 // Запазване на препоръка
-app.post("/save-movies-series-recommendation", (req, res) => {
-  const {
-    token,
-    imdbID,
-    title_en,
-    title_bg,
-    genre_en,
-    genre_bg,
-    reason,
-    description,
-    year,
-    rated,
-    released,
-    runtime,
-    director,
-    writer,
-    actors,
-    plot,
-    language,
-    country,
-    awards,
-    poster,
-    ratings,
-    metascore,
-    imdbRating,
-    imdbVotes,
-    type,
-    DVD,
-    boxOffice,
-    production,
-    website,
-    totalSeasons,
-    date
-  } = req.body;
+app.post("/save-recommendation", (req, res) => {
+  const { recommendationType, recommendation } = req.body;
+
+  if (!recommendationType || !recommendation) {
+    return res
+      .status(400)
+      .json({ error: "Recommendation type and recommendation are required" });
+  }
+
+  const { token, ...data } = recommendation;
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
     const userId = decoded.id;
-    db.saveMoviesSeriesRecommendation(
-      userId,
-      imdbID,
-      title_en,
-      title_bg,
-      genre_en,
-      genre_bg,
-      reason,
-      description,
-      year,
-      rated,
-      released,
-      runtime,
-      director,
-      writer,
-      actors,
-      plot,
-      language,
-      country,
-      awards,
-      poster,
-      ratings,
-      metascore,
-      imdbRating,
-      imdbVotes,
-      type,
-      DVD,
-      boxOffice,
-      production,
-      website,
-      totalSeasons,
-      date,
-      (err, result) => {
-        console.log(
-          "title_en: \n" +
-            title_en +
-            "\n" +
-            "title_bg: \n" +
-            title_bg +
-            "\n" +
-            "genre_en: \n" +
-            genre_en +
-            "\n" +
-            "genre_bg: \n" +
-            genre_bg
-        );
+    if (recommendationType === "movies_series") {
+      db.saveMovieSeriesRecommendation(userId, data, (err, result) => {
         if (err) {
           return res.status(500).json({ error: err.message });
         }
-        res.status(201).json({ message: "Recommendation added successfully!" });
-      }
-    );
+        res.status(201).json({
+          message: "Movie/series recommendation added successfully!"
+        });
+      });
+    } else {
+      db.saveBookRecommendation(userId, data, (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        res.status(201).json({
+          message: "Book recommendation added successfully!"
+        });
+      });
+    }
   });
 });
 
 // Запазване на препоръка в списък за гледане
-app.post("/save-to-watchlist", (req, res) => {
-  const {
-    token,
-    imdbID,
-    title_en,
-    title_bg,
-    genre_en,
-    genre_bg,
-    reason,
-    description,
-    year,
-    rated,
-    released,
-    runtime,
-    director,
-    writer,
-    actors,
-    plot,
-    language,
-    country,
-    awards,
-    poster,
-    ratings,
-    metascore,
-    imdbRating,
-    imdbVotes,
-    type,
-    DVD,
-    boxOffice,
-    production,
-    website,
-    totalSeasons
-  } = req.body;
+app.post("/save-to-list", (req, res) => {
+  const { recommendationType, recommendation } = req.body;
+
+  if (!recommendationType || !recommendation) {
+    return res
+      .status(400)
+      .json({ error: "Recommendation type and recommendation are required" });
+  }
+
+  const { token, ...data } = recommendation;
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
     const userId = decoded.id;
-    db.saveToWatchlist(
-      userId,
-      imdbID,
-      title_en,
-      title_bg,
-      genre_en,
-      genre_bg,
-      reason,
-      description,
-      year,
-      rated,
-      released,
-      runtime,
-      director,
-      writer,
-      actors,
-      plot,
-      language,
-      country,
-      awards,
-      poster,
-      ratings,
-      metascore,
-      imdbRating,
-      imdbVotes,
-      type,
-      DVD,
-      boxOffice,
-      production,
-      website,
-      totalSeasons,
-      (err, result) => {
-        console.log(
-          "title_en: \n" +
-            title_en +
-            "\n" +
-            "title_bg: \n" +
-            title_bg +
-            "\n" +
-            "genre_en: \n" +
-            genre_en +
-            "\n" +
-            "genre_bg: \n" +
-            genre_bg
-        );
+    if (recommendationType === "movies_series") {
+      db.saveToWatchlist(userId, data, (err, result) => {
         if (err) {
           return res.status(500).json({ error: err.message });
         }
-        res.status(201).json({ message: "Recommendation added successfully!" });
-      }
-    );
+        res
+          .status(201)
+          .json({ message: "Movie/Series recommendation added successfully!" });
+      });
+    } else {
+      db.saveToReadlist(userId, data, (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        res
+          .status(201)
+          .json({ message: "Book recommendation added successfully!" });
+      });
+    }
   });
 });
 
 // Изтриване на препоръка от списъка за гледане
-app.delete("/remove-from-watchlist", (req, res) => {
-  const { token, imdbID } = req.body;
+app.delete("/remove-from-list", (req, res) => {
+  const { token, imdbID, source, book_id, recommendationType } = req.body;
 
-  if (!imdbID) {
-    return res.status(400).json({ error: "IMDb ID is required" });
+  if (!token) {
+    return res.status(401).json({ error: "Token is required" });
+  }
+
+  if (!recommendationType) {
+    return res.status(400).json({ error: "Recommendation type is required" });
+  }
+
+  if (recommendationType === "movies_series" && !imdbID) {
+    return res.status(400).json({ error: "IMDb ID is required for movies" });
+  }
+
+  if (recommendationType === "books" && !book_id) {
+    return res
+      .status(400)
+      .json({ error: "Google Books ID is required for books" });
   }
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
     const userId = decoded.id;
 
-    db.removeFromWatchlist(userId, imdbID, (err, result) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ error: "Recommendation not found" });
-      }
-      res.status(200).json({ message: "Recommendation removed successfully!" });
-    });
+    if (recommendationType === "movies_series") {
+      db.removeFromWatchlist(userId, imdbID, (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        if (result.affectedRows === 0) {
+          return res
+            .status(404)
+            .json({ error: "Movie/Series recommendation not found" });
+        }
+        res.status(200).json({
+          message: "Movie/Series recommendation removed successfully!"
+        });
+      });
+    } else {
+      db.removeFromReadlist(userId, source, book_id, (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        if (result.affectedRows === 0) {
+          return res
+            .status(404)
+            .json({ error: "Book recommendation not found" });
+        }
+        res
+          .status(200)
+          .json({ message: "Book recommendation removed successfully!" });
+      });
+    }
   });
 });
 
 // Изтриване на препоръка от списъка за гледане
-app.post("/check-for-recommendation-in-watchlist", (req, res) => {
-  const { token, imdbID } = req.body;
-
-  if (!imdbID) {
-    return res.status(400).json({ error: "IMDb ID is required" });
-  }
+app.post("/check-for-recommendation-in-list", (req, res) => {
+  const { token, imdbID, source, book_id, recommendationType } = req.body;
 
   if (!token) {
     return res.status(401).json({ error: "Token is required" });
+  }
+
+  if (!recommendationType) {
+    return res.status(400).json({ error: "Recommendation type is required" });
+  }
+
+  if (recommendationType === "movies_series" && !imdbID) {
+    return res.status(400).json({ error: "IMDb ID is required for movies" });
+  }
+
+  if (recommendationType === "books" && !book_id) {
+    return res
+      .status(400)
+      .json({ error: "Google Books ID is required for books" });
   }
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
@@ -667,20 +565,38 @@ app.post("/check-for-recommendation-in-watchlist", (req, res) => {
 
     const userId = decoded.id;
 
-    db.checkRecommendationExistsInWatchlist(
-      userId,
-      imdbID,
-      (error, results) => {
-        if (error) {
-          return res
-            .status(500)
-            .json({ error: "Database error", details: error });
-        }
+    if (recommendationType === "movies_series") {
+      db.checkRecommendationExistsInWatchlist(
+        userId,
+        imdbID,
+        (error, results) => {
+          if (error) {
+            return res
+              .status(500)
+              .json({ error: "Database error", details: error });
+          }
 
-        // Always respond with 200 and include the 'exists' flag
-        return res.status(200).json({ exists: results.length > 0 });
-      }
-    );
+          // Always respond with 200 and include the 'exists' flag
+          return res.status(200).json({ exists: results.length > 0 });
+        }
+      );
+    } else {
+      db.checkRecommendationExistsInReadlist(
+        userId,
+        source,
+        book_id,
+        (error, results) => {
+          if (error) {
+            return res
+              .status(500)
+              .json({ error: "Database error", details: error });
+          }
+
+          // Always respond with 200 and include the 'exists' flag
+          return res.status(200).json({ exists: results.length > 0 });
+        }
+      );
+    }
   });
 });
 
@@ -1198,6 +1114,79 @@ app.post("/stats/individual/watchlist-top-writers", (req, res) => {
       }
       res.json(result);
     });
+  });
+});
+
+// Вземане на данни за книга от Goodreads
+app.get("/get-goodreads-data-for-a-book", (req, res) => {
+  const { url } = req.query;
+
+  // Проверка дали е подаден URL параметър в заявката
+  if (!url) {
+    return res.status(400).send("Грешка: URL параметър е необходим.");
+  }
+
+  // Стартиране на Python процес и подаване на URL като аргумент
+  const pythonProcess = spawn("python", ["./scraping/scraper.py", url]);
+
+  let response = "";
+
+  // Улавяне на данни от стандартния изход (stdout)
+  pythonProcess.stdout.on("data", (data) => {
+    response += data.toString();
+  });
+
+  // Улавяне на грешки от стандартния изход за грешки (stderr) - по избор за дебъгване
+  pythonProcess.stderr.on("data", (data) => {
+    console.error("Python скрипт stderr:", data.toString());
+  });
+
+  // Обработка на затварянето на процеса
+  pythonProcess.on("close", (code) => {
+    if (code === 0) {
+      const jsonResponse = JSON.parse(response.trim());
+      res.status(200).json(jsonResponse); // Връща JSON отговор на клиента
+    } else {
+      res.status(500).send("Грешка: Изпълнението на Python скрипта неуспешно");
+    }
+  });
+});
+
+// Вземане на JSON обект за книга от Goodreads
+app.get("/get-goodreads-json-object-for-a-book", (req, res) => {
+  const { url } = req.query;
+
+  // Проверка дали е подаден URL параметър в заявката
+  if (!url) {
+    return res.status(400).send("Грешка: URL параметър е необходим.");
+  }
+
+  // Стартиране на Python процес и подаване на URL като аргумент
+  const pythonProcess = spawn("python", [
+    "./scraping/scraper_script_tag_json.py",
+    url
+  ]);
+
+  let response = "";
+
+  // Улавяне на данни от стандартния изход (stdout)
+  pythonProcess.stdout.on("data", (data) => {
+    response += data.toString();
+  });
+
+  // Улавяне на грешки от стандартния изход за грешки (stderr) - по избор за дебъгване
+  pythonProcess.stderr.on("data", (data) => {
+    console.error("Python скрипт stderr:", data.toString());
+  });
+
+  // Обработка на затварянето на процеса
+  pythonProcess.on("close", (code) => {
+    if (code === 0) {
+      const jsonResponse = JSON.parse(response.trim());
+      res.status(200).json(jsonResponse); // Връща JSON отговор на клиента
+    } else {
+      res.status(500).send("Грешка: Изпълнението на Python скрипта неуспешно");
+    }
   });
 });
 

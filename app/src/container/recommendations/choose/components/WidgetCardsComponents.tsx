@@ -1,9 +1,9 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import { DataType } from "../home-types";
+import { DataType } from "../choose-types";
 import { handleDropdownClick } from "../helper_functions";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
-import { getAveragesOptions, getAwardOptions } from "../home-data";
+import { getAveragesOptions, getAwardOptions } from "../choose-data";
 
 interface WidgetCardsComponentProps {
   data: DataType;

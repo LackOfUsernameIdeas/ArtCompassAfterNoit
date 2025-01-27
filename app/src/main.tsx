@@ -17,6 +17,7 @@ import MoviesSeriesIndividualStats from "./container/individualStats/movies_seri
 import BooksIndividualStats from "./container/individualStats/books/BooksIndividualStats.tsx";
 import Contact from "./container/contact/Contact.tsx";
 import Test from "./container/test/test.tsx";
+import ChooseRecommendations from "./container/recommendations/choose/ChooseRecommendations.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.Fragment>
@@ -35,6 +36,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           >
             {/* Default route */}
             <Route index path="home" element={<Home />} />
+            <Route path="recommendations" element={<ChooseRecommendations />} />
             <Route
               path="recommendations/movies_series"
               element={<MoviesSeriesRecommendations />}

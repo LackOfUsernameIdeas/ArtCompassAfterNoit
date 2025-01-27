@@ -1,11 +1,10 @@
 import { FC, useEffect, useState } from "react";
 import { Quiz } from "./Components/Quiz";
 import { useNavigate } from "react-router-dom";
-import { checkTokenValidity } from "../../helper_functions_common";
+import { validateToken } from "../../helper_functions_common";
 import {
-  removeFromWatchlist,
-  saveToWatchlist,
-  showNotification
+  removeFromReadlist,
+  saveToReadlist
 } from "../../helper_functions_common";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
 import Notification from "../../../components/common/notification/Notification";
@@ -20,7 +19,7 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
     null // Състояние за съхраняване на текущото известие (съобщение и тип)
   );
 
-  const [bookmarkedMovies, setBookmarkedMovies] = useState<{
+  const [bookmarkedBooks, setBookmarkedBooks] = useState<{
     [key: string]: any;
   }>({});
 
@@ -28,18 +27,7 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
   const [currentBookmarkStatus, setCurrentBookmarkStatus] = useState(false); // Track current bookmark status
 
   useEffect(() => {
-    const validateToken = async () => {
-      const redirectUrl = await checkTokenValidity();
-      if (redirectUrl) {
-        showNotification(
-          setNotification,
-          "Вашата сесия е изтекла. Моля, влезте в профила Ви отново.",
-          "error"
-        );
-      }
-    };
-
-    validateToken();
+    validateToken(setNotification); // Стартиране на проверката на токена при първоначално зареждане на компонента
   }, []);
 
   const handleNotificationClose = () => {
@@ -49,31 +37,33 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
     setNotification(null);
   };
 
-  const handleBookmarkClick = (movie: {
-    imdbID: string;
+  const handleBookmarkClick = (book: {
+    google_books_id: string;
+    goodreads_id: string;
     [key: string]: any;
   }) => {
-    setBookmarkedMovies((prev) => {
-      const isBookmarked = !!prev[movie.imdbID];
+    setBookmarkedBooks((prev) => {
+      const isBookmarked = !!prev[book.google_books_id || book.goodreads_id];
       const updatedBookmarks = { ...prev };
       const token =
         localStorage.getItem("authToken") ||
         sessionStorage.getItem("authToken");
 
       if (isBookmarked) {
-        // Remove the movie from bookmarks if it's already bookmarked
-        delete updatedBookmarks[movie.imdbID];
+        // Remove the book from bookmarks if it's already bookmarked
+        delete updatedBookmarks[book.google_books_id || book.goodreads_id];
 
-        // Call removeFromWatchlist API
-        removeFromWatchlist(movie.imdbID, token).catch((error) => {
+        removeFromReadlist(
+          book.google_books_id || book.goodreads_id,
+          token
+        ).catch((error) => {
           console.error("Error removing from watchlist:", error);
         });
       } else {
-        // Add the movie to bookmarks if it's not already bookmarked
-        updatedBookmarks[movie.imdbID] = movie;
+        // Add the book to bookmarks if it's not already bookmarked
+        updatedBookmarks[book.google_books_id || book.goodreads_id] = book;
 
-        // Call saveToWatchlist API
-        saveToWatchlist(movie, token).catch((error) => {
+        saveToReadlist(book, token).catch((error) => {
           console.error("Error saving to watchlist:", error);
         });
       }
@@ -84,7 +74,7 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
       return updatedBookmarks; // Return the updated bookmarks object
     });
   };
-  console.log("bookmarkedMovies: ", bookmarkedMovies);
+  console.log("bookmarkedBooks: ", bookmarkedBooks);
 
   const handleDismiss = () => {
     setAlertVisible(false);
@@ -107,9 +97,9 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
       )}
       <FadeInWrapper>
         <Quiz
-          bookmarkedMovies={bookmarkedMovies}
+          bookmarkedBooks={bookmarkedBooks}
           handleBookmarkClick={handleBookmarkClick}
-          setBookmarkedMovies={setBookmarkedMovies}
+          setBookmarkedBooks={setBookmarkedBooks}
         />
       </FadeInWrapper>
     </>

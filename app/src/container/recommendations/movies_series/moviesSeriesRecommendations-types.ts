@@ -32,11 +32,10 @@ export interface Question {
   placeholder?: string; // Плейсхолдър за въпроси с текстов вход
   description?: string; // Допълнително описание на въпроса
 }
-
 // Интерфейс за филм с всички основни данни за филма.
 export interface Movie {
-  id: string; // ID на филма
-  user_id: string; // ID на потребителя, свързан с филма
+  id?: string; // ID на филма
+  user_id?: string; // ID на потребителя, свързан с филма
   imdbID: string; // IMDb идентификатор
   title: string; // Английско заглавие на филма
   bgName: string; // Българско заглавие на филма
@@ -47,6 +46,7 @@ export interface Movie {
   rated: string; // Възрастова оценка
   released: string; // Дата на излизане
   runtime: string; // Времетраене в минути
+  runtimeGoogle: string; // Времетраене, директно от Гугъл
   director: string; // Име на режисьора
   writer: string; // Име на сценариста
   actors: string; // Списък с актьори
@@ -58,14 +58,15 @@ export interface Movie {
   ratings: { Source: string; Value: string }[]; // Масив с рейтингови източници и стойности
   metascore: string; // Метаскор стойност
   imdbRating: string; // IMDb рейтинг
+  imdbRatingGoogle: string; // IMDb рейтинг от Гугъл
   imdbVotes: string; // Брой IMDb гласове
   type: string; // Вид (например, филм)
   DVD: string; // Информация за DVD издание (ако е налично)
   boxOffice: string; // Приходи от бокс офиса
   production: string; // Продуцентско студио (ако е налично)
   website: string; // Официален уебсайт (ако е наличен)
-  totalSeasons: string | null; // Общо сезони (за сериали)
-  date: string; // Дата на въвеждане на данните
+  totalSeasons?: string | null; // Общо сезони (за сериали)
+  date?: string; // Дата на въвеждане на данните
 }
 
 // Интерфейс за предпочитания на потребителя.
@@ -145,16 +146,12 @@ export interface ConfirmationModalProps {
       type: "success" | "error" | "warning";
     } | null>
   >;
-
   // Функция за задаване на състоянието за зареждане
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-
   // Функция за задаване на състоянието за изпращане
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
-
   // Функция за задаване на състоянието за отваряне на модала
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-
   // Функция за обработка на изпращането на заявка
   handleSubmit: (
     setNotification: React.Dispatch<

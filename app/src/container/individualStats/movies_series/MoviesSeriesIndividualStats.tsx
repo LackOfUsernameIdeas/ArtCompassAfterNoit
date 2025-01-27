@@ -4,12 +4,11 @@ import { fetchData } from "./helper_functions";
 import {
   checkRecommendationExistsInWatchlist,
   removeFromWatchlist,
-  saveToWatchlist
+  saveToWatchlist,
+  validateToken
 } from "../../helper_functions_common";
-import { checkTokenValidity } from "../../helper_functions_common";
 import { useNavigate } from "react-router-dom";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
-import { showNotification } from "../../helper_functions_common";
 import Notification from "../../../components/common/notification/Notification";
 import { NotificationState } from "../../types_common";
 import ActorsDirectorsWritersTable from "./Components/ActorsDirectorsWritersTable";
@@ -17,6 +16,7 @@ import MoviesAndSeriesRecommendationsTable from "./Components/MoviesAndSeriesRec
 import GenresBarChart from "./Components/GenresBarChart";
 import CountWidgets from "./Components/CountWidgets";
 import BookmarkAlert from "./Components/BookmarkAlert";
+import ErrorCard from "../../../components/common/error/error";
 
 interface IndividualStatsProps {}
 
@@ -69,20 +69,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
   };
 
   useEffect(() => {
-    const validateToken = async () => {
-      // Функция за проверка валидността на потребителския токен
-      const redirectUrl = await checkTokenValidity(); // Извикване на помощна функция за валидиране на токена
-      if (redirectUrl) {
-        // Ако токенът е невалиден, показване на известие
-        showNotification(
-          setNotification, // Функция за задаване на известие
-          "Вашата сесия е изтекла. Моля, влезте в профила Ви отново.", // Съобщение за известието
-          "error" // Типът на известието (грешка)
-        );
-      }
-    };
-
-    validateToken(); // Стартиране на проверката на токена при първоначално зареждане на компонента
+    validateToken(setNotification); // Стартиране на проверката на токена при първоначално зареждане на компонента
 
     const token =
       localStorage.getItem("authToken") || sessionStorage.getItem("authToken"); // Вземане на токен от localStorage или sessionStorage
@@ -139,7 +126,6 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
         // Remove the movie from bookmarks if it's already bookmarked
         delete updatedBookmarks[movie.imdbID];
 
-        // Call removeFromWatchlist API
         removeFromWatchlist(movie.imdbID, token).catch((error) => {
           console.error("Error removing from watchlist:", error);
         });
@@ -147,7 +133,6 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
         // Add the movie to bookmarks if it's not already bookmarked
         updatedBookmarks[movie.imdbID] = movie;
 
-        // Call saveToWatchlist API
         saveToWatchlist(movie, token).catch((error) => {
           console.error("Error saving to watchlist:", error);
         });
@@ -179,16 +164,13 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
     !data.sortedWritersByRecommendationCount.length
   ) {
     return (
-      <FadeInWrapper>
-        <div className="flex justify-center items-center bg-bodybg mt-[15rem] text-center p-6 rounded-lg shadow-xl">
-          <p className="text-2xl font-extrabold text-defaulttextcolor drop-shadow-lg">
-            🔍 За да можете да разгледате Вашите индивидуални статистики, моля,
-            първо генерирайте препоръки. Това ще ни позволи да съберем
-            необходимите данни и да Ви предоставим подробен анализ 📊, съобразен
-            с Вашите предпочитания. ⚙️
-          </p>
-        </div>
-      </FadeInWrapper>
+      <ErrorCard
+        message="🔍 За да можете да разгледате Вашите индивидуални статистики, моля,
+          първо генерирайте препоръки. Това ще ни позволи да съберем
+          необходимите данни и да Ви предоставим подробен анализ 📊, съобразен с
+          Вашите предпочитания. ⚙️"
+        mt={10}
+      />
     );
   }
 

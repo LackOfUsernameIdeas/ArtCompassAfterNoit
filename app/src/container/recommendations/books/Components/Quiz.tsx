@@ -8,12 +8,14 @@ import { QuizProps } from "../booksRecommendations-types";
 
 export const Quiz: FC<QuizProps> = ({
   handleBookmarkClick,
-  bookmarkedMovies,
-  setBookmarkedMovies
+  bookmarkedBooks,
+  setBookmarkedBooks
 }) => {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [recommendationList, setRecommendationList] = useState<any[]>([]);
+
+  console.log("recommendationList: ", recommendationList);
 
   const alreadyHasRecommendations = recommendationList.length > 0;
   return (
@@ -41,7 +43,7 @@ export const Quiz: FC<QuizProps> = ({
             showViewRecommendations={alreadyHasRecommendations && !submitted}
             alreadyHasRecommendations={alreadyHasRecommendations}
             setRecommendationList={setRecommendationList}
-            setBookmarkedMovies={setBookmarkedMovies}
+            setBookmarkedBooks={setBookmarkedBooks}
           />
         </div>
       </CSSTransition>
@@ -67,7 +69,7 @@ export const Quiz: FC<QuizProps> = ({
           <RecommendationsList
             recommendationList={recommendationList}
             handleBookmarkClick={handleBookmarkClick}
-            bookmarkedMovies={bookmarkedMovies}
+            bookmarkedBooks={bookmarkedBooks}
           />
         </div>
       </CSSTransition>

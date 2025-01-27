@@ -15,11 +15,15 @@ import {
   pacingOptions,
   depthOptions,
   targetGroupOptions
-} from "../../movies_series/moviesSeriesRecommendations-data";
-import { booksGenreOptions } from "../../../data_common";
+} from "../booksRecommendations-data";
+import {
+  goodreadsGenreOptions,
+  googleBooksGenreOptions
+} from "../../../data_common";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { ViewRecommendations } from "./ViewRecommendations";
 import Notification from "../../../../components/common/notification/Notification";
+import { useNavigate } from "react-router-dom";
 
 export const QuizQuestions: FC<QuizQuestionProps> = ({
   setLoading,
@@ -27,12 +31,12 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   showViewRecommendations,
   alreadyHasRecommendations,
   setRecommendationList,
-  setBookmarkedMovies
+  setBookmarkedBooks
 }) => {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [moods, setMoods] = useState<string[]>([]);
   const [authors, setAuthors] = useState("");
-  const [countries, setCountries] = useState("");
+  const [origin, setOrigin] = useState("");
   const [pacing, setPacing] = useState("");
   const [depth, setDepth] = useState("");
   const [targetGroup, setTargetGroup] = useState("");
@@ -50,7 +54,10 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   const questions = [
     {
       question: "Кои жанрове Ви се четат в момента?",
-      options: booksGenreOptions,
+      options:
+        import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
+          ? googleBooksGenreOptions
+          : goodreadsGenreOptions,
       isMultipleChoice: true,
       value: genres,
       setter: setGenres
@@ -72,8 +79,8 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
     {
       question: "Какви са вашите предпочитания относно произхода на книгите?",
       isInput: true,
-      value: countries,
-      setter: setCountries,
+      value: origin,
+      setter: setOrigin,
       placeholder: "Пример: Европейска, Българска, Френска литература"
     },
     {
@@ -113,7 +120,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
     genres,
     moods: moods?.map((mood) => mood.split(" ")[0]),
     authors,
-    countries,
+    origin,
     pacing,
     depth,
     targetGroup,
@@ -122,6 +129,8 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
 
   const isBackDisabled = currentQuestionIndex === 0;
   const currentQuestion = questions[currentQuestionIndex];
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     setSelectedAnswer(null);
@@ -161,7 +170,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
           setSubmitted,
           setSubmitCount,
           setRecommendationList,
-          setBookmarkedMovies,
+          setBookmarkedBooks,
           booksUserPreferences,
           token,
           submitCount
@@ -175,6 +184,13 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
         questions
       );
     }
+  };
+
+  const handleNotificationClose = () => {
+    if (notification?.type === "error") {
+      navigate("/signin");
+    }
+    setNotification(null);
   };
 
   useEffect(() => {
@@ -220,8 +236,8 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       }
     }
   }, [currentQuestion, selectedAnswer]);
-  console.log("kalata test useEffect: ", booksUserPreferences);
 
+  console.log("user preferences: ", booksUserPreferences);
   return (
     <div>
       {showViewRecommendations && (
@@ -235,10 +251,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
         <Notification
           message={notification.message}
           type={notification.type}
-          onClose={() => {
-            console.log("Notification closed!");
-            setNotification(null);
-          }}
+          onClose={handleNotificationClose}
         />
       )}
       <CSSTransition
@@ -264,7 +277,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
           </div>
           <div className={isBackDisabled ? "my-8" : "mb-2"}>
             {!isBackDisabled && (
-              <div className="flex justify-start ">
+              <div className="flex justify-start">
                 <button
                   onClick={() =>
                     handleBack(
@@ -441,35 +454,46 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
             </div>
           )}
 
-          <div
-            onClick={handleClick}
-            className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center transition-all duration-200 ${
-              (selectedAnswer && selectedAnswer.length > 0) ||
-              (currentQuestion.isInput &&
-                typeof currentQuestion.value === "string" &&
-                currentQuestion.value.trim() !== "")
-                ? "opacity-100 pointer-events-auto cursor-pointer"
-                : "opacity-0 pointer-events-none"
-            }`}
-          >
-            {currentQuestionIndex === totalQuestions - 1
-              ? "Изпрати"
-              : "Следващ въпрос"}
+          <div>
+            <div
+              onClick={handleClick}
+              className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center transition-all duration-300 ease-in-out transform ${
+                (selectedAnswer && selectedAnswer.length > 0) ||
+                (currentQuestion.isInput &&
+                  typeof currentQuestion.value === "string" &&
+                  currentQuestion.value.trim() !== "")
+                  ? "opacity-100 pointer-events-auto cursor-pointer hover:scale-105"
+                  : "opacity-50 pointer-events-none cursor-not-allowed"
+              }`}
+            >
+              {currentQuestionIndex === totalQuestions - 1
+                ? "Изпрати"
+                : "Следващ въпрос"}
+            </div>
 
+            {/* Modal Component */}
             {isModalOpen && alreadyHasRecommendations && (
-              <ConfirmationModal
-                setNotification={setNotification}
-                setIsModalOpen={setIsModalOpen}
-                setLoading={setLoading}
-                setSubmitted={setSubmitted}
-                handleSubmit={handleSubmit}
-                setRecommendationList={setRecommendationList}
-                setBookmarkedMovies={setBookmarkedMovies}
-                setSubmitCount={setSubmitCount}
-                booksUserPreferences={booksUserPreferences}
-                token={token}
-                submitCount={submitCount}
-              />
+              <div
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+                role="dialog"
+                aria-modal="true"
+              >
+                <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+                  <ConfirmationModal
+                    setNotification={setNotification}
+                    setIsModalOpen={setIsModalOpen}
+                    setLoading={setLoading}
+                    setSubmitted={setSubmitted}
+                    handleSubmit={handleSubmit}
+                    setRecommendationList={setRecommendationList}
+                    setBookmarkedBooks={setBookmarkedBooks}
+                    setSubmitCount={setSubmitCount}
+                    booksUserPreferences={booksUserPreferences}
+                    token={token}
+                    submitCount={submitCount}
+                  />
+                </div>
+              </div>
             )}
           </div>
         </div>

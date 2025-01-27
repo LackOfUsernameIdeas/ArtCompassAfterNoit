@@ -1,16 +1,29 @@
 import {
   Genre,
   Question,
-  BooksUserPreferences
+  BooksUserPreferences,
+  IndustryIdentifier
 } from "./booksRecommendations-types";
 import { NotificationState } from "../../types_common";
-import { openAIKey } from "./booksRecommendations-data";
-import { moviesSeriesGenreOptions } from "../../data_common";
-import { booksGenreOptions } from "../../data_common";
 import {
-  checkRecommendationExistsInWatchlist,
-  showNotification
+  goodreadsExampleResponse,
+  goodreadsPrompt,
+  googleBooksExampleResponse,
+  googleBooksPrompt,
+  openAIKey
+} from "./booksRecommendations-data";
+import {
+  goodreadsGenreOptions,
+  googleBooksGenreOptions
+} from "../../data_common";
+import {
+  checkRecommendationExistsInReadlist,
+  showNotification,
+  translate,
+  translateWithDetection,
+  validateToken
 } from "../../helper_functions_common";
+import ISO6391 from "iso-639-1";
 
 /**
  * Записва предпочитанията на потребителя в базата данни чрез POST заявка.
@@ -26,36 +39,19 @@ import {
  */
 export const saveBooksUserPreferences = async (
   date: string,
-  booksUserPreferences: {
-    type: string;
-    genres: { en: string; bg: string }[];
-    moods: string[];
-    timeAvailability: string;
-    age: string;
-    actors: string;
-    directors: string;
-    interests: string;
-    countries: string;
-    pacing: string;
-    depth: string;
-    targetGroup: string;
-  },
+  booksUserPreferences: BooksUserPreferences,
   token: string | null
 ): Promise<void> => {
   try {
     const {
-      type,
       genres,
       moods,
-      timeAvailability,
-      age,
-      actors,
-      directors,
-      interests,
-      countries,
+      authors,
+      origin,
       pacing,
       depth,
-      targetGroup
+      targetGroup,
+      interests
     } = booksUserPreferences;
 
     const preferredGenresEn =
@@ -63,49 +59,31 @@ export const saveBooksUserPreferences = async (
     const preferredGenresBg =
       genres.length > 0 ? genres.map((g) => g.bg).join(", ") : null;
 
-    console.log("preferences: ", {
+    const formattedPreferences = {
       token: token,
       preferred_genres_en: preferredGenresEn,
       preferred_genres_bg: preferredGenresBg,
       mood: Array.isArray(moods) ? moods.join(", ") : null,
-      timeAvailability,
-      preferred_age: age,
-      preferred_type: type,
-      preferred_actors: actors,
-      preferred_directors: directors,
-      preferred_countries: countries,
+      preferred_authors: authors,
+      preferred_origin: origin,
       preferred_pacing: pacing,
       preferred_depth: depth,
       preferred_target_group: targetGroup,
       interests: interests || null,
       date: date
-    });
+    };
+    console.log("preferences: ", formattedPreferences);
 
     const response = await fetch(
-      `${
-        import.meta.env.VITE_API_BASE_URL
-      }/save-movies-series-user-preferences`,
+      `${import.meta.env.VITE_API_BASE_URL}/save-preferences`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          token: token,
-          preferred_genres_en: preferredGenresEn,
-          preferred_genres_bg: preferredGenresBg,
-          mood: Array.isArray(moods) ? moods.join(", ") : null,
-          timeAvailability,
-          preferred_age: age,
-          preferred_type: type,
-          preferred_actors: actors,
-          preferred_directors: directors,
-          preferred_countries: countries,
-          preferred_pacing: pacing,
-          preferred_depth: depth,
-          preferred_target_group: targetGroup,
-          interests: interests || null,
-          date: date
+          preferencesType: "books",
+          preferences: formattedPreferences
         })
       }
     );
@@ -122,34 +100,48 @@ export const saveBooksUserPreferences = async (
 };
 
 /**
- * Извлича данни за филм от IMDb чрез няколко различни търсачки в случай на неуспех.
+ * Извлича данни за книга от Google Books чрез няколко различни търсачки в случай на неуспех.
  * Ако не успее да извлече данни от всички търсачки, хвърля грешка.
  *
  * @async
- * @function fetchIMDbDataWithFailover
- * @param {string} movieName - Името на филма, за който се извличат данни.
- * @returns {Promise<Object>} - Връща обект с данни от IMDb за филма.
+ * @function fetchBooksIDWithFailover
+ * @param {string} bookName - Името на книгата, за който се извличат данни.
+ * @returns {Promise<Object>} - Връща обект с данни от Google Books за книгата.
  * @throws {Error} - Хвърля грешка, ако не успее да извлече данни от всички търсачки.
  */
-const fetchIMDbDataWithFailover = async (movieName: string) => {
-  const engines = [
-    { key: "AIzaSyAUOQzjNbBnGSBVvCZkWqHX7uebGZRY0lg", cx: "244222e4658f44b78" },
-    { key: "AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA", cx: "27427e59e17b74763" },
-    { key: "AIzaSyDqUez1TEmLSgZAvIaMkWfsq9rSm0kDjIw", cx: "e59ceff412ebc4313" }
+const fetchBooksIDWithFailover = async (
+  bookName: string,
+  source: string
+): Promise<any> => {
+  const enginesGoogleBooks = [
+    { key: "AIzaSyDqUez1TEmLSgZAvIaMkWfsq9rSm0kDjIw", cx: "d059d8edb90514692" },
+    { key: "AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA", cx: "422c2707d8062436a" },
+    { key: "AIzaSyAUOQzjNbBnGSBVvCZkWqHX7uebGZRY0lg", cx: "46127fd515c5d40be" }
   ];
 
-  for (let engine of engines) {
+  const enginesGoodreads = [
+    { key: "AIzaSyDx1TITxqoRZR3stELH_EKM4CRFIihcrUE", cx: "16d236f4de37240b0" },
+    { key: "AIzaSyAefnCBUG8640RF8b2pd1cWyS6ZBXBXIeQ", cx: "16d236f4de37240b0" },
+    { key: "AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA", cx: "450bbb0da19164cf6" },
+    { key: "AIzaSyAUOQzjNbBnGSBVvCZkWqHX7uebGZRY0lg", cx: "727f76a1178b143c3" },
+    { key: "AIzaSyDoOjTIaxiG8b8fmuIbUAVHTQBzubTsYso", cx: "450bbb0da19164cf6" },
+    { key: "AIzaSyB7Sal-d83t6ksI7vePRehZcWgYf42q-Tg", cx: "727f76a1178b143c3" }
+  ];
+
+  for (let engine of source == "GoogleBooks"
+    ? enginesGoogleBooks
+    : enginesGoodreads) {
     try {
       const response = await fetch(
         `https://customsearch.googleapis.com/customsearch/v1?key=${
           engine.key
-        }&cx=${engine.cx}&q=${encodeURIComponent(movieName)}`
+        }&cx=${engine.cx}&q=${encodeURIComponent(bookName)}`
       );
       const data = await response.json();
 
       if (response.ok && !data.error && data.items) {
         console.log(
-          `Fetched IMDb data successfully using engine: ${engine.cx}`
+          `Fetched Book data successfully using engine: ${engine.cx}`
         );
         return data;
       } else {
@@ -160,37 +152,134 @@ const fetchIMDbDataWithFailover = async (movieName: string) => {
     }
   }
   throw new Error(
-    `Failed to fetch IMDb data for "${movieName}" using all engines.`
+    `Failed to fetch Book data for "${bookName}" using all engines.`
   );
 };
 
 /**
- * Генерира препоръки за филми или сериали, базирани на предпочитанията на потребителя,
+ * Обработва жанровете на книги от категориите на Google Books, като ги организира в основни категории с уникални подкатегории,
+ * включително подкатегории на подкатегориите и всички нива на вложеност.
+ *
+ * @function processBookGenres
+ * @param {string[]} categories - Списък с категории от Google Books API.
+ * @param {boolean} translateGenres - Определя дали да се преведат жанровете на български.
+ * @returns {Record<string, string[]>} - Обект, където ключовете са основните категории, а стойностите са подкатегории, включително всички нива на вложеност.
+ */
+export const processBookGenres = async (
+  categories: string[],
+  translateGenres: boolean = false
+): Promise<Record<string, string[]>> => {
+  // Инициализиране на обект за съхранение на резултатите
+  const genreMap: Record<string, string[]> = {};
+
+  // Рекурсивна функция за добавяне на подкатегории на всички нива
+  const addSubCategories = async (
+    mainCategory: string,
+    subCategories: string[]
+  ) => {
+    const translatedMain = translateGenres
+      ? await translate(mainCategory)
+      : mainCategory; // Превеждаме, ако е нужно
+
+    if (!genreMap[translatedMain]) {
+      genreMap[translatedMain] = [];
+    }
+
+    // Обхождаме всички подкатегории на дадената категория
+    for (const subCategory of subCategories) {
+      const translatedSub = translateGenres
+        ? await translate(subCategory)
+        : subCategory; // Превеждаме, ако е нужно
+      if (
+        translatedSub.toLowerCase() !== "general" &&
+        translatedSub.toLowerCase() !== "генерал" &&
+        !genreMap[translatedMain].includes(translatedSub)
+      ) {
+        genreMap[translatedMain].push(translatedSub);
+      }
+    }
+  };
+
+  // Изчакваме всички асинхронни операции да завършат
+  const promises = categories.map(async (category) => {
+    // Разделяне на категорията на различни нива по " / "
+    const parts = category.split(" / ");
+    const mainCategory = parts[0].trim(); // Основна категория
+    const subCategories = parts.slice(1).map((sub) => sub.trim()); // Всички подкатегории след първоначалната основна категория
+
+    // Рекурсивно добавяне на подкатегориите за всяка категория
+    await addSubCategories(mainCategory, subCategories);
+  });
+
+  // Изчакваме всички промиси да завършат
+  await Promise.all(promises);
+
+  // Връщане на обекта с организираните жанрове
+  return genreMap;
+};
+
+/**
+ * Функция за премахване на HTML тагове от даден текст.
+ * @param {string} text - Текстът, който трябва да бъде обработен.
+ * @returns {string} - Текстът без HTML тагове.
+ */
+export const removeHtmlTags = (text: string): string => {
+  return text.replace(/<[^>]*>/g, ""); // Регулярен израз за премахване на всички HTML тагове
+};
+
+/**
+ * Проверява и обработва всички полета от обект, като приоритет се дава на основните данни.
+ *
+ * @function processDataWithFallback
+ * @param {any} primaryData - Основните данни от първичния източник (например Google Books).
+ * @param {any} fallbackData - Данните от алтернативния източник (например AI).
+ * @returns {any} - Връща наличните данни, като приоритет се дава на основния източник.
+ */
+export const processDataWithFallback = (
+  primaryData: any,
+  fallbackData: any
+): any => {
+  // Проверка дали основните данни са дефинирани и не са null
+  if (primaryData !== undefined && primaryData !== null) {
+    // Ако данните са стринг, проверява дали са празни след trim()
+    if (typeof primaryData === "string" && primaryData.trim() !== "") {
+      return primaryData;
+    }
+    // Ако данните не са стринг, приема ги за валидни
+    if (typeof primaryData !== "string") {
+      return primaryData;
+    }
+  }
+
+  // Ако няма основни данни, използваме алтернативния източник
+  return fallbackData;
+};
+
+/**
+ * Генерира препоръки за книги, базирани на предпочитанията на потребителя,
  * като използва OpenAI API за създаване на списък с препоръки.
  * Връща списък с препоръки в JSON формат.
  *
  * @async
- * @function generateMovieRecommendations
+ * @function generateBooksRecommendations
  * @param {string} date - Датата на генерирането на препоръките.
- * @param {BooksUserPreferences} booksUserPreferences - Преференциите на потребителя за филми/сериали.
+ * @param {BooksUserPreferences} booksUserPreferences - Преференциите на потребителя за книги.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за задаване на препоръките в компонент.
  * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките.
  * @throws {Error} - Хвърля грешка, ако заявката за препоръки е неуспешна.
  */
-export const generateMovieRecommendations = async (
+export const generateBooksRecommendations = async (
   date: string,
   booksUserPreferences: BooksUserPreferences,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
-  setBookmarkedMovies: React.Dispatch<
+  setBookmarkedBooks: React.Dispatch<
     React.SetStateAction<{
       [key: string]: any;
     }>
   >,
   token: string | null
 ) => {
-  const { genres, moods, interests, countries, pacing, depth, targetGroup } =
-    booksUserPreferences;
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -198,53 +287,22 @@ export const generateMovieRecommendations = async (
         "Content-Type": "application/json",
         Authorization: `Bearer ${openAIKey}`
       },
-      body: JSON.stringify({
-        model: "gpt-4o-2024-08-06"
-        // messages: [
-        //   {
-        //     role: "system",
-        //     content: `You are an AI that recommends movies and series based on user preferences. Provide a list of movies and series, based on what the user has chosen to watch (movie or series), that match the user's taste and preferences, formatted in Bulgarian, with detailed justifications. Return the result in JSON format as instructed.`
-        //   },
-        //   {
-        //     role: "user",
-        //     content: `Препоръчай ми 5 ${typeText} за гледане, които ЗАДЪЛЖИТЕЛНО да съвпадат с моите вкусове и предпочитания, а именно:
-        //           Любими жанрове: ${genres.map((genre) => genre.bg)}.
-        //           Емоционално състояние в този момент: ${moods}.
-        //           Разполагаемо свободно време за гледане: ${timeAvailability}.
-        //           Възрастта на ${typeText} задължително да бъде: ${age}
-        //           Любими актьори: ${actors}.
-        //           Любими филмови режисьори: ${directors}.
-        //           Теми, които ме интересуват: ${interests}.
-        //           Филмите/сериалите могат да бъдат от следните страни: ${countries}.
-        //           Темпото (бързината) на филмите/сериалите предпочитам да бъде: ${pacing}.
-        //           Предпочитам филмите/сериалите да са: ${depth}.
-        //           Целевата група е: ${targetGroup}.
-        //           Дай информация за всеки отделен филм/сериал по отделно защо той е подходящ за мен.
-        //           Задължително искам имената на филмите/сериалите да бъдат абсолютно точно както са официално на български език – така, както са известни сред публиката в България.
-        //           Не се допуска буквален превод на заглавията от английски, ако официалното българско заглавие се различава от буквалния превод.
-        //           Не препоръчвай 18+ филми/сериали.
-        //           Форматирай своя response във валиден JSON формат по този начин:
-        //           {
-        //             'Официално име на ${typeText} на английски, както е прието да бъде': {
-        //               'bgName': 'Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод',
-        //               'description': 'Описание на ${typeText}',
-        //               'reason': 'Защо този филм/сериал е подходящ за мен?'
-        //             },
-        //             'Официално име на ${typeText} на английски, както е прието да бъде': {
-        //               'bgName': 'Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод',
-        //               'description': 'Описание на ${typeText}',
-        //               'reason': 'Защо този филм/сериал е подходящ за мен?'
-        //             },
-        //             // ...additional movies
-        //           }. Не добавяй излишни думи или скоби. Избягвай вложени двойни или единични кавички(кавички от един тип едно в друго, които да дават грешки на JSON.parse функцията). Увери се, че всички данни са правилно "escape-нати", за да не предизвикат грешки в JSON формата.
-        //           JSON формата трябва да е валиден за JavaScript JSON.parse() функцията.`
-        //   }
-        // ]
-      })
+      body: JSON.stringify(
+        import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
+          ? googleBooksPrompt(booksUserPreferences)
+          : goodreadsPrompt(booksUserPreferences)
+      )
     });
 
     const responseData = await response.json();
     const responseJson = responseData.choices[0].message.content;
+
+    // --- HARDCODED RESPONSE ЗА ТЕСТВАНЕ ---
+    // const responseJson =
+    //   import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
+    //     ? googleBooksExampleResponse
+    //     : goodreadsExampleResponse;
+
     const unescapedData = responseJson
       .replace(/^```json([\s\S]*?)```$/, "$1")
       .replace(/^```JSON([\s\S]*?)```$/, "$1")
@@ -257,112 +315,264 @@ export const generateMovieRecommendations = async (
     const recommendations = JSON.parse(decodedData);
     console.log("recommendations: ", recommendations);
 
-    for (const movieTitle in recommendations) {
-      const movieName = movieTitle;
+    for (const book of recommendations) {
+      const bookName = book.real_edition_title;
+      console.log("Processing book: ", bookName);
+      const bookResults = await fetchBooksIDWithFailover(
+        bookName,
+        import.meta.env.VITE_BOOKS_SOURCE
+      );
 
-      const imdbData = await fetchIMDbDataWithFailover(movieName);
+      console.log("Book results: ", bookResults);
+      if (!Array.isArray(bookResults.items)) {
+        console.warn(
+          `No items found for book: ${bookName} in Google Custom Search Engine.`
+        );
+        continue; // Skip to the next book
+      }
 
-      if (Array.isArray(imdbData.items)) {
-        const imdbItem = imdbData.items.find((item: { link: string }) =>
-          item.link.includes("imdb.com/title/")
+      const bookItem = bookResults.items.find((item: { link: string }) =>
+        import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
+          ? item.link.includes("books.google.com/books/about/")
+          : item.link.includes("goodreads.com/book/show/")
+      );
+      console.log(`bookItem: ${bookItem}`);
+
+      if (!bookItem) {
+        console.warn(`No valid book item found for: ${bookName}`);
+        continue; // Skip to the next book
+      }
+
+      const bookUrl = bookItem.link;
+      const bookId =
+        import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
+          ? bookUrl.match(/id=([a-zA-Z0-9-_]+)/)?.[1]
+          : bookUrl.match(/show\/(\d+)/)?.[1];
+
+      if (!bookId) {
+        console.warn(`No valid book ID found for: ${bookName}`);
+        continue; // Skip to the next book
+      }
+
+      if (import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks") {
+        const googleBooksResponse = await fetch(
+          `https://www.googleapis.com/books/v1/volumes/${bookId}`
         );
 
-        if (imdbItem) {
-          const imdbUrl = imdbItem.link;
-          const imdbId = imdbUrl.match(/title\/(tt\d+)\//)?.[1];
+        if (!googleBooksResponse.ok) {
+          console.error(
+            `Failed to fetch Google Books data for ${bookName}. Status: ${googleBooksResponse.status}`
+          );
+          continue; // Skip to the next book
+        }
 
-          const imdbRating = imdbItem.pagemap.metatags
-            ? imdbItem.pagemap.metatags[0]["twitter:title"]?.match(
-                /⭐ ([\d.]+)/
-              )?.[1]
-            : null;
-          const runtime = imdbItem.pagemap.metatags
-            ? imdbItem.pagemap.metatags[0]["og:description"]?.match(
-                /(\d{1,2}h \d{1,2}m|\d{1,2}h|\d{1,3}m)/
-              )?.[1]
-            : null;
+        const googleBooksData = await googleBooksResponse.json();
 
-          const translatedRuntime = runtime
-            ? runtime.replace(/h/g, "ч").replace(/m/g, "м").replace(/s/g, "с")
-            : null;
+        console.log(
+          `Google Books data for ${bookName}: ${JSON.stringify(
+            googleBooksData,
+            null,
+            2
+          )}, `
+        );
 
-          if (imdbId) {
-            const omdbResponse = await fetch(
-              `https://www.omdbapi.com/?apikey=89cbf31c&i=${imdbId}&plot=full`
-            );
-            const omdbData = await omdbResponse.json();
+        const author = await processDataWithFallback(
+          translate(googleBooksData.volumeInfo?.authors.join(", ")),
+          translate(book?.author)
+        );
+        const description = await processDataWithFallback(
+          translate(removeHtmlTags(googleBooksData.volumeInfo?.description)),
+          book.description
+        );
+        const genres_en = await processBookGenres(
+          googleBooksData.volumeInfo?.categories
+        );
+        const genres_bg = await processBookGenres(
+          googleBooksData.volumeInfo?.categories,
+          true
+        );
+        const language = await processDataWithFallback(
+          translate(ISO6391.getName(googleBooksData.volumeInfo?.language)),
+          book?.language
+        );
 
-            console.log(
-              `OMDb data for ${movieName}: ${JSON.stringify(omdbData, null, 2)}`
-            );
+        const publisher = await translate(googleBooksData.volumeInfo.publisher);
 
-            const recommendationData = {
-              title: omdbData.Title,
-              bgName: recommendations[movieTitle].bgName,
-              description: recommendations[movieTitle].description,
-              reason: recommendations[movieTitle].reason,
-              year: omdbData.Year,
-              rated: omdbData.Rated,
-              released: omdbData.Released,
-              runtime: omdbData.Runtime,
-              runtimeGoogle: translatedRuntime,
-              genre: omdbData.Genre,
-              director: omdbData.Director,
-              writer: omdbData.Writer,
-              actors: omdbData.Actors,
-              plot: omdbData.Plot,
-              language: omdbData.Language,
-              country: omdbData.Country,
-              awards: omdbData.Awards,
-              poster: omdbData.Poster,
-              ratings: omdbData.Ratings,
-              metascore: omdbData.Metascore,
-              imdbRating: omdbData.imdbRating,
-              imdbRatingGoogle: imdbRating,
-              imdbVotes: omdbData.imdbVotes,
-              imdbID: omdbData.imdbID,
-              type: omdbData.Type,
-              DVD: omdbData.DVD,
-              boxOffice: omdbData.BoxOffice,
-              production: omdbData.Production,
-              website: omdbData.Website,
-              totalSeasons: omdbData.totalSeasons
-            };
+        const recommendationData = {
+          google_books_id: googleBooksData.id,
+          title_en: googleBooksData.volumeInfo.title,
+          title_bg: book.title_bg,
+          real_edition_title: book.real_edition_title,
+          author: author,
+          genres_en: genres_en,
+          genres_bg: genres_bg,
+          description: description,
+          language: language,
+          origin: book.origin,
+          date_of_first_issue: book.date_of_first_issue,
+          date_of_issue: processDataWithFallback(
+            googleBooksData.volumeInfo.publishedDate,
+            book.date_of_issue
+          ),
+          publisher: publisher,
+          goodreads_rating: book.goodreads_rating,
+          reason: book.reason,
+          adaptations: book.adaptations,
+          ISBN_10: googleBooksData.volumeInfo.industryIdentifiers.find(
+            (identifier: IndustryIdentifier) => identifier.type === "ISBN_10"
+          ).identifier,
+          ISBN_13: googleBooksData.volumeInfo.industryIdentifiers.find(
+            (identifier: IndustryIdentifier) => identifier.type === "ISBN_13"
+          ).identifier,
+          page_count: processDataWithFallback(
+            googleBooksData.volumeInfo.printedPageCount,
+            book.page_count
+          ),
+          imageLink: googleBooksData.volumeInfo.imageLinks.thumbnail,
+          source: "Google Books"
+        };
 
-            // Първо, задаваме списъка с препоръки
-            setRecommendationList((prevRecommendations) => [
-              ...prevRecommendations,
-              recommendationData
-            ]);
+        // Първо, задаваме списъка с препоръки
+        setRecommendationList((prevRecommendations) => [
+          ...prevRecommendations,
+          recommendationData
+        ]);
 
-            // След това изпълняваме проверката и записа паралелно, използвайки
-            const checkAndSaveMoviesSeriesRecommendation = async () => {
-              // Проверяваме дали филмът съществува в таблицата за watchlist
-              const existsInWatchlist =
-                await checkRecommendationExistsInWatchlist(imdbId, token);
+        // След това изпълняваме проверката и записа паралелно, използвайки
+        const checkAndSaveBooksRecommendation = async () => {
+          // Проверяваме дали книгата съществува в таблицата за readlist
+          const existsInReadlist = await checkRecommendationExistsInReadlist(
+            googleBooksData.id,
+            token
+          );
 
-              // Ако филмът не съществува в watchlist, добавяме го към "bookmarkedMovies" с информация за ID и статус
-              if (existsInWatchlist) {
-                setBookmarkedMovies((prevMovies) => {
-                  return {
-                    ...prevMovies,
-                    [recommendationData.imdbID]: recommendationData
-                  };
-                });
-              }
-              // Записваме препоръката в базата данни
-              await saveMoviesSeriesRecommendation(
-                recommendationData,
-                date,
-                token
-              );
-            };
-
-            // Извикваме функцията, за да изпълним и двете операции
-            checkAndSaveMoviesSeriesRecommendation();
-          } else {
-            console.log(`IMDb ID not found for ${movieName}`);
+          // Ако книгата не съществува в readlist, добавяме я към "bookmarkedBooks" с информация за ID и статус
+          if (existsInReadlist) {
+            setBookmarkedBooks((prevBooks) => {
+              return {
+                ...prevBooks,
+                [recommendationData.google_books_id]: recommendationData
+              };
+            });
           }
+          // Записваме препоръката в базата данни
+          await saveBookRecommendation(recommendationData, date, token);
+        };
+
+        // Извикваме функцията, за да изпълним и двете операции
+        checkAndSaveBooksRecommendation();
+      } else {
+        try {
+          const goodreadsResponse = await fetch(
+            `${
+              import.meta.env.VITE_API_BASE_URL
+            }/get-goodreads-data-for-a-book?url=${bookUrl}`
+          );
+
+          if (!goodreadsResponse.ok) {
+            console.error(
+              `Failed to fetch Goodreads data for ${bookName}. Status: ${goodreadsResponse.status}`
+            );
+            continue; // Skip to the next book
+          }
+
+          const goodreadsData = await goodreadsResponse.json();
+
+          console.log(
+            `Goodreads data for ${bookName}: ${JSON.stringify(
+              goodreadsData,
+              null,
+              2
+            )}, `
+          );
+
+          const author = await translate(goodreadsData.contributors);
+          const description = await translateWithDetection(
+            goodreadsData.description
+          );
+
+          const genres_en = goodreadsData.genres;
+
+          const genres_bg_raw = await translate(goodreadsData.genres);
+          const genres_bg = genres_bg_raw
+            .split(",") // Split the string by commas into an array
+            .map(
+              (genre) =>
+                genre.trim().charAt(0).toUpperCase() + genre.trim().slice(1)
+            ) // Capitalize the first letter of each word
+            .join(", "); // Join the array back into a string
+
+          const language = await translate(goodreadsData.language);
+
+          const publisher = await translate(goodreadsData.publisher);
+
+          const recommendationData = {
+            goodreads_id: bookId,
+            title_en: goodreadsData.title,
+            original_title: goodreadsData.original_title,
+            title_bg: book.title_bg,
+            real_edition_title: book.real_edition_title,
+            author: author,
+            genres_en: genres_en,
+            genres_bg: genres_bg,
+            description: description,
+            language: language,
+            origin: book.origin,
+            date_of_first_issue: goodreadsData.first_publication_info,
+            date_of_issue: goodreadsData.publication_time,
+            publisher: publisher,
+            goodreads_rating: goodreadsData.rating,
+            goodreads_ratings_count: goodreadsData.ratings_count,
+            goodreads_reviews_count: goodreadsData.reviews_count,
+            reason: book.reason,
+            adaptations: book.adaptations,
+            ISBN_10: goodreadsData.isbn10 || goodreadsData.asin,
+            ISBN_13: goodreadsData.isbn13,
+            page_count: goodreadsData.pages_count,
+            book_format: goodreadsData.book_format,
+            imageLink: goodreadsData.image_url,
+            literary_awards: goodreadsData.literary_awards,
+            setting: goodreadsData.setting,
+            characters: goodreadsData.characters,
+            series: goodreadsData.series,
+            source: "Goodreads"
+          };
+
+          // Първо, задаваме списъка с препоръки
+          setRecommendationList((prevRecommendations) => [
+            ...prevRecommendations,
+            recommendationData
+          ]);
+
+          // След това изпълняваме проверката и записа паралелно, използвайки
+          const checkAndSaveBooksRecommendation = async () => {
+            // Проверяваме дали книгата съществува в таблицата за readlist
+            const existsInReadlist = await checkRecommendationExistsInReadlist(
+              bookId,
+              token
+            );
+
+            // Ако книгата не съществува в readlist, добавяме я към "bookmarkedBooks" с информация за ID и статус
+            if (existsInReadlist) {
+              setBookmarkedBooks((prevBooks) => {
+                return {
+                  ...prevBooks,
+                  [recommendationData.goodreads_id]: recommendationData
+                };
+              });
+            }
+            // Записваме препоръката в базата данни
+            await saveBookRecommendation(recommendationData, date, token);
+          };
+
+          // Извикваме функцията, за да изпълним и двете операции
+          checkAndSaveBooksRecommendation();
+        } catch (error) {
+          console.error(
+            `Error processing book: ${book.real_edition_title}`,
+            error
+          );
+          continue; // Skip to the next book
         }
       }
     }
@@ -372,19 +582,19 @@ export const generateMovieRecommendations = async (
 };
 
 /**
- * Записва препоръка за филм или сериал в базата данни.
- * Препоръката съдържа подробности за филма/сериала като заглавие, жанр, рейтинг и други.
+ * Записва препоръка за книга в базата данни.
+ * Препоръката съдържа подробности за книгата като заглавие, жанр, рейтинг и други.
  * След успешното записване, препоръката се изпраща в сървъра.
  *
  * @async
- * @function saveMoviesSeriesRecommendation
- * @param {any} recommendation - Обект, съдържащ данни за препоръчания филм или сериал.
+ * @function saveBookRecommendation
+ * @param {any} recommendation - Обект, съдържащ данни за препоръчаната книга.
  * @param {string} date - Дата на генерирането на препоръката.
  * @param {string | null} token - Токенът на потребителя за аутентификация.
  * @returns {Promise<void>} - Няма връщан резултат, но извършва записване на препоръката.
  * @throws {Error} - Хвърля грешка, ако не може да се запази препоръката в базата данни.
  */
-export const saveMoviesSeriesRecommendation = async (
+export const saveBookRecommendation = async (
   recommendation: any,
   date: string,
   token: string | null
@@ -395,65 +605,54 @@ export const saveMoviesSeriesRecommendation = async (
       return;
     }
 
-    const genresEn = recommendation.genre
-      ? recommendation.genre.split(", ")
-      : null;
-
-    const genresBg = genresEn.map((genre: string) => {
-      const matchedGenre = moviesSeriesGenreOptions.find(
-        (option) => option.en.trim() === genre.trim()
-      );
-      return matchedGenre ? matchedGenre.bg : null;
-    });
-
-    const runtime = recommendation.runtimeGoogle || recommendation.runtime;
-    const imdbRating =
-      recommendation.imdbRatingGoogle || recommendation.imdbRating;
-
     const formattedRecommendation = {
       token,
-      imdbID: recommendation.imdbID || null,
-      title_en: recommendation.title || null,
-      title_bg: recommendation.bgName || null,
-      genre_en: genresEn.join(", "),
-      genre_bg: genresBg.join(", "),
-      reason: recommendation.reason || null,
+      google_books_id: recommendation.google_books_id || null,
+      goodreads_id: recommendation.goodreads_id || null,
+      title_en: recommendation.title_en || null,
+      original_title: recommendation.original_title || null,
+      title_bg: recommendation.title_bg || null,
+      real_edition_title: recommendation.real_edition_title || null,
+      author: recommendation.author || null,
+      genre_en: recommendation.genres_en || null,
+      genre_bg: recommendation.genres_bg || null,
       description: recommendation.description || null,
-      year: recommendation.year || null,
-      rated: recommendation.rated || null,
-      released: recommendation.released || null,
-      runtime: runtime || null,
-      director: recommendation.director || null,
-      writer: recommendation.writer || null,
-      actors: recommendation.actors || null,
-      plot: recommendation.plot || null,
       language: recommendation.language || null,
-      country: recommendation.country || null,
-      awards: recommendation.awards || null,
-      poster: recommendation.poster || null,
-      ratings: recommendation.ratings || [],
-      metascore: recommendation.metascore || null,
-      imdbRating: imdbRating || null,
-      imdbVotes: recommendation.imdbVotes || null,
-      type: recommendation.type || null,
-      DVD: recommendation.DVD || null,
-      boxOffice: recommendation.boxOffice || null,
-      production: recommendation.production || null,
-      website: recommendation.website || null,
-      totalSeasons: recommendation.totalSeasons || null,
-      date: date
+      origin: recommendation.origin || null,
+      date_of_first_issue: recommendation.date_of_first_issue || null,
+      date_of_issue: recommendation.date_of_issue || null,
+      publisher: recommendation.publisher || null,
+      goodreads_rating: recommendation.goodreads_rating || null,
+      goodreads_ratings_count: recommendation.goodreads_ratings_count || null,
+      goodreads_reviews_count: recommendation.goodreads_reviews_count || null,
+      reason: recommendation.reason || null,
+      adaptations: recommendation.adaptations || null,
+      ISBN_10: recommendation.ISBN_10 || null,
+      ISBN_13: recommendation.ISBN_13 || null,
+      page_count: recommendation.page_count || null,
+      book_format: recommendation.book_format || null,
+      imageLink: recommendation.imageLink || null,
+      literary_awards: recommendation.literary_awards || null,
+      setting: recommendation.setting || null,
+      characters: recommendation.characters || null,
+      series: recommendation.series || null,
+      date: date,
+      source: recommendation.source || null
     };
 
     console.log("Formatted Recommendation:", formattedRecommendation);
 
     const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/save-movies-series-recommendation`,
+      `${import.meta.env.VITE_API_BASE_URL}/save-recommendation`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(formattedRecommendation)
+        body: JSON.stringify({
+          recommendationType: "books",
+          recommendation: formattedRecommendation
+        })
       }
     );
 
@@ -478,7 +677,7 @@ export const saveMoviesSeriesRecommendation = async (
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitted - Функция за задаване на статус за подадена заявка.
  * @param {React.Dispatch<React.SetStateAction<number>>} setSubmitCount - Функция за актуализиране на броя на подадените заявки.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за актуализиране на списъка с препоръки.
- * @param {BooksUserPreferences} booksUserPreferences - Преференции на потребителя за филми/сериали.
+ * @param {BooksUserPreferences} booksUserPreferences - Преференции на потребителя за книги.
  * @param {string | null} token - Токенът за аутентификация на потребителя.
  * @param {number} submitCount - Броят на подадените заявки.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките и записва данни.
@@ -492,7 +691,7 @@ export const handleSubmit = async (
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
   setSubmitCount: React.Dispatch<React.SetStateAction<number>>,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
-  setBookmarkedMovies: React.Dispatch<
+  setBookmarkedBooks: React.Dispatch<
     React.SetStateAction<{
       [key: string]: any;
     }>
@@ -501,6 +700,11 @@ export const handleSubmit = async (
   token: string | null,
   submitCount: number
 ): Promise<void> => {
+  const isInvalidToken = await validateToken(setNotification); // Стартиране на проверката на токена при първоначално зареждане
+  if (isInvalidToken) {
+    return;
+  }
+
   if (submitCount >= 20) {
     showNotification(
       setNotification,
@@ -510,9 +714,9 @@ export const handleSubmit = async (
     return;
   }
 
-  const { moods, countries, pacing, depth, targetGroup } = booksUserPreferences;
+  const { moods, origin, pacing, depth, targetGroup } = booksUserPreferences;
 
-  if (!moods || !countries || !pacing || !depth || !targetGroup) {
+  if (!moods || !origin || !pacing || !depth || !targetGroup) {
     showNotification(
       setNotification,
       "Моля, попълнете всички задължителни полета!",
@@ -545,16 +749,12 @@ export const handleSubmit = async (
 
     if (response.status === 200) {
       setRecommendationList([]);
-      // await saveMoviesSeriesUserPreferences(
-      //   date,
-      //   booksUserPreferences,
-      //   token
-      // );
-      await generateMovieRecommendations(
+      await saveBooksUserPreferences(date, booksUserPreferences, token);
+      await generateBooksRecommendations(
         date,
         booksUserPreferences,
         setRecommendationList,
-        setBookmarkedMovies,
+        setBookmarkedBooks,
         token
       );
       setSubmitCount((prevCount) => prevCount + 1);
@@ -635,9 +835,11 @@ export const handleAnswerClick = (
 ) => {
   if (currentQuestion.isMultipleChoice) {
     if (currentQuestion.setter === setGenres) {
-      const selectedGenre = booksGenreOptions.find(
-        (genre) => genre.bg === answer
-      );
+      const selectedGenre = (
+        import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
+          ? googleBooksGenreOptions
+          : goodreadsGenreOptions
+      ).find((genre) => genre.bg === answer);
 
       if (selectedGenre) {
         toggleGenre(selectedGenre, setGenres);

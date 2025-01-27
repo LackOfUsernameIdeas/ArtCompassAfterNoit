@@ -9,8 +9,8 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
   handleSubmit,
   setSubmitCount,
   setRecommendationList,
-  setBookmarkedMovies,
-  moviesSeriesUserPreferences,
+  setBookmarkedBooks,
+  booksUserPreferences,
   token,
   submitCount
 }) => {
@@ -43,8 +43,8 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
                 setSubmitted,
                 setSubmitCount,
                 setRecommendationList,
-                setBookmarkedMovies,
-                moviesSeriesUserPreferences,
+                setBookmarkedBooks,
+                booksUserPreferences,
                 token,
                 submitCount
               );
