@@ -1,10 +1,8 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { DataType } from "./readlist-types";
-import { fetchData } from "./helper_functions";
+import { fetchData, handleBookmarkClick } from "./helper_functions";
 import {
-  checkRecommendationExistsInWatchlist,
-  removeFromWatchlist,
-  saveToWatchlist,
+  checkRecommendationExistsInReadlist,
   validateToken
 } from "../../helper_functions_common";
 import { useNavigate } from "react-router-dom";
@@ -20,19 +18,13 @@ interface ReadlistProps {}
 const Readlist: FC<ReadlistProps> = () => {
   // Състояния за задържане на извлечени данни
   const [data, setData] = useState<DataType>({
-    topRecommendationsWatchlist: {
-      savedCount: {
-        movies: 0,
-        series: 0
-      },
-      watchlist: []
-    } // Запазени филми/сериали в списък за гледане
+    topRecommendationsReadlist: [] // Запазени книги в списък за четене
   });
 
   const [notification, setNotification] = useState<NotificationState | null>(
     null
   ); // Състояние за показване на известия (например съобщения за грешки, успехи или предупреждения)
-  const [bookmarkedMovies, setBookmarkedMovies] = useState<{
+  const [bookmarkedBooks, setBookmarkedBooks] = useState<{
     [key: string]: any;
   }>({});
   const [alertVisible, setAlertVisible] = useState(false); // To control alert visibility
@@ -71,61 +63,33 @@ const Readlist: FC<ReadlistProps> = () => {
 
       if (token) {
         const updatedBookmarks: { [key: string]: any } = {};
-        if (data.topRecommendationsWatchlist.watchlist) {
-          for (const movie of data.topRecommendationsWatchlist.watchlist) {
+        if (data.topRecommendationsReadlist) {
+          for (const book of data.topRecommendationsReadlist) {
             try {
-              const isBookmarked = await checkRecommendationExistsInWatchlist(
-                movie.imdbID,
+              const isBookmarked = await checkRecommendationExistsInReadlist(
+                import.meta.env.VITE_BOOKS_SOURCE === "GoogleBooks"
+                  ? book.google_books_id
+                  : book.goodreads_id,
                 token
               );
               if (isBookmarked) {
-                updatedBookmarks[movie.imdbID] = movie;
+                updatedBookmarks[
+                  import.meta.env.VITE_BOOKS_SOURCE === "GoogleBooks"
+                    ? book.google_books_id
+                    : book.goodreads_id
+                ] = book;
               }
             } catch (error) {
-              console.error("Error checking watchlist status:", error);
+              console.error("Error checking readlist status:", error);
             }
           }
         }
-        setBookmarkedMovies(updatedBookmarks);
+        setBookmarkedBooks(updatedBookmarks);
       }
     };
 
     loadBookmarkStatus();
-  }, [data.topRecommendationsWatchlist.watchlist]);
-
-  const handleBookmarkClick = (movie: {
-    imdbID: string;
-    [key: string]: any;
-  }) => {
-    setBookmarkedMovies((prev) => {
-      const isBookmarked = !!prev[movie.imdbID];
-      const updatedBookmarks = { ...prev };
-      const token =
-        localStorage.getItem("authToken") ||
-        sessionStorage.getItem("authToken");
-
-      if (isBookmarked) {
-        // Remove the movie from bookmarks if it's already bookmarked
-        delete updatedBookmarks[movie.imdbID];
-
-        removeFromWatchlist(movie.imdbID, token).catch((error) => {
-          console.error("Error removing from watchlist:", error);
-        });
-      } else {
-        // Add the movie to bookmarks if it's not already bookmarked
-        updatedBookmarks[movie.imdbID] = movie;
-
-        saveToWatchlist(movie, token).catch((error) => {
-          console.error("Error saving to watchlist:", error);
-        });
-      }
-
-      setCurrentBookmarkStatus(!isBookmarked); // Update the current bookmark status
-      setAlertVisible(true); // Show the alert
-
-      return updatedBookmarks; // Return the updated bookmarks object
-    });
-  };
+  }, [data.topRecommendationsReadlist]);
 
   if (loading) {
     return (
@@ -138,8 +102,8 @@ const Readlist: FC<ReadlistProps> = () => {
   console.log("data: ", data);
 
   if (
-    !data.topRecommendationsWatchlist.watchlist ||
-    data.topRecommendationsWatchlist.watchlist.length === 0
+    !data.topRecommendationsReadlist ||
+    data.topRecommendationsReadlist.length === 0
   ) {
     return (
       <ErrorCard
@@ -234,9 +198,9 @@ const Readlist: FC<ReadlistProps> = () => {
                     <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5">
                       <BooksTable
                         type="watchlist"
-                        data={data.topRecommendationsWatchlist.watchlist}
+                        data={data.topRecommendationsReadlist}
                         handleBookmarkClick={handleBookmarkClick}
-                        bookmarkedMovies={bookmarkedMovies}
+                        bookmarkedMovies={bookmarkedBooks}
                       />
                     </div>
                   </div>

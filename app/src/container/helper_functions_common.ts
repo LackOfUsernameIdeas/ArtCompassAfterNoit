@@ -201,7 +201,7 @@ export const checkRecommendationExistsInWatchlist = async (
  *
  * @async
  * @function checkRecommendationExistsInWatchlist
- * @param {string} google_books_id - google_books_id на препоръката.
+ * @param {string} book_id - google_books_id / goodreads_id на препоръката.
  * @param {string | null} token - Токен за автентикация на потребителя.
  * @returns {Promise<boolean>} - Връща true, ако препоръката вече съществува.
  * @throws {Error} - Хвърля грешка, ако проверката не може да бъде извършена.
@@ -512,7 +512,7 @@ export const removeFromWatchlist = async (
  *
  * @async
  * @function removeFromReadlist
- * @param {string} google_books_id - Уникален идентификатор на книгата.
+ * @param {string} book_id - Уникален идентификатор на книгата.
  * @param {string | null} token - Токен за автентикация на потребителя.
  * @returns {Promise<void>} - Няма върнат резултат, но изпраща заявка към сървъра.
  * @throws {Error} - Хвърля грешка, ако данните не могат да бъдат премахнати.

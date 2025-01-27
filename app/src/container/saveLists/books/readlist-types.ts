@@ -69,47 +69,46 @@ export type Count = {
 
 // Обобщени данни за потребителя (например топ препоръки и жанрове)
 export type DataType = {
-  topRecommendationsWatchlist: {
-    savedCount: Count;
-    watchlist: Recommendation[]; // Топ препоръки в списък за гледане
-  };
+  topRecommendationsReadlist: Recommendation[]; // Топ препоръки в списък за четене;
   [key: `sorted${string}By${"RecommendationCount" | "SavedCount"}`]: any[]; // Подредени данни по препоръки и запазвания
 };
 
 // Категории роли (актьори, режисьори, писатели)
 export type Category = "Actors" | "Directors" | "Writers"; // Роли: Актьори, Режисьори, Писатели
 
-// Данни за препоръки с подробности за филма/сериала
+// Данни за препоръки с подробности за книгата
 export interface Recommendation {
-  id: number;
-  imdbID: string; // IMDb идентификатор
-  title_en: string; // Заглавие на английски
-  title_bg: string; // Заглавие на български
-  type: "movie" | "series"; // Тип на препоръката
-  awards: string; // Награди
-  recommendations: number; // Препоръки
-  poster: string; // URL за постера на филма/сериала
-  oscar_wins: string; // Спечелени Оскари
-  oscar_nominations: string; // Номинации за Оскар
-  total_wins: string; // Общо спечелени награди
-  total_nominations: string; // Общо номинации
-  ratings: Rating[]; // Рейтинги от различни източници
-  imdbRating: string; // Рейтинг в IMDb
-  metascore: string; // Метаскор
-  boxOffice: string; // Бокс офис
-  prosperityScore: number; // Индекс на просперитет
-  genre_en: string; // Жанр на английски
-  genre_bg: string; // Жанр на български
+  id: string; // ID на книгата
+  user_id: string; // ID на потребителя, свързан с книгата
+  google_books_id: string; // Google Books идентификатор
+  goodreads_id: string; // Goodreads идентификатор
+  title_en: string; // Английско заглавие на книгата
+  title_bg: string; // Българско заглавие на книгата
+  real_edition_title: string; // Реално заглавие на изданието
+  author: string | Promise<string>; // Име на автора (може да е обещание)
+  publisher: string; // Издателство
+  genres_en: string | Promise<string>; // Жанрове на английски (може да е обещание)
+  genres_bg: string | Promise<string>; // Жанрове на български (може да е обещание)
+  description: string | Promise<string>; // Описание на книгата (може да е обещание)
+  language: string | Promise<string>; // Езици на книгата (може да е обещание)
+  origin: string; // Страна на произход
+  literary_awards: string; // Награди на книгата
+  setting: string; // Мястото, в което се развива сюжета
+  characters: string; // Героите в сюжета
+  series: string; // Поредица
+  date_of_first_issue: string; // Дата на първо издание
+  date_of_issue: string; // Дата на издаване
+  goodreads_rating: number; // Goodreads рейтинг
+  goodreads_ratings_count: number; // Брой гласове в Goodreads
+  goodreads_reviews_count: number; // Брой ревюта в Goodreads
   reason: string; // Причина за препоръката
-  description: string; // Описание на филма/сериала
-  year: string; // Година на издаване
-  rated: string; // Оценка за възрастови ограничения
-  released: string; // Дата на издаване
-  runtime: string; // Продължителност
-  director: string; // Режисьор
-  writer: string; // Сценаристи
-  actors: string; // Актьори
-  plot: string; // Сюжет
+  adaptations: string; // Адаптации на книгата
+  ISBN_10: string; // ISBN-10
+  ISBN_13: string; // ISBN-13
+  page_count: string; // Брой страници
+  book_format: string; // Вид на книгата (тип корица, е-книги)
+  imageLink: string; // Линк към изображение на книгата
+  source: string; // Източник (напр. Google Books)
 }
 
 export type Rating = {

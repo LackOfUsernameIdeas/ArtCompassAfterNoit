@@ -553,9 +553,7 @@ app.post("/check-for-recommendation-in-list", (req, res) => {
   }
 
   if (recommendationType === "books" && !book_id) {
-    return res
-      .status(400)
-      .json({ error: "Google Books ID is required for books" });
+    return res.status(400).json({ error: "Book ID is required for books" });
   }
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
@@ -905,6 +903,22 @@ app.post("/stats/individual/watchlist", (req, res) => {
     db.getUsersWatchlist(userId, (err, result) => {
       if (err) {
         return res.status(500).json({ error: "Error fetching watchlist" });
+      }
+      res.json(result);
+    });
+  });
+});
+
+// Вземане на данни за книги в списък за четене на даден потребител
+app.post("/stats/individual/readlist", (req, res) => {
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    db.getUsersReadlist(userId, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: "Error fetching readlist" });
       }
       res.json(result);
     });

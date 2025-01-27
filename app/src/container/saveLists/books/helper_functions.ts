@@ -3,8 +3,8 @@
 // ==============================
 import { DataType } from "./readlist-types";
 import {
-  removeFromWatchlist,
-  saveToWatchlist
+  removeFromReadlist,
+  saveToReadlist
 } from "../../helper_functions_common";
 
 // ==============================
@@ -27,8 +27,8 @@ export const fetchData = async (
     // Fetch statistics data independently
     const endpoints = [
       {
-        key: "topRecommendationsWatchlist",
-        endpoint: "/stats/individual/watchlist",
+        key: "topRecommendationsReadlist",
+        endpoint: "/stats/individual/readlist",
         method: "POST",
         body: { token: token }
       }
@@ -74,53 +74,64 @@ export const fetchData = async (
 // ==============================
 
 /**
- * Добавя или премахва филм от списъка с любими на потребителя.
- * Прикрепя състоянията на компонентите като параметри, за да актуализира състоянието.
+ * Добавя или премахва книга от списъка с отметки на потребителя.
+ * Актуализира състоянията на компонентите чрез подадените функции.
  *
- * @param {object} movie - Филмът, който ще бъде добавен или премахнат.
- * @param {string} movie.imdbID - Уникален идентификатор на филма (IMDb ID).
- * @param {Function} setBookmarkedMovies - Функция за актуализиране на състоянието на отметките.
+ * @param {object} book - Книгата, която ще бъде добавена или премахната от отметките.
+ * @param {string} book.google_books_id - Уникален идентификатор за Google Books.
+ * @param {string} book.goodreads_id - Уникален идентификатор за Goodreads.
+ * @param {Function} setBookmarkedBooks - Функция за актуализиране на състоянието на списъка с отметки.
  * @param {Function} setCurrentBookmarkStatus - Функция за актуализиране на текущия статус на отметката.
- * @param {Function} setAlertVisible - Функция за показване на алармата.
+ * @param {Function} setAlertVisible - Функция за показване на известие.
  * @returns {void} - Функцията не връща стойност.
  */
 export const handleBookmarkClick = (
-  movie: { imdbID: string; [key: string]: any },
-  setBookmarkedMovies?: React.Dispatch<
+  book: {
+    google_books_id: string;
+    goodreads_id: string;
+    [key: string]: any;
+  },
+  setBookmarkedBooks?: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
   >,
   setCurrentBookmarkStatus?: React.Dispatch<React.SetStateAction<boolean>>,
   setAlertVisible?: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-  setBookmarkedMovies &&
-    setBookmarkedMovies((prev) => {
-      const isBookmarked = !!prev[movie.imdbID];
+  setBookmarkedBooks &&
+    setBookmarkedBooks((prev) => {
+      // Проверка дали книгата вече е добавена в списъка с отметки
+      const isBookmarked = !!prev[book.google_books_id || book.goodreads_id];
       const updatedBookmarks = { ...prev };
       const token =
         localStorage.getItem("authToken") ||
         sessionStorage.getItem("authToken");
 
       if (isBookmarked) {
-        // Remove the movie from bookmarks if it's already bookmarked
-        delete updatedBookmarks[movie.imdbID];
+        // Премахване на книгата от списъка с отметки, ако вече е добавена
+        delete updatedBookmarks[book.google_books_id || book.goodreads_id];
 
-        // Call removeFromWatchlist API
-        removeFromWatchlist(movie.imdbID, token).catch((error) => {
-          console.error("Error removing from watchlist:", error);
+        removeFromReadlist(
+          book.google_books_id || book.goodreads_id,
+          token
+        ).catch((error) => {
+          console.error("Грешка при премахване от списъка за четене:", error);
         });
       } else {
-        // Add the movie to bookmarks if it's not already bookmarked
-        updatedBookmarks[movie.imdbID] = movie;
+        // Добавяне на книгата в списъка с отметки, ако все още не е добавена
+        updatedBookmarks[book.google_books_id || book.goodreads_id] = book;
 
-        // Call saveToWatchlist API
-        saveToWatchlist(movie, token).catch((error) => {
-          console.error("Error saving to watchlist:", error);
+        saveToReadlist(book, token).catch((error) => {
+          console.error("Грешка при запазване в списъка за четене:", error);
         });
       }
 
-      setCurrentBookmarkStatus && setCurrentBookmarkStatus(!isBookmarked); // Update the current bookmark status
-      setAlertVisible && setAlertVisible(true); // Show the alert
+      // Актуализиране на текущия статус на отметката
+      setCurrentBookmarkStatus && setCurrentBookmarkStatus(!isBookmarked);
 
-      return updatedBookmarks; // Return the updated bookmarks object
+      // Показване на известие
+      setAlertVisible && setAlertVisible(true);
+
+      // Връщане на актуализирания обект със списъка с отметки
+      return updatedBookmarks;
     });
 };

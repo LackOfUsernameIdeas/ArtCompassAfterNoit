@@ -1895,6 +1895,16 @@ const getUsersWatchlist = (userId, callback) => {
   });
 };
 
+const getUsersReadlist = (userId, callback) => {
+  const query = `
+    SELECT * FROM readlist
+    WHERE user_id = ?
+    ORDER BY title_en ASC;
+  `;
+
+  db.query(query, [userId], callback);
+};
+
 const getUsersTopGenres = (userId, limit, callback) => {
   const query = `
     SELECT genre_en, genre_bg, COUNT(*) AS count
@@ -3486,6 +3496,7 @@ module.exports = {
   getTopMoviesAndSeriesByRottenTomatoesRating,
   getUsersTopRecommendations,
   getUsersWatchlist,
+  getUsersReadlist,
   getUsersTopGenres,
   getUsersTopGenresFromWatchlist,
   getUsersTopActors,

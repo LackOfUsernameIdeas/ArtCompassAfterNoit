@@ -1,15 +1,18 @@
-import { FC, Fragment, useEffect, useState, useMemo, useCallback } from "react";
-import { Rating, Recommendation } from "../readlist-types";
+import { FC, Fragment, useState, useMemo, useCallback } from "react";
+import { Recommendation } from "../readlist-types";
 import { useMediaQuery } from "react-responsive";
-import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
-import RecommendationCardAlert from "./RecommendationCardAlert";
+// import RecommendationCardAlert from "./RecommendationCardAlert/RecommendationCardAlert";
 import Pagination from "../../../../components/common/pagination/pagination";
 
 interface BooksTableProps {
   data: Recommendation[];
   type: "recommendations" | "watchlist";
-  handleBookmarkClick: (movie: Recommendation) => void;
+  handleBookmarkClick: (book: {
+    google_books_id: string;
+    goodreads_id: string;
+    [key: string]: any;
+  }) => void;
   bookmarkedMovies: { [key: string]: Recommendation };
 }
 
@@ -21,92 +24,15 @@ const BooksTable: FC<BooksTableProps> = ({
 }) => {
   const [currentTablePage, setCurrentTablePage] = useState(1);
   const itemsPerTablePage = 5;
-  const [sortBy, setSortBy] = useState<keyof Recommendation | "default">(
-    "default"
-  );
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Recommendation | null>(null);
 
-  const [filteredTableData, setFilteredTableData] =
-    useState<Recommendation[]>(data);
-
-  useEffect(() => {
-    setFilteredTableData(data || []);
-  }, [data]);
-
-  const sortOptions = useMemo(() => {
-    const options = [
-      { label: "Просперитет", value: "prosperityScore" },
-      { label: "Боксофис", value: "boxOffice" }
-    ];
-
-    if (type === "recommendations") {
-      options.unshift({ label: "Брой Препоръки", value: "recommendations" });
-    }
-
-    return options;
-  }, [type]);
-
-  const sortTitles: Record<string, string> = {
-    recommendations: "Най-Често Препоръчваните Филми и Сериали За Мен",
-    prosperityScore: "Филми и Сериали По Просперитет",
-    boxOffice: "Най-Печеливши Филми и Сериали"
-  };
-
-  const sortedData = useMemo(() => {
-    const filteredByTypeData = ["boxOffice", "prosperityScore"].includes(sortBy)
-      ? filteredTableData.filter((item) => item.type === "movie")
-      : filteredTableData;
-
-    if (sortBy === "default") {
-      return filteredByTypeData;
-    }
-
-    return [...filteredByTypeData].sort((a, b) => {
-      const parseNumber = (value: any) => {
-        // Extract numeric value from formatted strings (e.g., "1,000,000" -> 1000000)
-        if (typeof value === "string") {
-          return parseFloat(value.replace(/,/g, ""));
-        }
-        return value || 0; // Fallback for null or undefined
-      };
-
-      const extractNumericValue = (
-        value: string | number | Rating[]
-      ): number => {
-        if (typeof value === "string") {
-          // Clean up the string and parse as a float
-          return parseFloat(value.replace(/[^\d.-]/g, ""));
-        } else if (typeof value === "number") {
-          // Return the number directly
-          return value;
-        } else if (Array.isArray(value)) {
-          // Handle Rating[] case (return 0 or a calculated value based on your needs)
-          return 0; // Default value or implement a custom logic
-        }
-        return 0; // Fallback value for unexpected cases
-      };
-
-      const valueA = extractNumericValue(a[sortBy as keyof typeof a]);
-      const valueB = extractNumericValue(b[sortBy as keyof typeof b]);
-
-      console.log("a[sortBy as keyof typeof a]", a[sortBy as keyof typeof a]);
-      console.log("b[sortBy as keyof typeof b]", b[sortBy as keyof typeof b]);
-
-      if (valueA === valueB) return 0;
-
-      return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
-    });
-  }, [filteredTableData, sortBy, sortOrder]);
-
-  const totalItems = sortedData.length;
+  const totalItems = data.length;
   const totalTablePages = Math.ceil(totalItems / itemsPerTablePage);
 
   const paginatedData = useMemo(() => {
     const start = (currentTablePage - 1) * itemsPerTablePage;
-    return sortedData.slice(start, start + itemsPerTablePage);
-  }, [sortedData, currentTablePage]);
+    return data.slice(start, start + itemsPerTablePage);
+  }, [data, currentTablePage]);
 
   const handlePrevTablePage = useCallback(() => {
     if (currentTablePage > 1) setCurrentTablePage((prev) => prev - 1);
@@ -120,26 +46,16 @@ const BooksTable: FC<BooksTableProps> = ({
   const is1399 = useMediaQuery({ query: "(max-width: 1399px)" });
   const is1557 = useMediaQuery({ query: "(max-width: 1557px)" });
 
-  const toggleSortMenu = () => setIsSortMenuOpen((prev) => !prev);
-
-  const handleSortOptionSelect = useCallback((value: keyof Recommendation) => {
-    setSortBy(value);
-    setIsSortMenuOpen(false);
-  }, []);
-
-  const getTranslatedType = (type: string) =>
-    type === "movie" ? "филм" : type === "series" ? "сериал" : type;
-
   const handleRowClick = (item: Recommendation) => setSelectedItem(item);
 
   return (
     <Fragment>
-      <RecommendationCardAlert
+      {/* <RecommendationCardAlert
         selectedItem={selectedItem}
         onClose={() => setSelectedItem(null)}
         handleBookmarkClick={handleBookmarkClick}
         bookmarkedMovies={bookmarkedMovies}
-      />
+      /> */}
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
         <div className="box custom-card h-[27.75rem]">
           <div className="box-header justify-between">
@@ -148,91 +64,11 @@ const BooksTable: FC<BooksTableProps> = ({
                 is1399 ? "max-w-full" : "max-w-[20rem]"
               }`}
               data-tooltip-id="box-title-tooltip"
-              data-tooltip-content={
-                type == "watchlist"
-                  ? "Списък За Гледане"
-                  : sortBy === "default"
-                  ? "Най-Често Препоръчваните Филми и Сериали За Мен"
-                  : sortTitles[sortBy]
-              }
+              data-tooltip-content="Списък За Четене"
             >
-              {type == "watchlist"
-                ? "Списък За Гледане"
-                : sortBy === "default"
-                ? "Най-Често Препоръчваните Филми и Сериали За Мен"
-                : sortTitles[sortBy]}
+              Списък За Четене
             </div>
             <Tooltip id="box-title-tooltip" />
-            <div className="relative flex items-center space-x-2">
-              <div className="hs-dropdown ti-dropdown">
-                <Link
-                  to="#"
-                  className={`flex items-center ${
-                    is1557
-                      ? "px-2.5 py-1 text-[0.75rem]"
-                      : "px-3 py-1 text-[0.85rem]"
-                  } font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all`}
-                  onClick={toggleSortMenu}
-                  aria-expanded={isSortMenuOpen ? "true" : "false"}
-                >
-                  <span className={`${sortBy === "default" ? "" : "hidden"}`}>
-                    Сортирай по
-                  </span>
-                  <span
-                    className={`${
-                      sortBy === "default" ? "hidden" : ""
-                    } text-sm`}
-                  >
-                    {sortOptions.find((option) => option.value === sortBy)
-                      ?.label || "Сортирай по"}
-                  </span>
-                  <i
-                    className={`ri-arrow-${
-                      isSortMenuOpen ? "up" : "down"
-                    }-s-line ${!is1557 && "ml-1"} text-base`}
-                  ></i>
-                </Link>
-                <ul
-                  className={`hs-dropdown-menu ti-dropdown-menu ${
-                    isSortMenuOpen ? "block" : "hidden"
-                  }`}
-                  role="menu"
-                >
-                  {sortOptions.map(({ label, value }) => (
-                    <li key={value}>
-                      <Link
-                        onClick={() =>
-                          handleSortOptionSelect(value as keyof Recommendation)
-                        }
-                        className={`ti-dropdown-item ${
-                          sortBy === value ? "active" : ""
-                        }`}
-                        to="#"
-                      >
-                        {label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <button
-                className="px-3 py-1.5 text-[0.85rem] bg-primary text-white border border-primary rounded-sm text-base font-medium hover:bg-primary/10 transition-all flex items-center justify-center"
-                onClick={() => {
-                  if (sortBy === "default") {
-                    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-                    setSortBy("prosperityScore");
-                  } else {
-                    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-                  }
-                }}
-              >
-                {sortOrder === "asc" ? (
-                  <i className="bx bx-sort-up text-lg"></i>
-                ) : (
-                  <i className="bx bx-sort-down text-lg"></i>
-                )}
-              </button>
-            </div>
           </div>
           <div className="box-body">
             <div className="overflow-x-auto">
@@ -241,15 +77,11 @@ const BooksTable: FC<BooksTableProps> = ({
                   <tr className="border border-inherit">
                     <th>#</th>
                     <th>Заглавие</th>
-                    <th>Заглавие - Английски</th>
-                    <th>Тип</th>
-                    {type === "recommendations" && <th>Брой Препоръки</th>}
-                    <th>Просперитет</th>
-                    <th>Боксофис</th>
-                    <th>Общо Победи</th>
-                    <th>Общо Номинации</th>
-                    <th>IMDb Рейтинг</th>
-                    <th>Metascore</th>
+                    <th>Оригинално заглавие</th>
+                    <th>Част от поредица</th>
+                    <th>Goodreads Рейтинг</th>
+                    <th>Брой ревюта</th>
+                    <th>Адаптации</th>
                   </tr>
                 </thead>
                 <tbody className="no-hover-text">
@@ -263,18 +95,11 @@ const BooksTable: FC<BooksTableProps> = ({
                         {(currentTablePage - 1) * itemsPerTablePage + index + 1}
                       </td>
                       <td>{item.title_bg}</td>
-                      <td>{item.title_en}</td>
-                      <td>{getTranslatedType(item.type)}</td>
-                      {type == "recommendations" &&
-                        "recommendations" in item && (
-                          <td>{item.recommendations}</td>
-                        )}
-                      <td>{item.prosperityScore}</td>
-                      <td>{item.boxOffice}</td>
-                      <td>{item.total_wins}</td>
-                      <td>{item.total_nominations}</td>
-                      <td>{item.imdbRating}</td>
-                      <td>{item.metascore}</td>
+                      <td>{item.real_edition_title}</td>
+                      <td>{item.series || "N/A"}</td>
+                      <td>{item.goodreads_rating}</td>
+                      <td>{item.goodreads_reviews_count || "N/A"}</td>
+                      <td>{item.adaptations}</td>
                     </tr>
                   ))}
                 </tbody>
