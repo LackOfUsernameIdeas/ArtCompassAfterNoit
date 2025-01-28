@@ -95,7 +95,7 @@ const BooksTable: FC<BooksTableProps> = ({
                       <td>{item.title_bg}</td>
                       <td>{item.real_edition_title}</td>
                       <td>{item.series || "N/A"}</td>
-                      <td>{item.goodreads_rating}</td>
+                      <td>{item.goodreads_rating || "N/A"}</td>
                       <td>{item.goodreads_reviews_count || "N/A"}</td>
                       <td>{item.adaptations}</td>
                     </tr>
