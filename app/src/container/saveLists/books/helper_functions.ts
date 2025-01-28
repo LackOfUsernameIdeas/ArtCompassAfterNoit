@@ -2,10 +2,6 @@
 // Импортиране на типове и интерфейси
 // ==============================
 import { DataType } from "./readlist-types";
-import {
-  removeFromReadlist,
-  saveToReadlist
-} from "../../helper_functions_common";
 import { SetStateAction } from "react";
 
 // ==============================
@@ -70,19 +66,34 @@ export const fetchData = async (
   }
 };
 
+/**
+ * Функция за обработка на жанрове.
+ * Ако жанровете са подадени като string, се опитваме да ги парсираме в JSON формат.
+ * Ако парсирането не успее, се връща null.
+ *
+ * @param {any} resolvedGenres - Жанрове, които могат да бъдат string или обект.
+ * @returns {any} Върща парсираните жанрове или оригиналния обект.
+ */
 export const parseResolvedGenres = async (resolvedGenres: any) => {
-  // Handle string input
+  // Обработка на string
   if (typeof resolvedGenres === "string") {
     try {
-      return JSON.parse(resolvedGenres); // Try to parse JSON if it's a string
+      return JSON.parse(resolvedGenres); // Опит за парсиране на JSON ако е string
     } catch (error) {
-      console.warn("Failed to parse genre_bg string:", resolvedGenres);
-      return null; // Return null if parsing fails
+      console.warn("Неуспешно парсиране на жанрове от string:", resolvedGenres);
+      return null; // Връщане на null, ако парсирането не е успешно
     }
   }
   return resolvedGenres;
 };
 
+/**
+ * Функция за обработка на жанровете за Google Books API.
+ * Преобразува жанровете в string-ове, които могат да се покажат на потребителя.
+ *
+ * @param {any} genres - Жанровете, които ще бъдат обработени.
+ * @param {(value: SetStateAction<string[]>) => void} setGenres - Функция за сетване на жанровете в state.
+ */
 export const processGenresForGoogleBooks = (
   genres: any,
   setGenres: (value: SetStateAction<string[]>) => void
@@ -98,7 +109,7 @@ export const processGenresForGoogleBooks = (
     });
     setGenres(genreStrings);
   } else {
-    console.warn("Unexpected format for Google Books genre_bg:", genres);
+    console.warn("Неочакван формат за жанровете на Google Books:", genres);
     setGenres(["Няма жанрове за показване."]);
   }
 };

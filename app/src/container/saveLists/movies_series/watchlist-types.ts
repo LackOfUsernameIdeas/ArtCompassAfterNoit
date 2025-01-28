@@ -73,11 +73,13 @@ export type DataType = {
 // Категории роли (актьори, режисьори, писатели)
 export type Category = "Actors" | "Directors" | "Writers"; // Роли: Актьори, Режисьори, Писатели
 
+// Формат на рейтингите
 export type Rating = {
   Source: string;
   Value: string;
 };
 
+// Интерфейс за пропс на компонента за показване на избран филм/сериал като alert
 export interface RecommendationCardAlertProps {
   selectedItem: MovieSeriesRecommendation | null;
   onClose: () => void;
@@ -92,6 +94,7 @@ export interface RecommendationCardAlertProps {
   bookmarkedMovies: { [key: string]: MovieSeriesRecommendation };
 }
 
+// Интерфейс за пропс на таблицата за филми/сериали в watchlist
 export interface MoviesAndSeriesTableProps {
   data: MovieSeriesRecommendation[];
   type: "recommendations" | "watchlist";
@@ -106,6 +109,7 @@ export interface MoviesAndSeriesTableProps {
   bookmarkedMovies: { [key: string]: MovieSeriesRecommendation };
 }
 
+// Интерфейс за пропс на alert-а при натискане бутона за добавяне в watchlist
 export interface BookmarkAlertProps {
   isBookmarked: boolean;
   onDismiss: () => void;

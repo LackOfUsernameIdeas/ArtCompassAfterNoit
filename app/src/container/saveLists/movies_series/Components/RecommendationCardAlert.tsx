@@ -8,6 +8,7 @@ import {
   translate
 } from "../../../helper_functions_common";
 
+// Компонент за показване на избран филм/сериал като alert
 const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   selectedItem,
   onClose,
@@ -16,33 +17,35 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   setCurrentBookmarkStatus,
   setAlertVisible
 }) => {
-  const [translatedDirectors, setTranslatedDirectors] = useState<string>("");
-  const [translatedWriters, setTranslatedWriters] = useState<string>("");
-  const [translatedActors, setTranslatedActors] = useState<string>("");
-  const [translatedAwards, setTranslatedAwards] = useState<string>("");
-  const [translatedPlot, setTranslatedPlot] = useState<string>("");
-  const [translatedCountry, setTranslatedCountry] = useState<string>("");
-  const [translatedLanguage, setTranslatedLanguage] = useState<string>("");
-  const [genres, setGenres] = useState<string[]>([]);
+  const [translatedDirectors, setTranslatedDirectors] = useState<string>(""); // Преведените режисьори
+  const [translatedWriters, setTranslatedWriters] = useState<string>(""); // Преведените сценаристи
+  const [translatedActors, setTranslatedActors] = useState<string>(""); // Преведените актьори
+  const [translatedAwards, setTranslatedAwards] = useState<string>(""); // Преведените награди
+  const [translatedPlot, setTranslatedPlot] = useState<string>(""); // Преведеното описание на сюжета
+  const [translatedCountry, setTranslatedCountry] = useState<string>(""); // Преведената страна
+  const [translatedLanguage, setTranslatedLanguage] = useState<string>(""); // Преведеният език
 
-  const [visible, setVisible] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalData, setModalData] = useState<string | undefined>("");
-  const previewLength = 70;
+  const [visible, setVisible] = useState(false); // Показване на компонента
+  const [isModalOpen, setIsModalOpen] = useState(false); // Статус на модалния прозорец
+  const [modalData, setModalData] = useState<string | undefined>(""); // Данни за съдържанието на модалния прозорец
+  const previewLength = 70; // Дължина на прегледа на съдържанието (oписаниeто и сюжета)
 
+  // Когато има информация за филма/сериала, кардът се render-ва
   useEffect(() => {
     if (selectedItem) {
       setVisible(true);
     }
   }, [selectedItem]);
 
+  // Затваряме компонента след 300ms
   const handleClose = () => {
     setVisible(false);
     setTimeout(() => {
-      onClose();
+      onClose(); // Извикваме
     }, 300);
   };
 
+  // Отваря modal-а
   const openModal = (type: string) => {
     type === "description"
       ? setModalData(selectedItem?.description)
@@ -50,10 +53,12 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
     setIsModalOpen(true);
   };
 
+  // Затваря modal-а
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
 
+  // useEffect за превод на името на режисьора
   useEffect(() => {
     if (selectedItem?.director !== null) {
       async function fetchDirectorTranslation() {
@@ -65,6 +70,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
     }
   }, [selectedItem?.director]);
 
+  // useEffect за превод на името на сценариста
   useEffect(() => {
     if (selectedItem?.writer) {
       async function fetchWriterTranslation() {
@@ -76,6 +82,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
     }
   }, [selectedItem?.writer]);
 
+  // useEffect за превод на името на актьорите
   useEffect(() => {
     if (selectedItem?.actors) {
       async function fetchActorsTranslation() {
@@ -87,6 +94,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
     }
   }, [selectedItem?.actors]);
 
+  // useEffect за превод на наградите на филма/сериала
   useEffect(() => {
     if (selectedItem?.awards) {
       async function fetchAwardsTranslation() {
@@ -98,6 +106,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
     }
   }, [selectedItem?.awards]);
 
+  // useEffect за превод на сюжета на филма/сериала
   useEffect(() => {
     if (selectedItem?.plot) {
       async function fetchPlotTranslation() {
@@ -110,6 +119,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
     }
   }, [selectedItem?.plot]);
 
+  // useEffect за превод на държавата на филма/сериала
   useEffect(() => {
     if (selectedItem?.country) {
       async function fetchCountryTranslation() {
@@ -121,6 +131,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
     }
   }, [selectedItem?.country]);
 
+  // useEffect за превод на езика на филма/сериала
   useEffect(() => {
     if (selectedItem?.language) {
       async function fetchLanguageTranslation() {
@@ -132,13 +143,21 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
     }
   }, [selectedItem?.language]);
 
+  // Ако няма избран елемент, връщаме null (не рендерираме компонента)
   if (!selectedItem) return null;
+
+  // Преведените жанрове, с дефолтна стойност, ако липсват
   const translatedGenres = selectedItem.genre_bg || "Жанр неизвестен";
+
+  // Проверка дали избраният елемент е филм
   const isMovie = selectedItem.type === "movie";
+
+  // Форматиране на рейтингите
   const ratings: Rating[] = Array.isArray(selectedItem.ratings)
     ? selectedItem.ratings
     : JSON.parse(selectedItem.ratings || "[]");
 
+  // Рейтинг от Rotten Tomatoes, ако е наличен
   const rottenTomatoesRating = Array.isArray(ratings)
     ? ratings.find((rating) => rating.Source === "Rotten Tomatoes")?.Value ||
       "N/A"
@@ -158,11 +177,13 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
         <div className="recommendation-card">
           <div className="flex w-full items-center">
             <div className="relative flex-shrink-0 mr-8">
+              {/* Постер */}
               <img
                 src={selectedItem.poster}
                 alt={`${selectedItem.title_bg || "Movie"} Poster`}
                 className="rounded-lg w-96 h-auto"
               />
+              {/* Бутон за добавяне в watchlist */}
               <button
                 onClick={() =>
                   handleMovieSeriesBookmarkClick(
@@ -194,6 +215,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
             </div>
 
             <div className="flex-grow w-full md:w-2/3 text-left ml-8">
+              {/* Главна информация */}
               <div className="sticky top-0 z-10">
                 <a href="#" className="block text-3xl font-bold mb-1">
                   {selectedItem.title_bg || "Заглавие не е налично"}
@@ -215,6 +237,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                   {selectedItem.year || "Година неизвестна"} | Рейтинг:{" "}
                   {selectedItem.rated || "N/A"}
                 </p>
+                {/* Рейтинги */}
                 <div className="flex items-center space-x-8 py-2">
                   <div
                     className="flex items-center space-x-2 dark:text-[#FFCC33] text-[#bf9413]"
@@ -271,7 +294,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                   )}
                 </div>
               </div>
-
+              {/* Причина за препоръчване */}
               {selectedItem.reason && (
                 <div className="mb-4">
                   <h3 className="text-lg font-semibold mb-2">
@@ -283,6 +306,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                   </p>
                 </div>
               )}
+              {/* Описание */}
               <div className="mb-4">
                 <h3 className="text-lg font-semibold mb-2">Описание</h3>
                 <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
@@ -306,6 +330,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                     </button>
                   )}
               </div>
+              {/* Сюжет */}
               <div className="mb-4">
                 <h3 className="text-lg font-semibold mb-2">Сюжет</h3>
                 <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
@@ -325,7 +350,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                   </button>
                 )}
               </div>
-
+              {/* Допълнителна информация */}
               <div className="mb-4">
                 <h3 className="text-lg font-semibold mb-2">
                   Допълнителна информация:
@@ -402,6 +427,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
             </div>
           </div>
         </div>
+        {/* Х */}
         <button
           onClick={handleClose}
           className="absolute top-4 right-4 p-2 text-[#FFCC33] bg-opacity-60 rounded-full transition-transform duration-300 transform hover:scale-110 z-10"
@@ -449,6 +475,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
           </svg>
         </button>
       </div>
+      {/*Modal за пълното описание/сюжет на филма/сериала*/}
       <PlotModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}

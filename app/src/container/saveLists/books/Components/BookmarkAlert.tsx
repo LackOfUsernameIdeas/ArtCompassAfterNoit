@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from "react";
 
+// Интерфейс за компонентата, който съдържа пропсите за това дали книгата е запазена и функция за затваряне
 interface BookmarkAlertProps {
-  isBookmarked: boolean;
-  onDismiss: () => void;
+  isBookmarked: boolean; // Дали книгата е в списъка за четене
+  onDismiss: () => void; // Функция за затваряне на съобщението
 }
 
 const BookmarkAlert: React.FC<BookmarkAlertProps> = ({
   isBookmarked,
   onDismiss
 }) => {
+  // Състояние за видимост на съобщението (показване и скриване)
   const [isVisible, setIsVisible] = useState(true);
 
+  // Използваме useEffect за да зададем таймер, който скрива съобщението след 5 секунди
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(false);
-      setTimeout(() => onDismiss(), 500); // Allow time for fade-out animation
+      setTimeout(() => onDismiss(), 500); // Даваме време за анимацията за изчезване
     }, 5000);
 
+    // Почистваме таймера, когато компонентът бъде демонтиран
     return () => clearTimeout(timer);
   }, [onDismiss]);
 

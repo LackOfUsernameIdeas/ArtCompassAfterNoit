@@ -6,6 +6,7 @@ import RecommendationCardAlert from "./RecommendationCardAlert/RecommendationCar
 import Pagination from "../../../../components/common/pagination/pagination";
 import { BookRecommendation } from "../../../types_common";
 
+// Компонент за таблица на книгите, добавени в readlist
 const BooksTable: FC<BooksTableProps> = ({
   data,
   bookmarkedBooks,
@@ -13,20 +14,24 @@ const BooksTable: FC<BooksTableProps> = ({
   setCurrentBookmarkStatus,
   setAlertVisible
 }) => {
+  // Състояние за текущата страница на таблицата
   const [currentTablePage, setCurrentTablePage] = useState(1);
-  const itemsPerTablePage = 5;
+  const itemsPerTablePage = 5; // Броя на елементите на страница
   const [selectedItem, setSelectedItem] = useState<BookRecommendation | null>(
     null
   );
 
+  // Изчисляваме общия брой елементи и страници
   const totalItems = data.length;
   const totalTablePages = Math.ceil(totalItems / itemsPerTablePage);
 
+  // Генерираме данни за текущата страница
   const paginatedData = useMemo(() => {
     const start = (currentTablePage - 1) * itemsPerTablePage;
     return data.slice(start, start + itemsPerTablePage);
   }, [data, currentTablePage]);
 
+  // Функции за навигация през страниците
   const handlePrevTablePage = useCallback(() => {
     if (currentTablePage > 1) setCurrentTablePage((prev) => prev - 1);
   }, [currentTablePage]);
@@ -36,14 +41,18 @@ const BooksTable: FC<BooksTableProps> = ({
       setCurrentTablePage((prev) => prev + 1);
   }, [currentTablePage, totalTablePages]);
 
+  // Медиен чек за екрани с ширина под 1399px и 1557px
   const is1399 = useMediaQuery({ query: "(max-width: 1399px)" });
   const is1557 = useMediaQuery({ query: "(max-width: 1557px)" });
 
+  // Обработчик за клик върху ред
   const handleRowClick = (item: BookRecommendation) => setSelectedItem(item);
 
   console.log("selectedItem: ", selectedItem);
+
   return (
     <Fragment>
+      {/* Компонент за показване на избрана книга като alert*/}
       <RecommendationCardAlert
         selectedItem={selectedItem}
         onClose={() => setSelectedItem(null)}
@@ -81,6 +90,7 @@ const BooksTable: FC<BooksTableProps> = ({
                   </tr>
                 </thead>
                 <tbody className="no-hover-text">
+                  {/* Render на редовете с книги */}
                   {paginatedData.map((item, index) => (
                     <tr
                       key={index}
@@ -103,6 +113,7 @@ const BooksTable: FC<BooksTableProps> = ({
             </div>
           </div>
           <div className="box-footer">
+            {/* Пагинация */}
             <Pagination
               currentPage={currentTablePage}
               totalItems={totalItems}

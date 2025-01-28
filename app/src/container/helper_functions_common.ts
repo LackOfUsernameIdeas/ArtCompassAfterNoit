@@ -609,6 +609,14 @@ export const checkTokenValidity = async (): Promise<string | null> => {
   }
 };
 
+/**
+ * Функция за обработка на жанровете.
+ * Ако жанровете са подадени като string, те се разделят на елементи и се добавят към state.
+ * Ако жанровете не са в очаквания формат, се задава празен масив.
+ *
+ * @param {any} genres - Жанровете, които ще бъдат обработени. Може да бъде string.
+ * @param {(value: React.SetStateAction<string[]>) => void} setGenres - Функция за сетване на жанровете в state.
+ */
 export const processGenres = (
   genres: any,
   setGenres: (value: React.SetStateAction<string[]>) => void
@@ -617,8 +625,8 @@ export const processGenres = (
     const genreStrings = genres.split(",").map((genre: string) => genre.trim());
     setGenres(genreStrings);
   } else {
-    console.warn("Unexpected format for Goodreads genre_bg:", genres);
-    setGenres([]);
+    console.warn("Неочакван формат за жанровете на Goodreads:", genres);
+    setGenres([]); // Връща празен масив, ако жанровете не са в правилния формат
   }
 };
 

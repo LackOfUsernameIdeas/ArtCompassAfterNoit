@@ -43,7 +43,7 @@ const AwardsSection: FC<GenresProps> = ({ recommendation }) => {
             </span>
           ))
         ) : (
-          <span className="text-gray-500">N/A</span>
+          <span className="text-gray-500">Няма награди</span>
         )}
       </div>
     </div>

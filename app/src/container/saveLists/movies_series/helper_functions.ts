@@ -2,10 +2,6 @@
 // Импортиране на типове и интерфейси
 // ==============================
 import { DataType } from "./watchlist-types";
-import {
-  removeFromWatchlist,
-  saveToWatchlist
-} from "../../helper_functions_common";
 
 // ==============================
 // Функции за работа с данни

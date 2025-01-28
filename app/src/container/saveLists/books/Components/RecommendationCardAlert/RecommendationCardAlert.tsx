@@ -14,131 +14,148 @@ import {
   processGenres
 } from "../../../../helper_functions_common";
 
+// Компонент за показване на избрана книга като alert
 const RecommendationCardAlert: FC<RecommendationCardProps> = ({
-  selectedItem,
-  onClose,
-  bookmarkedBooks,
-  setBookmarkedBooks,
-  setCurrentBookmarkStatus,
-  setAlertVisible
+  selectedItem, // Избран елемент за показване на информацията
+  onClose, // Функция за затваряне на картата
+  bookmarkedBooks, // Списък с добавените в отметки книги
+  setBookmarkedBooks, // Функция за обновяване на списъка с отметки
+  setCurrentBookmarkStatus, // Функция за задаване на текущия статус на отметка
+  setAlertVisible // Функция за показване/скриване на предупредителен прозорец
 }) => {
-  const [description, setDescription] = useState<string>("");
-  const [author, setAuthor] = useState<string | null>(null);
-  const [language, setLanguage] = useState<string | null>(null);
-  const [genres, setGenres] = useState<string[]>([]);
-  const [isPlotModalOpen, setIsPlotModalOpen] = useState(false);
-  const plotPreviewLength = 150;
-  const source = selectedItem?.source;
-  const isGoodreads = source === "Goodreads";
-  const [visible, setVisible] = useState(false);
+  const [description, setDescription] = useState<string>(""); // Описание на книгата
+  const [author, setAuthor] = useState<string | null>(null); // Автор на книгата
+  const [language, setLanguage] = useState<string | null>(null); // Език на книгата
+  const [genres, setGenres] = useState<string[]>([]); // Жанрове на книгата
+  const [isPlotModalOpen, setIsPlotModalOpen] = useState(false); // Статус на отворен/затворен модал за сюжет
+  const plotPreviewLength = 150; // Максимална дължина за предварителен преглед на сюжета
+  const source = selectedItem?.source; // Източник на данните за книгата
+  const isGoodreads = source === "Goodreads"; // Проверка дали източникът е Goodreads
+  const [visible, setVisible] = useState(false); // Видимостта на картата
 
+  // Изпълняваме след всяка промяна на избрания елемент
   useEffect(() => {
     if (selectedItem) {
-      setVisible(true); // Show the alert when a new item is selected
+      setVisible(true); // Правим картата видима, когато има избран елемент
     }
-  }, [selectedItem]);
+  }, [selectedItem]); // Зависимост: когато избраният елемент се промени
 
+  // Функция за затваряне на картата с анимация
   const handleClose = () => {
-    setVisible(false);
+    setVisible(false); // Скриваме картата
     setTimeout(() => {
-      onClose();
-    }, 300); // Match animation duration
+      onClose(); // Извикваме родителската функция за затваряне след 300 ms
+    }, 300);
   };
 
+  // Функция за отваряне на модала за сюжет
   const handleOpenPlotModal = () => {
-    setIsPlotModalOpen(true); // Open PlotModal
+    setIsPlotModalOpen(true); // Отваряме модала
   };
 
+  // Функция за затваряне на модала за сюжет
   const handleClosePlotModal = () => {
-    setIsPlotModalOpen(false); // Close PlotModal
+    setIsPlotModalOpen(false); // Затваряме модала
   };
 
+  // useEffect, за да получим и зададем автора на книгата
   useEffect(() => {
     const resolveAuthor = async () => {
       if (selectedItem?.author) {
         try {
+          // Ако авторът е string, директно го задаваме
           const resolvedAuthor =
             typeof selectedItem.author === "string"
               ? selectedItem.author
-              : await selectedItem.author;
-          setAuthor(resolvedAuthor);
+              : await selectedItem.author; // Ако е обещание, изчакваме неговото разрешаване
+          setAuthor(resolvedAuthor); // Задаваме автора
         } catch (error) {
-          console.error("Error resolving author:", error);
-          setAuthor(null);
+          console.error("Error resolving author:", error); // Обработваме грешка при получаване на автора
+          setAuthor(null); // Ако има грешка, задаваме автора на null
         }
       } else {
-        setAuthor(null);
+        setAuthor(null); // Ако няма автор, задаваме null
       }
     };
 
-    resolveAuthor();
-  }, [selectedItem?.author]);
+    resolveAuthor(); // Извикваме функцията за разрешаване на автора
+  }, [selectedItem?.author]); // Зависимост: когато авторът на избрания елемент се промени
 
+  // useEffect при всяка промяна в описанието на избрания елемент
   useEffect(() => {
+    // Функция за разрешаване на описанието на книгата
     const resolveDescription = async () => {
       if (selectedItem?.description) {
         try {
+          // Ако описанието е string, задаваме го директно
           const resolvedDescription =
             typeof selectedItem.description === "string"
               ? selectedItem.description
-              : await selectedItem.description;
-          setDescription(resolvedDescription);
+              : await selectedItem.description; // Ако е обещание, изчакваме да се разреши
+          setDescription(resolvedDescription); // Задаваме описанието
         } catch (error) {
-          console.error("Error resolving description:", error);
-          setDescription("Няма описание");
+          console.error("Error resolving description:", error); // Обработваме грешка при разрешаване на описанието
+          setDescription("Няма описание"); // Ако има грешка, задаваме текст по подразбиране
         }
       } else {
-        setDescription("Няма описание");
+        setDescription("Няма описание"); // Ако няма описание, задаваме текст по подразбиране
       }
     };
 
-    resolveDescription();
-  }, [selectedItem?.description]);
+    resolveDescription(); // Извикваме функцията за разрешаване на описанието
+  }, [selectedItem?.description]); // Зависимост: когато описанието на избрания елемент се промени
 
+  // useEffect при всяка промяна в езика на избрания елемент
   useEffect(() => {
+    // Функция за разрешаване на езика на книгата
     const resolveLanguage = async () => {
       if (selectedItem?.language) {
         try {
+          // Ако езикът е string, задаваме го директно
           const resolvedLanguage =
             typeof selectedItem.language === "string"
               ? selectedItem.language
-              : await selectedItem.language;
-          setLanguage(resolvedLanguage);
+              : await selectedItem.language; // Ако е обещание, изчакваме да се разреши
+          setLanguage(resolvedLanguage); // Задаваме езика
         } catch (error) {
-          console.error("Error resolving language:", error);
-          setLanguage(null);
+          console.error("Error resolving language:", error); // Обработваме грешка при разрешаване на езика
+          setLanguage(null); // Ако има грешка, задаваме null
         }
       } else {
-        setLanguage(null);
+        setLanguage(null); // Ако няма език, задаваме null
       }
     };
 
-    resolveLanguage();
-  }, [selectedItem?.language]);
+    resolveLanguage(); // Извикваме функцията за разрешаване на езика
+  }, [selectedItem?.language]); // Зависимост: когато езикът на избрания елемент се промени
 
+  // useEffect при всяка промяна в жанра на избрания елемент
   useEffect(() => {
+    // Функция за разрешаване на жанра на книгата
     const resolveGenres = async () => {
       try {
-        let resolvedGenres = selectedItem?.genre_bg;
+        let resolvedGenres = selectedItem?.genre_bg; // Извличаме жанровете на базата на езика bg
         if (resolvedGenres instanceof Promise) {
-          resolvedGenres = await resolvedGenres;
+          resolvedGenres = await resolvedGenres; // Ако жанровете са обещание, изчакваме да се разрешат
         }
 
+        // Обработка на жанровете в зависимост от източника (Goodreads или Google Books)
         if (isGoodreads) {
-          processGenres(resolvedGenres, setGenres);
+          processGenres(resolvedGenres, setGenres); // Ако източникът е Goodreads, обработваме по начин за Goodreads
         } else {
-          resolvedGenres = await parseResolvedGenres(resolvedGenres);
-          processGenresForGoogleBooks(resolvedGenres, setGenres);
+          resolvedGenres = await parseResolvedGenres(resolvedGenres); // Ако не е Goodreads, извършваме парсиране
+          processGenresForGoogleBooks(resolvedGenres, setGenres); // Обработваме жанровете за Google Books
         }
       } catch (error) {
-        console.error("Error resolving genre_bg:", error);
-        setGenres([]);
+        console.error("Error resolving genre_bg:", error); // Обработваме грешка при разрешаване на жанра
+        setGenres([]); // Ако има грешка, задаваме празен списък за жанровете
       }
     };
 
-    resolveGenres();
-  }, [selectedItem?.genre_bg]);
+    resolveGenres(); // Извикваме функцията за разрешаване на жанра
+  }, [selectedItem?.genre_bg]); // Зависимост: когато жанрът на избрания елемент се промени
 
+  // Ако няма избран елемент, връщаме null, за да не рендерираме компонентата
   if (!selectedItem) return null;
   return (
     <div
@@ -154,11 +171,13 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
         <div className="recommendation-card">
           <div className="flex w-full items-start">
             <div className="relative flex-shrink-0 mr-8 flex flex-col items-center">
+              {/* Постер */}
               <img
                 src={selectedItem.imageLink}
                 alt={`${selectedItem.title_bg || "Book"} Poster`}
                 className="rounded-lg w-[15rem] h-auto"
               />
+              {/* Бутон за добавяне в readlist */}
               <button
                 onClick={() =>
                   handleBookBookmarkClick(
@@ -189,6 +208,7 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
                   )}
                 </svg>
               </button>
+              {/* Герои */}
               {isGoodreads && (
                 <div>
                   <strong className="text-xl text-defaulttextcolor/85 block text-center">
@@ -218,6 +238,7 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
             <div className="flex-grow w-full md:w-2/3 text-left ml-8">
               <div className="flex-grow flex flex-col justify-between">
                 <div className="grid grid-cols-2 gap-8">
+                  {/* Заглавия и важна информация */}
                   <div className="mb-2">
                     <p className="block text-3xl font-bold">
                       {selectedItem.title_bg || "Заглавие не е налично"}
@@ -231,7 +252,7 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
                       {selectedItem.page_count || "Неизвестен брой"} страници
                     </p>
                   </div>
-
+                  {/* Поредица и адаптации */}
                   <div className="mb-4">
                     {isGoodreads && (
                       <div>
@@ -253,8 +274,9 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
                   </div>
                 </div>
               </div>
-
+              {/* Жанрове */}
               <Genres genres={genres} source={source} />
+              {/* Рейтинг */}
               <div className="flex items-center space-x-8">
                 <div
                   className="flex dark:text-[#FFCC33] text-[#bf9413] items-center space-x-2"
@@ -273,12 +295,14 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
                   </span>
                 </div>
               </div>
+              {/* Ревюта */}
               <span className="italic text-sm mb-4 dark:text-[#FFCC33]/70 text-[#bf9413]">
                 {isGoodreads &&
                   `Общо ${selectedItem.goodreads_reviews_count.toLocaleString(
                     "bg-BG"
                   )} ревюта в Goodreads`}
               </span>
+              {/* Причина за препоръчване */}
               {selectedItem.reason && (
                 <div className="mb-4">
                   <h3 className="text-lg font-semibold mb-2">
@@ -290,7 +314,7 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
                   </p>
                 </div>
               )}
-
+              {/* Описание */}
               <div>
                 <h3 className="text-lg font-semibold mb-2">Описание</h3>
                 <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
@@ -310,7 +334,9 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
                   </button>
                 )}
               </div>
+              {/* Награди */}
               {isGoodreads && <AwardsSection recommendation={selectedItem} />}
+              {/* Допълнителна информация */}
               <div className="mt-2">
                 <h3 className="text-lg font-semibold mb-2">
                   Допълнителна информация:
@@ -368,6 +394,7 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
             </div>
           </div>
         </div>
+        {/* Х */}
         <button
           onClick={handleClose}
           className="absolute top-4 right-4 p-2 text-[#FFCC33] bg-opacity-60 rounded-full transition-transform duration-300 transform hover:scale-110 z-10"
@@ -415,6 +442,7 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
           </svg>
         </button>
       </div>
+      {/*Modal за пълното описание на книгата*/}
       <PlotModal
         isOpen={isPlotModalOpen}
         onClose={handleClosePlotModal}
