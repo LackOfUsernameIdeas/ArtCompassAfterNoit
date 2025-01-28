@@ -7,7 +7,6 @@ import Pagination from "../../../../components/common/pagination/pagination";
 
 interface BooksTableProps {
   data: Recommendation[];
-  type: "recommendations" | "watchlist";
   handleBookmarkClick: (book: {
     google_books_id: string;
     goodreads_id: string;
@@ -18,7 +17,6 @@ interface BooksTableProps {
 
 const BooksTable: FC<BooksTableProps> = ({
   data,
-  type,
   handleBookmarkClick,
   bookmarkedBooks
 }) => {

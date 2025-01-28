@@ -198,7 +198,6 @@ const Readlist: FC<ReadlistProps> = () => {
                   >
                     <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5">
                       <BooksTable
-                        type="watchlist"
                         data={data.topRecommendationsReadlist}
                         handleBookmarkClick={handleBookmarkClick}
                         bookmarkedBooks={bookmarkedBooks}
