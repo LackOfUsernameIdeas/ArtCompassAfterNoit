@@ -7,7 +7,6 @@ import Pagination from "../../../../components/common/pagination/pagination";
 
 const BooksTable: FC<BooksTableProps> = ({
   data,
-  handleBookmarkClick,
   bookmarkedBooks,
   setBookmarkedBooks,
   setCurrentBookmarkStatus,
@@ -45,7 +44,6 @@ const BooksTable: FC<BooksTableProps> = ({
       <RecommendationCardAlert
         selectedItem={selectedItem}
         onClose={() => setSelectedItem(null)}
-        handleBookmarkClick={handleBookmarkClick}
         setBookmarkedBooks={setBookmarkedBooks}
         setCurrentBookmarkStatus={setCurrentBookmarkStatus}
         setAlertVisible={setAlertVisible}

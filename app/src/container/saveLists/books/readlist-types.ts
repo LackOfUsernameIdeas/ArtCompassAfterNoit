@@ -119,18 +119,6 @@ export type Rating = {
 // Интерфейс за пропс на таблицата с книги
 export interface BooksTableProps {
   data: Recommendation[]; // Масив с препоръчани книги
-  handleBookmarkClick: (
-    // Функция за маркиране на книга
-    book: Recommendation, // Книга, която се маркира
-    setBookmarkedBooks: React.Dispatch<
-      // Функция за обновяване на маркираните книги
-      React.SetStateAction<{
-        [key: string]: any; // Динамичен обект с маркирани книги
-      }>
-    >,
-    setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>, // Функция за задаване на текущия статус на маркиране
-    setAlertVisible: React.Dispatch<React.SetStateAction<boolean>> // Функция за показване на известие
-  ) => void;
   setBookmarkedBooks: React.Dispatch<
     // Функция за обновяване на списъка с маркирани книги
     React.SetStateAction<{
@@ -146,18 +134,6 @@ export interface BooksTableProps {
 export interface RecommendationCardProps {
   selectedItem: Recommendation | null; // Избрана книга от списъка с препоръки
   onClose: () => void; // Функция за затваряне на модала
-  handleBookmarkClick: (
-    // Функция за маркиране на книга
-    book: Recommendation, // Книга, която се маркира
-    setBookmarkedBooks: React.Dispatch<
-      // Функция за обновяване на маркираните книги
-      React.SetStateAction<{
-        [key: string]: any; // Динамичен обект с маркирани книги
-      }>
-    >,
-    setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>, // Функция за задаване на текущия статус на маркиране
-    setAlertVisible: React.Dispatch<React.SetStateAction<boolean>> // Функция за показване на известие
-  ) => void;
   setBookmarkedBooks: React.Dispatch<
     // Функция за обновяване на списъка с маркирани книги
     React.SetStateAction<{

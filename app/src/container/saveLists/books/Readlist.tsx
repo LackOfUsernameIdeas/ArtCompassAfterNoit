@@ -1,6 +1,6 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { DataType } from "./readlist-types";
-import { fetchData, handleBookmarkClick } from "./helper_functions";
+import { fetchData } from "./helper_functions";
 import {
   checkRecommendationExistsInReadlist,
   validateToken
@@ -200,7 +200,6 @@ const Readlist: FC<ReadlistProps> = () => {
                     <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5">
                       <BooksTable
                         data={data.topRecommendationsReadlist}
-                        handleBookmarkClick={handleBookmarkClick}
                         setBookmarkedBooks={setBookmarkedBooks}
                         setCurrentBookmarkStatus={setCurrentBookmarkStatus}
                         setAlertVisible={setAlertVisible}

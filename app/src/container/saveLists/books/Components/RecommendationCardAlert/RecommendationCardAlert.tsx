@@ -7,14 +7,14 @@ import AwardsSection from "./Awards";
 import { PlotModal } from "../PlotModal";
 import {
   parseResolvedGenres,
-  processGenresForGoogleBooks
+  processGenresForGoogleBooks,
+  handleBookmarkClick
 } from "../../helper_functions";
 import { processGenres } from "../../../../helper_functions_common";
 
 const RecommendationCardAlert: FC<RecommendationCardProps> = ({
   selectedItem,
   onClose,
-  handleBookmarkClick,
   bookmarkedBooks,
   setBookmarkedBooks,
   setCurrentBookmarkStatus,
