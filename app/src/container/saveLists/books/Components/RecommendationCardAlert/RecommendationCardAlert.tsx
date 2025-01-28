@@ -7,10 +7,12 @@ import AwardsSection from "./Awards";
 import { PlotModal } from "../PlotModal";
 import {
   parseResolvedGenres,
-  processGenresForGoogleBooks,
-  handleBookmarkClick
+  processGenresForGoogleBooks
 } from "../../helper_functions";
-import { processGenres } from "../../../../helper_functions_common";
+import {
+  handleBookBookmarkClick,
+  processGenres
+} from "../../../../helper_functions_common";
 
 const RecommendationCardAlert: FC<RecommendationCardProps> = ({
   selectedItem,
@@ -159,7 +161,7 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
               />
               <button
                 onClick={() =>
-                  handleBookmarkClick(
+                  handleBookBookmarkClick(
                     selectedItem,
                     setBookmarkedBooks,
                     setCurrentBookmarkStatus,

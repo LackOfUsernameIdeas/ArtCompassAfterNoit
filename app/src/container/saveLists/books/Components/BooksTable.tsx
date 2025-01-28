@@ -1,9 +1,10 @@
 import { FC, Fragment, useState, useMemo, useCallback } from "react";
-import { BooksTableProps, Recommendation } from "../readlist-types";
+import { BooksTableProps } from "../readlist-types";
 import { useMediaQuery } from "react-responsive";
 import { Tooltip } from "react-tooltip";
 import RecommendationCardAlert from "./RecommendationCardAlert/RecommendationCardAlert";
 import Pagination from "../../../../components/common/pagination/pagination";
+import { BookRecommendation } from "../../../types_common";
 
 const BooksTable: FC<BooksTableProps> = ({
   data,
@@ -14,7 +15,9 @@ const BooksTable: FC<BooksTableProps> = ({
 }) => {
   const [currentTablePage, setCurrentTablePage] = useState(1);
   const itemsPerTablePage = 5;
-  const [selectedItem, setSelectedItem] = useState<Recommendation | null>(null);
+  const [selectedItem, setSelectedItem] = useState<BookRecommendation | null>(
+    null
+  );
 
   const totalItems = data.length;
   const totalTablePages = Math.ceil(totalItems / itemsPerTablePage);
@@ -36,7 +39,7 @@ const BooksTable: FC<BooksTableProps> = ({
   const is1399 = useMediaQuery({ query: "(max-width: 1399px)" });
   const is1557 = useMediaQuery({ query: "(max-width: 1557px)" });
 
-  const handleRowClick = (item: Recommendation) => setSelectedItem(item);
+  const handleRowClick = (item: BookRecommendation) => setSelectedItem(item);
 
   console.log("selectedItem: ", selectedItem);
   return (

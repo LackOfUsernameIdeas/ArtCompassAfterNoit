@@ -32,6 +32,7 @@ export interface Question {
   placeholder?: string; // Плейсхолдър за въпроси с текстов вход
   description?: string; // Допълнително описание на въпроса
 }
+
 // Интерфейс за филм с всички основни данни за филма.
 export interface Recommendation {
   id?: string; // ID на филма

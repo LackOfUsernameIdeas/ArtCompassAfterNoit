@@ -1,3 +1,5 @@
+import { MovieSeriesRecommendation } from "../../types_common";
+
 // Пропси за модала, показващ сюжета на филма/сериала
 export interface PlotModalProps {
   isOpen: boolean; // Статус на модала (отворен/затворен)
@@ -63,7 +65,7 @@ export type Count = {
 export type DataType = {
   topRecommendationsWatchlist: {
     savedCount: Count;
-    watchlist: Recommendation[]; // Топ препоръки в списък за гледане
+    watchlist: MovieSeriesRecommendation[]; // Топ препоръки в списък за гледане
   };
   [key: `sorted${string}By${"RecommendationCount" | "SavedCount"}`]: any[]; // Подредени данни по препоръки и запазвания
 };
@@ -71,54 +73,13 @@ export type DataType = {
 // Категории роли (актьори, режисьори, писатели)
 export type Category = "Actors" | "Directors" | "Writers"; // Роли: Актьори, Режисьори, Писатели
 
-// Данни за препоръки с подробности за филма/сериала
-export interface Recommendation {
-  id: number;
-  user_id: number;
-  imdbID: string;
-  title_en: string;
-  title_bg: string;
-  genre_en: string;
-  genre_bg: string;
-  reason: string;
-  recommendations: string;
-  description: string;
-  year: string;
-  rated: string;
-  released: string;
-  runtime: string;
-  director: string;
-  writer: string;
-  actors: string;
-  plot: string;
-  language: string;
-  country: string;
-  awards: string;
-  poster: string;
-  ratings: string;
-  metascore: string;
-  imdbRating: string;
-  imdbVotes: string;
-  type: string;
-  DVD: string;
-  boxOffice: string;
-  production: string;
-  website: string;
-  totalSeasons: string;
-  oscar_wins: string;
-  oscar_nominations: string;
-  total_wins: string;
-  total_nominations: string;
-  prosperityScore: number;
-}
-
 export type Rating = {
   Source: string;
   Value: string;
 };
 
 export interface RecommendationCardAlertProps {
-  selectedItem: Recommendation | null;
+  selectedItem: MovieSeriesRecommendation | null;
   onClose: () => void;
   setBookmarkedMovies: React.Dispatch<
     // Функция за обновяване на списъка с маркирани филми/сериали
@@ -128,11 +89,11 @@ export interface RecommendationCardAlertProps {
   >;
   setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
   setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
-  bookmarkedMovies: { [key: string]: Recommendation };
+  bookmarkedMovies: { [key: string]: MovieSeriesRecommendation };
 }
 
 export interface MoviesAndSeriesTableProps {
-  data: Recommendation[];
+  data: MovieSeriesRecommendation[];
   type: "recommendations" | "watchlist";
   setBookmarkedMovies: React.Dispatch<
     // Функция за обновяване на списъка с маркирани филми/сериали
@@ -142,7 +103,7 @@ export interface MoviesAndSeriesTableProps {
   >;
   setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
   setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
-  bookmarkedMovies: { [key: string]: Recommendation };
+  bookmarkedMovies: { [key: string]: MovieSeriesRecommendation };
 }
 
 export interface BookmarkAlertProps {

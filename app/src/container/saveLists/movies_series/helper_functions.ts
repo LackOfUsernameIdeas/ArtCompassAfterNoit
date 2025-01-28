@@ -1,7 +1,7 @@
 // ==============================
 // Импортиране на типове и интерфейси
 // ==============================
-import { DataType, Recommendation } from "./watchlist-types";
+import { DataType } from "./watchlist-types";
 import {
   removeFromWatchlist,
   saveToWatchlist
@@ -67,58 +67,4 @@ export const fetchData = async (
     console.error("Error in fetchData:", error);
     throw error;
   }
-};
-
-// ==============================
-// Handle функции
-// ==============================
-
-/**
- * Добавя или премахва филм от списъка с любими на потребителя.
- * Прикрепя състоянията на компонентите като параметри, за да актуализира състоянието.
- *
- * @param {object} movie - Филмът, който ще бъде добавен или премахнат.
- * @param {string} movie.imdbID - Уникален идентификатор на филма (IMDb ID).
- * @param {Function} setBookmarkedMovies - Функция за актуализиране на състоянието на отметките.
- * @param {Function} setCurrentBookmarkStatus - Функция за актуализиране на текущия статус на отметката.
- * @param {Function} setAlertVisible - Функция за показване на алармата.
- * @returns {void} - Функцията не връща стойност.
- */
-export const handleBookmarkClick = (
-  movie: Recommendation,
-  setBookmarkedMovies?: React.Dispatch<
-    React.SetStateAction<{ [key: string]: any }>
-  >,
-  setCurrentBookmarkStatus?: React.Dispatch<React.SetStateAction<boolean>>,
-  setAlertVisible?: React.Dispatch<React.SetStateAction<boolean>>
-) => {
-  setBookmarkedMovies &&
-    setBookmarkedMovies((prev) => {
-      const isBookmarked = !!prev[movie.imdbID];
-      const updatedBookmarks = { ...prev };
-      const token =
-        localStorage.getItem("authToken") ||
-        sessionStorage.getItem("authToken");
-
-      if (isBookmarked) {
-        // Remove the movie from bookmarks if it's already bookmarked
-        delete updatedBookmarks[movie.imdbID];
-
-        removeFromWatchlist(movie.imdbID, token).catch((error) => {
-          console.error("Error removing from watchlist:", error);
-        });
-      } else {
-        // Add the movie to bookmarks if it's not already bookmarked
-        updatedBookmarks[movie.imdbID] = movie;
-
-        saveToWatchlist(movie, token).catch((error) => {
-          console.error("Error saving to watchlist:", error);
-        });
-      }
-
-      setCurrentBookmarkStatus && setCurrentBookmarkStatus(!isBookmarked); // Update the current bookmark status
-      setAlertVisible && setAlertVisible(true); // Show the alert
-
-      return updatedBookmarks; // Return the updated bookmarks object
-    });
 };

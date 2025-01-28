@@ -1,3 +1,5 @@
+import { BookRecommendation } from "../../types_common";
+
 // Данни за потребител
 export interface UserData {
   id: number; // Уникален идентификатор на потребителя
@@ -69,47 +71,13 @@ export type Count = {
 
 // Обобщени данни за потребителя (например топ препоръки и жанрове)
 export type DataType = {
-  topRecommendationsReadlist: Recommendation[]; // Топ препоръки в списък за четене;
+  topRecommendationsReadlist: BookRecommendation[]; // Топ препоръки в списък за четене;
   [key: `sorted${string}By${"RecommendationCount" | "SavedCount"}`]: any[]; // Подредени данни по препоръки и запазвания
 };
 
 // Категории роли (актьори, режисьори, писатели)
 export type Category = "Actors" | "Directors" | "Writers"; // Роли: Актьори, Режисьори, Писатели
 
-// Данни за препоръки с подробности за книгата
-export interface Recommendation {
-  id: string; // ID на книгата
-  user_id: string; // ID на потребителя, свързан с книгата
-  google_books_id: string; // Google Books идентификатор
-  goodreads_id: string; // Goodreads идентификатор
-  title_en: string; // Английско заглавие на книгата
-  title_bg: string; // Българско заглавие на книгата
-  real_edition_title: string; // Реално заглавие на изданието
-  author: string | Promise<string>; // Име на автора (може да е обещание)
-  publisher: string; // Издателство
-  genre_en: string | Promise<string>; // Жанрове на английски (може да е обещание)
-  genre_bg: string | Promise<string>; // Жанрове на български (може да е обещание)
-  description: string | Promise<string>; // Описание на книгата (може да е обещание)
-  language: string | Promise<string>; // Езици на книгата (може да е обещание)
-  origin: string; // Страна на произход
-  literary_awards: string; // Награди на книгата
-  setting: string; // Мястото, в което се развива сюжета
-  characters: string; // Героите в сюжета
-  series: string; // Поредица
-  date_of_first_issue: string; // Дата на първо издание
-  date_of_issue: string; // Дата на издаване
-  goodreads_rating: number; // Goodreads рейтинг
-  goodreads_ratings_count: number; // Брой гласове в Goodreads
-  goodreads_reviews_count: number; // Брой ревюта в Goodreads
-  reason: string; // Причина за препоръката
-  adaptations: string; // Адаптации на книгата
-  ISBN_10: string; // ISBN-10
-  ISBN_13: string; // ISBN-13
-  page_count: string; // Брой страници
-  book_format: string; // Вид на книгата (тип корица, е-книги)
-  imageLink: string; // Линк към изображение на книгата
-  source: string; // Източник (напр. Google Books)
-}
 // Тип за рейтинг, съдържащ източник и стойност
 export type Rating = {
   Source: string; // Източник на рейтинга (напр. IMDb, Goodreads)
@@ -118,7 +86,7 @@ export type Rating = {
 
 // Интерфейс за пропс на таблицата с книги
 export interface BooksTableProps {
-  data: Recommendation[]; // Масив с препоръчани книги
+  data: BookRecommendation[]; // Масив с препоръчани книги
   setBookmarkedBooks: React.Dispatch<
     // Функция за обновяване на списъка с маркирани книги
     React.SetStateAction<{
@@ -127,12 +95,12 @@ export interface BooksTableProps {
   >;
   setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
   setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
-  bookmarkedBooks: { [key: string]: Recommendation }; // Обект със списък на маркирани книги
+  bookmarkedBooks: { [key: string]: BookRecommendation }; // Обект със списък на маркирани книги
 }
 
 // Интерфейс за пропс на картата с препоръка
 export interface RecommendationCardProps {
-  selectedItem: Recommendation | null; // Избрана книга от списъка с препоръки
+  selectedItem: BookRecommendation | null; // Избрана книга от списъка с препоръки
   onClose: () => void; // Функция за затваряне на модала
   setBookmarkedBooks: React.Dispatch<
     // Функция за обновяване на списъка с маркирани книги
@@ -142,5 +110,5 @@ export interface RecommendationCardProps {
   >;
   setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
   setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
-  bookmarkedBooks: { [key: string]: Recommendation }; // Обект със списък на маркирани книги
+  bookmarkedBooks: { [key: string]: BookRecommendation }; // Обект със списък на маркирани книги
 }

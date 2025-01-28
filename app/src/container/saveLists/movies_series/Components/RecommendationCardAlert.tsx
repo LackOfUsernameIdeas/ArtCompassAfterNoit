@@ -3,8 +3,11 @@ import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
 import { PlotModal } from "./PlotModal";
 import { Rating, RecommendationCardAlertProps } from "../watchlist-types";
-import { processGenres, translate } from "../../../helper_functions_common";
-import { handleBookmarkClick } from "../helper_functions";
+import {
+  handleMovieSeriesBookmarkClick,
+  processGenres,
+  translate
+} from "../../../helper_functions_common";
 
 const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   selectedItem,
@@ -176,7 +179,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
               />
               <button
                 onClick={() =>
-                  handleBookmarkClick(
+                  handleMovieSeriesBookmarkClick(
                     selectedItem,
                     setBookmarkedMovies,
                     setCurrentBookmarkStatus,

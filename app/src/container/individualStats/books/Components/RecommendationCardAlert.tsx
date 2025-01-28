@@ -6,8 +6,10 @@ import {
   Rating,
   RecommendationCardAlertProps
 } from "../booksIndividualStats-types";
-import { translate } from "../../../helper_functions_common";
-import { handleBookmarkClick } from "../helper_functions";
+import {
+  handleMovieSeriesBookmarkClick,
+  translate
+} from "../../../helper_functions_common";
 
 const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   selectedItem,
@@ -125,7 +127,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
               />
               <button
                 onClick={() =>
-                  handleBookmarkClick(
+                  handleMovieSeriesBookmarkClick(
                     selectedItem,
                     setBookmarkedMovies,
                     setCurrentBookmarkStatus,

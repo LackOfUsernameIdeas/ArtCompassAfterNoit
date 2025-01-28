@@ -1,14 +1,14 @@
 import { FC, Fragment, useEffect, useState, useMemo, useCallback } from "react";
 import {
   MoviesAndSeriesRecommendationsTableProps,
-  Rating,
-  Recommendation
+  Rating
 } from "../moviesSeriesIndividualStats-types";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import RecommendationCardAlert from "./RecommendationCardAlert";
 import Pagination from "../../../../components/common/pagination/pagination";
+import { MovieSeriesRecommendation } from "../../../types_common";
 
 const MoviesAndSeriesRecommendationsTable: FC<
   MoviesAndSeriesRecommendationsTableProps
@@ -22,15 +22,16 @@ const MoviesAndSeriesRecommendationsTable: FC<
 }) => {
   const [currentTablePage, setCurrentTablePage] = useState(1);
   const itemsPerTablePage = 5;
-  const [sortBy, setSortBy] = useState<keyof Recommendation | "default">(
-    "default"
-  );
+  const [sortBy, setSortBy] = useState<
+    keyof MovieSeriesRecommendation | "default"
+  >("default");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<Recommendation | null>(null);
+  const [selectedItem, setSelectedItem] =
+    useState<MovieSeriesRecommendation | null>(null);
 
   const [filteredTableData, setFilteredTableData] =
-    useState<Recommendation[]>(data);
+    useState<MovieSeriesRecommendation[]>(data);
 
   useEffect(() => {
     setFilteredTableData(data || []);
@@ -123,15 +124,19 @@ const MoviesAndSeriesRecommendationsTable: FC<
 
   const toggleSortMenu = () => setIsSortMenuOpen((prev) => !prev);
 
-  const handleSortOptionSelect = useCallback((value: keyof Recommendation) => {
-    setSortBy(value);
-    setIsSortMenuOpen(false);
-  }, []);
+  const handleSortOptionSelect = useCallback(
+    (value: keyof MovieSeriesRecommendation) => {
+      setSortBy(value);
+      setIsSortMenuOpen(false);
+    },
+    []
+  );
 
   const getTranslatedType = (type: string) =>
     type === "movie" ? "филм" : type === "series" ? "сериал" : type;
 
-  const handleRowClick = (item: Recommendation) => setSelectedItem(item);
+  const handleRowClick = (item: MovieSeriesRecommendation) =>
+    setSelectedItem(item);
 
   return (
     <Fragment>
@@ -205,7 +210,9 @@ const MoviesAndSeriesRecommendationsTable: FC<
                     <li key={value}>
                       <Link
                         onClick={() =>
-                          handleSortOptionSelect(value as keyof Recommendation)
+                          handleSortOptionSelect(
+                            value as keyof MovieSeriesRecommendation
+                          )
                         }
                         className={`ti-dropdown-item ${
                           sortBy === value ? "active" : ""

@@ -1,7 +1,7 @@
 // ==============================
 // Импортиране на типове и интерфейси
 // ==============================
-import { DataType, Recommendation } from "./readlist-types";
+import { DataType } from "./readlist-types";
 import {
   removeFromReadlist,
   saveToReadlist
@@ -68,70 +68,6 @@ export const fetchData = async (
     console.error("Error in fetchData:", error);
     throw error;
   }
-};
-
-// ==============================
-// Handle функции
-// ==============================
-
-/**
- * Добавя или премахва книга от списъка с отметки на потребителя.
- * Актуализира състоянията на компонентите чрез подадените функции.
- *
- * @param {object} book - Книгата, която ще бъде добавена или премахната от отметките.
- * @param {string} book.google_books_id - Уникален идентификатор за Google Books.
- * @param {string} book.goodreads_id - Уникален идентификатор за Goodreads.
- * @param {Function} setBookmarkedBooks - Функция за актуализиране на състоянието на списъка с отметки.
- * @param {Function} setCurrentBookmarkStatus - Функция за актуализиране на текущия статус на отметката.
- * @param {Function} setAlertVisible - Функция за показване на известие.
- * @returns {void} - Функцията не връща стойност.
- */
-export const handleBookmarkClick = (
-  book: Recommendation,
-  setBookmarkedBooks?: React.Dispatch<
-    React.SetStateAction<{ [key: string]: any }>
-  >,
-  setCurrentBookmarkStatus?: React.Dispatch<React.SetStateAction<boolean>>,
-  setAlertVisible?: React.Dispatch<React.SetStateAction<boolean>>
-) => {
-  setBookmarkedBooks &&
-    setBookmarkedBooks((prev) => {
-      // Проверка дали книгата вече е добавена в списъка с отметки
-      const isBookmarked = !!prev[book.google_books_id || book.goodreads_id];
-      const updatedBookmarks = { ...prev };
-      const token =
-        localStorage.getItem("authToken") ||
-        sessionStorage.getItem("authToken");
-
-      if (isBookmarked) {
-        // Премахване на книгата от списъка с отметки, ако вече е добавена
-        delete updatedBookmarks[book.google_books_id || book.goodreads_id];
-
-        removeFromReadlist(
-          book.google_books_id || book.goodreads_id,
-          token,
-          book.source
-        ).catch((error) => {
-          console.error("Грешка при премахване от списъка за четене:", error);
-        });
-      } else {
-        // Добавяне на книгата в списъка с отметки, ако все още не е добавена
-        updatedBookmarks[book.google_books_id || book.goodreads_id] = book;
-
-        saveToReadlist(book, token).catch((error) => {
-          console.error("Грешка при запазване в списъка за четене:", error);
-        });
-      }
-
-      // Актуализиране на текущия статус на отметката
-      setCurrentBookmarkStatus && setCurrentBookmarkStatus(!isBookmarked);
-
-      // Показване на известие
-      setAlertVisible && setAlertVisible(true);
-
-      // Връщане на актуализирания обект със списъка с отметки
-      return updatedBookmarks;
-    });
 };
 
 export const parseResolvedGenres = async (resolvedGenres: any) => {
