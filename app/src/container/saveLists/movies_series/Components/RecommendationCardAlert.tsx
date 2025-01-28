@@ -5,7 +5,6 @@ import { PlotModal } from "./PlotModal";
 import { Rating, RecommendationCardAlertProps } from "../watchlist-types";
 import {
   handleMovieSeriesBookmarkClick,
-  processGenres,
   translate
 } from "../../../helper_functions_common";
 
@@ -133,25 +132,12 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
     }
   }, [selectedItem?.language]);
 
-  useEffect(() => {
-    const resolveGenres = async () => {
-      try {
-        let resolvedGenres = selectedItem?.genre_bg;
-        processGenres(resolvedGenres, setGenres);
-      } catch (error) {
-        console.error("Error resolving genre_bg:", error);
-        setGenres([]);
-      }
-    };
-
-    resolveGenres();
-  }, [selectedItem?.genre_bg]);
-
   if (!selectedItem) return null;
+  const translatedGenres = selectedItem.genre_bg || "Жанр неизвестен";
   const isMovie = selectedItem.type === "movie";
   const ratings: Rating[] = Array.isArray(selectedItem.ratings)
     ? selectedItem.ratings
-    : JSON.parse(selectedItem.ratings || "[]"); // Parse ratings if it's a string
+    : JSON.parse(selectedItem.ratings || "[]");
 
   const rottenTomatoesRating = Array.isArray(ratings)
     ? ratings.find((rating) => rating.Source === "Rotten Tomatoes")?.Value ||
@@ -220,7 +206,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                     "Заглавие на английски не е налично"}
                 </a>
                 <p className="recommendation-small-details text-sm italic text-defaulttextcolor/70">
-                  {/* {translatedGenres || "Жанр неизвестен"} |{" "} */}
+                  {translatedGenres || "Жанр неизвестен"} |{" "}
                   {!isMovie &&
                     `Брой сезони: ${
                       selectedItem.totalSeasons || "Неизвестен"
@@ -228,21 +214,6 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                   {selectedItem.runtime || "Неизвестно времетраене"} |{" "}
                   {selectedItem.year || "Година неизвестна"} | Рейтинг:{" "}
                   {selectedItem.rated || "N/A"}
-                </p>
-                <p className="my-2">
-                  <strong className="text-primary text-sm">Жанрове:</strong>
-                  <div className="text-white">
-                    <div className="flex flex-wrap gap-2">
-                      {genres.map((genre, index) => (
-                        <span
-                          key={index}
-                          className="inline-block text-primary bg-primary/70 dark:bg-primary/25 px-3 py-1 rounded-md text-sm"
-                        >
-                          {genre}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
                 </p>
                 <div className="flex items-center space-x-8 py-2">
                   <div
