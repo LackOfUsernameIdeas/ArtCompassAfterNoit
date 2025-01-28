@@ -2,20 +2,19 @@ import { FC, useState, useEffect } from "react";
 import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
 import { PlotModal } from "./PlotModal";
-import { Rating, Recommendation } from "../moviesSeriesIndividualStats-types";
+import {
+  Rating,
+  RecommendationCardAlertProps
+} from "../moviesSeriesIndividualStats-types";
 import { translate } from "../../../helper_functions_common";
-
-interface RecommendationCardAlertProps {
-  selectedItem: Recommendation | null;
-  onClose: () => void;
-  handleBookmarkClick: (movie: Recommendation) => void;
-  bookmarkedMovies: { [key: string]: Recommendation };
-}
+import { handleBookmarkClick } from "../helper_functions";
 
 const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   selectedItem,
   onClose,
-  handleBookmarkClick,
+  setBookmarkedMovies,
+  setCurrentBookmarkStatus,
+  setAlertVisible,
   bookmarkedMovies
 }) => {
   const [translatedDirectors, setTranslatedDirectors] = useState<string>("");
@@ -125,7 +124,14 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                 className="rounded-lg w-full h-auto"
               />
               <button
-                onClick={() => handleBookmarkClick(selectedItem)}
+                onClick={() =>
+                  handleBookmarkClick(
+                    selectedItem,
+                    setBookmarkedMovies,
+                    setCurrentBookmarkStatus,
+                    setAlertVisible
+                  )
+                }
                 className="absolute top-4 left-4 p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110 z-20"
               >
                 <svg

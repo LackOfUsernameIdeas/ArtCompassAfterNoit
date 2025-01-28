@@ -111,42 +111,6 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
     loadBookmarkStatus();
   }, [data.topRecommendationsWatchlist.watchlist]);
 
-  const handleBookmarkClick = (movie: {
-    imdbID: string;
-    [key: string]: any;
-  }) => {
-    setBookmarkedMovies((prev) => {
-      const isBookmarked = !!prev[movie.imdbID];
-      const updatedBookmarks = { ...prev };
-      const token =
-        localStorage.getItem("authToken") ||
-        sessionStorage.getItem("authToken");
-
-      if (isBookmarked) {
-        // Remove the movie from bookmarks if it's already bookmarked
-        delete updatedBookmarks[movie.imdbID];
-
-        // Call removeFromWatchlist API
-        removeFromWatchlist(movie.imdbID, token).catch((error) => {
-          console.error("Error removing from watchlist:", error);
-        });
-      } else {
-        // Add the movie to bookmarks if it's not already bookmarked
-        updatedBookmarks[movie.imdbID] = movie;
-
-        // Call saveToWatchlist API
-        saveToWatchlist(movie, token).catch((error) => {
-          console.error("Error saving to watchlist:", error);
-        });
-      }
-
-      setCurrentBookmarkStatus(!isBookmarked); // Update the current bookmark status
-      setAlertVisible(true); // Show the alert
-
-      return updatedBookmarks; // Return the updated bookmarks object
-    });
-  };
-
   if (loading) {
     return (
       <FadeInWrapper loadingTimeout={30000}>
@@ -154,8 +118,6 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
       </FadeInWrapper>
     );
   }
-
-  console.log("data: ", data);
 
   if (
     !data.topRecommendations.recommendations ||
@@ -260,7 +222,9 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                         <MoviesAndSeriesRecommendationsTable
                           type="recommendations"
                           data={data.topRecommendations.recommendations}
-                          handleBookmarkClick={handleBookmarkClick}
+                          setBookmarkedMovies={setBookmarkedMovies}
+                          setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+                          setAlertVisible={setAlertVisible}
                           bookmarkedMovies={bookmarkedMovies}
                         />
                       </div>

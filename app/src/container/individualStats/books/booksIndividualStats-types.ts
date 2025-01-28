@@ -170,3 +170,31 @@ export type Rating = {
   Source: string;
   Value: string;
 };
+
+export interface MoviesAndSeriesRecommendationsTableProps {
+  data: Recommendation[];
+  type: "recommendations" | "watchlist";
+  setBookmarkedMovies: React.Dispatch<
+    // Функция за обновяване на списъка с маркирани филми/сериали
+    React.SetStateAction<{
+      [key: string]: any; // Динамичен обект с маркирани филми/сериали
+    }>
+  >;
+  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
+  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
+  bookmarkedMovies: { [key: string]: Recommendation };
+}
+
+export interface RecommendationCardAlertProps {
+  selectedItem: Recommendation | null;
+  onClose: () => void;
+  setBookmarkedMovies: React.Dispatch<
+    // Функция за обновяване на списъка с маркирани филми/сериали
+    React.SetStateAction<{
+      [key: string]: any; // Динамичен обект с маркирани филми/сериали
+    }>
+  >;
+  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
+  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
+  bookmarkedMovies: { [key: string]: Recommendation };
+}
