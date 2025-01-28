@@ -67,14 +67,15 @@ const Readlist: FC<ReadlistProps> = () => {
           for (const book of data.topRecommendationsReadlist) {
             try {
               const isBookmarked = await checkRecommendationExistsInReadlist(
-                import.meta.env.VITE_BOOKS_SOURCE === "GoogleBooks"
+                book.source === "GoogleBooks"
                   ? book.google_books_id
                   : book.goodreads_id,
-                token
+                token,
+                book.source
               );
               if (isBookmarked) {
                 updatedBookmarks[
-                  import.meta.env.VITE_BOOKS_SOURCE === "GoogleBooks"
+                  book.source === "GoogleBooks"
                     ? book.google_books_id
                     : book.goodreads_id
                 ] = book;
@@ -200,6 +201,9 @@ const Readlist: FC<ReadlistProps> = () => {
                       <BooksTable
                         data={data.topRecommendationsReadlist}
                         handleBookmarkClick={handleBookmarkClick}
+                        setBookmarkedBooks={setBookmarkedBooks}
+                        setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+                        setAlertVisible={setAlertVisible}
                         bookmarkedBooks={bookmarkedBooks}
                       />
                     </div>

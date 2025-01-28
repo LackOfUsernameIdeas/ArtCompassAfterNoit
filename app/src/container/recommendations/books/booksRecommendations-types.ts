@@ -34,7 +34,7 @@ export interface Question {
 }
 
 // Интерфейс за книга с всички основни данни за книгата.
-export interface Book {
+export interface Recommendation {
   id: string; // ID на книгата
   user_id: string; // ID на потребителя, свързан с книгата
   google_books_id: string; // Google Books идентификатор
@@ -89,8 +89,8 @@ export interface BooksUserPreferences {
 
 // Пропс за компонентата Quiz, свързана с маркирането на книги.
 export interface QuizProps {
-  handleBookmarkClick: (book: Book) => void; // Функция за маркиране на книга
-  bookmarkedBooks: { [key: string]: Book }; // Списък с маркирани книги
+  handleBookmarkClick: (book: Recommendation) => void; // Функция за маркиране на книга
+  bookmarkedBooks: { [key: string]: Recommendation }; // Списък с маркирани книги
   setBookmarkedBooks: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
   >; // Функция за актуализиране на маркираните книги
@@ -98,24 +98,24 @@ export interface QuizProps {
 
 // Пропс за компонентата Recommendations, отговорна за показване на препоръки.
 export interface RecommendationsProps {
-  recommendationList: Book[]; // Списък с препоръчани книги
-  handleBookmarkClick: (book: Book) => void; // Функция за маркиране на книга
-  bookmarkedBooks: { [key: string]: Book }; // Списък с маркирани книги
+  recommendationList: Recommendation[]; // Списък с препоръчани книги
+  handleBookmarkClick: (book: Recommendation) => void; // Функция за маркиране на книга
+  bookmarkedBooks: { [key: string]: Recommendation }; // Списък с маркирани книги
 }
 
 // Пропс за компонентата RecommendationCard, която показва информация за книга.
 export interface RecommendationCardProps {
-  recommendationList: Book[]; // Списък с препоръчани книги
+  recommendationList: Recommendation[]; // Списък с препоръчани книги
   currentIndex: number; // Текущ индекс на книга
   isExpanded: boolean; // Флаг дали картата е разширена
   openModal: () => void; // Функция за отваряне на модала
-  handleBookmarkClick: (book: Book) => void; // Функция за маркиране на книга
-  bookmarkedBooks: { [key: string]: Book }; // Списък с маркирани книги
+  handleBookmarkClick: (book: Recommendation) => void; // Функция за маркиране на книга
+  bookmarkedBooks: { [key: string]: Recommendation }; // Списък с маркирани книги
 }
 
 // Пропс за компонентата PlotModal, показваща сюжетната линия на книга.
 export interface PlotModalProps {
-  recommendationList: Book[]; // Списък с препоръчани книги
+  recommendationList: Recommendation[]; // Списък с препоръчани книги
   currentIndex: number; // Текущ индекс на книга
   closeModal: () => void; // Функция за затваряне на модала
 }

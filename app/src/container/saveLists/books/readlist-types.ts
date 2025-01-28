@@ -110,8 +110,61 @@ export interface Recommendation {
   imageLink: string; // Линк към изображение на книгата
   source: string; // Източник (напр. Google Books)
 }
-
+// Тип за рейтинг, съдържащ източник и стойност
 export type Rating = {
-  Source: string;
-  Value: string;
+  Source: string; // Източник на рейтинга (напр. IMDb, Goodreads)
+  Value: string; // Стойност на рейтинга (напр. "8.5/10")
 };
+
+// Интерфейс за пропс на таблицата с книги
+export interface BooksTableProps {
+  data: Recommendation[]; // Масив с препоръчани книги
+  handleBookmarkClick: (
+    // Функция за маркиране на книга
+    book: Recommendation, // Книга, която се маркира
+    setBookmarkedBooks: React.Dispatch<
+      // Функция за обновяване на маркираните книги
+      React.SetStateAction<{
+        [key: string]: any; // Динамичен обект с маркирани книги
+      }>
+    >,
+    setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>, // Функция за задаване на текущия статус на маркиране
+    setAlertVisible: React.Dispatch<React.SetStateAction<boolean>> // Функция за показване на известие
+  ) => void;
+  setBookmarkedBooks: React.Dispatch<
+    // Функция за обновяване на списъка с маркирани книги
+    React.SetStateAction<{
+      [key: string]: any; // Динамичен обект с маркирани книги
+    }>
+  >;
+  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
+  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
+  bookmarkedBooks: { [key: string]: Recommendation }; // Обект със списък на маркирани книги
+}
+
+// Интерфейс за пропс на картата с препоръка
+export interface RecommendationCardProps {
+  selectedItem: Recommendation | null; // Избрана книга от списъка с препоръки
+  onClose: () => void; // Функция за затваряне на модала
+  handleBookmarkClick: (
+    // Функция за маркиране на книга
+    book: Recommendation, // Книга, която се маркира
+    setBookmarkedBooks: React.Dispatch<
+      // Функция за обновяване на маркираните книги
+      React.SetStateAction<{
+        [key: string]: any; // Динамичен обект с маркирани книги
+      }>
+    >,
+    setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>, // Функция за задаване на текущия статус на маркиране
+    setAlertVisible: React.Dispatch<React.SetStateAction<boolean>> // Функция за показване на известие
+  ) => void;
+  setBookmarkedBooks: React.Dispatch<
+    // Функция за обновяване на списъка с маркирани книги
+    React.SetStateAction<{
+      [key: string]: any; // Динамичен обект с маркирани книги
+    }>
+  >;
+  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
+  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
+  bookmarkedBooks: { [key: string]: Recommendation }; // Обект със списък на маркирани книги
+}

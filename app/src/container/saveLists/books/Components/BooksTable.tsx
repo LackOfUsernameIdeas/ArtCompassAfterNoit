@@ -1,24 +1,17 @@
 import { FC, Fragment, useState, useMemo, useCallback } from "react";
-import { Recommendation } from "../readlist-types";
+import { BooksTableProps, Recommendation } from "../readlist-types";
 import { useMediaQuery } from "react-responsive";
 import { Tooltip } from "react-tooltip";
 import RecommendationCardAlert from "./RecommendationCardAlert/RecommendationCardAlert";
 import Pagination from "../../../../components/common/pagination/pagination";
 
-interface BooksTableProps {
-  data: Recommendation[];
-  handleBookmarkClick: (book: {
-    google_books_id: string;
-    goodreads_id: string;
-    [key: string]: any;
-  }) => void;
-  bookmarkedBooks: { [key: string]: Recommendation };
-}
-
 const BooksTable: FC<BooksTableProps> = ({
   data,
   handleBookmarkClick,
-  bookmarkedBooks
+  bookmarkedBooks,
+  setBookmarkedBooks,
+  setCurrentBookmarkStatus,
+  setAlertVisible
 }) => {
   const [currentTablePage, setCurrentTablePage] = useState(1);
   const itemsPerTablePage = 5;
@@ -46,12 +39,16 @@ const BooksTable: FC<BooksTableProps> = ({
 
   const handleRowClick = (item: Recommendation) => setSelectedItem(item);
 
+  console.log("selectedItem: ", selectedItem);
   return (
     <Fragment>
       <RecommendationCardAlert
         selectedItem={selectedItem}
         onClose={() => setSelectedItem(null)}
         handleBookmarkClick={handleBookmarkClick}
+        setBookmarkedBooks={setBookmarkedBooks}
+        setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+        setAlertVisible={setAlertVisible}
         bookmarkedBooks={bookmarkedBooks}
       />
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">

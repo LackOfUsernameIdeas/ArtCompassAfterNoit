@@ -8,7 +8,10 @@ import {
 } from "../../helper_functions_common";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
 import Notification from "../../../components/common/notification/Notification";
-import { NotificationState } from "./booksRecommendations-types";
+import {
+  Recommendation,
+  NotificationState
+} from "./booksRecommendations-types";
 import BookmarkAlert from "./Components/BookmarkAlert";
 
 interface BooksRecommendationsProps {}
@@ -37,11 +40,7 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
     setNotification(null);
   };
 
-  const handleBookmarkClick = (book: {
-    google_books_id: string;
-    goodreads_id: string;
-    [key: string]: any;
-  }) => {
+  const handleBookmarkClick = (book: Recommendation) => {
     setBookmarkedBooks((prev) => {
       const isBookmarked = !!prev[book.google_books_id || book.goodreads_id];
       const updatedBookmarks = { ...prev };
@@ -55,7 +54,8 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
 
         removeFromReadlist(
           book.google_books_id || book.goodreads_id,
-          token
+          token,
+          book.source
         ).catch((error) => {
           console.error("Error removing from watchlist:", error);
         });

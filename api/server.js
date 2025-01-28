@@ -495,9 +495,7 @@ app.delete("/remove-from-list", (req, res) => {
   }
 
   if (recommendationType === "books" && !book_id) {
-    return res
-      .status(400)
-      .json({ error: "Google Books ID is required for books" });
+    return res.status(400).json({ error: "Book ID is required for books" });
   }
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {

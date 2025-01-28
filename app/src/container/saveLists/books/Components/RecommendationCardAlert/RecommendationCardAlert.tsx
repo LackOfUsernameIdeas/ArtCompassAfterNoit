@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { BookFormat } from "../../../../recommendations/books/booksRecommendations-types";
-import { Recommendation } from "../../readlist-types";
+import { RecommendationCardProps } from "../../readlist-types";
 import Genres from "./Genres";
 import AwardsSection from "./Awards";
 import { PlotModal } from "../PlotModal";
@@ -11,18 +11,14 @@ import {
 } from "../../helper_functions";
 import { processGenres } from "../../../../helper_functions_common";
 
-export interface RecommendationCardProps {
-  selectedItem: Recommendation | null; // Списък с препоръчани книги
-  onClose: () => void; // Функция за отваряне на модала
-  handleBookmarkClick: (book: Recommendation) => void; // Функция за маркиране на книга
-  bookmarkedBooks: { [key: string]: Recommendation }; // Списък с маркирани книги
-}
-
 const RecommendationCardAlert: FC<RecommendationCardProps> = ({
   selectedItem,
   onClose,
   handleBookmarkClick,
-  bookmarkedBooks
+  bookmarkedBooks,
+  setBookmarkedBooks,
+  setCurrentBookmarkStatus,
+  setAlertVisible
 }) => {
   const [description, setDescription] = useState<string>("");
   const [author, setAuthor] = useState<string | null>(null);
@@ -128,12 +124,9 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
 
         if (isGoodreads) {
           processGenres(resolvedGenres, setGenres);
-        } else if (source === "Google Books") {
+        } else {
           resolvedGenres = await parseResolvedGenres(resolvedGenres);
           processGenresForGoogleBooks(resolvedGenres, setGenres);
-        } else {
-          console.error("Unknown source type:", source);
-          setGenres(["Неизвестен източник за жанрове."]);
         }
       } catch (error) {
         console.error("Error resolving genre_bg:", error);
@@ -165,7 +158,14 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
                 className="rounded-lg w-[15rem] h-auto"
               />
               <button
-                onClick={() => handleBookmarkClick(selectedItem)}
+                onClick={() =>
+                  handleBookmarkClick(
+                    selectedItem,
+                    setBookmarkedBooks,
+                    setCurrentBookmarkStatus,
+                    setAlertVisible
+                  )
+                }
                 className="absolute top-4 left-4 p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
               >
                 <svg

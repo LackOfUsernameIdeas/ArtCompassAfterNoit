@@ -203,12 +203,14 @@ export const checkRecommendationExistsInWatchlist = async (
  * @function checkRecommendationExistsInWatchlist
  * @param {string} book_id - google_books_id / goodreads_id на препоръката.
  * @param {string | null} token - Токен за автентикация на потребителя.
+ * @param {string | null} source  - GoogleBooks или Goodreads.
  * @returns {Promise<boolean>} - Връща true, ако препоръката вече съществува.
  * @throws {Error} - Хвърля грешка, ако проверката не може да бъде извършена.
  */
 export const checkRecommendationExistsInReadlist = async (
   book_id: string,
-  token: string | null
+  token: string | null,
+  source: string
 ): Promise<boolean> => {
   try {
     const response = await fetch(
@@ -220,7 +222,7 @@ export const checkRecommendationExistsInReadlist = async (
         },
         body: JSON.stringify({
           token,
-          source: import.meta.env.VITE_BOOKS_SOURCE,
+          source: source,
           book_id,
           recommendationType: "books"
         })
@@ -390,7 +392,8 @@ export const saveToReadlist = async (
     // Проверка дали съществува в списъка за четене
     const exists = await checkRecommendationExistsInReadlist(
       recommendation.google_books_id || recommendation.goodreads_id,
-      token
+      token,
+      recommendation.source
     );
 
     if (exists) {
@@ -514,12 +517,14 @@ export const removeFromWatchlist = async (
  * @function removeFromReadlist
  * @param {string} book_id - Уникален идентификатор на книгата.
  * @param {string | null} token - Токен за автентикация на потребителя.
+ * @param {string | null} source  - GoogleBooks или Goodreads.
  * @returns {Promise<void>} - Няма върнат резултат, но изпраща заявка към сървъра.
  * @throws {Error} - Хвърля грешка, ако данните не могат да бъдат премахнати.
  */
 export const removeFromReadlist = async (
   book_id: string,
-  token: string | null
+  token: string | null,
+  source: string
 ): Promise<void> => {
   try {
     if (!book_id) {
@@ -536,7 +541,7 @@ export const removeFromReadlist = async (
         },
         body: JSON.stringify({
           token,
-          source: import.meta.env.VITE_BOOKS_SOURCE,
+          source: source,
           book_id,
           recommendationType: "books"
         })

@@ -1,7 +1,7 @@
 // ==============================
 // Импортиране на типове и интерфейси
 // ==============================
-import { DataType } from "./readlist-types";
+import { DataType, Recommendation } from "./readlist-types";
 import {
   removeFromReadlist,
   saveToReadlist
@@ -87,11 +87,7 @@ export const fetchData = async (
  * @returns {void} - Функцията не връща стойност.
  */
 export const handleBookmarkClick = (
-  book: {
-    google_books_id: string;
-    goodreads_id: string;
-    [key: string]: any;
-  },
+  book: Recommendation,
   setBookmarkedBooks?: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
   >,
@@ -113,7 +109,8 @@ export const handleBookmarkClick = (
 
         removeFromReadlist(
           book.google_books_id || book.goodreads_id,
-          token
+          token,
+          book.source
         ).catch((error) => {
           console.error("Грешка при премахване от списъка за четене:", error);
         });

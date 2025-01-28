@@ -1,8 +1,8 @@
 import { FC, useState, useRef } from "react";
-import { Book } from "../../booksRecommendations-types";
+import { Recommendation } from "../../booksRecommendations-types";
 
 interface GenresProps {
-  recommendation: Book;
+  recommendation: Recommendation;
 }
 
 const AwardsSection: FC<GenresProps> = ({ recommendation }) => {

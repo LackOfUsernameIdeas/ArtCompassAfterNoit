@@ -431,7 +431,7 @@ export const generateBooksRecommendations = async (
             book.page_count
           ),
           imageLink: googleBooksData.volumeInfo.imageLinks.thumbnail,
-          source: "Google Books"
+          source: "GoogleBooks"
         };
 
         // Първо, задаваме списъка с препоръки
@@ -445,7 +445,8 @@ export const generateBooksRecommendations = async (
           // Проверяваме дали книгата съществува в таблицата за readlist
           const existsInReadlist = await checkRecommendationExistsInReadlist(
             googleBooksData.id,
-            token
+            token,
+            recommendationData.source
           );
 
           // Ако книгата не съществува в readlist, добавяме я към "bookmarkedBooks" с информация за ID и статус
@@ -551,7 +552,8 @@ export const generateBooksRecommendations = async (
             // Проверяваме дали книгата съществува в таблицата за readlist
             const existsInReadlist = await checkRecommendationExistsInReadlist(
               bookId,
-              token
+              token,
+              recommendationData.source
             );
 
             // Ако книгата не съществува в readlist, добавяме я към "bookmarkedBooks" с информация за ID и статус
