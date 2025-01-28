@@ -42,43 +42,43 @@ export interface WriterData extends CommonData {
 
 // Интерфейс за филм с всички основни данни за филма.
 export interface MovieSeriesRecommendation {
-  id: number;
-  user_id: number;
-  imdbID: string;
-  title_en: string;
-  title_bg: string;
-  genre_en: string;
-  genre_bg: string;
-  reason: string;
-  recommendations: string;
-  description: string;
-  year: string;
-  rated: string;
-  released: string;
-  runtime: string;
-  director: string;
-  writer: string;
-  actors: string;
-  plot: string;
-  language: string;
-  country: string;
-  awards: string;
-  poster: string;
-  ratings: string;
-  metascore: string;
-  imdbRating: string;
-  imdbVotes: string;
-  type: string;
-  DVD: string;
-  boxOffice: string;
-  production: string;
-  website: string;
-  totalSeasons: string;
-  oscar_wins: string;
-  oscar_nominations: string;
-  total_wins: string;
-  total_nominations: string;
-  prosperityScore: number;
+  id: number; // Уникален идентификатор за записа в базата данни
+  user_id: number; // Идентификатор на потребителя, който е направил препоръката
+  imdbID: string; // Уникален идентификатор на филма/сериала от IMDb
+  title_en: string; // Заглавие на филма/сериала на английски език
+  title_bg: string; // Заглавие на филма/сериала на български език
+  genre_en: string; // Жанрове на английски език (като низ)
+  genre_bg: string; // Жанрове на български език (като низ)
+  reason: string; // Причина за препоръката
+  recommendations: string; // Препоръки, свързани със съдържанието
+  description: string; // Описание на филма/сериала
+  year: string; // Година на излизане
+  rated: string; // Оценка за възрастово ограничение
+  released: string; // Дата на излизане
+  runtime: string; // Продължителност на филма/епизода
+  director: string; // Режисьор на филма/сериала
+  writer: string; // Сценарист на филма/сериала
+  actors: string; // Актьори във филма/сериала
+  plot: string; // Сюжет на филма/сериала
+  language: string; // Език на филма/сериала
+  country: string; // Страна на произход
+  awards: string; // Награди, спечелени от филма/сериала
+  poster: string; // URL на постера на филма/сериала
+  ratings: string; // Рейтинги от различни източници (напр. IMDb, Rotten Tomatoes)
+  metascore: string; // Metascore рейтинг на филма/сериала
+  imdbRating: string; // IMDb рейтинг на филма/сериала
+  imdbVotes: string; // Общ брой гласове в IMDb
+  type: string; // Тип съдържание (напр. "movie", "series")
+  DVD: string; // Дата на излизане на DVD (ако е налично)
+  boxOffice: string; // Приходи от боксофиса
+  production: string; // Продуцентска компания
+  website: string; // Официален уебсайт на филма/сериала
+  totalSeasons: string; // Общ брой сезони (ако е сериал)
+  oscar_wins: string; // Брой спечелени Оскари
+  oscar_nominations: string; // Брой номинации за Оскар
+  total_wins: string; // Общо спечелени награди
+  total_nominations: string; // Общо номинации за награди
+  prosperityScore: number; // Индекс на популярност или успех на съдържанието
 }
 
 // Интерфейс за книга с всички основни данни за книгата.
