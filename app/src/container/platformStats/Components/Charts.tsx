@@ -282,9 +282,13 @@ export class MoviesAndSeriesByRatingsChart extends Component<
         dataLabels: { enabled: false },
         xaxis: {
           title: { text: [] },
-          categories: []
+          categories: [],
+          style: { fontFamily: "Opsilon !important", letterSpacing: "0.04em !important"}
         },
-        yaxis: { title: { text: "Заглавие" } },
+        yaxis: { 
+          title: { text: "Заглавие" },
+          style: { fontFamily: "Opsilon !important", letterSpacing: "0.04em !important"}
+        },
         colors: [
           chroma(initialColor).darken(0.6).hex(), // По-светъл цвят за филми
           chroma(initialColor).brighten(0.6).hex() // По-тъмен цвят за сериали
