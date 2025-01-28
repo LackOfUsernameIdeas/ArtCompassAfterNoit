@@ -250,7 +250,8 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
           {recommendation.reason && (
             <div className="mb-4">
               <h3 className="text-lg font-semibold mb-2">
-                Защо препоръчваме {recommendation.title_bg}?
+                Защо препоръчваме{" "}
+                {recommendation.title_bg || "Заглавие не е налично"}?
               </h3>
               <p className="text-opacity-80 italic">{recommendation.reason}</p>
             </div>
@@ -283,11 +284,11 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
             <ul className="flex flex-wrap gap-x-4 text-opacity-80">
               <li>
                 <strong className="text-primary">Произход:</strong>{" "}
-                {recommendation.origin || "N/A"}
+                {recommendation.origin || "Неизвестен"}
               </li>
               <li>
                 <strong className="text-primary">Език:</strong>{" "}
-                {language || "N/A"}
+                {language || "Неизвестен"}
               </li>
               {isGoodreads && (
                 <li>
@@ -302,24 +303,24 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               {isGoodreads && (
                 <li>
                   <strong className="text-primary">Местообстановка:</strong>{" "}
-                  {recommendation.setting || "N/A"}
+                  {recommendation.setting || "Неизвестна"}
                 </li>
               )}
               <li>
                 <strong className="text-primary">Издателство:</strong>{" "}
-                {recommendation.publisher || "N/A"}
+                {recommendation.publisher || "Неизвестно"}
               </li>
               <li>
                 <strong className="text-primary">
                   Година на публикуване на първо издание:
                 </strong>{" "}
-                {recommendation.date_of_first_issue || "N/A"}
+                {recommendation.date_of_first_issue || "Неизвестна"}
               </li>
               <li>
                 <strong className="text-primary">
                   Дата на публикуване на това издание:
                 </strong>{" "}
-                {recommendation.date_of_issue || "N/A"}
+                {recommendation.date_of_issue || "Неизвестна"}
               </li>
 
               <li>

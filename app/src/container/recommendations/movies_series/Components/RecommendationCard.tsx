@@ -225,7 +225,8 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
           {recommendation.reason && (
             <div className="mb-4">
               <h3 className="text-lg font-semibold mb-2">
-                Защо препоръчваме {recommendation.bgName}?
+                Защо препоръчваме{" "}
+                {recommendation.bgName || "Заглавие не е налично"}?
               </h3>
               <p className="text-opacity-80 italic">{recommendation.reason}</p>
             </div>

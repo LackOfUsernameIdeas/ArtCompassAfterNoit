@@ -275,7 +275,8 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
               {selectedItem.reason && (
                 <div className="mb-4">
                   <h3 className="text-lg font-semibold mb-2">
-                    Защо препоръчваме {selectedItem.title_bg}?
+                    Защо препоръчваме{" "}
+                    {selectedItem.title_bg || "Заглавие не е налично"}?
                   </h3>
                   <p className="text-opacity-80 italic">
                     {selectedItem.reason}

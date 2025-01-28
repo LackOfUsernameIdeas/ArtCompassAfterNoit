@@ -228,7 +228,7 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
                     </p>
                     <p className="text-sm italic text-defaulttextcolor/70">
                       {author || "Неизвестен автор"},{" "}
-                      {selectedItem.page_count || "неизвестен брой"} страници
+                      {selectedItem.page_count || "Неизвестен брой"} страници
                     </p>
                   </div>
 
@@ -282,7 +282,8 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
               {selectedItem.reason && (
                 <div className="mb-4">
                   <h3 className="text-lg font-semibold mb-2">
-                    Защо препоръчваме {selectedItem.title_bg}?
+                    Защо препоръчваме{" "}
+                    {selectedItem.title_bg || "Заглавие не е налично"}?
                   </h3>
                   <p className="text-opacity-80 italic">
                     {selectedItem.reason}
@@ -317,11 +318,11 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
                 <ul className="flex flex-wrap gap-x-4 text-opacity-80">
                   <li>
                     <strong className="text-primary">Произход:</strong>{" "}
-                    {selectedItem.origin || "N/A"}
+                    {selectedItem.origin || "Неизвестен"}
                   </li>
                   <li>
                     <strong className="text-primary">Език:</strong>{" "}
-                    {language || "N/A"}
+                    {language || "Неизвестен"}
                   </li>
                   {isGoodreads && (
                     <li>
@@ -336,24 +337,24 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
                   {isGoodreads && (
                     <li>
                       <strong className="text-primary">Местообстановка:</strong>{" "}
-                      {selectedItem.setting || "N/A"}
+                      {selectedItem.setting || "Неизвестна"}
                     </li>
                   )}
                   <li>
                     <strong className="text-primary">Издателство:</strong>{" "}
-                    {selectedItem.publisher || "N/A"}
+                    {selectedItem.publisher || "Неизвестно"}
                   </li>
                   <li>
                     <strong className="text-primary">
                       Година на публикуване на първо издание:
                     </strong>{" "}
-                    {selectedItem.date_of_first_issue || "N/A"}
+                    {selectedItem.date_of_first_issue || "Неизвестна"}
                   </li>
                   <li>
                     <strong className="text-primary">
                       Дата на публикуване на това издание:
                     </strong>{" "}
-                    {selectedItem.date_of_issue || "N/A"}
+                    {selectedItem.date_of_issue || "Неизвестна"}
                   </li>
 
                   <li>
