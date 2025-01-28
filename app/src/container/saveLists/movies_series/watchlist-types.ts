@@ -2,7 +2,7 @@
 export interface PlotModalProps {
   isOpen: boolean; // Статус на модала (отворен/затворен)
   onClose: () => void; // Функция за затваряне на модала
-  plot: string; // Сюжет на филма/сериала
+  plot: string | undefined; // Сюжет на филма/сериала
 }
 
 // Основни данни за филм
@@ -74,34 +74,42 @@ export type Category = "Actors" | "Directors" | "Writers"; // Роли: Акть
 // Данни за препоръки с подробности за филма/сериала
 export interface Recommendation {
   id: number;
-  imdbID: string; // IMDb идентификатор
-  title_en: string; // Заглавие на английски
-  title_bg: string; // Заглавие на български
-  type: "movie" | "series"; // Тип на препоръката
-  awards: string; // Награди
-  recommendations: number; // Препоръки
-  poster: string; // URL за постера на филма/сериала
-  oscar_wins: string; // Спечелени Оскари
-  oscar_nominations: string; // Номинации за Оскар
-  total_wins: string; // Общо спечелени награди
-  total_nominations: string; // Общо номинации
-  ratings: Rating[]; // Рейтинги от различни източници
-  imdbRating: string; // Рейтинг в IMDb
-  metascore: string; // Метаскор
-  boxOffice: string; // Бокс офис
-  prosperityScore: number; // Индекс на просперитет
-  genre_en: string; // Жанр на английски
-  genre_bg: string; // Жанр на български
-  reason: string; // Причина за препоръката
-  description: string; // Описание на филма/сериала
-  year: string; // Година на издаване
-  rated: string; // Оценка за възрастови ограничения
-  released: string; // Дата на издаване
-  runtime: string; // Продължителност
-  director: string; // Режисьор
-  writer: string; // Сценаристи
-  actors: string; // Актьори
-  plot: string; // Сюжет
+  user_id: number;
+  imdbID: string;
+  title_en: string;
+  title_bg: string;
+  genre_en: string;
+  genre_bg: string;
+  reason: string;
+  recommendations: string;
+  description: string;
+  year: string;
+  rated: string;
+  released: string;
+  runtime: string;
+  director: string;
+  writer: string;
+  actors: string;
+  plot: string;
+  language: string;
+  country: string;
+  awards: string;
+  poster: string;
+  ratings: string;
+  metascore: string;
+  imdbRating: string;
+  imdbVotes: string;
+  type: string;
+  DVD: string;
+  boxOffice: string;
+  production: string;
+  website: string;
+  totalSeasons: string;
+  oscar_wins: string;
+  oscar_nominations: string;
+  total_wins: string;
+  total_nominations: string;
+  prosperityScore: number;
 }
 
 export type Rating = {

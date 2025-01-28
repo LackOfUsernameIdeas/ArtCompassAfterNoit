@@ -601,3 +601,16 @@ export const checkTokenValidity = async (): Promise<string | null> => {
     return "/signin"; // Пренасочване към страницата за вход
   }
 };
+
+export const processGenres = (
+  genres: any,
+  setGenres: (value: React.SetStateAction<string[]>) => void
+) => {
+  if (typeof genres === "string") {
+    const genreStrings = genres.split(",").map((genre: string) => genre.trim());
+    setGenres(genreStrings);
+  } else {
+    console.warn("Unexpected format for Goodreads genre_bg:", genres);
+    setGenres([]);
+  }
+};

@@ -143,24 +143,11 @@ export const parseResolvedGenres = async (resolvedGenres: any) => {
     try {
       return JSON.parse(resolvedGenres); // Try to parse JSON if it's a string
     } catch (error) {
-      console.warn("Failed to parse genres_bg string:", resolvedGenres);
+      console.warn("Failed to parse genre_bg string:", resolvedGenres);
       return null; // Return null if parsing fails
     }
   }
   return resolvedGenres;
-};
-
-export const processGenresForGoodreads = (
-  genres: any,
-  setGenres: (value: SetStateAction<string[]>) => void
-) => {
-  if (typeof genres === "string") {
-    const genreStrings = genres.split(",").map((genre: string) => genre.trim());
-    setGenres(genreStrings);
-  } else {
-    console.warn("Unexpected format for Goodreads genres_bg:", genres);
-    setGenres([]);
-  }
 };
 
 export const processGenresForGoogleBooks = (
@@ -178,7 +165,7 @@ export const processGenresForGoogleBooks = (
     });
     setGenres(genreStrings);
   } else {
-    console.warn("Unexpected format for Google Books genres_bg:", genres);
+    console.warn("Unexpected format for Google Books genre_bg:", genres);
     setGenres(["Няма жанрове за показване."]);
   }
 };

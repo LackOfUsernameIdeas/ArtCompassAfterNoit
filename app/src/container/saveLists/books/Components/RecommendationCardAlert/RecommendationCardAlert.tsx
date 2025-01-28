@@ -7,9 +7,9 @@ import AwardsSection from "./Awards";
 import { PlotModal } from "../PlotModal";
 import {
   parseResolvedGenres,
-  processGenresForGoodreads,
   processGenresForGoogleBooks
 } from "../../helper_functions";
+import { processGenres } from "../../../../helper_functions_common";
 
 export interface RecommendationCardProps {
   selectedItem: Recommendation | null; // Списък с препоръчани книги
@@ -127,7 +127,7 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
         }
 
         if (isGoodreads) {
-          processGenresForGoodreads(resolvedGenres, setGenres);
+          processGenres(resolvedGenres, setGenres);
         } else if (source === "Google Books") {
           resolvedGenres = await parseResolvedGenres(resolvedGenres);
           processGenresForGoogleBooks(resolvedGenres, setGenres);
