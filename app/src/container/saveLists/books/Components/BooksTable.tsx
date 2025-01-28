@@ -2,7 +2,7 @@ import { FC, Fragment, useState, useMemo, useCallback } from "react";
 import { Recommendation } from "../readlist-types";
 import { useMediaQuery } from "react-responsive";
 import { Tooltip } from "react-tooltip";
-// import RecommendationCardAlert from "./RecommendationCardAlert/RecommendationCardAlert";
+import RecommendationCardAlert from "./RecommendationCardAlert/RecommendationCardAlert";
 import Pagination from "../../../../components/common/pagination/pagination";
 
 interface BooksTableProps {
@@ -13,14 +13,14 @@ interface BooksTableProps {
     goodreads_id: string;
     [key: string]: any;
   }) => void;
-  bookmarkedMovies: { [key: string]: Recommendation };
+  bookmarkedBooks: { [key: string]: Recommendation };
 }
 
 const BooksTable: FC<BooksTableProps> = ({
   data,
   type,
   handleBookmarkClick,
-  bookmarkedMovies
+  bookmarkedBooks
 }) => {
   const [currentTablePage, setCurrentTablePage] = useState(1);
   const itemsPerTablePage = 5;
@@ -50,12 +50,12 @@ const BooksTable: FC<BooksTableProps> = ({
 
   return (
     <Fragment>
-      {/* <RecommendationCardAlert
+      <RecommendationCardAlert
         selectedItem={selectedItem}
         onClose={() => setSelectedItem(null)}
         handleBookmarkClick={handleBookmarkClick}
-        bookmarkedMovies={bookmarkedMovies}
-      /> */}
+        bookmarkedBooks={bookmarkedBooks}
+      />
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
         <div className="box custom-card h-[27.75rem]">
           <div className="box-header justify-between">

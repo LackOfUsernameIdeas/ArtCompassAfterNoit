@@ -2,14 +2,15 @@ import { FC } from "react";
 
 interface GenresProps {
   genres: string[];
+  source: string | undefined;
 }
-const Genres: FC<GenresProps> = ({ genres }) => {
-  const source = import.meta.env.VITE_BOOKS_SOURCE;
+const Genres: FC<GenresProps> = ({ genres, source }) => {
+  console.log(source);
   return (
     <p className="mb-2">
       <strong className="text-primary text-sm">Жанрове:</strong>
       <div className="text-white">
-        {source === "GoogleBooks" ? (
+        {source === "Google Books" ? (
           <div className="flex flex-wrap gap-4">
             {genres.map((genre, index) => {
               const [mainCategory, subGenres] = genre.split(": ");

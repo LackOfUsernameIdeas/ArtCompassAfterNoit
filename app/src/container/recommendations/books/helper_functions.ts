@@ -201,15 +201,17 @@ export const processBookGenres = async (
   };
 
   // Изчакваме всички асинхронни операции да завършат
-  const promises = categories.map(async (category) => {
-    // Разделяне на категорията на различни нива по " / "
-    const parts = category.split(" / ");
-    const mainCategory = parts[0].trim(); // Основна категория
-    const subCategories = parts.slice(1).map((sub) => sub.trim()); // Всички подкатегории след първоначалната основна категория
+  const promises = categories
+    ? categories.map(async (category) => {
+        // Разделяне на категорията на различни нива по " / "
+        const parts = category.split(" / ");
+        const mainCategory = parts[0].trim(); // Основна категория
+        const subCategories = parts.slice(1).map((sub) => sub.trim()); // Всички подкатегории след първоначалната основна категория
 
-    // Рекурсивно добавяне на подкатегориите за всяка категория
-    await addSubCategories(mainCategory, subCategories);
-  });
+        // Рекурсивно добавяне на подкатегориите за всяка категория
+        await addSubCategories(mainCategory, subCategories);
+      })
+    : [];
 
   // Изчакваме всички промиси да завършат
   await Promise.all(promises);

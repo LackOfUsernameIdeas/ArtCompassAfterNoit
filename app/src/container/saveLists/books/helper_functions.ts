@@ -6,6 +6,7 @@ import {
   removeFromReadlist,
   saveToReadlist
 } from "../../helper_functions_common";
+import { SetStateAction } from "react";
 
 // ==============================
 // Функции за работа с данни
@@ -134,4 +135,50 @@ export const handleBookmarkClick = (
       // Връщане на актуализирания обект със списъка с отметки
       return updatedBookmarks;
     });
+};
+
+export const parseResolvedGenres = async (resolvedGenres: any) => {
+  // Handle string input
+  if (typeof resolvedGenres === "string") {
+    try {
+      return JSON.parse(resolvedGenres); // Try to parse JSON if it's a string
+    } catch (error) {
+      console.warn("Failed to parse genres_bg string:", resolvedGenres);
+      return null; // Return null if parsing fails
+    }
+  }
+  return resolvedGenres;
+};
+
+export const processGenresForGoodreads = (
+  genres: any,
+  setGenres: (value: SetStateAction<string[]>) => void
+) => {
+  if (typeof genres === "string") {
+    const genreStrings = genres.split(",").map((genre: string) => genre.trim());
+    setGenres(genreStrings);
+  } else {
+    console.warn("Unexpected format for Goodreads genres_bg:", genres);
+    setGenres([]);
+  }
+};
+
+export const processGenresForGoogleBooks = (
+  genres: any,
+  setGenres: (value: SetStateAction<string[]>) => void
+) => {
+  if (genres && typeof genres === "object") {
+    const genreEntries = Object.entries(genres);
+    const genreStrings = genreEntries.map(([category, subGenres]) => {
+      return `${category}: ${
+        Array.isArray(subGenres)
+          ? subGenres.join(", ")
+          : subGenres || "Няма поджанрове"
+      }`;
+    });
+    setGenres(genreStrings);
+  } else {
+    console.warn("Unexpected format for Google Books genres_bg:", genres);
+    setGenres(["Няма жанрове за показване."]);
+  }
 };

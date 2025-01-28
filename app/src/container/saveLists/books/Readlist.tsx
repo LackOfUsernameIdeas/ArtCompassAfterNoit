@@ -118,6 +118,7 @@ const Readlist: FC<ReadlistProps> = () => {
     setAlertVisible(false);
   };
 
+  console.log("data", data);
   return (
     <FadeInWrapper>
       {notification && (
@@ -200,7 +201,7 @@ const Readlist: FC<ReadlistProps> = () => {
                         type="watchlist"
                         data={data.topRecommendationsReadlist}
                         handleBookmarkClick={handleBookmarkClick}
-                        bookmarkedMovies={bookmarkedBooks}
+                        bookmarkedBooks={bookmarkedBooks}
                       />
                     </div>
                   </div>
