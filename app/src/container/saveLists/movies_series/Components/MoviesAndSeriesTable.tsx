@@ -15,23 +15,25 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
   setCurrentBookmarkStatus,
   setAlertVisible
 }) => {
-  const [currentTablePage, setCurrentTablePage] = useState(1);
-  const itemsPerTablePage = 5;
+  const [currentTablePage, setCurrentTablePage] = useState(1); // Текуща страница на таблицата
+  const itemsPerTablePage = 5; // Брой елементи на страница
   const [sortBy, setSortBy] = useState<
     keyof MovieSeriesRecommendation | "default"
-  >("default");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
+  >("default"); // Ключ за сортиране
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc"); // Посока на сортиране (възходящо/низходящо)
+  const [isSortMenuOpen, setIsSortMenuOpen] = useState(false); // Видимост на менюто за сортиране
   const [selectedItem, setSelectedItem] =
-    useState<MovieSeriesRecommendation | null>(null);
+    useState<MovieSeriesRecommendation | null>(null); // Избран филм/сериал
 
   const [filteredTableData, setFilteredTableData] =
-    useState<MovieSeriesRecommendation[]>(data);
+    useState<MovieSeriesRecommendation[]>(data); // Дани за таблицата, филтрирани по нужда
 
+  // useEffect за set-ване на данните
   useEffect(() => {
     setFilteredTableData(data || []);
   }, [data]);
 
+  // Опции за сортиране въз основа на типа на данните
   const sortOptions = useMemo(() => {
     const options = [
       { label: "Просперитет", value: "prosperityScore" },
@@ -45,66 +47,72 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
     return options;
   }, [type]);
 
+  // Съответствие на заглавията на колоните в таблицата спрямо сортирането
   const sortTitles: Record<string, string> = {
     recommendations: "Най-Често Препоръчваните Филми и Сериали За Мен",
     prosperityScore: "Филми и Сериали По Просперитет",
     boxOffice: "Най-Печеливши Филми и Сериали"
   };
 
+  // Изчисляване на сортираните данни на базата на избраните опции
   const sortedData = useMemo(() => {
+    // Филтриране на данни по тип (само филми или сериали)
     const filteredByTypeData = ["boxOffice", "prosperityScore"].includes(sortBy)
       ? filteredTableData.filter((item) => item.type === "movie")
       : filteredTableData;
 
+    // Ако сортираме по подразбиране, връщаме филтрираните данни
     if (sortBy === "default") {
       return filteredByTypeData;
     }
 
+    // Сортиране на данните въз основа на избраните опции
     return [...filteredByTypeData].sort((a, b) => {
       const parseNumber = (value: any) => {
-        // Extract numeric value from formatted strings (e.g., "1,000,000" -> 1000000)
+        // Преобразуване на стойности към числови, ако са форматирани като текст (например "1,000,000" -> 1000000)
         if (typeof value === "string") {
           return parseFloat(value.replace(/,/g, ""));
         }
-        return value || 0; // Fallback for null or undefined
+        return value || 0; // Обработване на null или undefined
       };
 
+      // Функция за извличане на числовата стойност на различни типове стойности
       const extractNumericValue = (
         value: string | number | Rating[]
       ): number => {
         if (typeof value === "string") {
-          // Clean up the string and parse as a float
+          // Почиства стринга и го преобразува в число
           return parseFloat(value.replace(/[^\d.-]/g, ""));
         } else if (typeof value === "number") {
-          // Return the number directly
-          return value;
+          return value; // Ако е число, го връщаме
         } else if (Array.isArray(value)) {
-          // Handle Rating[] case (return 0 or a calculated value based on your needs)
-          return 0; // Default value or implement a custom logic
+          // Ако е масив от рейтинги, връщаме 0 (или съответна стойност)
+          return 0; // Може да се добави логика за специфично обработване
         }
-        return 0; // Fallback value for unexpected cases
+        return 0; // За всички други случаи връщаме 0
       };
 
+      // Извличане на стойности за сортиране
       const valueA = extractNumericValue(a[sortBy as keyof typeof a]);
       const valueB = extractNumericValue(b[sortBy as keyof typeof b]);
 
-      console.log("a[sortBy as keyof typeof a]", a[sortBy as keyof typeof a]);
-      console.log("b[sortBy as keyof typeof b]", b[sortBy as keyof typeof b]);
-
+      // Връщане на стойност за сортиране в зависимост от посоката (възходящо или низходящо)
       if (valueA === valueB) return 0;
 
       return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
     });
   }, [filteredTableData, sortBy, sortOrder]);
 
-  const totalItems = sortedData.length;
-  const totalTablePages = Math.ceil(totalItems / itemsPerTablePage);
+  const totalItems = sortedData.length; // Общо количество елементи
+  const totalTablePages = Math.ceil(totalItems / itemsPerTablePage); // Общо количество страници
 
+  // Разделяне на данните на страници
   const paginatedData = useMemo(() => {
     const start = (currentTablePage - 1) * itemsPerTablePage;
     return sortedData.slice(start, start + itemsPerTablePage);
   }, [sortedData, currentTablePage]);
 
+  // Функции за навигация между страниците
   const handlePrevTablePage = useCallback(() => {
     if (currentTablePage > 1) setCurrentTablePage((prev) => prev - 1);
   }, [currentTablePage]);
@@ -114,28 +122,32 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
       setCurrentTablePage((prev) => prev + 1);
   }, [currentTablePage, totalTablePages]);
 
+  // Използване на медийни заявки за адаптиране на компонента към различни размери на екрана
   const is1399 = useMediaQuery({ query: "(max-width: 1399px)" });
   const is1557 = useMediaQuery({ query: "(max-width: 1557px)" });
 
+  // Toggle за отваряне/затваряне на менюто за сортиране
   const toggleSortMenu = () => setIsSortMenuOpen((prev) => !prev);
 
+  // Обработване на избора на опция за сортиране
   const handleSortOptionSelect = useCallback(
     (value: keyof MovieSeriesRecommendation) => {
-      setSortBy(value);
-      setIsSortMenuOpen(false);
+      setSortBy(value); // Задаваме избраната опция за сортиране
+      setIsSortMenuOpen(false); // Затваряме менюто за сортиране
     },
     []
   );
 
+  // Функция за получаване на преведен тип (филм или сериал)
   const getTranslatedType = (type: string) =>
     type === "movie" ? "филм" : type === "series" ? "сериал" : type;
 
+  // Обработване на клик върху ред от таблицата (избиране на елемент)
   const handleRowClick = (item: MovieSeriesRecommendation) =>
-    setSelectedItem(item);
-
-  console.log("selectedRow: ", selectedItem);
+    setSelectedItem(item); // Задаваме избрания елемент като активен
   return (
     <Fragment>
+      {/* Компонент за показване на избран филм/сериал като alert*/}
       <RecommendationCardAlert
         selectedItem={selectedItem}
         onClose={() => setSelectedItem(null)}
@@ -258,6 +270,7 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
                     <th>Metascore</th>
                   </tr>
                 </thead>
+                {/* Данните за филмите/сериалите в таблицата*/}
                 <tbody className="no-hover-text">
                   {paginatedData.map((item, index) => (
                     <tr
@@ -287,6 +300,7 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
               </table>
             </div>
           </div>
+          {/* Пагинация */}
           <div className="box-footer">
             <Pagination
               currentPage={currentTablePage}
