@@ -8,9 +8,9 @@ import { DataType, UserData } from "./choose-types";
 import { fetchData } from "./helper_functions";
 
 const ChooseRecommendations: FC = () => {
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  // Състояние за проследяване дали зареждаме съдържание
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Хук за пренасочване към различни страници
 
   // Състояния за задържане на извлечени данни
   const [data, setData] = useState<DataType>({
@@ -23,116 +23,93 @@ const ChooseRecommendations: FC = () => {
 
   // Състояние за потребителски данни
   const [userData, setUserData] = useState<UserData>({
-    id: 0, // ID на потребителя
-    first_name: "", // Име на потребителя
-    last_name: "", // Фамилия на потребителя
+    id: 0, // Уникално ID на потребителя
+    first_name: "", // Собствено име на потребителя
+    last_name: "", // Фамилно име на потребителя
     email: "" // Имейл на потребителя
   });
 
+  // Въпросът, който ще се покаже на потребителя, и опциите за избор
   const question = {
-    question: "Какво искате да разгледате в момента?",
-    options: ["Филми и сериали", "Книги"]
+    question: "Искате да четете или гледате нещо, но не знаете какво? КиноКомпас ще направи избора Ви лесен като Ви зададе няколко въпроса за Вашите предочитания и Ви предложи най-добре отговарящите на тях филми, сериали и книги!", // Самият въпрос
+    options: [
+      { label: "Филми и сериали", route: "/app/recommendations/movies_series" }, // Опция за филми и сериали
+      { label: "Книги", route: "/app/recommendations/books" } // Опция за книги
+    ]
   };
 
-  const handleAnswerClick = (answer: string) => {
-    setSelectedAnswer(answer);
+  // Функция, която се изпълнява при клик върху даден бутон
+  const handleOptionClick = (route: string) => {
+    setLoading(true); // Задаваме състоянието на "зареждане"
+    navigate(route); // Пренасочваме към избрания маршрут
+    setLoading(false); // Изключваме състоянието на "зареждане" (след приключване)
   };
 
-  const handleClick = () => {
-    if (!selectedAnswer) return;
-
-    setLoading(true); // Set loading to true when navigation starts
-
-    // Navigate to the respective route after the fade-out effect
-    if (selectedAnswer === "Филми и сериали") {
-      navigate("/app/recommendations/movies_series");
-    } else if (selectedAnswer === "Книги") {
-      navigate("/app/recommendations/books");
-    }
-
-    setLoading(false); // Stop loading after navigation
-  };
-
+  // useEffect за извличане на данни, когато компонентът се зареди за първи път
   useEffect(() => {
     const token =
-      localStorage.getItem("authToken") || sessionStorage.getItem("authToken"); // Вземане на токен от localStorage или sessionStorage
+      localStorage.getItem("authToken") || sessionStorage.getItem("authToken"); // Проверяваме за токен в localStorage или sessionStorage
     if (token) {
-      fetchData(token, setData, setUserData); // Извличане на данни с помощта на fetchData функцията
+      fetchData(token, setData, setUserData); // Извличаме данни с помощта на функцията fetchData
       console.log("fetching"); // Лог за следене на извличането на данни
     }
-  }, []); // Празен масив като зависимост, за да се извика само веднъж при рендиране на компонента
+  }, []); // Празен масив - изпълнява се само веднъж при зареждане на компонента
 
   return (
     <FadeInWrapper>
+      {/* Основният контейнер с анимация за избледняване */}
       <CSSTransition
-        in={!loading}
-        timeout={500}
-        classNames="fade"
-        unmountOnExit
+        in={!loading} // Анимацията се изпълнява само ако не зареждаме
+        timeout={500} // Продължителност на анимацията
+        classNames="fade" // CSS класове за анимация
+        unmountOnExit // Компонентът се премахва от DOM, ако не се показва
       >
         <div>
+          {/* Заглавие за добре дошли */}
           <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">
             <div>
               <p className="font-semibold text-[1.125rem] text-defaulttextcolor dark:text-defaulttextcolor/70 !mb-0 ">
-                Здравейте, {userData.first_name} {userData.last_name}!
+                Добре дошли, {userData.first_name} {userData.last_name}!
               </p>
             </div>
           </div>
+
+          {/* Карти с информация за потребителя */}
           <div className="grid grid-cols-12 gap-x-6">
             <WidgetCards data={data} />
           </div>
 
+          {/* Въпрос и бутоните за избор */}
           <div className="flex items-center justify-center px-4">
-            <div className="w-full max-w-4xl py-8 px-4">
-              <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
-                <h2 className="text-xl font-semibold break-words">
-                  {question.question}
-                </h2>
-              </div>
-
-              <div
-                className={`grid gap-4 mt-8 ${
-                  (question.options.length ?? 0) > 6
-                    ? "grid-cols-2 md:grid-cols-5"
-                    : "grid-cols-1"
-                }`}
-              >
+            <div className="w-full max-w-4xl py-8 px-4 text-center">
+              {/* Текстът на въпроса */}
+              <h2 className="text-2xl font-Opsilon mb-4 text-defaulttextcolor">
+                {question.question}
+              </h2>
+              <h5 className="mb-8">Какво искате да разгледате в момента?</h5>
+              {/* Бутоните, подравнени хоризонтално */}
+              <div className="flex justify-between gap-4 w-full">
                 {question.options.map((option) => (
-                  <div
-                    key={option}
-                    onClick={() => handleAnswerClick(option)}
-                    className={`${
-                      selectedAnswer === option
-                        ? "selected-answer transform scale-105"
-                        : "question hover:bg-secondary hover:text-white"
-                    } bg-opacity-70 p-6 text-white rounded-lg glow-effect transition-all duration-300 cursor-pointer flex justify-center items-center text-center`}
+                  <button
+                    key={option.label}
+                    onClick={() => handleOptionClick(option.route)}
+                    className={`w-1/2 py-6 next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center text-4xl transition-all duration-300 ease-in-out transform hover:scale-105`}
                   >
-                    {option}
-                  </div>
+                    {option.label}
+                  </button>
                 ))}
               </div>
-
-              <button
-                onClick={handleClick}
-                className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center w-full transition-all duration-300 ease-in-out transform ${
-                  selectedAnswer
-                    ? "opacity-100 pointer-events-auto cursor-pointer hover:scale-105"
-                    : "opacity-50 pointer-events-none cursor-not-allowed"
-                }`}
-                disabled={!selectedAnswer}
-              >
-                Следващ въпрос
-              </button>
             </div>
           </div>
         </div>
       </CSSTransition>
 
+      {/* Анимация за показване на Loader при зареждане */}
       <CSSTransition
-        in={loading}
-        timeout={500}
-        classNames="fade"
-        unmountOnExit
+        in={loading} // Loader се показва, ако зареждаме
+        timeout={500} // Продължителност на анимацията
+        classNames="fade" // CSS класове за анимация
+        unmountOnExit // Loader се премахва от DOM, ако не се показва
         key="loading"
       >
         <Loader />
