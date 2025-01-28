@@ -4,12 +4,13 @@ import { RecommendationsList } from "./RecommendationsList";
 import { QuizQuestions } from "./QuizQuestions";
 import { handleRetakeQuiz } from "../helper_functions";
 import Loader from "../../../../components/common/loader/Loader";
-import { Movie, QuizProps } from "../moviesSeriesRecommendations-types";
+import { QuizProps } from "../moviesSeriesRecommendations-types";
 
 export const Quiz: FC<QuizProps> = ({
-  handleBookmarkClick,
-  bookmarkedMovies,
-  setBookmarkedMovies
+  setBookmarkedMovies,
+  setCurrentBookmarkStatus,
+  setAlertVisible,
+  bookmarkedMovies
 }) => {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -66,7 +67,9 @@ export const Quiz: FC<QuizProps> = ({
           </div>
           <RecommendationsList
             recommendationList={recommendationList}
-            handleBookmarkClick={handleBookmarkClick}
+            setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+            setAlertVisible={setAlertVisible}
+            setBookmarkedMovies={setBookmarkedMovies}
             bookmarkedMovies={bookmarkedMovies}
           />
         </div>

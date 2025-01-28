@@ -89,17 +89,28 @@ export interface BooksUserPreferences {
 
 // Пропс за компонентата Quiz, свързана с маркирането на книги.
 export interface QuizProps {
-  handleBookmarkClick: (book: Recommendation) => void; // Функция за маркиране на книга
-  bookmarkedBooks: { [key: string]: Recommendation }; // Списък с маркирани книги
   setBookmarkedBooks: React.Dispatch<
-    React.SetStateAction<{ [key: string]: any }>
-  >; // Функция за актуализиране на маркираните книги
+    // Функция за обновяване на списъка с маркирани книги
+    React.SetStateAction<{
+      [key: string]: any; // Динамичен обект с маркирани книги
+    }>
+  >;
+  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
+  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
+  bookmarkedBooks: { [key: string]: Recommendation }; // Списък с маркирани книги
 }
 
 // Пропс за компонентата Recommendations, отговорна за показване на препоръки.
 export interface RecommendationsProps {
   recommendationList: Recommendation[]; // Списък с препоръчани книги
-  handleBookmarkClick: (book: Recommendation) => void; // Функция за маркиране на книга
+  setBookmarkedBooks: React.Dispatch<
+    // Функция за обновяване на списъка с маркирани книги
+    React.SetStateAction<{
+      [key: string]: any; // Динамичен обект с маркирани книги
+    }>
+  >;
+  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
+  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
   bookmarkedBooks: { [key: string]: Recommendation }; // Списък с маркирани книги
 }
 
@@ -109,7 +120,14 @@ export interface RecommendationCardProps {
   currentIndex: number; // Текущ индекс на книга
   isExpanded: boolean; // Флаг дали картата е разширена
   openModal: () => void; // Функция за отваряне на модала
-  handleBookmarkClick: (book: Recommendation) => void; // Функция за маркиране на книга
+  setBookmarkedBooks: React.Dispatch<
+    // Функция за обновяване на списъка с маркирани книги
+    React.SetStateAction<{
+      [key: string]: any; // Динамичен обект с маркирани книги
+    }>
+  >;
+  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
+  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
   bookmarkedBooks: { [key: string]: Recommendation }; // Списък с маркирани книги
 }
 

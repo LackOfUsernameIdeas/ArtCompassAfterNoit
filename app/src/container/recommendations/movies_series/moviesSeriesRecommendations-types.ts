@@ -33,7 +33,7 @@ export interface Question {
   description?: string; // Допълнително описание на въпроса
 }
 // Интерфейс за филм с всички основни данни за филма.
-export interface Movie {
+export interface Recommendation {
   id?: string; // ID на филма
   user_id?: string; // ID на потребителя, свързан с филма
   imdbID: string; // IMDb идентификатор
@@ -87,33 +87,51 @@ export interface MoviesSeriesUserPreferences {
 
 // Пропс за компонентата Quiz, свързана с маркирането на филми.
 export interface QuizProps {
-  handleBookmarkClick: (movie: Movie) => void; // Функция за маркиране на филм
-  bookmarkedMovies: { [key: string]: Movie }; // Списък с маркирани филми
   setBookmarkedMovies: React.Dispatch<
-    React.SetStateAction<{ [key: string]: any }>
-  >; // Функция за актуализиране на маркираните филми
+    // Функция за маркиране на филм
+    React.SetStateAction<{
+      [key: string]: any; // Динамичен обект с маркирани книги
+    }>
+  >;
+  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
+  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
+  bookmarkedMovies: { [key: string]: Recommendation }; // Списък с маркирани филми
 }
 
 // Пропс за компонентата Recommendations, отговорна за показване на препоръки.
 export interface RecommendationsProps {
-  recommendationList: Movie[]; // Списък с препоръчани филми
-  handleBookmarkClick: (movie: Movie) => void; // Функция за маркиране на филм
-  bookmarkedMovies: { [key: string]: Movie }; // Списък с маркирани филми
+  recommendationList: Recommendation[]; // Списък с препоръчани филми
+  setBookmarkedMovies: React.Dispatch<
+    // Функция за маркиране на филм
+    React.SetStateAction<{
+      [key: string]: any; // Динамичен обект с маркирани книги
+    }>
+  >;
+  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
+  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
+  bookmarkedMovies: { [key: string]: Recommendation }; // Списък с маркирани филми
 }
 
 // Пропс за компонентата RecommendationCard, която показва информация за филм.
 export interface RecommendationCardProps {
-  recommendationList: Movie[]; // Списък с препоръчани филми
+  recommendationList: Recommendation[]; // Списък с препоръчани филми
   currentIndex: number; // Текущ индекс на филма
   isExpanded: boolean; // Флаг дали картата е разширена
   openModal: () => void; // Функция за отваряне на модала
-  handleBookmarkClick: (movie: Movie) => void; // Функция за маркиране на филм
-  bookmarkedMovies: { [key: string]: Movie }; // Списък с маркирани филми
+  setBookmarkedMovies: React.Dispatch<
+    // Функция за маркиране на филм
+    React.SetStateAction<{
+      [key: string]: any; // Динамичен обект с маркирани книги
+    }>
+  >;
+  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
+  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
+  bookmarkedMovies: { [key: string]: Recommendation }; // Списък с маркирани филми
 }
 
 // Пропс за компонентата PlotModal, показваща сюжетната линия на филма.
 export interface PlotModalProps {
-  recommendationList: Movie[]; // Списък с препоръчани филми
+  recommendationList: Recommendation[]; // Списък с препоръчани филми
   currentIndex: number; // Текущ индекс на филма
   closeModal: () => void; // Функция за затваряне на модала
 }

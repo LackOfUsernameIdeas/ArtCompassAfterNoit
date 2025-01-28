@@ -6,13 +6,15 @@ import {
 } from "../../booksRecommendations-types";
 import Genres from "./Genres";
 import AwardsSection from "./Awards";
-import ErrorCard from "../../../../../components/common/error/error";
+import { handleBookmarkClick } from "../../helper_functions";
 
 const RecommendationCard: FC<RecommendationCardProps> = ({
   recommendationList,
   currentIndex,
   openModal,
-  handleBookmarkClick,
+  setBookmarkedBooks,
+  setCurrentBookmarkStatus,
+  setAlertVisible,
   bookmarkedBooks
 }) => {
   const [description, setDescription] = useState<string | null>(null);
@@ -125,7 +127,14 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
             className="rounded-lg w-[15rem] h-auto"
           />
           <button
-            onClick={() => handleBookmarkClick(recommendation)}
+            onClick={() =>
+              handleBookmarkClick(
+                recommendation,
+                setBookmarkedBooks,
+                setCurrentBookmarkStatus,
+                setAlertVisible
+              )
+            }
             className="absolute top-4 left-4 p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
           >
             <svg

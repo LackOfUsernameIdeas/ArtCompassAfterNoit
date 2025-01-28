@@ -3,12 +3,15 @@ import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
 import { RecommendationCardProps } from "../moviesSeriesRecommendations-types";
 import { translate } from "../../../helper_functions_common";
+import { handleBookmarkClick } from "../helper_functions";
 
 const RecommendationCard: FC<RecommendationCardProps> = ({
   recommendationList,
   currentIndex,
   openModal,
-  handleBookmarkClick,
+  setBookmarkedMovies,
+  setCurrentBookmarkStatus,
+  setAlertVisible,
   bookmarkedMovies
 }) => {
   const [translatedDirectors, setTranslatedDirectors] = useState<string>("");
@@ -111,7 +114,14 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
             className="rounded-lg w-96 h-auto"
           />
           <button
-            onClick={() => handleBookmarkClick(recommendation)}
+            onClick={() =>
+              handleBookmarkClick(
+                recommendation,
+                setBookmarkedMovies,
+                setCurrentBookmarkStatus,
+                setAlertVisible
+              )
+            }
             className="absolute top-4 left-4 p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
           >
             <svg

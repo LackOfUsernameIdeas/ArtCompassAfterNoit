@@ -7,9 +7,10 @@ import Loader from "../../../../components/common/loader/Loader";
 import { QuizProps } from "../booksRecommendations-types";
 
 export const Quiz: FC<QuizProps> = ({
-  handleBookmarkClick,
-  bookmarkedBooks,
-  setBookmarkedBooks
+  setBookmarkedBooks,
+  setCurrentBookmarkStatus,
+  setAlertVisible,
+  bookmarkedBooks
 }) => {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -68,7 +69,9 @@ export const Quiz: FC<QuizProps> = ({
           </div>
           <RecommendationsList
             recommendationList={recommendationList}
-            handleBookmarkClick={handleBookmarkClick}
+            setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+            setAlertVisible={setAlertVisible}
+            setBookmarkedBooks={setBookmarkedBooks}
             bookmarkedBooks={bookmarkedBooks}
           />
         </div>

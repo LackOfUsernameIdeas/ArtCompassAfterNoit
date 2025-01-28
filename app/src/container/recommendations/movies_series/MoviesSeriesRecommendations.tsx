@@ -8,7 +8,10 @@ import {
 } from "../../helper_functions_common";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
 import Notification from "../../../components/common/notification/Notification";
-import { NotificationState } from "./moviesSeriesRecommendations-types";
+import {
+  NotificationState,
+  Recommendation
+} from "./moviesSeriesRecommendations-types";
 import BookmarkAlert from "./Components/BookmarkAlert";
 
 interface MoviesSeriesRecommendationsProps {}
@@ -39,10 +42,7 @@ const MoviesSeriesRecommendations: FC<
     setNotification(null);
   };
 
-  const handleBookmarkClick = (movie: {
-    imdbID: string;
-    [key: string]: any;
-  }) => {
+  const handleBookmarkClick = (movie: Recommendation) => {
     setBookmarkedMovies((prev) => {
       const isBookmarked = !!prev[movie.imdbID];
       const updatedBookmarks = { ...prev };
@@ -96,8 +96,9 @@ const MoviesSeriesRecommendations: FC<
       <FadeInWrapper>
         <Quiz
           bookmarkedMovies={bookmarkedMovies}
-          handleBookmarkClick={handleBookmarkClick}
           setBookmarkedMovies={setBookmarkedMovies}
+          setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+          setAlertVisible={setAlertVisible}
         />
       </FadeInWrapper>
     </>

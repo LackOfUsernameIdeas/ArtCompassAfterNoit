@@ -98,8 +98,9 @@ const BooksRecommendations: FC<BooksRecommendationsProps> = () => {
       <FadeInWrapper>
         <Quiz
           bookmarkedBooks={bookmarkedBooks}
-          handleBookmarkClick={handleBookmarkClick}
           setBookmarkedBooks={setBookmarkedBooks}
+          setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+          setAlertVisible={setAlertVisible}
         />
       </FadeInWrapper>
     </>
