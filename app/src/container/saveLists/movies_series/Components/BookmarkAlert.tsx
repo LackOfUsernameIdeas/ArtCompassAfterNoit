@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-
-interface BookmarkAlertProps {
-  isBookmarked: boolean;
-  onDismiss: () => void;
-}
+import { BookmarkAlertProps } from "../watchlist-types";
 
 const BookmarkAlert: React.FC<BookmarkAlertProps> = ({
   isBookmarked,

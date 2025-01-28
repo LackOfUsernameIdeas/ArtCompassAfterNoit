@@ -1,7 +1,7 @@
 // ==============================
 // Импортиране на типове и интерфейси
 // ==============================
-import { DataType } from "./watchlist-types";
+import { DataType, Recommendation } from "./watchlist-types";
 import {
   removeFromWatchlist,
   saveToWatchlist
@@ -85,7 +85,7 @@ export const fetchData = async (
  * @returns {void} - Функцията не връща стойност.
  */
 export const handleBookmarkClick = (
-  movie: { imdbID: string; [key: string]: any },
+  movie: Recommendation,
   setBookmarkedMovies?: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
   >,

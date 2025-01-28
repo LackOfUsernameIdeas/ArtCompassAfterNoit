@@ -1,6 +1,6 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { DataType } from "./watchlist-types";
-import { fetchData, handleBookmarkClick } from "./helper_functions";
+import { fetchData } from "./helper_functions";
 import {
   checkRecommendationExistsInWatchlist,
   validateToken
@@ -13,9 +13,7 @@ import MoviesAndSeriesTable from "./Components/MoviesAndSeriesTable";
 import BookmarkAlert from "./Components/BookmarkAlert";
 import ErrorCard from "../../../components/common/error/error";
 
-interface IndividualStatsProps {}
-
-const IndividualStats: FC<IndividualStatsProps> = () => {
+const Watchlist: FC = () => {
   // Състояния за задържане на извлечени данни
   const [data, setData] = useState<DataType>({
     topRecommendationsWatchlist: {
@@ -199,7 +197,9 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                       <MoviesAndSeriesTable
                         type="watchlist"
                         data={data.topRecommendationsWatchlist.watchlist}
-                        handleBookmarkClick={handleBookmarkClick}
+                        setBookmarkedMovies={setBookmarkedMovies}
+                        setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+                        setAlertVisible={setAlertVisible}
                         bookmarkedMovies={bookmarkedMovies}
                       />
                     </div>
@@ -214,4 +214,4 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
   );
 };
 
-export default IndividualStats;
+export default Watchlist;

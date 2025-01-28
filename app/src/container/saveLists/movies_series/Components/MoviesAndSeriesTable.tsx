@@ -1,23 +1,22 @@
 import { FC, Fragment, useEffect, useState, useMemo, useCallback } from "react";
-import { Rating, Recommendation } from "../watchlist-types";
+import {
+  MoviesAndSeriesTableProps,
+  Rating,
+  Recommendation
+} from "../watchlist-types";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import RecommendationCardAlert from "./RecommendationCardAlert";
 import Pagination from "../../../../components/common/pagination/pagination";
 
-interface MoviesAndSeriesTableProps {
-  data: Recommendation[];
-  type: "recommendations" | "watchlist";
-  handleBookmarkClick: (movie: Recommendation) => void;
-  bookmarkedMovies: { [key: string]: Recommendation };
-}
-
 const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
   data,
   type,
-  handleBookmarkClick,
-  bookmarkedMovies
+  bookmarkedMovies,
+  setBookmarkedMovies,
+  setCurrentBookmarkStatus,
+  setAlertVisible
 }) => {
   const [currentTablePage, setCurrentTablePage] = useState(1);
   const itemsPerTablePage = 5;
@@ -132,12 +131,15 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
 
   const handleRowClick = (item: Recommendation) => setSelectedItem(item);
 
+  console.log("selectedRow: ", selectedItem);
   return (
     <Fragment>
       <RecommendationCardAlert
         selectedItem={selectedItem}
         onClose={() => setSelectedItem(null)}
-        handleBookmarkClick={handleBookmarkClick}
+        setBookmarkedMovies={setBookmarkedMovies}
+        setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+        setAlertVisible={setAlertVisible}
         bookmarkedMovies={bookmarkedMovies}
       />
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
