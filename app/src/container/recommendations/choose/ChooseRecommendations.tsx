@@ -75,6 +75,10 @@ const ChooseRecommendations: FC = () => {
             </div>
           </div>
 
+          {/* Карти с информация за потребителя */}
+          <div className="grid grid-cols-12 gap-x-6">
+            <WidgetCards data={data} />
+          </div>
           {/* Въпрос и бутоните за избор */}
           <div className="flex items-center justify-center px-4">
             <div className="w-full max-w-4xl py-8 px-4 text-center">
@@ -96,10 +100,6 @@ const ChooseRecommendations: FC = () => {
                 ))}
               </div>
             </div>
-          </div>        
-            {/* Карти с информация за потребителя */}
-          <div className="grid grid-cols-12 gap-x-6 mt-10">
-            <WidgetCards data={data} />
           </div>
         </div>
       </CSSTransition>
