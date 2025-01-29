@@ -78,7 +78,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
         <div className="box custom-card h-[27.75rem]">
           <div className="box-header justify-between">
-            <div className="box-title">
+            <div className="box-title !font-Opsilon !font-light !tracking-wide">
               {
                 tableCategoryDisplayNames[
                   prosperitySortCategory as keyof typeof tableCategoryDisplayNames
@@ -96,7 +96,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                   <button
                     key={category}
                     type="button"
-                    className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
+                    className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 !font-Opsilon !font-light !tracking-wide ${
                       category === prosperitySortCategory
                         ? "ti-btn-primary-full text-white"
                         : "text-[#E74581] dark:text-[#CC3333] bg-[#AF0B48] dark:bg-[#9A110A] bg-opacity-10 dark:bg-opacity-10"
@@ -126,45 +126,45 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                 className="table min-w-full whitespace-nowrap table-hover border table-bordered"
               >
                 <thead>
-                  <tr className="border border-inherit border-solid dark:border-defaultborder/10">
+                  <tr className="border border-inherit border-solid dark:border-defaultborder/10 !font-Opsilon !font-light !tracking-wide dark:bg-black/40 bg-gray-500/15">
                     <th
                       scope="col"
                       className="!text-start !text-[0.85rem] w-[40px]"
                     >
                       #
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
+                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
                       {
                         tableCategoryDisplayNames[
                           prosperitySortCategory as keyof typeof tableCategoryDisplayNames
                         ]
                       }
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
+                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
                       Просперитетен рейтинг
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
+                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
                       Среден IMDb рейтинг
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
+                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
                       Среден Rotten Tomatoes рейтинг
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
+                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
                       Среден Метаскор
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
+                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
                       Боксофис
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
+                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
                       Брой филми в платформата
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
+                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
                       Общо препоръки
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
+                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
                       Победи на награждавания
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem]">
+                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
                       Номинации за награди
                     </th>
                   </tr>
@@ -175,7 +175,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                       key={index}
                       className="border border-inherit border-solid hover:bg-gray-100 dark:border-defaultborder/10 dark:hover:bg-light"
                     >
-                      <td>{(currentTablePage - 1) * 5 + index + 1}</td>
+                      <td className="!font-Opsilon !font-light !tracking-wide dark:bg-black/40 bg-gray-500/15">{(currentTablePage - 1) * 5 + index + 1}</td>
                       <td>{getCategoryName(item)}</td>
                       <td>{item.prosperityScore}</td>
                       <td>{item.avg_imdb_rating}</td>
