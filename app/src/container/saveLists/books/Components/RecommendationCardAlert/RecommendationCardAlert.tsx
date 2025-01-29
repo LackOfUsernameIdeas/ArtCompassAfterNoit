@@ -28,7 +28,7 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
   const [language, setLanguage] = useState<string | null>(null); // Език на книгата
   const [genres, setGenres] = useState<string[]>([]); // Жанрове на книгата
   const [isPlotModalOpen, setIsPlotModalOpen] = useState(false); // Статус на отворен/затворен модал за сюжет
-  const plotPreviewLength = 150; // Максимална дължина за предварителен преглед на сюжета
+  const plotPreviewLength = 150; // Дължина на прегледа на съдържанието (oписаниeто)
   const source = selectedItem?.source; // Източник на данните за книгата
   const isGoodreads = source === "Goodreads"; // Проверка дали източникът е Goodreads
   const [visible, setVisible] = useState(false); // Видимостта на картата
@@ -177,7 +177,7 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
                 alt={`${selectedItem.title_bg || "Book"} Poster`}
                 className="rounded-lg w-[15rem] h-auto"
               />
-              {/* Бутон за добавяне в readlist */}
+              {/* Бутон за добавяне/премахване от readlist */}
               <button
                 onClick={() =>
                   handleBookBookmarkClick(

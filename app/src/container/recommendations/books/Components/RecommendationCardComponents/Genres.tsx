@@ -1,14 +1,17 @@
 import { FC } from "react";
 
 interface GenresProps {
-  genres: string[];
+  genres: string[]; // Жанровете
 }
+
 const Genres: FC<GenresProps> = ({ genres }) => {
+  // Източник на информация за книгата
   const source = import.meta.env.VITE_BOOKS_SOURCE;
   return (
     <p className="mb-2">
       <strong className="text-primary text-sm">Жанрове:</strong>
       <div className="text-white">
+        {/*Ако източникът е Google Books*/}
         {source === "GoogleBooks" ? (
           <div className="flex flex-wrap gap-4">
             {genres.map((genre, index) => {
@@ -18,6 +21,7 @@ const Genres: FC<GenresProps> = ({ genres }) => {
                   key={index}
                   className="relative group w-full flex flex-col items-start"
                 >
+                  {/*Главна категория*/}
                   <div className="bg-primary/70 dark:bg-primary/25 rounded-md px-2 py-1 shadow-md inline-block transition-transform duration-200 transform group-hover:scale-105">
                     <span className="flex items-center text-base text-primary dark:text-primary/90">
                       <svg
@@ -37,7 +41,7 @@ const Genres: FC<GenresProps> = ({ genres }) => {
                       {mainCategory}
                     </span>
                   </div>
-
+                  {/*Поджанрове*/}
                   {subGenres && (
                     <div className="overflow-hidden max-h-0 group-hover:max-h-40 transition-all duration-300 ease-in-out w-full">
                       <ul className="mt-2 flex flex-wrap">
@@ -63,6 +67,7 @@ const Genres: FC<GenresProps> = ({ genres }) => {
                               <path d="M6 6v6a3 3 0 0 0 3 3h10l-4 -4m0 8l4 -4" />
                             </svg>
                           </li>
+
                           {subGenres.split(", ").map((subGenre, subIndex) => (
                             <li
                               key={subIndex}
@@ -81,6 +86,7 @@ const Genres: FC<GenresProps> = ({ genres }) => {
           </div>
         ) : (
           <div className="flex flex-wrap gap-2">
+            {/*Ако източникът е Goodreads, всеки жанр в bubble*/}
             {genres.map((genre, index) => (
               <span
                 key={index}

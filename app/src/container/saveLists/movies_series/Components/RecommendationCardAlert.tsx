@@ -183,7 +183,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                 alt={`${selectedItem.title_bg || "Movie"} Poster`}
                 className="rounded-lg w-96 h-auto"
               />
-              {/* Бутон за добавяне в watchlist */}
+              {/* Бутон за добавяне/премахване от watchlist */}
               <button
                 onClick={() =>
                   handleMovieSeriesBookmarkClick(

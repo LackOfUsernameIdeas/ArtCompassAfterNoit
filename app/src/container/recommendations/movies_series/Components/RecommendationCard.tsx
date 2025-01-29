@@ -5,6 +5,7 @@ import { RecommendationCardProps } from "../moviesSeriesRecommendations-types";
 import { translate } from "../../../helper_functions_common";
 import { handleBookmarkClick } from "../helper_functions";
 
+// Кард за генериран филм/сериал спрямо потребителските предпочитания
 const RecommendationCard: FC<RecommendationCardProps> = ({
   recommendationList,
   currentIndex,
@@ -14,23 +15,25 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   setAlertVisible,
   bookmarkedMovies
 }) => {
-  const [translatedDirectors, setTranslatedDirectors] = useState<string>("");
-  const [translatedWriters, setTranslatedWriters] = useState<string>("");
-  const [translatedActors, setTranslatedActors] = useState<string>("");
-  const [translatedAwards, setTranslatedAwards] = useState<string>("");
-  const [translatedGenres, setTranslatedGenres] = useState<string>("");
-  const [translatedPlot, setTranslatedPlot] = useState<string>("");
-  const [translatedCountry, setTranslatedCountry] = useState<string>("");
-  const [translatedLanguage, setTranslatedLanguage] = useState<string>("");
-  const plotPreviewLength = 150;
+  const [translatedDirectors, setTranslatedDirectors] = useState<string>(""); // Преведените режисьори
+  const [translatedWriters, setTranslatedWriters] = useState<string>(""); // Преведените сценаристи
+  const [translatedActors, setTranslatedActors] = useState<string>(""); // Преведените актьори
+  const [translatedAwards, setTranslatedAwards] = useState<string>(""); // Преведените награди
+  const [translatedGenres, setTranslatedGenres] = useState<string>(""); // Преведените жанрове
+  const [translatedPlot, setTranslatedPlot] = useState<string>(""); // Преведеното описание на сюжета
+  const [translatedCountry, setTranslatedCountry] = useState<string>(""); // Преведената страна
+  const [translatedLanguage, setTranslatedLanguage] = useState<string>(""); // Преведеният език
+  const plotPreviewLength = 150; // Дължина на прегледа на съдържанието (oписаниeто и сюжета)
 
-  const recommendation = recommendationList[currentIndex];
-  const isMovie = recommendation.type === "movie";
+  const recommendation = recommendationList[currentIndex]; // Генерираният филм/сериал
+  const isMovie = recommendation.type === "movie"; // Bool филм или не
+  // Рейтинг от Rotten Tomatoes, ако е наличен
   const rottenTomatoesRating =
     recommendation.ratings?.find(
       (rating) => rating.Source === "Rotten Tomatoes"
     )?.Value || "N/A";
 
+  // useEffect за превод на името на режисьора
   useEffect(() => {
     async function fetchDirectorTranslation() {
       const translated = await translate(recommendation.director);
@@ -40,6 +43,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
     fetchDirectorTranslation();
   }, [recommendation.director]);
 
+  // useEffect за превод на името на сценариста
   useEffect(() => {
     async function fetchWriterTranslation() {
       const translated = await translate(recommendation.writer);
@@ -49,6 +53,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
     fetchWriterTranslation();
   }, [recommendation.writer]);
 
+  // useEffect за превод на името на актьорите
   useEffect(() => {
     async function fetchActorsTranslation() {
       const translated = await translate(recommendation.actors);
@@ -58,6 +63,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
     fetchActorsTranslation();
   }, [recommendation.actors]);
 
+  // useEffect за превод на наградите на филма/сериала
   useEffect(() => {
     async function fetchAwardsTranslation() {
       const translated = await translate(recommendation.awards);
@@ -67,6 +73,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
     fetchAwardsTranslation();
   }, [recommendation.awards]);
 
+  // useEffect за превод на жанровете на филма/сериала
   useEffect(() => {
     async function fetchGenresTranslation() {
       const translated = await translate(recommendation.genre);
@@ -76,6 +83,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
     fetchGenresTranslation();
   }, [recommendation.genre]);
 
+  // useEffect за превод на сюжета на филма/сериала
   useEffect(() => {
     async function fetchPlotTranslation() {
       const translated = await translate(recommendation.plot);
@@ -85,6 +93,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
     fetchPlotTranslation();
   }, [recommendation.plot]);
 
+  // useEffect за превод на държавата на филма/сериала
   useEffect(() => {
     async function fetchCountryTranslation() {
       const translated = await translate(recommendation.country);
@@ -94,6 +103,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
     fetchCountryTranslation();
   }, [recommendation.country]);
 
+  // useEffect за превод на езика на филма/сериала
   useEffect(() => {
     async function fetchLanguageTranslation() {
       const translated = await translate(recommendation.language);
@@ -108,11 +118,13 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
     <div className="recommendation-card">
       <div className="flex w-full items-center">
         <div className="relative flex-shrink-0 mr-8">
+          {/* Постер */}
           <img
             src={recommendation.poster}
             alt={`${recommendation.bgName || "Movie"} Poster`}
             className="rounded-lg w-96 h-auto"
           />
+          {/* Бутон за добавяне/премахване от watchlist */}
           <button
             onClick={() =>
               handleBookmarkClick(
@@ -144,6 +156,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
         </div>
 
         <div className="flex-grow">
+          {/* Главна информация */}
           <div className="sticky top-0 z-10">
             <a href="#" className="block text-3xl font-bold mb-1">
               {recommendation.bgName || "Заглавие не е налично"}
@@ -165,6 +178,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               {recommendation.year || "Година неизвестна"} | Рейтинг:{" "}
               {recommendation.rated || "N/A"}
             </p>
+            {/* Рейтинги */}
             <div className="flex items-center space-x-8 py-2">
               <div
                 className="flex items-center space-x-2 dark:text-[#FFCC33] text-[#bf9413]"
@@ -221,7 +235,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               )}
             </div>
           </div>
-
+          {/* Причина за препоръчване */}
           {recommendation.reason && (
             <div className="mb-4">
               <h3 className="text-lg font-semibold mb-2">
@@ -231,6 +245,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               <p className="text-opacity-80 italic">{recommendation.reason}</p>
             </div>
           )}
+          {/* Описание */}
           <div className="mb-4">
             <h3 className="text-lg font-semibold mb-2">Описание</h3>
             <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
@@ -243,7 +258,6 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                   : recommendation.description}
               </p>
             </div>
-
             {recommendation.description &&
               recommendation.description.length > plotPreviewLength && (
                 <button
@@ -254,6 +268,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                 </button>
               )}
           </div>
+          {/* Сюжет */}
           <div className="mb-4">
             <h3 className="text-lg font-semibold mb-2">Сюжет</h3>
             <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
@@ -273,7 +288,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               </button>
             )}
           </div>
-
+          {/* Допълнителна информация */}
           <div className="mb-4">
             <h3 className="text-lg font-semibold mb-2">
               Допълнителна информация:

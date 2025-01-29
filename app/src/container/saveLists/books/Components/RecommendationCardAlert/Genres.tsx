@@ -1,15 +1,16 @@
 import { FC } from "react";
 
 interface GenresProps {
-  genres: string[];
-  source: string | undefined;
+  genres: string[]; // Жанровете
+  source: string | undefined; // Източник на информация за книгата
 }
+
 const Genres: FC<GenresProps> = ({ genres, source }) => {
-  console.log(source);
   return (
     <p className="mb-2">
       <strong className="text-primary text-sm">Жанрове:</strong>
       <div className="text-white">
+        {/*Ако източникът е Google Books*/}
         {source === "Google Books" ? (
           <div className="flex flex-wrap gap-4">
             {genres.map((genre, index) => {
@@ -19,6 +20,7 @@ const Genres: FC<GenresProps> = ({ genres, source }) => {
                   key={index}
                   className="relative group w-full flex flex-col items-start"
                 >
+                  {/*Главна категория*/}
                   <div className="bg-primary/70 dark:bg-primary/25 rounded-md px-2 py-1 shadow-md inline-block transition-transform duration-200 transform group-hover:scale-105">
                     <span className="flex items-center text-base text-primary dark:text-primary/90">
                       <svg
@@ -38,7 +40,7 @@ const Genres: FC<GenresProps> = ({ genres, source }) => {
                       {mainCategory}
                     </span>
                   </div>
-
+                  {/*Поджанрове*/}
                   {subGenres && (
                     <div className="overflow-hidden max-h-0 group-hover:max-h-40 transition-all duration-300 ease-in-out w-full">
                       <ul className="mt-2 flex flex-wrap">
@@ -80,7 +82,9 @@ const Genres: FC<GenresProps> = ({ genres, source }) => {
               );
             })}
           </div>
+          {/*Ако източникът е Google Books*/}
         ) : (
+          
           <div className="flex flex-wrap gap-2">
             {genres.map((genre, index) => (
               <span
