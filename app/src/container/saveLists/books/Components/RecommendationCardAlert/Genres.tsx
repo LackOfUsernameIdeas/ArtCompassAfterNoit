@@ -82,10 +82,9 @@ const Genres: FC<GenresProps> = ({ genres, source }) => {
               );
             })}
           </div>
-          {/*Ако източникът е Google Books*/}
         ) : (
-          
           <div className="flex flex-wrap gap-2">
+            {/*Ако източникът е Goodreads, всеки жанр в bubble*/}
             {genres.map((genre, index) => (
               <span
                 key={index}
