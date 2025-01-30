@@ -11,7 +11,7 @@ const Genres: FC<GenresProps> = ({ genres, source }) => {
       <strong className="text-primary text-sm">Жанрове:</strong>
       <div className="text-white">
         {/*Ако източникът е Google Books*/}
-        {source === "Google Books" ? (
+        {source === "GoogleBooks" ? (
           <div className="flex flex-wrap gap-4">
             {genres.map((genre, index) => {
               const [mainCategory, subGenres] = genre.split(": ");

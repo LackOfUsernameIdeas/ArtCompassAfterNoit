@@ -389,10 +389,10 @@ export const generateBooksRecommendations = async (
           translate(removeHtmlTags(googleBooksData.volumeInfo?.description)),
           book.description
         );
-        const genres_en = await processBookGenres(
+        const genre_en = await processBookGenres(
           googleBooksData.volumeInfo?.categories
         );
-        const genres_bg = await processBookGenres(
+        const genre_bg = await processBookGenres(
           googleBooksData.volumeInfo?.categories,
           true
         );
@@ -409,8 +409,8 @@ export const generateBooksRecommendations = async (
           title_bg: book.title_bg,
           real_edition_title: book.real_edition_title,
           author: author,
-          genres_en: genres_en,
-          genres_bg: genres_bg,
+          genre_en: genre_en,
+          genre_bg: genre_bg,
           description: description,
           language: language,
           origin: book.origin,
@@ -497,10 +497,10 @@ export const generateBooksRecommendations = async (
             goodreadsData.description
           );
 
-          const genres_en = goodreadsData.genres;
+          const genre_en = goodreadsData.genres;
 
           const genres_bg_raw = await translate(goodreadsData.genres);
-          const genres_bg = genres_bg_raw
+          const genre_bg = genres_bg_raw
             .split(",") // Split the string by commas into an array
             .map(
               (genre) =>
@@ -519,8 +519,8 @@ export const generateBooksRecommendations = async (
             title_bg: book.title_bg,
             real_edition_title: book.real_edition_title,
             author: author,
-            genres_en: genres_en,
-            genres_bg: genres_bg,
+            genre_en: genre_en,
+            genre_bg: genre_bg,
             description: description,
             language: language,
             origin: book.origin,
@@ -621,8 +621,8 @@ export const saveBookRecommendation = async (
       title_bg: recommendation.title_bg || null,
       real_edition_title: recommendation.real_edition_title || null,
       author: recommendation.author || null,
-      genre_en: recommendation.genres_en || null,
-      genre_bg: recommendation.genres_bg || null,
+      genre_en: recommendation.genre_en || null,
+      genre_bg: recommendation.genre_bg || null,
       description: recommendation.description || null,
       language: recommendation.language || null,
       origin: recommendation.origin || null,

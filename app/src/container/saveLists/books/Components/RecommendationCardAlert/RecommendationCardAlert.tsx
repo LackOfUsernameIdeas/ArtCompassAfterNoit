@@ -142,7 +142,7 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
         // Обработка на жанровете в зависимост от източника (Goodreads или Google Books)
         if (isGoodreads) {
           processGenres(resolvedGenres, setGenres); // Ако източникът е Goodreads, обработваме по начин за Goodreads
-        } else {
+        } else if (source === "GoogleBooks") {
           resolvedGenres = await parseResolvedGenres(resolvedGenres); // Ако не е Goodreads, извършваме парсиране
           processGenresForGoogleBooks(resolvedGenres, setGenres); // Обработваме жанровете за Google Books
         }

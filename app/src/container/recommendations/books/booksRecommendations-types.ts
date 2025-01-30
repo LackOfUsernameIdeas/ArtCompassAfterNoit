@@ -44,8 +44,8 @@ export interface Recommendation {
   real_edition_title: string; // Реално заглавие на изданието
   author: string | Promise<string>; // Име на автора (може да е обещание)
   publisher: string; // Издателство
-  genres_en: string | Promise<string>; // Жанрове на английски (може да е обещание)
-  genres_bg: string | Promise<string>; // Жанрове на български (може да е обещание)
+  genre_en: string | Promise<string>; // Жанрове на английски (може да е обещание)
+  genre_bg: string | Promise<string>; // Жанрове на български (може да е обещание)
   description: string | Promise<string>; // Описание на книгата (може да е обещание)
   language: string | Promise<string>; // Езици на книгата (може да е обещание)
   origin: string; // Страна на произход

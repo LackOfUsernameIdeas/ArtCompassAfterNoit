@@ -79,11 +79,11 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
       let resolvedGenres;
 
       try {
-        // Проверява дали genres_bg е Promise и ако е, изчаква стойността му
-        if (recommendation.genres_bg instanceof Promise) {
-          resolvedGenres = await recommendation.genres_bg;
+        // Проверява дали genre_bg е Promise и ако е, изчаква стойността му
+        if (recommendation.genre_bg instanceof Promise) {
+          resolvedGenres = await recommendation.genre_bg;
         } else {
-          resolvedGenres = recommendation.genres_bg;
+          resolvedGenres = recommendation.genre_bg;
         }
 
         // Обработка на жанровете според източника на данни
@@ -100,7 +100,8 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               resolvedGenres
             );
           }
-        } else if (source === "GoogleBooks") {
+        }
+        if (source === "GoogleBooks") {
           // Ако източникът е Google Books, очакваме жанровете да са обект с категории и поджанрове
           if (typeof resolvedGenres === "object" && resolvedGenres !== null) {
             const genreEntries = Object.entries(resolvedGenres);
@@ -122,13 +123,13 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
           console.error("Неизвестен тип източник:", source);
         }
       } catch (error) {
-        console.error("Грешка при обработката на genres_bg:", error);
+        console.error("Грешка при обработката на genre_bg:", error);
         setGenres([]); // В случай на грешка задаваме празен масив
       }
     };
 
     resolveGenres(); // Извиква функцията при промяна на зависимостта
-  }, [recommendation.genres_bg]);
+  }, [recommendation.genre_bg]);
 
   return (
     <div className="recommendation-card">
