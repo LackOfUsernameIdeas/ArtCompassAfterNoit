@@ -127,7 +127,7 @@ export class GenrePopularityOverTime extends Component<
             show: true,
             style: {
               fontFamily: "Opsilon",
-              letterSpacing: "0.04em",
+              letterSpacing: "0.04rem",
               colors: "#8c9097",
               fontSize: "11px",
               cssClass: "apexcharts-xaxis-label"
@@ -145,7 +145,7 @@ export class GenrePopularityOverTime extends Component<
             show: true,
             style: {
               fontFamily: "Opsilon",
-              letterSpacing: "0.04em",
+              letterSpacing: "0.04rem",
               colors: "#8c9097",
               fontSize: "11px",
               cssClass: "apexcharts-yaxis-label"
@@ -283,11 +283,11 @@ export class MoviesAndSeriesByRatingsChart extends Component<
         xaxis: {
           title: { text: [] },
           categories: [],
-          style: { fontFamily: "Opsilon", letterSpacing: "0.04em" }
+          style: { fontFamily: "Opsilon", letterSpacing: "0.04rem" }
         },
         yaxis: {
           title: { text: "Заглавие" },
-          style: { fontFamily: "Opsilon", letterSpacing: "0.04em" }
+          style: { fontFamily: "Opsilon", letterSpacing: "0.04rem" }
         },
         colors: [
           chroma(initialColor).darken(0.6).hex(), // По-светъл цвят за филми
@@ -441,13 +441,13 @@ export class MoviesAndSeriesByRatingsChart extends Component<
 }
 
 // Интерфейс за пропсовете на компонента
-interface TopCountriesProps {
+interface CountryBarProps {
   topCountries: CountryData[] | null; // Списък с данни за държавите или null, ако няма данни
   is1546: boolean;
 }
 
 // Функционален компонент за визуализация на препоръките по държави
-export const TopCountriesChart: React.FC<TopCountriesProps> = ({
+export const CountryBarChart: React.FC<CountryBarProps> = ({
   topCountries,
   is1546
 }) => {
@@ -551,7 +551,12 @@ export const TopCountriesChart: React.FC<TopCountriesProps> = ({
 
       {/* Общо препоръки */}
       <div className="mb-4 text-sm text-gray-500">
-        <strong>Общ брой на препоръки:</strong> {totalCount}
+        <span className="!font-Equilibrist">
+          <strong>Общ брой препоръки:</strong>
+        </span>{" "}
+        <span className="!font-Opsilon !font-light !tracking-wide">
+          {totalCount}
+        </span>
       </div>
 
       {/* Външна легенда */}
@@ -571,7 +576,15 @@ export const TopCountriesChart: React.FC<TopCountriesProps> = ({
                 aria-label={country.country_en}
               ></div>
               <span className="ml-2">
-                {country.country_bg}: {country.count} пъти
+                <span className="font-Equilibrist">
+                  <strong>{country.country_bg}</strong>
+                </span>
+                :
+                <span className="text-xl font-Opsilon font-light !tracking-wide">
+                  {" "}
+                  {country.count}{" "}
+                  <span className="font-Equilibrist text-sm">пъти</span>
+                </span>
               </span>
             </li>
           );
@@ -711,7 +724,7 @@ export class MoviesByProsperityBubbleChart extends Component<
             text: "Приходи от боксофиса (в милиони)",
             style: {
               fontFamily: "Opsilon",
-              letterSpacing: "0.04em",
+              letterSpacing: "0.04rem",
               fontSize: "12px",
               color: "#8c9097"
             }
@@ -733,7 +746,7 @@ export class MoviesByProsperityBubbleChart extends Component<
             text: "IMDb рейтинг",
             style: {
               fontFamily: "Opsilon",
-              letterSpacing: "0.04em",
+              letterSpacing: "0.04rem",
               fontSize: "12px",
               color: "#8c9097"
             }
@@ -1046,11 +1059,19 @@ export class TopRecommendationsBarChart extends Component<
         grid: { borderColor: "#f2f5f7" }, // Цвят на мрежата
         dataLabels: { enabled: false }, // Скриване на стойностите върху колоните
         xaxis: {
-          title: { text: "Брой препоръчвания" }, // Заглавие на оста X
+          title: {
+            text: "Брой препоръчвания",
+            style: {
+              fontFamily: "Opsilon",
+              letterSpacing: "0.04rem"
+            }
+          }, // Заглавие на оста X
           categories: [], // Категории, които ще бъдат зададени динамично
-          style: {
-            fontFamily: "Opsilon",
-            letterSpacing: "0.04em"
+          labels: {
+            style: {
+              letterSpacing: "0.04rem",
+              fontFamily: "Opsilon" // Custom font
+            }
           }
         },
         yaxis: {
@@ -1058,9 +1079,15 @@ export class TopRecommendationsBarChart extends Component<
             text: "Заглавие",
             style: {
               fontFamily: "Opsilon",
-              letterSpacing: "0.04em"
+              letterSpacing: "0.04rem"
             }
-          } // Заглавие на оста Y
+          },
+          labels: {
+            style: {
+              fontFamily: "Opsilon", // Apply the Opsilon font to movie names
+              letterSpacing: "0.04rem"
+            }
+          }
         },
         colors: [
           chroma(initialColor).darken(0.6).hex(), // По-ярък цвят за филми
@@ -1097,7 +1124,7 @@ export class TopRecommendationsBarChart extends Component<
 
         return {
           x: `${movie.title_bg} (${movie.title_en})`,
-          style: { fontFamily: "Opsilon", letterSpacing: "0.04em" }, // Заглавие (на български и английски)
+          style: { fontFamily: "Opsilon", letterSpacing: "0.04rem" }, // Заглавие (на български и английски)
           y: movie.recommendations, // Брой препоръчвания
           fillColor: color // Цвят на колоната
         };
@@ -1107,7 +1134,11 @@ export class TopRecommendationsBarChart extends Component<
         series: [
           {
             name: "Препоръчвания", // Име на серията
-            data: updatedSeries
+            data: updatedSeries,
+            style: {
+              fontFamily: "Equilibrist",
+              letterSpacing: "0.04rem"
+            }
           }
         ],
         options: {
@@ -1116,7 +1147,11 @@ export class TopRecommendationsBarChart extends Component<
             ...prevState.options.xaxis,
             categories: sortedMovies.map(
               (movie) => `${movie.title_bg} (${movie.title_en})`
-            ) // Категории за оста X
+            ), // Категории за оста X
+            style: {
+              fontFamily: "Opsilon",
+              letterSpacing: "0.04rem"
+            }
           }
         }
       };
@@ -1175,14 +1210,18 @@ export class TopRecommendationsBarChart extends Component<
               className="!font-Opsilon tracking-wider w-3 h-3 mr-1 rounded-full inline-block"
               style={{ backgroundColor: movieColor }}
             ></span>
-            <span>Филм</span>
+            <span className="!font-Opsilon !font-light !tracking-wide">
+              Филм
+            </span>
           </div>
           <div className="flex items-center">
             <span
               className="!font-Opsilon tracking-wider w-3 h-3 mr-1 rounded-full inline-block"
               style={{ backgroundColor: seriesColor }}
             ></span>
-            <span>Сериал</span>
+            <span className="!font-Opsilon !font-light !tracking-wide">
+              Сериал
+            </span>
           </div>
         </div>
 
