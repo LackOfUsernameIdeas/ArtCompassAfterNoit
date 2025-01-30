@@ -2,7 +2,6 @@ import { FC, Fragment, useEffect, useState, useMemo, useCallback } from "react";
 import { MoviesAndSeriesTableProps, Rating } from "../watchlist-types";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
-import { Tooltip } from "react-tooltip";
 import RecommendationCardAlert from "./RecommendationCardAlert";
 import Pagination from "../../../../components/common/pagination/pagination";
 import { MovieSeriesRecommendation } from "../../../types_common";
@@ -160,17 +159,7 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
         <div className="box custom-card h-[27.75rem]">
           <div className="box-header justify-between">
             <div
-              className={`box-title whitespace-nowrap overflow-hidden text-ellipsis ${
-                is1399 ? "max-w-full" : "max-w-[20rem]"
-              }`}
-              data-tooltip-id="box-title-tooltip"
-              data-tooltip-content={
-                type == "watchlist"
-                  ? "Списък За Гледане"
-                  : sortBy === "default"
-                  ? "Най-Често Препоръчваните Филми и Сериали За Мен"
-                  : sortTitles[sortBy]
-              }
+              className={`box-title ${is1399 ? "max-w-full" : "max-w-[20rem]"}`}
             >
               {type == "watchlist"
                 ? "Списък За Гледане"
@@ -178,7 +167,6 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
                 ? "Най-Често Препоръчваните Филми и Сериали За Мен"
                 : sortTitles[sortBy]}
             </div>
-            <Tooltip id="box-title-tooltip" />
             <div className="relative flex items-center space-x-2">
               <div className="hs-dropdown ti-dropdown">
                 <Link

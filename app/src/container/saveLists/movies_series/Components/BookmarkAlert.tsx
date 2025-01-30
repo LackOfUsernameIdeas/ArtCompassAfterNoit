@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BookmarkAlertProps } from "../watchlist-types";
+import { Link } from "react-router-dom";
 
 const BookmarkAlert: React.FC<BookmarkAlertProps> = ({
   isBookmarked,
@@ -73,8 +74,15 @@ const BookmarkAlert: React.FC<BookmarkAlertProps> = ({
         </div>
         <div className="pl-8 text-[0.75rem] opacity-[0.8] mb-1">
           {isBookmarked
-            ? "Вашият филм/сериал е запазен в списъка ви за гледане!"
-            : "Този филм/сериал е премахнат от списъка ви за гледане!"}
+            ? `Вашият филм/сериал е запазен в `
+            : `Този филм/сериал е премахнат от `}
+          <Link
+            to={`${import.meta.env.BASE_URL}app/saveLists/movies_series`}
+            className="font-bold underline"
+          >
+            списъка ви за гледане
+          </Link>
+          !
         </div>
       </div>
     </div>

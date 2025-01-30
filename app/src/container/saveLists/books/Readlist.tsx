@@ -100,8 +100,6 @@ const Readlist: FC<ReadlistProps> = () => {
     );
   }
 
-  console.log("data: ", data);
-
   if (
     !data.topRecommendationsReadlist ||
     data.topRecommendationsReadlist.length === 0
@@ -119,7 +117,6 @@ const Readlist: FC<ReadlistProps> = () => {
     setAlertVisible(false);
   };
 
-  console.log("data", data);
   return (
     <FadeInWrapper>
       {notification && (
@@ -136,81 +133,14 @@ const Readlist: FC<ReadlistProps> = () => {
         />
       )}
       <Fragment>
-        <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">
-          <div>
-            <p className="font-semibold text-[1.125rem] text-defaulttextcolor dark:text-defaulttextcolor/70 !mb-0 "></p>
-          </div>
-        </div>
-        <div className="grid grid-cols-12 gap-6">
-          <div className="xl:col-span-12 col-span-12">
-            <div
-              className="accordion accordionicon-left accordions-items-separate"
-              id="accordioniconLeft"
-            >
-              <div
-                className="hs-accordion-group"
-                data-hs-accordion-always-open=""
-              >
-                <div
-                  className="hs-accordion accordion-item overflow-hidden active"
-                  id="hs-basic-with-title-and-arrow-stretched-heading-one"
-                >
-                  <button
-                    className="hs-accordion-toggle accordion-button hs-accordion-active:text-primary hs-accordion-active:pb-3 group py-0 inline-flex items-center justify-between gap-x-3 w-full font-semibold text-start text-gray-800 transition hover:text-secondary dark:hs-accordion-active:text-primary dark:text-gray-200 dark:hover:text-secondary"
-                    aria-controls="hs-basic-with-title-and-arrow-stretched-collapse-one"
-                    type="button"
-                  >
-                    Моята Колекция за Гледане - Статистики
-                    <svg
-                      className="hs-accordion-active:hidden hs-accordion-active:text-primary hs-accordion-active:group-hover:text-primary block w-3 h-3 text-gray-600 group-hover:text-secondary dark:text-[#8c9097] dark:text-white/50"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M2 5L8.16086 10.6869C8.35239 10.8637 8.64761 10.8637 8.83914 10.6869L15 5"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                    <svg
-                      className="hs-accordion-active:block hs-accordion-active:text-primary hs-accordion-active:group-hover:text-primary hidden w-3 h-3 text-gray-600 group-hover:text-secondary dark:text-[#8c9097] dark:text-white/50"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M2 11L8.16086 5.31305C8.35239 5.13625 8.64761 5.13625 8.83914 5.31305L15 11"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </button>
-                  <div
-                    id="hs-basic-with-title-and-arrow-stretched-collapse-one"
-                    className="hs-accordion-content w-full overflow-hidden transition-[height] duration-300"
-                    aria-labelledby="hs-basic-with-title-and-arrow-stretched-heading-one"
-                  >
-                    <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5">
-                      <BooksTable
-                        data={data.topRecommendationsReadlist}
-                        setBookmarkedBooks={setBookmarkedBooks}
-                        setCurrentBookmarkStatus={setCurrentBookmarkStatus}
-                        setAlertVisible={setAlertVisible}
-                        bookmarkedBooks={bookmarkedBooks}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="mt-[1.5rem]">
+          <BooksTable
+            data={data.topRecommendationsReadlist}
+            setBookmarkedBooks={setBookmarkedBooks}
+            setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+            setAlertVisible={setAlertVisible}
+            bookmarkedBooks={bookmarkedBooks}
+          />
         </div>
       </Fragment>
     </FadeInWrapper>

@@ -1,7 +1,6 @@
 import { FC, Fragment, useState, useMemo, useCallback } from "react";
 import { BooksTableProps } from "../readlist-types";
 import { useMediaQuery } from "react-responsive";
-import { Tooltip } from "react-tooltip";
 import RecommendationCardAlert from "./RecommendationCardAlert/RecommendationCardAlert";
 import Pagination from "../../../../components/common/pagination/pagination";
 import { BookRecommendation } from "../../../types_common";
@@ -65,15 +64,10 @@ const BooksTable: FC<BooksTableProps> = ({
         <div className="box custom-card h-[27.75rem]">
           <div className="box-header justify-between">
             <div
-              className={`box-title whitespace-nowrap overflow-hidden text-ellipsis ${
-                is1399 ? "max-w-full" : "max-w-[20rem]"
-              }`}
-              data-tooltip-id="box-title-tooltip"
-              data-tooltip-content="Списък За Четене"
+              className={`box-title ${is1399 ? "max-w-full" : "max-w-[20rem]"}`}
             >
               Списък За Четене
             </div>
-            <Tooltip id="box-title-tooltip" />
           </div>
           <div className="box-body">
             <div className="overflow-x-auto">
