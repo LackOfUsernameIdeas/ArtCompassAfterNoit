@@ -1,5 +1,5 @@
 import { FC, Fragment, useMemo, useState } from "react";
-import { MoviesAndSeriesByRatingsChart } from "../../Charts";
+import { MoviesAndSeriesByRatingsChart } from "../../charts";
 import { MoviesAndSeriesByRatingsDataType } from "../../platformStats-types";
 import {
   paginateBarChartData,

@@ -1,7 +1,7 @@
 import { FC, Fragment } from "react";
 import { GenrePopularityOverTimeDataType } from "../../platformStats-types";
 import { generateHeatmapSeriesData } from "../../helper_functions";
-import { GenrePopularityOverTime } from "../../Charts";
+import { GenrePopularityOverTime } from "../../charts";
 
 interface GenrePopularityOverTimeComponentProps {
   data: GenrePopularityOverTimeDataType;
