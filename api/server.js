@@ -8,6 +8,8 @@ const bodyParser = require("body-parser");
 const crypto = require("crypto");
 const db = require("./database");
 const hf = require("./helper_functions");
+const pythonPath = require("./config.js").pythonPath;
+const pythonPathLocal = require("./config.js").pythonPathLocal;
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -1139,7 +1141,7 @@ app.get("/get-goodreads-data-for-a-book", (req, res) => {
   }
 
   // Стартиране на Python процес и подаване на URL като аргумент
-  const pythonProcess = spawn("python", ["./scraping/scraper.py", url]);
+  const pythonProcess = spawn(pythonPathLocal, ["./scraping/scraper.py", url]);
 
   let response = "";
 
@@ -1174,7 +1176,7 @@ app.get("/get-goodreads-json-object-for-a-book", (req, res) => {
   }
 
   // Стартиране на Python процес и подаване на URL като аргумент
-  const pythonProcess = spawn("python", [
+  const pythonProcess = spawn(pythonPathLocal, [
     "./scraping/scraper_script_tag_json.py",
     url
   ]);

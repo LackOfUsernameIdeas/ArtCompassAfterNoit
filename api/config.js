@@ -10,5 +10,7 @@ module.exports = {
     user: "root",
     password: "",
     database: "artcompass"
-  }
+  },
+  pythonPath: "/home/noit1/virtualenv/artcompass-api/bin/python",
+  pythonPathLocal: "/home/noit1/virtualenv/artcompass-api/bin/python"
 };
