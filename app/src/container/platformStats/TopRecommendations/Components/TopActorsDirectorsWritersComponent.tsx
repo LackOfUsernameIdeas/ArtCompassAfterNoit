@@ -1,14 +1,17 @@
 import { FC, Fragment, useState } from "react";
-import { Category, DataType } from "../platformStats-types";
-import { handleTopStatsSortCategory } from "../helper_functions";
-import { Treemap } from "./Charts";
-interface ActorsDirectorsWritersTreemapProps {
-  data: DataType;
+import {
+  Category,
+  TopRecommendationsDataType
+} from "../../platformStats-types";
+import { handleTopStatsSortCategory } from "../../helper_functions";
+import { Treemap } from "../../Charts";
+interface TopActorsDirectorsWritersComponentProps {
+  data: TopRecommendationsDataType;
 }
 
-const ActorsDirectorsWritersTreemap: FC<ActorsDirectorsWritersTreemapProps> = ({
-  data
-}) => {
+const TopActorsDirectorsWritersComponent: FC<
+  TopActorsDirectorsWritersComponentProps
+> = ({ data }) => {
   const [topStatsSortCategory, setTopStatsSortCategory] =
     useState<Category>("Actors");
 
@@ -98,4 +101,4 @@ const ActorsDirectorsWritersTreemap: FC<ActorsDirectorsWritersTreemapProps> = ({
   );
 };
 
-export default ActorsDirectorsWritersTreemap;
+export default TopActorsDirectorsWritersComponent;

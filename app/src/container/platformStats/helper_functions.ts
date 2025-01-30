@@ -19,15 +19,17 @@ import {
 /**
  * Извлича данни от API за платформата и ги запазва в състоянието.
  * @param {string} token - Токен за удостоверяване.
- * @param {React.Dispatch<React.SetStateAction<any>>} setData - Функция за задаване на общи данни.
+ * @param {React.Dispatch<React.SetStateAction<any>>} setData - Функция за актуализиране на състоянието с получените данни.
+ * @param {string[]} [requestedData] - Опционален масив от ключове, указващи кои данни да бъдат извлечени.
  * @throws {Error} - Хвърля грешка, ако заявката е неуспешна.
  */
 export const fetchData = async (
   token: string,
-  setData: React.Dispatch<React.SetStateAction<any>>
+  setData: React.Dispatch<React.SetStateAction<any>>,
+  requestedData?: string[]
 ): Promise<void> => {
   try {
-    // Fetch user data independently
+    // Извличане на потребителски данни независимо
     fetch(`${import.meta.env.VITE_API_BASE_URL}/user-data`, {
       method: "GET",
       headers: {
@@ -36,9 +38,11 @@ export const fetchData = async (
       }
     })
       .then((res) => res.json())
-      .catch((error) => console.error("Error fetching user data:", error));
+      .catch((error) =>
+        console.error("Грешка при извличане на потребителски данни:", error)
+      );
 
-    // Fetch statistics data independently
+    // Дефиниране на наличните крайни точки
     const endpoints = [
       {
         key: "topRecommendations",
@@ -87,8 +91,13 @@ export const fetchData = async (
       }
     ];
 
-    // Loop over each endpoint, fetch data, and update state independently
-    endpoints.forEach(({ key, endpoint }) => {
+    // Филтриране на заявките според подадения списък или извличане на всички, ако няма ограничения
+    const filteredEndpoints = requestedData
+      ? endpoints.filter(({ key }) => requestedData.includes(key))
+      : endpoints;
+
+    // Извличане на избраните данни и актуализиране на състоянието
+    filteredEndpoints.forEach(({ key, endpoint }) => {
       fetch(`${import.meta.env.VITE_API_BASE_URL}${endpoint}`, {
         method: "GET",
         headers: {
@@ -103,10 +112,12 @@ export const fetchData = async (
             [key]: data
           }));
         })
-        .catch((error) => console.error(`Error fetching ${key}:`, error));
+        .catch((error) =>
+          console.error(`Грешка при извличане на ${key}:`, error)
+        );
     });
   } catch (error) {
-    console.error("Error in fetchData:", error);
+    console.error("Грешка в fetchData:", error);
     throw error;
   }
 };

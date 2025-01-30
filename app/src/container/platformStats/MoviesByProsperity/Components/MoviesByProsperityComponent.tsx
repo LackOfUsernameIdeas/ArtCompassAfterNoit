@@ -1,15 +1,15 @@
 import { FC, Fragment } from "react";
-import { DataType } from "../platformStats-types";
+import { MoviesByProsperityDataType } from "../../platformStats-types";
 
-import { MoviesByProsperityBubbleChart } from "./Charts";
+import { MoviesByProsperityBubbleChart } from "../../Charts";
 
-interface MoviesByProsperityBubbleChartComponentProps {
-  data: DataType;
+interface MoviesByProsperityComponentProps {
+  data: MoviesByProsperityDataType;
 }
 
-const MoviesByProsperityBubbleChartComponent: FC<
-  MoviesByProsperityBubbleChartComponentProps
-> = ({ data }) => {
+const MoviesByProsperityComponent: FC<MoviesByProsperityComponentProps> = ({
+  data
+}) => {
   return (
     <Fragment>
       <div className="xl:col-span-6 col-span-12">
@@ -32,4 +32,4 @@ const MoviesByProsperityBubbleChartComponent: FC<
   );
 };
 
-export default MoviesByProsperityBubbleChartComponent;
+export default MoviesByProsperityComponent;

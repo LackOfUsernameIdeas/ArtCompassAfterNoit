@@ -1,18 +1,26 @@
 import { FC, Fragment, useEffect, useState, useMemo } from "react";
-import { Category, DataType, FilteredTableData } from "../platformStats-types";
-import { filterTableData } from "../helper_functions";
-import { isActor, isDirector, isWriter } from "../../helper_functions_common";
+import {
+  Category,
+  ActorsDirectorsWritersTableDataType,
+  FilteredTableData
+} from "../../platformStats-types";
+import { filterTableData } from "../../helper_functions";
+import {
+  isActor,
+  isDirector,
+  isWriter
+} from "../../../helper_functions_common";
 import { useMediaQuery } from "react-responsive";
-import { tableCategoryDisplayNames } from "../platformStats-data";
-import Pagination from "../../../components/common/pagination/pagination";
+import { tableCategoryDisplayNames } from "../../platformStats-data";
+import Pagination from "../../../../components/common/pagination/pagination";
 
-interface ActorsDirectorsWritersTableProps {
-  data: DataType;
+interface ActorsDirectorsWritersTableComponentProps {
+  data: ActorsDirectorsWritersTableDataType;
 }
 
-const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
-  data
-}) => {
+const ActorsDirectorsWritersTableComponent: FC<
+  ActorsDirectorsWritersTableComponentProps
+> = ({ data }) => {
   const [prosperitySortCategory, setProsperitySortCategory] =
     useState<Category>("Directors");
 
@@ -71,7 +79,6 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
   };
 
   const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
-  const is1477 = useMediaQuery({ query: "(max-width: 1477px)" });
 
   return (
     <Fragment>
@@ -133,38 +140,68 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                     >
                       #
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                    >
                       {
                         tableCategoryDisplayNames[
                           prosperitySortCategory as keyof typeof tableCategoryDisplayNames
                         ]
                       }
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                    >
                       Просперитетен рейтинг
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                    >
                       Среден IMDb рейтинг
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                    >
                       Среден Rotten Tomatoes рейтинг
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                    >
                       Среден Метаскор
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                    >
                       Боксофис
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                    >
                       Брой филми в платформата
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                    >
                       Общо препоръки
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                    >
                       Победи на награждавания
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                    >
                       Номинации за награди
                     </th>
                   </tr>
@@ -175,7 +212,9 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                       key={index}
                       className="border border-inherit border-solid hover:bg-gray-100 dark:border-defaultborder/10 dark:hover:bg-light"
                     >
-                      <td className="!font-Opsilon !font-light !tracking-wide dark:bg-black/40 bg-gray-500/15">{(currentTablePage - 1) * 5 + index + 1}</td>
+                      <td className="!font-Opsilon !font-light !tracking-wide dark:bg-black/40 bg-gray-500/15">
+                        {(currentTablePage - 1) * 5 + index + 1}
+                      </td>
                       <td>{getCategoryName(item)}</td>
                       <td>{item.prosperityScore}</td>
                       <td>{item.avg_imdb_rating}</td>
@@ -210,4 +249,4 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
   );
 };
 
-export default ActorsDirectorsWritersTable;
+export default ActorsDirectorsWritersTableComponent;

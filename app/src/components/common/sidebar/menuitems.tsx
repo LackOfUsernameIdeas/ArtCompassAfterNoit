@@ -42,15 +42,72 @@ export const MENUITEMS = [
     ]
   },
   {
-    path: `${import.meta.env.BASE_URL}app/platformStats`,
     icon: <i className="side-menu__icon bx bx-line-chart"></i>,
-    type: "link",
+    type: "sub",
     Name: "",
     active: false,
     selected: false,
     title: "Общи Статистики",
     class:
-      "badge !bg-warning/10 !text-warning !py-[0.25rem] !px-[0.45rem] !text-[0.75em] ms-2"
+      "badge !bg-warning/10 !text-warning !py-[0.25rem] !px-[0.45rem] !text-[0.75em] ms-2",
+    children: [
+      {
+        path: `${
+          import.meta.env.BASE_URL
+        }app/platformStats/moviesByProsperityBubbleChart`,
+        icon: <i className="side-menu__icon bx bx-bar-chart-alt-2"></i>,
+        type: "link",
+        active: false,
+        selected: false,
+        title: "Най-успешни филми по Просперитет, IMDb Рейтинг и Боксофис"
+      },
+      {
+        path: `${
+          import.meta.env.BASE_URL
+        }app/platformStats/actorsDirectorsWritersTable`,
+        icon: <i className="side-menu__icon bx bx-bar-chart-alt-2"></i>,
+        type: "link",
+        active: false,
+        selected: false,
+        title: "Актьори, режисьори и сценаристи по Просперитет"
+      },
+      {
+        path: `${
+          import.meta.env.BASE_URL
+        }app/platformStats/genrePopularityOverTime`,
+        icon: <i className="side-menu__icon bx bx-bar-chart-alt-2"></i>,
+        type: "link",
+        active: false,
+        selected: false,
+        title: "Популярност на жанровете във времето"
+      },
+      {
+        path: `${import.meta.env.BASE_URL}app/platformStats/topRecommendations`,
+        icon: <i className="side-menu__icon bx bx-bar-chart-alt-2"></i>,
+        type: "link",
+        active: false,
+        selected: false,
+        title: "Топ препоръки"
+      },
+      {
+        path: `${
+          import.meta.env.BASE_URL
+        }app/platformStats/moviesAndSeriesByRatings`,
+        icon: <i className="side-menu__icon bx bx-bar-chart-alt-2"></i>,
+        type: "link",
+        active: false,
+        selected: false,
+        title: "Филми и сериали по оценки"
+      },
+      {
+        path: `${import.meta.env.BASE_URL}app/platformStats/topCountries`,
+        icon: <i className="side-menu__icon bx bx-bar-chart-alt-2"></i>,
+        type: "link",
+        active: false,
+        selected: false,
+        title: "Топ държави"
+      }
+    ]
   },
   // {
   //   icon: <i className="side-menu__icon bx bx-bar-chart-alt-2"></i>,

@@ -1,15 +1,13 @@
 import { FC, Fragment } from "react";
-import { DataType } from "../platformStats-types";
+import { TopCountriesDataType } from "../../platformStats-types";
 
-import { CountryBarChart } from "./Charts";
+import { TopCountriesChart } from "../../Charts";
 import { useMediaQuery } from "react-responsive";
-interface CountryBarChartComponentProps {
-  data: DataType;
+interface TopCountriesComponentProps {
+  data: TopCountriesDataType;
 }
 
-const CountryBarChartComponent: FC<CountryBarChartComponentProps> = ({
-  data
-}) => {
+const TopCountriesComponent: FC<TopCountriesComponentProps> = ({ data }) => {
   const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
 
   return (
@@ -22,7 +20,10 @@ const CountryBarChartComponent: FC<CountryBarChartComponentProps> = ({
             </div>
           </div>
           <div className="box-body">
-            <CountryBarChart topCountries={data.topCountries} is1546={is1546} />
+            <TopCountriesChart
+              topCountries={data.topCountries}
+              is1546={is1546}
+            />
           </div>
         </div>
       </div>
@@ -30,4 +31,4 @@ const CountryBarChartComponent: FC<CountryBarChartComponentProps> = ({
   );
 };
 
-export default CountryBarChartComponent;
+export default TopCountriesComponent;

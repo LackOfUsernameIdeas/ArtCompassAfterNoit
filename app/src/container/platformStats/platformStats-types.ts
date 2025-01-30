@@ -127,23 +127,35 @@ export interface GenreSeriesData {
 // Формат на данни за топ жанровете
 export type HeatmapData = GenreSeriesData[];
 
-// Обобщени данни за платформата (топ препоръки, жанрове и др.)
-export type DataType = {
-  topRecommendations: any[]; // Топ препоръки
-  genrePopularityOverTime: Record<string, any>; // Популярност на жанровете през времето
-  topActors: any[]; // Топ актьори
-  topDirectors: any[]; // Топ режисьори
-  topWriters: any[]; // Топ писатели
-  totalAwardsByMovieOrSeries: any[]; // Общо награди по филми или сериали
+export type ActorsDirectorsWritersTableDataType = {
   sortedDirectorsByProsperity: any[]; // Подредени режисьори по просперитет
   sortedActorsByProsperity: any[]; // Подредени актьори по просперитет
   sortedWritersByProsperity: any[]; // Подредени писатели по просперитет
-  sortedMoviesByProsperity: any[]; // Подредени филми по просперитет
+};
+
+export type GenrePopularityOverTimeDataType = {
+  genrePopularityOverTime: Record<string, any>; // Популярност на жанровете през времето
+};
+
+export type MoviesAndSeriesByRatingsDataType = {
   sortedMoviesAndSeriesByMetascore: any[]; // Подредени филми и сериали по Metascore
   sortedMoviesAndSeriesByIMDbRating: any[]; // Подредени филми и сериали по IMDb рейтинг
   sortedMoviesAndSeriesByRottenTomatoesRating: any[]; // Подредени филми и сериали по Rotten Tomatoes рейтинг
+};
+
+export type MoviesByProsperityDataType = {
+  sortedMoviesByProsperity: any[]; // Подредени филми по просперитет
+};
+
+export type TopCountriesDataType = {
   topCountries: any[]; // Топ страни
-  [key: `sorted${string}ByProsperity`]: any[]; // Подредени данни по просперитет
+};
+
+export type TopRecommendationsDataType = {
+  topActors: any[]; // Топ актьори
+  topDirectors: any[]; // Топ режисьори
+  topWriters: any[]; // Топ писатели
+  topRecommendations: any[]; // Топ страни
 };
 
 // Категориен тип за роли

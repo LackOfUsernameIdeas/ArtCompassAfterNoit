@@ -12,7 +12,6 @@ import BooksRecommendations from "./container/recommendations/books/BooksRecomme
 import "./index.scss";
 import ResetRequest from "./container/authentication/resetpassword/Resetrequest.tsx";
 import PrivateRoute from "./pages/PrivateRoute.tsx";
-import PlatformStats from "./container/platformStats/PlatformStats.tsx";
 import MoviesSeriesIndividualStats from "./container/individualStats/movies_series/MoviesSeriesIndividualStats.tsx";
 import BooksIndividualStats from "./container/individualStats/books/BooksIndividualStats.tsx";
 import Watchlist from "./container/saveLists/movies_series/Watchlist.tsx";
@@ -20,6 +19,12 @@ import Readlist from "./container/saveLists/books/Readlist.tsx";
 import Contact from "./container/contact/Contact.tsx";
 import Test from "./container/test/test.tsx";
 import ChooseRecommendations from "./container/recommendations/choose/ChooseRecommendations.tsx";
+import MoviesByProsperityBubbleChart from "./container/platformStats/MoviesByProsperity/MoviesByProsperity.tsx";
+import ActorsDirectorsWritersTable from "./container/platformStats/ActorsDirectorsWritersTable/ActorsDirectorsWritersTable.tsx";
+import GenrePopularityOverTime from "./container/platformStats/GenrePopularityOverTime/GenrePopularityOverTime.tsx";
+import TopRecommendations from "./container/platformStats/TopRecommendations/TopRecommendations.tsx";
+import MoviesAndSeriesByRatings from "./container/platformStats/MoviesAndSeriesByRatings/MoviesAndSeriesByRatings.tsx";
+import TopCountries from "./container/platformStats/TopCountries/TopCountries.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.Fragment>
@@ -38,8 +43,36 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           >
             {/* Default route */}
             <Route path="recommendations" element={<ChooseRecommendations />} />
-            <Route index path="platformStats" element={<PlatformStats />} />
-
+            <Route
+              index
+              path="platformStats/moviesByProsperityBubbleChart"
+              element={<MoviesByProsperityBubbleChart />}
+            />
+            <Route
+              index
+              path="platformStats/actorsDirectorsWritersTable"
+              element={<ActorsDirectorsWritersTable />}
+            />
+            <Route
+              index
+              path="platformStats/genrePopularityOverTime"
+              element={<GenrePopularityOverTime />}
+            />
+            <Route
+              index
+              path="platformStats/topRecommendations"
+              element={<TopRecommendations />}
+            />
+            <Route
+              index
+              path="platformStats/moviesAndSeriesByRatings"
+              element={<MoviesAndSeriesByRatings />}
+            />
+            <Route
+              index
+              path="platformStats/topCountries"
+              element={<TopCountries />}
+            />
             <Route
               path="recommendations/movies_series"
               element={<MoviesSeriesRecommendations />}

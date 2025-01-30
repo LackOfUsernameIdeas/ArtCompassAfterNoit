@@ -1,25 +1,25 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import {
-  DataType,
+  TopRecommendationsDataType,
   MovieData,
   RecommendationData
-} from "../platformStats-types";
+} from "../../platformStats-types";
 import {
   getTotalBarChartPages,
   handleBarChartPageChange,
   paginateBarChartData
-} from "../helper_functions";
+} from "../../helper_functions";
 import { useMediaQuery } from "react-responsive";
-import { TopRecommendationsBarChart } from "./Charts";
-import Pagination from "../../../components/common/pagination/pagination";
+import { TopRecommendationsBarChart } from "../../Charts";
+import Pagination from "../../../../components/common/pagination/pagination";
 
-interface TopRecommendationsChartComponentProps {
-  data: DataType;
+interface TopMoviesSeriesComponentProps {
+  data: TopRecommendationsDataType;
 }
 
-const TopRecommendationsChartComponent: FC<
-  TopRecommendationsChartComponentProps
-> = ({ data }) => {
+const TopMoviesSeriesComponent: FC<TopMoviesSeriesComponentProps> = ({
+  data
+}) => {
   const [seriesDataForTopStatsChart, setSeriesDataForTopStatsChart] = useState<
     (MovieData | RecommendationData)[]
   >([]);
@@ -99,4 +99,4 @@ const TopRecommendationsChartComponent: FC<
   );
 };
 
-export default TopRecommendationsChartComponent;
+export default TopMoviesSeriesComponent;

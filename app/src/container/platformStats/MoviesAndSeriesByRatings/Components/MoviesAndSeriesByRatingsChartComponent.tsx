@@ -1,24 +1,23 @@
 import { FC, Fragment, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { MoviesAndSeriesByRatingsChart } from "./Charts";
-import { DataType } from "../platformStats-types";
+import { MoviesAndSeriesByRatingsChart } from "../../Charts";
+import { MoviesAndSeriesByRatingsDataType } from "../../platformStats-types";
 import {
   paginateBarChartData,
   getTotalBarChartPages,
   handleBarChartPageChange,
   handleMoviesAndSeriesSortCategory
-} from "../helper_functions";
+} from "../../helper_functions";
 import { useMediaQuery } from "react-responsive";
-import { moviesAndSeriesCategoryDisplayNames } from "../platformStats-data";
+import { moviesAndSeriesCategoryDisplayNames } from "../../platformStats-data";
 import { Tooltip } from "react-tooltip";
-import Pagination from "../../../components/common/pagination/pagination";
+import Pagination from "../../../../components/common/pagination/pagination";
 
-interface MoviesAndSeriesByRatingsChartComponentProps {
-  data: DataType;
+interface MoviesAndSeriesByRatingsComponentProps {
+  data: MoviesAndSeriesByRatingsDataType;
 }
 
-const MoviesAndSeriesByRatingsChartComponent: FC<
-  MoviesAndSeriesByRatingsChartComponentProps
+const MoviesAndSeriesByRatingsComponent: FC<
+  MoviesAndSeriesByRatingsComponentProps
 > = ({ data }) => {
   const pageSize = 5; // Размер на страницата (брой елементи на страница)
   const [currentChartPage, setCurrentChartPage] = useState(1); // Текущата страница на графиката
@@ -176,4 +175,4 @@ const MoviesAndSeriesByRatingsChartComponent: FC<
   );
 };
 
-export default MoviesAndSeriesByRatingsChartComponent;
+export default MoviesAndSeriesByRatingsComponent;
