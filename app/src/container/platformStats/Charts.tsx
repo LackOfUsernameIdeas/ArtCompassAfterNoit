@@ -441,13 +441,13 @@ export class MoviesAndSeriesByRatingsChart extends Component<
 }
 
 // Интерфейс за пропсовете на компонента
-interface CountryBarProps {
+interface TopCountriesProps {
   topCountries: CountryData[] | null; // Списък с данни за държавите или null, ако няма данни
   is1546: boolean;
 }
 
 // Функционален компонент за визуализация на препоръките по държави
-export const CountryBarChart: React.FC<CountryBarProps> = ({
+export const TopCountriesChart: React.FC<TopCountriesProps> = ({
   topCountries,
   is1546
 }) => {

@@ -1,7 +1,7 @@
 import { FC, Fragment } from "react";
 import { TopCountriesDataType } from "../../platformStats-types";
 
-import { CountryBarChart } from "../../charts";
+import { TopCountriesChart } from "../../charts";
 import { useMediaQuery } from "react-responsive";
 interface TopCountriesComponentProps {
   data: TopCountriesDataType;
@@ -20,7 +20,10 @@ const TopCountriesComponent: FC<TopCountriesComponentProps> = ({ data }) => {
             </div>
           </div>
           <div className="box-body">
-            <CountryBarChart topCountries={data.topCountries} is1546={is1546} />
+            <TopCountriesChart
+              topCountries={data.topCountries}
+              is1546={is1546}
+            />
           </div>
         </div>
       </div>
