@@ -25,7 +25,7 @@ import GenrePopularityOverTime from "./container/platformStats/GenrePopularityOv
 import TopRecommendations from "./container/platformStats/TopRecommendations/TopRecommendations.tsx";
 import MoviesAndSeriesByRatings from "./container/platformStats/MoviesAndSeriesByRatings/MoviesAndSeriesByRatings.tsx";
 import TopCountries from "./container/platformStats/TopCountries/TopCountries.tsx";
-import AIAnalysator from "./container/aiAnalysator/aiAnalysator.tsx";
+import AIAnalysator from "./container/aiAnalysator/AIAnalysator.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.Fragment>
