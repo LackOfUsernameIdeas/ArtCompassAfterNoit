@@ -157,6 +157,8 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
 
   // Ако няма избран елемент, връщаме null, за да не рендерираме компонентата
   if (!selectedItem) return null;
+
+  console.log("selectedItem: ", selectedItem);
   return (
     <div
       className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-50 transition-opacity duration-300 ${
