@@ -1,7 +1,7 @@
 import { FC, Fragment } from "react";
 import { MoviesByProsperityDataType } from "../../platformStats-types";
 
-import { MoviesByProsperityBubbleChart } from "../../a";
+import { MoviesByProsperityBubbleChart } from "../../charts";
 
 interface MoviesByProsperityComponentProps {
   data: MoviesByProsperityDataType;
