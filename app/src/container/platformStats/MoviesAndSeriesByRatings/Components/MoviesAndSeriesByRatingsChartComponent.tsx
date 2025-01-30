@@ -72,9 +72,7 @@ const MoviesAndSeriesByRatingsComponent: FC<
   };
 
   // Отзивчиви точки за прекъсване
-  const is1461 = useMediaQuery({ query: "(max-width: 1461px)" });
   const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
-  const is1675 = useMediaQuery({ query: "(max-width: 1675px)" });
 
   return (
     <Fragment>
@@ -82,23 +80,7 @@ const MoviesAndSeriesByRatingsComponent: FC<
         <div className="box custom-box">
           <div className="custom-box-header justify-between">
             <div
-              className={`box-title whitespace-nowrap overflow-hidden text-ellipsis !font-Opsilon !font-light !tracking-wide`}
-              data-tooltip-id="box-title-tooltip"
-              data-tooltip-content={`Филми и сериали по ${
-                moviesAndSeriesCategoryDisplayNames[
-                  moviesAndSeriesSortCategory as keyof typeof moviesAndSeriesCategoryDisplayNames
-                ]
-              }`}
-              style={{
-                maxWidth:
-                  window.innerWidth < 1400
-                    ? "100%"
-                    : is1675
-                    ? is1461
-                      ? "200px"
-                      : "250px"
-                    : "100%"
-              }}
+              className={`box-title !font-Opsilon !font-light !tracking-wide`}
             >
               {`Филми и сериали по ${
                 moviesAndSeriesCategoryDisplayNames[
@@ -106,7 +88,6 @@ const MoviesAndSeriesByRatingsComponent: FC<
                 ]
               }`}
             </div>
-            <Tooltip id="box-title-tooltip" />
 
             <div className="flex flex-wrap gap-2">
               <div
