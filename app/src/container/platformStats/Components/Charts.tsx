@@ -571,8 +571,8 @@ export const CountryBarChart: React.FC<CountryBarProps> = ({
                 aria-label={country.country_en}
               ></div>
               <span className="ml-2">
-                <span className="font-opsillon">{country.country_bg}</span>: 
-                <span className="font-equilibrist"> {country.count} пъти</span>
+                <span className="font-Equilibrist"><strong>{country.country_bg}</strong></span>: 
+                <span className="text-xl font-Opsilon font-light !tracking-wide"> {country.count} <span className="font-Equilibrist text-sm">пъти</span></span>
               </span>
             </li>
           );
