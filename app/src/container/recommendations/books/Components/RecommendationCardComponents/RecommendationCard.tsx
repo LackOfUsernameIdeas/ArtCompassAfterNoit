@@ -100,7 +100,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               resolvedGenres
             );
           }
-        } else if (source === "Google Books") {
+        } else if (source === "GoogleBooks") {
           // Ако източникът е Google Books, очакваме жанровете да са обект с категории и поджанрове
           if (typeof resolvedGenres === "object" && resolvedGenres !== null) {
             const genreEntries = Object.entries(resolvedGenres);
