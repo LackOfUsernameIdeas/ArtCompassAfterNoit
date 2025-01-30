@@ -10,7 +10,7 @@ import {
   paginateBarChartData
 } from "../../helper_functions";
 import { useMediaQuery } from "react-responsive";
-import { TopRecommendationsBarChart } from "../../charts";
+import { TopRecommendationsBarChart } from "../../a";
 import Pagination from "../../../../components/common/pagination/pagination";
 
 interface TopMoviesSeriesComponentProps {

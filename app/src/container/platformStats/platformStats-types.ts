@@ -127,6 +127,24 @@ export interface GenreSeriesData {
 // Формат на данни за топ жанровете
 export type HeatmapData = GenreSeriesData[];
 
+// Обобщени данни за платформата (топ препоръки, жанрове и др.)
+export type DataType = {
+  topRecommendations: any[]; // Топ препоръки
+  genrePopularityOverTime: Record<string, any>; // Популярност на жанровете през времето
+  topActors: any[]; // Топ актьори
+  topDirectors: any[]; // Топ режисьори
+  topWriters: any[]; // Топ писатели
+  totalAwardsByMovieOrSeries: any[]; // Общо награди по филми или сериали
+  sortedDirectorsByProsperity: any[]; // Подредени режисьори по просперитет
+  sortedActorsByProsperity: any[]; // Подредени актьори по просперитет
+  sortedWritersByProsperity: any[]; // Подредени писатели по просперитет
+  sortedMoviesByProsperity: any[]; // Подредени филми по просперитет
+  sortedMoviesAndSeriesByMetascore: any[]; // Подредени филми и сериали по Metascore
+  sortedMoviesAndSeriesByIMDbRating: any[]; // Подредени филми и сериали по IMDb рейтинг
+  sortedMoviesAndSeriesByRottenTomatoesRating: any[]; // Подредени филми и сериали по Rotten Tomatoes рейтинг
+  topCountries: any[]; // Топ страни
+};
+
 export type ActorsDirectorsWritersTableDataType = {
   sortedDirectorsByProsperity: any[]; // Подредени режисьори по просперитет
   sortedActorsByProsperity: any[]; // Подредени актьори по просперитет
