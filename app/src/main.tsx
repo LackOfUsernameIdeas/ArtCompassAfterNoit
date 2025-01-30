@@ -25,6 +25,7 @@ import GenrePopularityOverTime from "./container/platformStats/GenrePopularityOv
 import TopRecommendations from "./container/platformStats/TopRecommendations/TopRecommendations.tsx";
 import MoviesAndSeriesByRatings from "./container/platformStats/MoviesAndSeriesByRatings/MoviesAndSeriesByRatings.tsx";
 import TopCountries from "./container/platformStats/TopCountries/TopCountries.tsx";
+import AIAnalysator from "./container/aiAnalysator/aiAnalysator.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.Fragment>
@@ -73,6 +74,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               path="platformStats/topCountries"
               element={<TopCountries />}
             />
+            <Route index path="aiAnalysator" element={<AIAnalysator />} />
             <Route
               path="recommendations/movies_series"
               element={<MoviesSeriesRecommendations />}

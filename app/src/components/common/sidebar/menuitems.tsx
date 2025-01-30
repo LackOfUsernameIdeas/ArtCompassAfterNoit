@@ -14,6 +14,17 @@ export const MENUITEMS = [
       "badge !bg-warning/10 !text-warning !py-[0.25rem] !px-[0.45rem] !text-[0.75em] ms-2"
   },
   {
+    path: `${import.meta.env.BASE_URL}app/aiAnalysator`,
+    icon: <i className="side-menu__icon ti ti-report-analytics"></i>,
+    type: "link",
+    Name: "",
+    active: false,
+    selected: false,
+    title: "AI Анализатор",
+    class:
+      "badge !bg-warning/10 !text-warning !py-[0.25rem] !px-[0.45rem] !text-[0.75em] ms-2"
+  },
+  {
     icon: <i className="side-menu__icon ti ti-list-details"></i>,
     type: "sub",
     Name: "",
