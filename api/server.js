@@ -1204,6 +1204,19 @@ app.get("/get-goodreads-json-object-for-a-book", (req, res) => {
   });
 });
 
+app.post("/check-relevance", (req, res) => {
+  const { userPreferences, recommendation } = req.body;
+
+  if (!userPreferences || !recommendation) {
+    return res
+      .status(400)
+      .json({ error: "Missing userPreferences or recommendation object" });
+  }
+
+  const relevanceResult = hf.checkRelevance(userPreferences, recommendation);
+  res.json(relevanceResult);
+});
+
 // Стартиране на сървъра
 app.listen(5000, () => {
   console.log("Server started on port 5000.");
