@@ -41,6 +41,174 @@ function translatePreferredType(preferredType) {
   return typeMapping[preferredType] || preferredType;
 }
 
+function matchMoodWithGenres(mood, genres) {
+  const moodGenreMap = {
+    "Развълнуван/-на": [
+      "Action",
+      "Adventure",
+      "Comedy",
+      "Animation",
+      "Fantasy",
+      "Mystery",
+      "Sci-Fi",
+      "Sport",
+      "Thriller",
+      "War",
+      "Western"
+    ],
+    "Любопитен/-на": [
+      "Mystery",
+      "Sci-Fi",
+      "Documentary",
+      "Adventure",
+      "Crime",
+      "Fantasy",
+      "Film-Noir",
+      "Horror",
+      "Sport",
+      "Western"
+    ],
+    "Тъжен/-на": ["Drama", "Romance", "Film-Noir"],
+    "Щастлив/-а": [
+      "Comedy",
+      "Musical",
+      "Action",
+      "Animation",
+      "Horror",
+      "Sport",
+      "Thriller",
+      "Western"
+    ],
+    "Спокоен/-йна": [
+      "Family",
+      "Fantasy",
+      "Film-Noir",
+      "Musical",
+      "Sci-Fi",
+      "Thriller",
+      "War",
+      "Western"
+    ],
+    "Разочарован/-на": ["Drama", "Horror", "Romance"],
+    "Уморен/-на": [
+      "Comedy",
+      "Documentary",
+      "Drama",
+      "Animation",
+      "Crime",
+      "Western"
+    ],
+    "Нервен/-на": ["Thriller", "Mystery", "Action", "Horror", "War"],
+    "Разгневен/-на": ["Action", "Crime", "Horror", "Mystery"],
+    "Стресиран/-на": ["Thriller", "Horror", "Drama", "Comedy", "Western"],
+    "Носталгичен/-на": ["Drama", "History", "Animation", "Romance", "Western"],
+    "Безразличен/-на": [
+      "Action",
+      "Adventure",
+      "Animation",
+      "Biography",
+      "Comedy",
+      "Crime",
+      "Documentary",
+      "Drama",
+      "Family",
+      "Fantasy",
+      "Film-Noir",
+      "History",
+      "Horror",
+      "Musical",
+      "Mystery",
+      "Romance",
+      "Sci-Fi",
+      "Sport",
+      "Thriller",
+      "War",
+      "Western"
+    ],
+    "Оптимистичен/-на": [
+      "Comedy",
+      "Adventure",
+      "Family",
+      "Fantasy",
+      "Mystery",
+      "Sci-Fi",
+      "Sport",
+      "Western"
+    ],
+    "Песимистичен/-на": ["Drama", "War", "Film-Noir", "Thriller"],
+    "Весел/-а": [
+      "Comedy",
+      "Musical",
+      "Action",
+      "Adventure",
+      "Animation",
+      "Fantasy",
+      "Film-Noir",
+      "Mystery",
+      "Sci-Fi",
+      "Sport",
+      "Western"
+    ],
+    "Смутен/-на": ["Romance", "Drama", "Horror", "War"],
+    "Озадачен/-на": [
+      "Mystery",
+      "Sci-Fi",
+      "Adventure",
+      "Fantasy",
+      "Film-Noir",
+      "Romance",
+      "Sport",
+      "Western"
+    ],
+    "Разтревожен/-на": ["Thriller", "Horror", "Romance", "War"],
+    "Вдъхновен/-на": [
+      "Biography",
+      "History",
+      "Adventure",
+      "Animation",
+      "Fantasy",
+      "Film-Noir",
+      "Musical",
+      "Mystery",
+      "Sci-Fi",
+      "Sport",
+      "Western"
+    ]
+  };
+
+  const matchingGenres = moodGenreMap[mood] || [];
+  return genres.some((genre) => matchingGenres.includes(genre));
+}
+
+function parseRuntime(runtime) {
+  if (!runtime || runtime.toLowerCase() === "n/a") return null;
+
+  const hourMatch = runtime.match(/(\d+)\s*ч/); // Match hours
+  const minMatch = runtime.match(/(\d+)\s*(м|min)/); // Match minutes
+
+  let totalMinutes = 0;
+
+  if (hourMatch) {
+    totalMinutes += parseInt(hourMatch[1], 10) * 60; // Convert hours to minutes
+  }
+  if (minMatch) {
+    totalMinutes += parseInt(minMatch[1], 10); // Add minutes
+  }
+
+  return totalMinutes > 0 ? totalMinutes : null;
+}
+
+function getTimeAvailabilityInMinutes(timeAvailability) {
+  const timeMapping = {
+    "1 час": 60,
+    "2 часа": 120,
+    "3 часа": 180,
+    "Нямам предпочитания": null
+  };
+
+  return timeMapping[timeAvailability] ?? undefined;
+}
+
 function checkRelevance(userPreferences, recommendation) {
   let score = 0;
 
@@ -68,71 +236,36 @@ function checkRelevance(userPreferences, recommendation) {
     }
   }
 
-  // ------------------------------------
-  // // ✅ 3. Match Age Preference
-  // if (userPreferences.preferred_age && recommendation.year) {
-  //   const currentYear = new Date().getFullYear();
-  //   const recYear = parseInt(recommendation.year, 10);
+  // ✅ 3. Match Mood with Genre
+  if (userPreferences.mood && recommendation.genre_en) {
+    const recGenres = recommendation.genre_en.split(", ");
+    if (matchMoodWithGenres(userPreferences.mood, recGenres)) {
+      score += 1; // Match for mood-based genre association
+    }
+  }
 
-  //   if (
-  //     userPreferences.preferred_age.includes("последните 3 години") &&
-  //     recYear >= currentYear - 3
-  //   ) {
-  //     score += 2;
-  //   } else if (
-  //     userPreferences.preferred_age.includes("последните 10 години") &&
-  //     recYear >= currentYear - 10
-  //   ) {
-  //     score += 1;
-  //   } else if (userPreferences.preferred_age.includes("последните 20 години")) {
-  //     score += 1;
-  //   }
-  // }
+  // ✅ 4. Match Time Availability with Runtime
+  if (userPreferences.timeAvailability && recommendation.runtime) {
+    const timeAvailable = getTimeAvailabilityInMinutes(
+      userPreferences.timeAvailability
+    );
 
-  // // ✅ 4. Match Target Group
-  // if (userPreferences.preferred_target_group && recommendation.rated) {
-  //   const targetMappings = {
-  //     тийнейджъри: ["PG-13", "TV-14"],
-  //     възрастни: ["R", "TV-MA"],
-  //     деца: ["G", "PG", "TV-Y", "TV-Y7"]
-  //   };
+    if (timeAvailable === null) {
+      // "Нямам предпочитания" -> Всяко време ще е валидно
+      score += 1;
+    }
 
-  //   const userTarget = userPreferences.preferred_target_group.toLowerCase();
-  //   if (
-  //     targetMappings[userTarget] &&
-  //     targetMappings[userTarget].includes(recommendation.rated)
-  //   ) {
-  //     score += 1;
-  //   }
-  // }
+    const movieRuntime = parseRuntime(recommendation.runtime);
+    const tolerance = 35; // Allow for a 35-minute tolerance
 
-  // // ✅ 5. Match Favorite Actors & Directors
-  // if (userPreferences.favorite_actors && recommendation.actors) {
-  //   const userActors = userPreferences.favorite_actors
-  //     .split(", ")
-  //     .map((actor) => actor.toLowerCase());
-  //   const recActors = recommendation.actors
-  //     .split(", ")
-  //     .map((actor) => actor.toLowerCase());
-
-  //   if (recActors.some((actor) => userActors.includes(actor))) {
-  //     score += 2;
-  //   }
-  // }
-
-  // if (userPreferences.favorite_directors && recommendation.director) {
-  //   const userDirectors = userPreferences.favorite_directors
-  //     .split(", ")
-  //     .map((director) => director.toLowerCase());
-  //   const recDirector = recommendation.director.toLowerCase();
-
-  //   if (userDirectors.includes(recDirector)) {
-  //     score += 2;
-  //   }
-  // }
-
-  // ✅ 6. Final Decision
-  return { isRelevant: score >= 4, relevanceScore: score };
+    if (movieRuntime !== null && timeAvailable !== null) {
+      if (movieRuntime <= timeAvailable + tolerance) {
+        score += 1; // Movie fits within available time
+      }
+    }
+  }
+  // ✅ 3. Final Decision
+  return { isRelevant: score >= 2, relevanceScore: score };
 }
 
 module.exports = {

@@ -17,7 +17,6 @@ export const moviesSeriesGenreOptions: Array<{ en: string; bg: string }> = [
   { en: "Film-Noir", bg: "Филм-ноар" },
   { en: "History", bg: "Исторически" },
   { en: "Horror", bg: "Ужаси" },
-  { en: "Music", bg: "Музика" },
   { en: "Musical", bg: "Мюзикъл" },
   { en: "Mystery", bg: "Мистерия" },
   { en: "Romance", bg: "Романтичен" },

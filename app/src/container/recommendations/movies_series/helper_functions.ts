@@ -285,6 +285,8 @@ export const generateMovieRecommendations = async (
               `OMDb data for ${movieName}: ${JSON.stringify(omdbData, null, 2)}`
             );
 
+            const runtimeForSaving = translatedRuntime || omdbData.Runtime;
+
             const recommendationData = {
               title: omdbData.Title,
               bgName: recommendations[movieTitle].bgName,

@@ -266,6 +266,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
     }
   }, [currentQuestion, selectedAnswer]);
 
+  console.log("user's preferences: ", moviesSeriesUserPreferences);
   return (
     <div>
       {showViewRecommendations && (
