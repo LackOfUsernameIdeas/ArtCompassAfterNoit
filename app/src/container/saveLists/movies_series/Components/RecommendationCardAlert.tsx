@@ -24,7 +24,6 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   const [translatedPlot, setTranslatedPlot] = useState<string>(""); // Преведеното описание на сюжета
   const [translatedCountry, setTranslatedCountry] = useState<string>(""); // Преведената страна
   const [translatedLanguage, setTranslatedLanguage] = useState<string>(""); // Преведеният език
-
   const [visible, setVisible] = useState(false); // Показване на компонента
   const [isModalOpen, setIsModalOpen] = useState(false); // Статус на модалния прозорец
   const [modalData, setModalData] = useState<string | undefined>(""); // Данни за съдържанието на модалния прозорец
@@ -227,14 +226,19 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                   {selectedItem.title_en ||
                     "Заглавие на английски не е налично"}
                 </a>
-                <p className="recommendation-small-details text-sm italic text-defaulttextcolor/70">
+                <p className="flex gap-1 recommendation-small-details text-sm italic text-defaulttextcolor/70">
                   {translatedGenres || "Жанр неизвестен"} |{" "}
                   {!isMovie &&
                     `Брой сезони: ${
                       selectedItem.totalSeasons || "Неизвестен"
                     } | `}
-                  {selectedItem.runtime || "Неизвестно времетраене"} |{" "}
-                  {selectedItem.year || "Година неизвестна"} | Рейтинг:{" "}
+                  {selectedItem.runtime || "Неизвестно времетраене"}{" "}
+                  {!isMovie && (
+                    <p title="Средно аритметично времетраене на един епизод">
+                      (Ср. за 1 епизод)
+                    </p>
+                  )}
+                  | {selectedItem.year || "Година неизвестна"} | Рейтинг:{" "}
                   {selectedItem.rated || "N/A"}
                 </p>
                 {/* Рейтинги */}

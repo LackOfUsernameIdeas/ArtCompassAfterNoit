@@ -24,8 +24,9 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   const [translatedCountry, setTranslatedCountry] = useState<string>(""); // Преведената страна
   const [translatedLanguage, setTranslatedLanguage] = useState<string>(""); // Преведеният език
   const plotPreviewLength = 150; // Дължина на прегледа на съдържанието (oписаниeто и сюжета)
-
   const recommendation = recommendationList[currentIndex]; // Генерираният филм/сериал
+  // Времетраене (за филм - времетраеното на филма, за сериал - средното времетраене на един епизод)
+  const runtime = recommendation.runtimeGoogle || recommendation.runtime;
   const isMovie = recommendation.type === "movie"; // Bool филм или не
   // Рейтинг от Rotten Tomatoes, ако е наличен
   const rottenTomatoesRating =
@@ -167,15 +168,19 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
             >
               {recommendation.title || "Заглавие на английски не е налично"}
             </a>
-            <p className="recommendation-small-details text-sm italic text-defaulttextcolor/70">
+            <p className="flex gap-1 recommendation-small-details text-sm italic text-defaulttextcolor/70">
               {translatedGenres || "Жанр неизвестен"} |{" "}
               {!isMovie &&
                 `Брой сезони: ${
                   recommendation.totalSeasons || "Неизвестен"
                 } | `}
-              {recommendation.runtimeGoogle || "Неизвестно времетраене"} (
-              {recommendation.runtime || "N/A мин."}) |{" "}
-              {recommendation.year || "Година неизвестна"} | Рейтинг:{" "}
+              {runtime || "Неизвестно времетраене"}{" "}
+              {!isMovie && (
+                <p title="Средно аритметично времетраене на един епизод">
+                  (Ср. за 1 епизод)
+                </p>
+              )}
+              | {recommendation.year || "Година неизвестна"} | Рейтинг:{" "}
               {recommendation.rated || "N/A"}
             </p>
             {/* Рейтинги */}
