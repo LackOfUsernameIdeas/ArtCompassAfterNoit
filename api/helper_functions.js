@@ -1,4 +1,4 @@
-async function translate(entry) {
+const translate = async (entry) => {
   const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bg&dt=t&q=${encodeURIComponent(
     entry
   )}`;
@@ -15,7 +15,7 @@ async function translate(entry) {
     console.error(`Error translating entry: ${entry}`, error);
     return entry;
   }
-}
+};
 
 // Функция за рестартиране на лимита на потребителя
 const checkAndResetRequestsDaily = (userRequests) => {
@@ -32,16 +32,16 @@ const checkAndResetRequestsDaily = (userRequests) => {
   }
 };
 
-function translatePreferredType(preferredType) {
+const translatePreferredType = (preferredType) => {
   const typeMapping = {
     Сериал: "series",
     Филм: "movie"
   };
 
   return typeMapping[preferredType] || preferredType;
-}
+};
 
-function matchMoodWithGenres(mood, genres) {
+const matchMoodWithGenres = (mood, genres) => {
   const moodGenreMap = {
     "Развълнуван/-на": [
       "Action",
@@ -178,9 +178,9 @@ function matchMoodWithGenres(mood, genres) {
 
   const matchingGenres = moodGenreMap[mood] || [];
   return genres.some((genre) => matchingGenres.includes(genre));
-}
+};
 
-function parseRuntime(runtime) {
+const parseRuntime = (runtime) => {
   if (!runtime || runtime.toLowerCase() === "n/a") return null;
 
   const hourMatch = runtime.match(/(\d+)\s*ч/); // Match hours
@@ -196,9 +196,9 @@ function parseRuntime(runtime) {
   }
 
   return totalMinutes > 0 ? totalMinutes : null;
-}
+};
 
-function getTimeAvailabilityInMinutes(timeAvailability) {
+const getTimeAvailabilityInMinutes = (timeAvailability) => {
   const timeMapping = {
     "1 час": 60,
     "2 часа": 120,
@@ -206,10 +206,26 @@ function getTimeAvailabilityInMinutes(timeAvailability) {
     "Нямам предпочитания": null
   };
 
-  return timeMapping[timeAvailability] ?? undefined;
-}
+  return timeMapping[timeAvailability];
+};
 
-function checkRelevance(userPreferences, recommendation) {
+const getYearThreshold = (preferredAge) => {
+  const currentYear = new Date().getFullYear();
+  const ageMapping = {
+    "Публикуван в последните 3 години": currentYear - 3,
+    "Публикуван в последните 10 години": currentYear - 10,
+    "Публикуван в последните 20 години": currentYear - 20,
+    "Нямам предпочитания": null
+  };
+
+  return ageMapping[preferredAge];
+};
+
+const normalizeName = (name) => {
+  return name.toLowerCase().replace(/[^\w\s]/gi, ""); // Remove special characters
+};
+
+const checkRelevance = (userPreferences, recommendation) => {
   let score = 0;
 
   // ✅ 1. Match Preferred Genres
@@ -264,9 +280,69 @@ function checkRelevance(userPreferences, recommendation) {
       }
     }
   }
-  // ✅ 3. Final Decision
+
+  // ✅ 5. Match Preferred Age with Release Year
+  if (userPreferences.preferred_age && recommendation.year) {
+    const thresholdYear = getYearThreshold(userPreferences.preferred_age);
+    const releaseYear = parseInt(recommendation.year, 10);
+
+    if (!isNaN(releaseYear)) {
+      if (thresholdYear === null || releaseYear >= thresholdYear) {
+        // "Нямам предпочитания" means all years valid
+        // OR the movie is within the preferred range
+        score += 1;
+      }
+    }
+  }
+
+  // ✅ 6. Match Target Group
+  if (userPreferences.preferred_target_group && recommendation.rated) {
+    const targetMappings = {
+      Деца: ["G", "PG", "TV-Y", "TV-Y7", "TV-Y7-FV", "Approved", "Passed"],
+      Тийнейджъри: ["PG-13", "TV-14", "Not Rated", "Approved"],
+      Възрастни: ["PG-13", "R", "TV-MA", "TV-14", "Not Rated", "Approved"],
+      Семейни: [
+        "G",
+        "PG",
+        "TV-G",
+        "TV-Y",
+        "TV-14",
+        "TV-Y7",
+        "Not Rated",
+        "Approved",
+        "Passed"
+      ],
+      "Семейство и деца": [
+        "G",
+        "PG",
+        "TV-Y",
+        "TV-Y7",
+        "Not Rated",
+        "Approved",
+        "Passed"
+      ],
+      "Възрастни над 65": [
+        "PG-13",
+        "R",
+        "TV-MA",
+        "TV-14",
+        "Not Rated",
+        "Approved"
+      ]
+    };
+
+    const userTarget = userPreferences.preferred_target_group;
+    if (
+      targetMappings[userTarget] &&
+      targetMappings[userTarget].includes(recommendation.rated)
+    ) {
+      score += 1;
+    }
+  }
+
+  // ✅ ?. Final Decision
   return { isRelevant: score >= 2, relevanceScore: score };
-}
+};
 
 module.exports = {
   translate,
