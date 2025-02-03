@@ -227,6 +227,7 @@ const normalizeName = (name) => {
 
 const checkRelevance = (userPreferences, recommendation) => {
   let score = 0;
+  const scores = {};
 
   // ✅ 1. Match Preferred Genres
   if (userPreferences.preferred_genres_en && recommendation.genre_en) {
@@ -239,6 +240,9 @@ const checkRelevance = (userPreferences, recommendation) => {
 
     if (recGenres.some((genre) => userGenres.includes(genre))) {
       score += 2; // Strong match for preferred genre
+      scores.genres = 2;
+    } else {
+      scores.genres = 0;
     }
   }
 
@@ -249,6 +253,9 @@ const checkRelevance = (userPreferences, recommendation) => {
       recommendation.type.toLowerCase()
     ) {
       score += 1; // Match for movie/series preference
+      scores.type = 1;
+    } else {
+      scores.type = 0;
     }
   }
 
@@ -257,6 +264,9 @@ const checkRelevance = (userPreferences, recommendation) => {
     const recGenres = recommendation.genre_en.split(", ");
     if (matchMoodWithGenres(userPreferences.mood, recGenres)) {
       score += 1; // Match for mood-based genre association
+      scores.mood = 1;
+    } else {
+      scores.mood = 0;
     }
   }
 
@@ -269,6 +279,7 @@ const checkRelevance = (userPreferences, recommendation) => {
     if (timeAvailable === null) {
       // "Нямам предпочитания" -> Всяко време ще е валидно
       score += 1;
+      scores.timeAvailability = 1;
     }
 
     const movieRuntime = parseRuntime(recommendation.runtime);
@@ -277,6 +288,9 @@ const checkRelevance = (userPreferences, recommendation) => {
     if (movieRuntime !== null && timeAvailable !== null) {
       if (movieRuntime <= timeAvailable + tolerance) {
         score += 1; // Movie fits within available time
+        scores.timeAvailability = 1;
+      } else {
+        scores.timeAvailability = 0;
       }
     }
   }
@@ -289,6 +303,7 @@ const checkRelevance = (userPreferences, recommendation) => {
     if (thresholdYear === null) {
       // "Нямам предпочитания" -> Всяко време ще е валидно
       score += 1;
+      scores.preferredAge = 1;
     }
 
     // Check if the year is a range like "2018–2024" or "2013–"
@@ -304,12 +319,16 @@ const checkRelevance = (userPreferences, recommendation) => {
         (endYear && endYear >= thresholdYear)
       ) {
         score += 1;
+        scores.preferredAge = 1;
       }
     } else if (!isNaN(releaseYear)) {
       if (thresholdYear !== null && releaseYear >= thresholdYear) {
         // The movie is within the preferred range
         score += 1;
+        scores.preferredAge = 1;
       }
+    } else {
+      scores.preferredAge = 0;
     }
   }
 
@@ -355,11 +374,18 @@ const checkRelevance = (userPreferences, recommendation) => {
       targetMappings[userTarget].includes(recommendation.rated)
     ) {
       score += 1;
+      scores.targetGroup = 1;
+    } else {
+      scores.targetGroup = 0;
     }
   }
 
   // ✅ ?. Final Decision
-  return { isRelevant: score >= 2, relevanceScore: score };
+  return {
+    isRelevant: score >= 2,
+    relevanceScore: score,
+    criteriaScores: scores
+  };
 };
 
 module.exports = {
