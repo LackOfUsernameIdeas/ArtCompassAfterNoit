@@ -326,9 +326,9 @@ const checkRelevance = (userPreferences, recommendation) => {
         // The movie is within the preferred range
         score += 1;
         scores.preferredAge = 1;
+      } else {
+        scores.preferredAge = 0;
       }
-    } else {
-      scores.preferredAge = 0;
     }
   }
 
