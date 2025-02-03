@@ -286,10 +286,28 @@ const checkRelevance = (userPreferences, recommendation) => {
     const thresholdYear = getYearThreshold(userPreferences.preferred_age);
     const releaseYear = parseInt(recommendation.year, 10);
 
-    if (!isNaN(releaseYear)) {
-      if (thresholdYear === null || releaseYear >= thresholdYear) {
-        // "Нямам предпочитания" means all years valid
-        // OR the movie is within the preferred range
+    if (thresholdYear === null) {
+      // "Нямам предпочитания" -> Всяко време ще е валидно
+      score += 1;
+    }
+
+    // Check if the year is a range like "2018–2024" or "2013–"
+    if (recommendation.year.includes("-")) {
+      const yearRange = recommendation.year.split("-");
+      const startYear = parseInt(yearRange[0], 10);
+      const endYear = yearRange.length > 1 ? parseInt(yearRange[1], 10) : null;
+      console.log(yearRange, startYear, endYear);
+
+      // If there's a valid end year, we use it, otherwise we assume it's ongoing.
+      if (
+        (thresholdYear !== null && startYear >= thresholdYear) ||
+        (endYear && endYear >= thresholdYear)
+      ) {
+        score += 1;
+      }
+    } else if (!isNaN(releaseYear)) {
+      if (thresholdYear !== null && releaseYear >= thresholdYear) {
+        // The movie is within the preferred range
         score += 1;
       }
     }
