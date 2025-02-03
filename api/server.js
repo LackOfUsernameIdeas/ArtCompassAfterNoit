@@ -1205,16 +1205,23 @@ app.get("/get-goodreads-json-object-for-a-book", (req, res) => {
 });
 
 app.post("/check-relevance", (req, res) => {
-  const { userPreferences, recommendation } = req.body;
+  const { userPreferences, recommendations } = req.body;
 
-  if (!userPreferences || !recommendation) {
-    return res
-      .status(400)
-      .json({ error: "Missing userPreferences or recommendation object" });
+  if (!userPreferences || !recommendations) {
+    return res.status(400).json({
+      error: "Missing userPreferences object or recommendations array"
+    });
   }
 
-  const relevanceResult = hf.checkRelevance(userPreferences, recommendation);
-  res.json(relevanceResult);
+  const relevanceResults = recommendations.map((recommendation) => {
+    const relevance = hf.checkRelevance(userPreferences, recommendation);
+
+    return {
+      imdbID: recommendation.imdbID,
+      ...relevance
+    };
+  });
+  res.json(relevanceResults);
 });
 
 // Стартиране на сървъра
