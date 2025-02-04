@@ -300,11 +300,15 @@ const checkRelevance = (userPreferences, recommendation) => {
       // "Нямам предпочитания" -> Всяко време ще е валидно
       score += 1;
       scores.preferredAge = 1;
+      console.log("Нямам предпочитания: ", scores.preferredAge);
     }
 
     // Check if the year is a range like "2018–2024" or "2013–"
-    if (recommendation.year.includes("-")) {
-      const yearRange = recommendation.year.split("-");
+    if (
+      recommendation.year.includes("–") ||
+      recommendation.year.includes("-")
+    ) {
+      const yearRange = recommendation.year.split(/[-–]/);
       const startYear = parseInt(yearRange[0], 10);
       const endYear = yearRange.length > 1 ? parseInt(yearRange[1], 10) : null;
       console.log(yearRange, startYear, endYear);
@@ -316,6 +320,7 @@ const checkRelevance = (userPreferences, recommendation) => {
       ) {
         score += 1;
         scores.preferredAge = 1;
+        console.log("2018–2024 or 2013–", scores.preferredAge);
       }
     } else if (!isNaN(releaseYear)) {
       if (thresholdYear !== null && releaseYear >= thresholdYear) {
@@ -325,6 +330,10 @@ const checkRelevance = (userPreferences, recommendation) => {
       } else {
         if (!scores.preferredAge) {
           scores.preferredAge = 0;
+          console.log(
+            "The movie is within the preferred range: ",
+            scores.preferredAge
+          );
         }
       }
     }
