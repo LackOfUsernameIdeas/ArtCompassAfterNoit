@@ -910,26 +910,40 @@ export class Treemap extends Component<TreemapProps, TreemapState> {
       .domain([0, 100])
       .colors(10);
 
-    this.state = {
-      series: [
-        {
-          data: Treemap.formatData(props.data, props.role) // Форматиране на данните за начално състояние
-        }
-      ],
-      options: {
-        chart: {
-          type: "treemap", // Тип на диаграмата - дървовидна структура
-          toolbar: {
-            show: false // Скриване на лентата с инструменти
-          }
+      this.state = {
+    series: [
+      {
+        data: Treemap.formatData(props.data, props.role),
+      },
+    ],
+    options: {
+      chart: {
+        type: "treemap",
+        toolbar: {
+          show: false,
         },
-        colors: initialColorRange, // Първоначален набор от цветове
-        legend: {
-          show: false // Скриване на легендата
-        }
-      }
-    };
-  }
+      },
+      colors: initialColorRange,
+      legend: {
+        show: false,
+      },
+      dataLabels: {
+        enabled: true,
+        style: {
+          fontFamily: "Opsilon", // Use your custom font
+          letterSpacing: "0.04em",
+          fontWeight: "100", // Adjust weight if needed
+        },
+      },
+      tooltip: {
+        style: {
+          fontFamily: "Equilibrist", // Change to your preferred font
+          fontWeight: "400",
+        },
+      },
+    },
+  };
+}
 
   // Метод за извличане на състояние от променени пропсове
   static getDerivedStateFromProps(

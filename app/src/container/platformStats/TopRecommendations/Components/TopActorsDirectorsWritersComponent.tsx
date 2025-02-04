@@ -58,7 +58,7 @@ const TopActorsDirectorsWritersComponent: FC<
                     <button
                       key={category}
                       type="button"
-                      className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
+                      className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 !font-Opsilon !font-light !tracking-wide ${
                         category === topStatsSortCategory
                           ? "ti-btn-primary-full text-white"
                           : "text-[#E74581] dark:text-[#CC3333] bg-[#AF0B48] dark:bg-[#9A110A] bg-opacity-10 dark:bg-opacity-10"
