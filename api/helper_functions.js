@@ -176,7 +176,6 @@ const matchMoodWithGenres = (mood, genres) => {
     ]
   };
 
-  console.log(mood, genres);
   const matchingGenres = moodGenreMap[mood] || [];
   return genres.some((genre) => matchingGenres.includes(genre));
 };
@@ -395,7 +394,7 @@ const checkRelevance = (userPreferences, recommendation) => {
 
   // ✅ ?. Final Decision
   return {
-    isRelevant: score >= 2,
+    isRelevant: score >= 5,
     relevanceScore: score,
     criteriaScores: scores
   };
