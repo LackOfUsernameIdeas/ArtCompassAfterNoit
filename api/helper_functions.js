@@ -176,6 +176,7 @@ const matchMoodWithGenres = (mood, genres) => {
     ]
   };
 
+  console.log(mood, genres);
   const matchingGenres = moodGenreMap[mood] || [];
   return genres.some((genre) => matchingGenres.includes(genre));
 };
@@ -258,7 +259,12 @@ const checkRelevance = (userPreferences, recommendation) => {
   // ✅ 3. Match Mood with Genre
   if (userPreferences.mood && recommendation.genre_en) {
     const recGenres = recommendation.genre_en.split(", ");
-    if (matchMoodWithGenres(userPreferences.mood, recGenres)) {
+    const moods = userPreferences.mood.replace(/\/\s+/g, "/").split(/\s*,\s*/);
+
+    const moodMatch = moods.some((mood) =>
+      matchMoodWithGenres(mood, recGenres)
+    );
+    if (moodMatch) {
       score += 1; // Match for mood-based genre association
       scores.mood = 1;
     } else {
@@ -311,7 +317,7 @@ const checkRelevance = (userPreferences, recommendation) => {
       const yearRange = recommendation.year.split(/[-–]/);
       const startYear = parseInt(yearRange[0], 10);
       const endYear = yearRange.length > 1 ? parseInt(yearRange[1], 10) : null;
-      console.log(yearRange, startYear, endYear);
+      console.log(yearRange, startYear, endYear, thresholdYear);
 
       // If there's a valid end year, we use it, otherwise we assume it's ongoing.
       if (
