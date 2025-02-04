@@ -221,10 +221,6 @@ const getYearThreshold = (preferredAge) => {
   return ageMapping[preferredAge];
 };
 
-const normalizeName = (name) => {
-  return name.toLowerCase().replace(/[^\w\s]/gi, ""); // Remove special characters
-};
-
 const checkRelevance = (userPreferences, recommendation) => {
   let score = 0;
   const scores = {};
@@ -327,7 +323,9 @@ const checkRelevance = (userPreferences, recommendation) => {
         score += 1;
         scores.preferredAge = 1;
       } else {
-        scores.preferredAge = 0;
+        if (!scores.preferredAge) {
+          scores.preferredAge = 0;
+        }
       }
     }
   }
