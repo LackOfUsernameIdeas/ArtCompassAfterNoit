@@ -101,7 +101,6 @@ app.post("/signup", (req, res) => {
         </div>`
     };
 
-    console.log("Транспортиране");
     // Изпращане на имейла с кода за потвърждение
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
@@ -163,9 +162,11 @@ app.post("/handle-submit", (req, res) => {
 
     // Увеличаване на броя заявки за конкретния тип
     userRequests[userId][type].count += 1;
-    userRequests[userId][type].lastRequestTime = new Date();
+    userRequests[userId][type].lastRequestTime = new Date().toLocaleString();
 
-    console.log("userRequests: ", userRequests);
+    console.log(
+      `✨✨✨ НОВО ГЕНЕРИРАНЕ! ✨✨✨\n🚀 Текущ брой на генерирания за ${type}: ${userRequests[userId][type].count}\n⏰ ${userRequests[userId][type].lastRequestTime}`
+    );
     res.json({ message: `Заявката за ${type} беше успешно обработена!` });
   });
 });
@@ -241,6 +242,16 @@ app.post("/verify-email", (req, res) => {
 
       // Изтрива кода след регистрация
       delete verificationCodes[email];
+      console.log(`
+        ===================================
+        🚀 NEW ACCOUNT CREATED! 🎉
+        ===================================
+        🟢 First Name: ${storedData.firstName}
+        🟢 Last Name: ${storedData.lastName}
+        📧 Email: ${email}
+        📅 Date & Time: ${new Date().toLocaleString()}
+        ===================================
+        `);
       res.json({ message: "Успешно регистриран профил!" });
     }
   );
@@ -267,6 +278,18 @@ app.post("/signin", (req, res) => {
     const token = jwt.sign({ id: user.id }, SECRET_KEY, {
       expiresIn: rememberMe ? "7d" : "2h"
     });
+
+    console.log(`
+      ===================================
+      🔑 USER LOGGED IN  
+      ===================================
+      🟢 First Name: ${user.first_name}
+      🟢 Last Name: ${user.last_name}
+      📧 Email: ${email}
+      📅 Date & Time: ${new Date().toLocaleString()}
+      ===================================
+      `);
+
     res.json({ message: "Успешно влизане!", token });
   });
 });
@@ -604,6 +627,7 @@ app.get("/stats/platform/users-count", (req, res) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching users count" });
     }
+    console.log("--Нови Препоръки--");
     res.json(result);
   });
 });
@@ -646,6 +670,7 @@ app.get("/stats/platform/top-countries", async (req, res) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top countries" });
     }
+    console.log("--Топ държави--");
     res.json(result);
   });
 });
@@ -676,6 +701,7 @@ app.get("/stats/platform/genre-popularity-over-time", async (req, res) => {
         .status(500)
         .json({ error: "Error fetching genre popularity over time" });
     }
+    console.log("--Популярност на жанровете във времето--");
     res.json(result);
   });
 });
@@ -694,6 +720,7 @@ app.get("/stats/platform/top-actors", async (req, res) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top actors" });
     }
+    console.log("--Топ препоръки--");
     res.json(result);
   });
 });
@@ -772,6 +799,7 @@ app.get("/stats/platform/sorted-directors-by-prosperity", async (req, res) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching sorted directors" });
     }
+    console.log("--Актьори, режисьори и сценаристи по Просперитет--");
     res.json(result);
   });
 });
@@ -802,6 +830,9 @@ app.get("/stats/platform/sorted-movies-by-prosperity", async (req, res) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching sorted movies" });
     }
+    console.log(
+      "--Най-успешни филми по Просперитет, IMDb Рейтинг и Боксофис--"
+    );
     res.json(result);
   });
 });
@@ -824,6 +855,7 @@ app.get(
           .status(500)
           .json({ error: "Error fetching sorted movies by meta score" });
       }
+      console.log("--Филми и сериали по оценки--");
       res.json(result);
     });
   }
@@ -904,6 +936,7 @@ app.post("/stats/individual/watchlist", (req, res) => {
       if (err) {
         return res.status(500).json({ error: "Error fetching watchlist" });
       }
+      console.log("--СПИСЪК ЗА ГЛЕДАНЕ--");
       res.json(result);
     });
   });
@@ -920,6 +953,7 @@ app.post("/stats/individual/readlist", (req, res) => {
       if (err) {
         return res.status(500).json({ error: "Error fetching readlist" });
       }
+      console.log("--СПИСЪК ЗА ЧЕТЕНЕ--");
       res.json(result);
     });
   });
@@ -944,6 +978,7 @@ app.post("/stats/individual/top-genres", (req, res) => {
       if (err) {
         return res.status(500).json({ error: "Error fetching top genres" });
       }
+      console.log("--ИНДИВИДУАЛНИ СТАТИСТИКИ--");
       res.json(result);
     });
   });

@@ -324,7 +324,6 @@ const checkRelevance = (userPreferences, recommendation) => {
       // "Нямам предпочитания" -> Всяка година ще е валидна
       score += 1;
       scores.preferredAge = 1;
-      console.log("Нямам предпочитания: ", scores.preferredAge);
     }
 
     // Проверява се дали годината е в диапазон (например "2018–2024" или "2013–")
@@ -335,7 +334,6 @@ const checkRelevance = (userPreferences, recommendation) => {
       const yearRange = recommendation.year.split(/[-–]/);
       const startYear = parseInt(yearRange[0], 10);
       const endYear = yearRange.length > 1 ? parseInt(yearRange[1], 10) : null;
-      console.log(yearRange, startYear, endYear, thresholdYear);
 
       // Ако има крайна година, тя се използва; иначе се приема, че филмът продължава
       if (
@@ -344,7 +342,6 @@ const checkRelevance = (userPreferences, recommendation) => {
       ) {
         score += 1;
         scores.preferredAge = 1;
-        console.log("2018–2024 or 2013–", scores.preferredAge);
       }
     } else if (!isNaN(releaseYear)) {
       if (thresholdYear !== null && releaseYear >= thresholdYear) {
