@@ -281,13 +281,35 @@ export class MoviesAndSeriesByRatingsChart extends Component<
         grid: { borderColor: "#f2f5f7" },
         dataLabels: { enabled: false },
         xaxis: {
-          title: { text: [] },
+          title: { 
+            text: [],
+            style: {
+              fontFamily: "!Opsilon", 
+              letterSpacing: "0.04em",
+            }
+          },
           categories: [],
-          style: { fontFamily: "Opsilon", letterSpacing: "0.04rem" }
+          labels: { 
+            style: {
+              fontFamily: "!Opsilon", 
+              letterSpacing: "0.04em",
+            }
+          }
         },
         yaxis: {
-          title: { text: "Заглавие" },
-          style: { fontFamily: "Opsilon", letterSpacing: "0.04rem" }
+          title: { 
+            text: "Заглавие",
+            style: {
+              fontFamily: "Equilibrist",
+              fontWeight: "200"
+            } 
+          },
+          labels: { 
+            style: {
+              fontFamily: "Opsilon", 
+              letterSpacing: "0.04em",
+            }
+          }
         },
         colors: [
           chroma(initialColor).darken(0.6).hex(), // По-светъл цвят за филми
