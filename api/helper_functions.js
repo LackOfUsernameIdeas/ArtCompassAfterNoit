@@ -1,30 +1,37 @@
 const translate = async (entry) => {
+  // Изграждане на URL за заявка към Google Translate API
   const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bg&dt=t&q=${encodeURIComponent(
     entry
   )}`;
 
   try {
+    // Изпращане на заявката към API-то
     const response = await fetch(url);
     const data = await response.json();
 
+    // Обединяване на преведените части в един низ
     const flattenedTranslation = data[0].map((item) => item[0]).join(" ");
 
+    // Премахване на излишните интервали
     const mergedTranslation = flattenedTranslation.replace(/\s+/g, " ").trim();
     return mergedTranslation;
   } catch (error) {
+    // Обработка на грешка при превод
     console.error(`Error translating entry: ${entry}`, error);
     return entry;
   }
 };
 
-// Функция за рестартиране на лимита на потребителя
+// Функция за проверка и нулиране на броя заявки за деня
 const checkAndResetRequestsDaily = (userRequests) => {
   const currentDate = new Date().toISOString().split("T")[0];
 
+  // Ако няма записана дата за нулиране, задаваме текущата дата
   if (!userRequests.resetDate) {
     userRequests.resetDate = currentDate;
   }
 
+  // Ако датата е различна от текущата, нулираме заявките
   if (userRequests.resetDate !== currentDate) {
     userRequests = {};
     userRequests.resetDate = currentDate;
@@ -32,6 +39,7 @@ const checkAndResetRequestsDaily = (userRequests) => {
   }
 };
 
+// Функция за превод на предпочитан тип съдържание (филм/сериал)
 const translatePreferredType = (preferredType) => {
   const typeMapping = {
     Сериал: "series",
@@ -41,6 +49,7 @@ const translatePreferredType = (preferredType) => {
   return typeMapping[preferredType] || preferredType;
 };
 
+// Функция за съпоставяне на настроение с жанрове
 const matchMoodWithGenres = (mood, genres) => {
   const moodGenreMap = {
     "Развълнуван/-на": [
@@ -176,28 +185,31 @@ const matchMoodWithGenres = (mood, genres) => {
     ]
   };
 
+  // Проверка дали даден жанр съответства на настроението
   const matchingGenres = moodGenreMap[mood] || [];
   return genres.some((genre) => matchingGenres.includes(genre));
 };
 
+// Функция за конвертиране на време (часове и минути) в минути
 const parseRuntime = (runtime) => {
   if (!runtime || runtime.toLowerCase() === "n/a") return null;
 
-  const hourMatch = runtime.match(/(\d+)\s*ч/); // Match hours
-  const minMatch = runtime.match(/(\d+)\s*(м|min)/); // Match minutes
+  const hourMatch = runtime.match(/(\d+)\s*ч/); // Съвпадение за часове
+  const minMatch = runtime.match(/(\d+)\s*(м|min)/); // Съвпадение за минути
 
   let totalMinutes = 0;
 
   if (hourMatch) {
-    totalMinutes += parseInt(hourMatch[1], 10) * 60; // Convert hours to minutes
+    totalMinutes += parseInt(hourMatch[1], 10) * 60; // Преобразуване на часове в минути
   }
   if (minMatch) {
-    totalMinutes += parseInt(minMatch[1], 10); // Add minutes
+    totalMinutes += parseInt(minMatch[1], 10); // Добавяне на минутите
   }
 
   return totalMinutes > 0 ? totalMinutes : null;
 };
 
+// Функция за преобразуване на време за гледане в минути
 const getTimeAvailabilityInMinutes = (timeAvailability) => {
   const timeMapping = {
     "1 час": 60,
@@ -209,6 +221,7 @@ const getTimeAvailabilityInMinutes = (timeAvailability) => {
   return timeMapping[timeAvailability];
 };
 
+// Функция за определяне на прагова година спрямо възрастовите предпочитания
 const getYearThreshold = (preferredAge) => {
   const currentYear = new Date().getFullYear();
   const ageMapping = {

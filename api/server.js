@@ -1204,6 +1204,7 @@ app.get("/get-goodreads-json-object-for-a-book", (req, res) => {
   });
 });
 
+// Проверка дали даден филм/сериал е подходящ за конкретните потребителски предпочитания
 app.post("/check-relevance", (req, res) => {
   const { userPreferences, recommendations } = req.body;
 
@@ -1213,6 +1214,7 @@ app.post("/check-relevance", (req, res) => {
     });
   }
 
+  // Обработване на всяка препоръка и изчисляване на релевантността
   const relevanceResults = recommendations.map((recommendation) => {
     const relevance = hf.checkRelevance(userPreferences, recommendation);
 
@@ -1221,6 +1223,8 @@ app.post("/check-relevance", (req, res) => {
       ...relevance
     };
   });
+
+  // Връщане на резултатите като JSON
   res.json(relevanceResults);
 });
 
