@@ -234,6 +234,12 @@ const getYearThreshold = (preferredAge) => {
   return ageMapping[preferredAge];
 };
 
+/**
+ * Проверява релевантността на препоръка спрямо предпочитанията на потребителя.
+ * @param {Object} userPreferences - Предпочитанията на потребителя.
+ * @param {Object} recommendation - Препоръчаното съдържание.
+ * @returns {Object} Обект, съдържащ дали е релевантно, общия резултат и подробни точки за всеки критерий.
+ */
 const checkRelevance = (userPreferences, recommendation) => {
   let score = 0;
   const scores = {
@@ -245,7 +251,7 @@ const checkRelevance = (userPreferences, recommendation) => {
     targetGroup: 0
   };
 
-  // ✅ 1. Match Preferred Genres
+  /** ✅ 1. Съответствие на предпочитани жанрове */
   if (userPreferences.preferred_genres_en && recommendation.genre_en) {
     const userGenres = userPreferences.preferred_genres_en
       .split(", ")
@@ -255,23 +261,23 @@ const checkRelevance = (userPreferences, recommendation) => {
       .map((g) => g.toLowerCase());
 
     if (recGenres.some((genre) => userGenres.includes(genre))) {
-      score += 2; // Strong match for preferred genre
+      score += 2; // Силно съответствие по жанр
       scores.genres = 2;
     }
   }
 
-  // ✅ 2. Match Preferred Type (Movie/Series)
+  /** ✅ 2. Съответствие на предпочитан тип (Филм/Сериал) */
   if (userPreferences.preferred_type && recommendation.type) {
     if (
       translatePreferredType(userPreferences.preferred_type) ===
       recommendation.type.toLowerCase()
     ) {
-      score += 1; // Match for movie/series preference
+      score += 1;
       scores.type = 1;
     }
   }
 
-  // ✅ 3. Match Mood with Genre
+  /** ✅ 3. Съответствие на настроение с жанр */
   if (userPreferences.mood && recommendation.genre_en) {
     const recGenres = recommendation.genre_en.split(", ");
     const moods = userPreferences.mood.replace(/\/\s+/g, "/").split(/\s*,\s*/);
@@ -279,13 +285,14 @@ const checkRelevance = (userPreferences, recommendation) => {
     const moodMatch = moods.some((mood) =>
       matchMoodWithGenres(mood, recGenres)
     );
+
     if (moodMatch) {
-      score += 1; // Match for mood-based genre association
+      score += 1;
       scores.mood = 1;
     }
   }
 
-  // ✅ 4. Match Time Availability with Runtime
+  /** ✅ 4. Съответствие на наличното време с продължителността */
   if (userPreferences.timeAvailability && recommendation.runtime) {
     const timeAvailable = getTimeAvailabilityInMinutes(
       userPreferences.timeAvailability
@@ -308,7 +315,7 @@ const checkRelevance = (userPreferences, recommendation) => {
     }
   }
 
-  // ✅ 5. Match Preferred Age with Release Year
+  /** ✅ 5. Съответствие на предпочитана възраст с година на издаване */
   if (userPreferences.preferred_age && recommendation.year) {
     const thresholdYear = getYearThreshold(userPreferences.preferred_age);
     const releaseYear = parseInt(recommendation.year, 10);
@@ -348,7 +355,7 @@ const checkRelevance = (userPreferences, recommendation) => {
     }
   }
 
-  // ✅ 6. Match Target Group
+  /** ✅ 6. Съответствие на целевата аудитория */
   if (userPreferences.preferred_target_group && recommendation.rated) {
     const targetMappings = {
       Деца: ["G", "PG", "TV-Y", "TV-Y7", "TV-Y7-FV", "Approved", "Passed"],
@@ -402,7 +409,7 @@ const checkRelevance = (userPreferences, recommendation) => {
     }
   }
 
-  // ✅ ?. Final Decision
+  /** ✅ 7. Финално решение */
   return {
     isRelevant: score >= 5,
     relevanceScore: score,
