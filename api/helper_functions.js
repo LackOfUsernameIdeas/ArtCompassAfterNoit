@@ -349,7 +349,15 @@ const checkRelevance = (userPreferences, recommendation) => {
     const targetMappings = {
       Деца: ["G", "PG", "TV-Y", "TV-Y7", "TV-Y7-FV", "Approved", "Passed"],
       Тийнейджъри: ["PG-13", "TV-14", "Not Rated", "Approved"],
-      Възрастни: ["PG-13", "R", "TV-MA", "TV-14", "Not Rated", "Approved"],
+      Възрастни: [
+        "PG-13",
+        "R",
+        "TV-MA",
+        "TV-14",
+        "NC-17",
+        "Not Rated",
+        "Approved"
+      ],
       Семейни: [
         "G",
         "PG",
