@@ -223,7 +223,14 @@ const getYearThreshold = (preferredAge) => {
 
 const checkRelevance = (userPreferences, recommendation) => {
   let score = 0;
-  const scores = {};
+  const scores = {
+    genres: 0,
+    type: 0,
+    mood: 0,
+    timeAvailability: 0,
+    preferredAge: 0,
+    targetGroup: 0
+  };
 
   // ✅ 1. Match Preferred Genres
   if (userPreferences.preferred_genres_en && recommendation.genre_en) {
@@ -237,8 +244,6 @@ const checkRelevance = (userPreferences, recommendation) => {
     if (recGenres.some((genre) => userGenres.includes(genre))) {
       score += 2; // Strong match for preferred genre
       scores.genres = 2;
-    } else {
-      scores.genres = 0;
     }
   }
 
@@ -250,8 +255,6 @@ const checkRelevance = (userPreferences, recommendation) => {
     ) {
       score += 1; // Match for movie/series preference
       scores.type = 1;
-    } else {
-      scores.type = 0;
     }
   }
 
@@ -266,8 +269,6 @@ const checkRelevance = (userPreferences, recommendation) => {
     if (moodMatch) {
       score += 1; // Match for mood-based genre association
       scores.mood = 1;
-    } else {
-      scores.mood = 0;
     }
   }
 
@@ -290,8 +291,6 @@ const checkRelevance = (userPreferences, recommendation) => {
       if (movieRuntime <= timeAvailable + tolerance) {
         score += 1; // Movie fits within available time
         scores.timeAvailability = 1;
-      } else {
-        scores.timeAvailability = 0;
       }
     }
   }
@@ -332,14 +331,6 @@ const checkRelevance = (userPreferences, recommendation) => {
         // The movie is within the preferred range
         score += 1;
         scores.preferredAge = 1;
-      } else {
-        if (!scores.preferredAge) {
-          scores.preferredAge = 0;
-          console.log(
-            "The movie is within the preferred range: ",
-            scores.preferredAge
-          );
-        }
       }
     }
   }
@@ -395,8 +386,6 @@ const checkRelevance = (userPreferences, recommendation) => {
     ) {
       score += 1;
       scores.targetGroup = 1;
-    } else {
-      scores.targetGroup = 0;
     }
   }
 
