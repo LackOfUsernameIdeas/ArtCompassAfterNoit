@@ -305,11 +305,11 @@ const checkRelevance = (userPreferences, recommendation) => {
     }
 
     const movieRuntime = parseRuntime(recommendation.runtime);
-    const tolerance = 35; // Allow for a 35-minute tolerance
+    const tolerance = 35; // Позволява се толеранс от 35 минути
 
     if (movieRuntime !== null && timeAvailable !== null) {
       if (movieRuntime <= timeAvailable + tolerance) {
-        score += 1; // Movie fits within available time
+        score += 1; // Филмът попада в рамките на наличното време
         scores.timeAvailability = 1;
       }
     }
@@ -321,13 +321,13 @@ const checkRelevance = (userPreferences, recommendation) => {
     const releaseYear = parseInt(recommendation.year, 10);
 
     if (thresholdYear === null) {
-      // "Нямам предпочитания" -> Всяко време ще е валидно
+      // "Нямам предпочитания" -> Всяка година ще е валидна
       score += 1;
       scores.preferredAge = 1;
       console.log("Нямам предпочитания: ", scores.preferredAge);
     }
 
-    // Check if the year is a range like "2018–2024" or "2013–"
+    // Проверява се дали годината е в диапазон (например "2018–2024" или "2013–")
     if (
       recommendation.year.includes("–") ||
       recommendation.year.includes("-")
@@ -337,7 +337,7 @@ const checkRelevance = (userPreferences, recommendation) => {
       const endYear = yearRange.length > 1 ? parseInt(yearRange[1], 10) : null;
       console.log(yearRange, startYear, endYear, thresholdYear);
 
-      // If there's a valid end year, we use it, otherwise we assume it's ongoing.
+      // Ако има крайна година, тя се използва; иначе се приема, че филмът продължава
       if (
         (thresholdYear !== null && startYear >= thresholdYear) ||
         (endYear && endYear >= thresholdYear)
@@ -348,7 +348,7 @@ const checkRelevance = (userPreferences, recommendation) => {
       }
     } else if (!isNaN(releaseYear)) {
       if (thresholdYear !== null && releaseYear >= thresholdYear) {
-        // The movie is within the preferred range
+        // Филмът попада в предпочитания времеви диапазон
         score += 1;
         scores.preferredAge = 1;
       }
