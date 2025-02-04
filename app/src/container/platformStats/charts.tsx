@@ -930,15 +930,14 @@ export class Treemap extends Component<TreemapProps, TreemapState> {
       dataLabels: {
         enabled: true,
         style: {
-          fontFamily: "Opsilon", // Use your custom font
-          letterSpacing: "0.04em",
-          fontWeight: "100", // Adjust weight if needed
+          fontFamily: "Equilibrist",
+          fontWeight: "200", 
         },
       },
       tooltip: {
         style: {
-          fontFamily: "Equilibrist", // Change to your preferred font
-          fontWeight: "400",
+          fontFamily: "Opsilon", 
+          letterSpacing: "0.07em",
         },
       },
     },
