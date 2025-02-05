@@ -124,15 +124,7 @@ export class GenrePopularityOverTime extends Component<
         },
         xaxis: {
           labels: {
-            show: true,
-            style: {
-              fontFamily: "Opsilon",
-              letterSpacing: "0.04rem",
-              colors: "#8c9097",
-              fontSize: "11px",
-              cssClass: "apexcharts-xaxis-label"
-            },
-            margin: 10
+            show: true
           },
           tickAmount: 12,
           axisTicks: {
@@ -142,14 +134,7 @@ export class GenrePopularityOverTime extends Component<
         },
         yaxis: {
           labels: {
-            show: true,
-            style: {
-              fontFamily: "Opsilon",
-              letterSpacing: "0.04rem",
-              colors: "#8c9097",
-              fontSize: "11px",
-              cssClass: "apexcharts-yaxis-label"
-            }
+            show: true
           }
         },
         tooltip: {
@@ -281,34 +266,28 @@ export class MoviesAndSeriesByRatingsChart extends Component<
         grid: { borderColor: "#f2f5f7" },
         dataLabels: { enabled: false },
         xaxis: {
-          title: { 
+          title: {
             text: [],
             style: {
-              fontFamily: "!Opsilon", 
-              letterSpacing: "0.04em",
+              fontFamily: "Opsilon",
+              letterSpacing: "0.04em"
             }
           },
           categories: [],
-          labels: { 
-            style: {
-              fontFamily: "!Opsilon", 
-              letterSpacing: "0.04em",
-            }
+          labels: {
+            show: true
           }
         },
         yaxis: {
-          title: { 
+          title: {
             text: "Заглавие",
             style: {
               fontFamily: "Equilibrist",
               fontWeight: "200"
-            } 
-          },
-          labels: { 
-            style: {
-              fontFamily: "Opsilon", 
-              letterSpacing: "0.04em",
             }
+          },
+          labels: {
+            show: true
           }
         },
         colors: [
@@ -368,6 +347,7 @@ export class MoviesAndSeriesByRatingsChart extends Component<
           xaxis: {
             ...prevState.options.xaxis,
             title: {
+              ...prevState.options.xaxis.title,
               text:
                 sortCategory === "IMDb"
                   ? "IMDb рейтинг"
@@ -448,12 +428,15 @@ export class MoviesAndSeriesByRatingsChart extends Component<
         </div>
 
         {this.state.series && this.state.series.length > 0 ? (
-          <ReactApexChart
-            options={this.state.options}
-            series={this.state.series}
-            type="bar"
-            height={320}
-          />
+          <div className="custom-chart">
+            <ReactApexChart
+              key={JSON.stringify(this.state.options.xaxis.labels.style)}
+              options={this.state.options}
+              series={this.state.series}
+              type="bar"
+              height={320}
+            />{" "}
+          </div>
         ) : (
           <p>No data available</p>
         )}
@@ -746,7 +729,7 @@ export class MoviesByProsperityBubbleChart extends Component<
             text: "Приходи от боксофиса (в милиони)",
             style: {
               fontFamily: "Opsilon",
-              letterSpacing: "0.04rem",
+              letterSpacing: "0.07em",
               fontSize: "12px",
               color: "#8c9097"
             }
@@ -932,39 +915,39 @@ export class Treemap extends Component<TreemapProps, TreemapState> {
       .domain([0, 100])
       .colors(10);
 
-      this.state = {
-    series: [
-      {
-        data: Treemap.formatData(props.data, props.role),
-      },
-    ],
-    options: {
-      chart: {
-        type: "treemap",
-        toolbar: {
-          show: false,
+    this.state = {
+      series: [
+        {
+          data: Treemap.formatData(props.data, props.role)
+        }
+      ],
+      options: {
+        chart: {
+          type: "treemap",
+          toolbar: {
+            show: false
+          }
         },
-      },
-      colors: initialColorRange,
-      legend: {
-        show: false,
-      },
-      dataLabels: {
-        enabled: true,
-        style: {
-          fontFamily: "Equilibrist",
-          fontWeight: "200", 
+        colors: initialColorRange,
+        legend: {
+          show: false
         },
-      },
-      tooltip: {
-        style: {
-          fontFamily: "Opsilon", 
-          letterSpacing: "0.07em",
+        dataLabels: {
+          enabled: true,
+          style: {
+            fontFamily: "Equilibrist",
+            fontWeight: "200"
+          }
         },
-      },
-    },
-  };
-}
+        tooltip: {
+          style: {
+            fontFamily: "Opsilon",
+            letterSpacing: "0.07em"
+          }
+        }
+      }
+    };
+  }
 
   // Метод за извличане на състояние от променени пропсове
   static getDerivedStateFromProps(
@@ -1261,12 +1244,14 @@ export class TopRecommendationsBarChart extends Component<
         </div>
 
         {this.state.series && this.state.series.length > 0 ? (
-          <ReactApexChart
-            options={this.state.options} // Опции за диаграмата
-            series={this.state.series} // Данни за диаграмата
-            type="bar"
-            height={320}
-          />
+          <div className="custom-chart">
+            <ReactApexChart
+              options={this.state.options} // Опции за диаграмата
+              series={this.state.series} // Данни за диаграмата
+              type="bar"
+              height={320}
+            />
+          </div>
         ) : (
           <p>No data available</p> // Текст, ако няма данни
         )}
