@@ -1275,7 +1275,7 @@ app.post("/check-relevance", (req, res) => {
 });
 
 // Изчисляване на Precision на база всички препоръки, правени някога за даден потребител
-app.post("/stats/precision-total", (req, res) => {
+app.post("/stats/ai/precision-total", (req, res) => {
   const { token, userPreferences } = req.body;
 
   // Проверка дали липсва обектът с предпочитания на потребителя
@@ -1334,7 +1334,7 @@ app.post("/stats/precision-total", (req, res) => {
 });
 
 // Изчисляване на Recall на база всички препоръки, правени някога в платформата
-app.post("/stats/recall-total", (req, res) => {
+app.post("/stats/ai/recall-total", (req, res) => {
   const { token, userPreferences } = req.body;
 
   // Проверка дали липсва обектът с предпочитания на потребителя
@@ -1410,6 +1410,31 @@ app.post("/stats/recall-total", (req, res) => {
         });
       });
     });
+  });
+});
+
+// Изчисляване на F1-score на база Precision и Recall
+app.post("/stats/ai/f1-score", (req, res) => {
+  const { precision_exact, recall_exact } = req.body;
+
+  // Проверка дали липсват входни стойности
+  if (precision_exact === undefined || recall_exact === undefined) {
+    return res.status(400).json({
+      error: "Missing precision_exact or recall_exact"
+    });
+  }
+
+  // Изчисляване на F1-score
+  const f1_score =
+    precision_exact + recall_exact === 0
+      ? 0
+      : (2 * precision_exact * recall_exact) / (precision_exact + recall_exact);
+
+  // Връщане на резултата като JSON
+  res.json({
+    f1_score_exact: f1_score,
+    f1_score_fixed: parseFloat(f1_score.toFixed(2)),
+    f1_score_percentage: parseFloat((f1_score * 100).toFixed(2))
   });
 });
 
