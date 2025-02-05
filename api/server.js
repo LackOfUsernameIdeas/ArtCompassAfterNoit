@@ -1274,6 +1274,63 @@ app.post("/check-relevance", (req, res) => {
   res.json(relevanceResults);
 });
 
+// Изчисляване на Precision на база всички препоръки правени някога за даден потребител
+app.post("/stats/precision-total", (req, res) => {
+  const { token, userPreferences } = req.body;
+
+  // Проверка дали липсва обектът с предпочитания на потребителя
+  if (!userPreferences) {
+    return res.status(400).json({
+      error: "Missing userPreferences object"
+    });
+  }
+
+  // Проверка на валидността на токена
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+
+    // Извличане на всички препоръки на потребителите от базата данни
+    db.getAllUsersRecommendations(userId, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: "Error" });
+      }
+
+      const total_recommendations_count = result.total_count;
+      const recommendations = result.recommendations;
+      let relevant_recommendations_count = 0; // Броя на релевантните препоръки
+
+      // Обработване на всяка препоръка и изчисляване на релевантността
+      recommendations.map((recommendation) => {
+        const relevance = hf.checkRelevance(userPreferences, recommendation);
+
+        // Увеличаване на броя на релевантните препоръки, ако препоръката е релевантна
+        if (relevance.isRelevant === true) {
+          relevant_recommendations_count++;
+        }
+
+        return {
+          imdbID: recommendation.imdbID,
+          ...relevance
+        };
+      });
+
+      // Изчисляване на Precision
+      const precision =
+        relevant_recommendations_count / total_recommendations_count;
+
+      // Връщане на резултатите като JSON
+      res.json({
+        relevant_recommendations_count,
+        total_recommendations_count,
+        exact_precision: precision,
+        fixed_precision: parseFloat(precision.toFixed(2)),
+        percentage_precision: parseFloat((precision * 100).toFixed(2))
+      });
+    });
+  });
+});
+
 // Стартиране на сървъра
 app.listen(5000, () => {
   console.log("Server started on port 5000.");
