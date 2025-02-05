@@ -19,7 +19,7 @@ const GenrePopularityOverTimeComponent: FC<
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
         <div className="box">
           <div className="box-header !gap-0 !m-0 justify-between">
-            <div className="box-title !font-Opsilon !font-light !tracking-wide">
+            <div className="box-title opsilion">
               Популярност на жанровете през времето
             </div>
           </div>

@@ -69,7 +69,7 @@ const TopMoviesSeriesComponent: FC<TopMoviesSeriesComponentProps> = ({
         <div className="xl:col-span-6 col-span-12">
           <div className="box custom-box">
             <div className="custom-box-header">
-              <div className="box-title !font-Opsilon !font-light !tracking-wide">
+              <div className="box-title opsilion">
                 Най-често препоръчвани филми и сериали
               </div>
             </div>

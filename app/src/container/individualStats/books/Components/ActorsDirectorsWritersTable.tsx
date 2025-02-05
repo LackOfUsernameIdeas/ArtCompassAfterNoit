@@ -100,7 +100,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
         <div className="box custom-card h-[27.75rem]">
           <div className="box-header justify-between">
             <div
-              className={`box-title whitespace-nowrap overflow-hidden text-ellipsis !font-Opsilon !font-light !tracking-wide${
+              className={`box-title whitespace-nowrap overflow-hidden text-ellipsis opsilion${
                 is1399 ? "max-w-full" : is1630 ? "max-w-[15rem]" : "max-w-full"
               }`}
               data-tooltip-id="box-title-tooltip"
@@ -127,7 +127,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
             <Tooltip id="box-title-tooltip" />
             <div className="flex flex-wrap gap-2">
               <div
-                className="inline-flex rounded-md shadow-sm !font-Opsilon !font-light !tracking-wide"
+                className="inline-flex rounded-md shadow-sm opsilion"
                 role="group"
                 aria-label="Sort By"
               >
@@ -135,7 +135,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                   <button
                     key={category}
                     type="button"
-                    className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 !font-Opsilon !font-light !tracking-wide ${
+                    className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 opsilion ${
                       category === recommendationCountSortCategory
                         ? "ti-btn-primary-full text-white"
                         : "text-[#E74581] dark:text-[#CC3333] bg-[#AF0B48] dark:bg-[#9A110A] bg-opacity-10 dark:bg-opacity-10"
@@ -172,39 +172,69 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                     >
                       #
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] opsilion"
+                    >
                       {
                         tableCategoryDisplayNames[
                           recommendationCountSortCategory as keyof typeof tableCategoryDisplayNames
                         ]
                       }
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] opsilion"
+                    >
                       Брой{" "}
                       {type === "recommendations" ? "Препоръки" : "Запазвания"}
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] opsilion"
+                    >
                       Просперитетен рейтинг
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] opsilion"
+                    >
                       Среден IMDb рейтинг
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] opsilion"
+                    >
                       Среден Rotten Tomatoes рейтинг
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] opsilion"
+                    >
                       Среден Метаскор
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] opsilion"
+                    >
                       Брой филми и сериали в платформата
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] opsilion"
+                    >
                       Боксофис
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] opsilion"
+                    >
                       Победи на награждавания
                     </th>
-                    <th scope="col" className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide">
+                    <th
+                      scope="col"
+                      className="!text-start !text-[0.85rem] opsilion"
+                    >
                       Номинации за награди
                     </th>
                   </tr>

@@ -15,7 +15,7 @@ const MoviesByProsperityComponent: FC<MoviesByProsperityComponentProps> = ({
       <div className="xl:col-span-6 col-span-12">
         <div className="box custom-box h-[27.75rem]">
           <div className="box-header">
-            <div className="box-title !font-Opsilon !font-light !tracking-wide">
+            <div className="box-title opsilion">
               Най-успешни филми по Просперитет, IMDb Рейтинг и Боксофис
             </div>
           </div>

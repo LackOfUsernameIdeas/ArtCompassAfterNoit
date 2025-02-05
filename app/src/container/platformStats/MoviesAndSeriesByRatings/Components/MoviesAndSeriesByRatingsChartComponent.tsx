@@ -79,9 +79,7 @@ const MoviesAndSeriesByRatingsComponent: FC<
       <div className="xl:col-span-6 col-span-12">
         <div className="box custom-box">
           <div className="custom-box-header justify-between">
-            <div
-              className={`box-title !font-Opsilon !font-light !tracking-wide`}
-            >
+            <div className={`box-title opsilion`}>
               {`Филми и сериали по ${
                 moviesAndSeriesCategoryDisplayNames[
                   moviesAndSeriesSortCategory as keyof typeof moviesAndSeriesCategoryDisplayNames
@@ -100,7 +98,7 @@ const MoviesAndSeriesByRatingsComponent: FC<
                     <button
                       key={category}
                       type="button"
-                      className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 !font-Opsilon !font-light !tracking-wide ${
+                      className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 opsilion ${
                         category === moviesAndSeriesSortCategory
                           ? "ti-btn-primary-full text-white"
                           : "text-[#E74581] dark:text-[#CC3333] bg-[#AF0B48] dark:bg-[#9A110A] bg-opacity-10 dark:bg-opacity-10"
