@@ -19,7 +19,8 @@ require("dotenv").config();
 const whitelist = [
   "http://localhost:5174",
   "http://localhost:5175",
-  "https://artcompass.noit.eu"
+  "https://artcompass.noit.eu",
+  "http://artcompass.noit.eu"
 ];
 const corsOptions = {
   origin: function (origin, callback) {
@@ -623,6 +624,7 @@ app.post("/check-for-recommendation-in-list", (req, res) => {
 
 // Вземане на данни за общ брой на потребители в платформата
 app.get("/stats/platform/users-count", (req, res) => {
+  console.log("--Нови Препоръки--");
   db.getUsersCount((err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching users count" });
@@ -659,6 +661,7 @@ app.get("/stats/platform/top-recommendations", (req, res) => {
 // Вземане на данни за най-препоръчвани държави, които създават филми/сериали в платформата
 app.get("/stats/platform/top-countries", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
+  console.log("--Топ държави--");
 
   if (limit <= 0) {
     return res
@@ -695,6 +698,7 @@ app.get("/stats/platform/top-genres", async (req, res) => {
 
 // Вземане на данни за най-популярни жанрове във времето в платформата
 app.get("/stats/platform/genre-popularity-over-time", async (req, res) => {
+  console.log("--Популярност на жанровете във времето--");
   db.getGenrePopularityOverTime((err, result) => {
     if (err) {
       return res
@@ -709,6 +713,7 @@ app.get("/stats/platform/genre-popularity-over-time", async (req, res) => {
 // Вземане на данни за най-препоръчвани актьори в платформата
 app.get("/stats/platform/top-actors", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
+  console.log("--Топ препоръки--");
 
   if (limit <= 0) {
     return res
@@ -795,6 +800,7 @@ app.get("/stats/platform/total-awards", async (req, res) => {
 
 // Вземане на данни за филмови режисьори в платформата, сортирани по успешност
 app.get("/stats/platform/sorted-directors-by-prosperity", async (req, res) => {
+  console.log("--Актьори, режисьори и сценаристи по Просперитет--");
   db.getSortedDirectorsByProsperity((err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching sorted directors" });
@@ -826,6 +832,7 @@ app.get("/stats/platform/sorted-writers-by-prosperity", async (req, res) => {
 
 // Вземане на данни за филми в платформата, сортирани по успешност
 app.get("/stats/platform/sorted-movies-by-prosperity", async (req, res) => {
+  console.log("--Най-успешни филми по Просперитет, IMDb Рейтинг и Боксофис--");
   db.getSortedMoviesByProsperity((err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching sorted movies" });
@@ -842,6 +849,7 @@ app.get(
   "/stats/platform/sorted-movies-and-series-by-metascore",
   async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
+    console.log("--Филми и сериали по оценки--");
 
     if (limit <= 0) {
       return res
@@ -928,6 +936,7 @@ app.post("/stats/individual/top-recommendations", (req, res) => {
 // Вземане на данни за филми/сериали в списък за гледане на даден потребител
 app.post("/stats/individual/watchlist", (req, res) => {
   const { token } = req.body;
+  console.log("--Списък за гледане--");
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
@@ -936,7 +945,7 @@ app.post("/stats/individual/watchlist", (req, res) => {
       if (err) {
         return res.status(500).json({ error: "Error fetching watchlist" });
       }
-      console.log("--СПИСЪК ЗА ГЛЕДАНЕ--");
+      console.log("--Списък за гледане--");
       res.json(result);
     });
   });
@@ -945,6 +954,7 @@ app.post("/stats/individual/watchlist", (req, res) => {
 // Вземане на данни за книги в списък за четене на даден потребител
 app.post("/stats/individual/readlist", (req, res) => {
   const { token } = req.body;
+  console.log("--Списък за четене--");
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
@@ -953,7 +963,7 @@ app.post("/stats/individual/readlist", (req, res) => {
       if (err) {
         return res.status(500).json({ error: "Error fetching readlist" });
       }
-      console.log("--СПИСЪК ЗА ЧЕТЕНЕ--");
+      console.log("--Списък за четене--");
       res.json(result);
     });
   });
@@ -962,6 +972,7 @@ app.post("/stats/individual/readlist", (req, res) => {
 // Вземане на данни за най-препоръчвани жанрове на даден потребител
 app.post("/stats/individual/top-genres", (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
+  console.log("--Индивидуални статистики--");
 
   if (limit <= 0) {
     return res
@@ -978,7 +989,7 @@ app.post("/stats/individual/top-genres", (req, res) => {
       if (err) {
         return res.status(500).json({ error: "Error fetching top genres" });
       }
-      console.log("--ИНДИВИДУАЛНИ СТАТИСТИКИ--");
+      console.log("--Индивидуални статистики--");
       res.json(result);
     });
   });
