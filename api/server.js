@@ -1274,7 +1274,7 @@ app.post("/check-relevance", (req, res) => {
   res.json(relevanceResults);
 });
 
-// Изчисляване на Precision на база всички препоръки правени някога за даден потребител
+// Изчисляване на Precision на база всички препоръки, правени някога за даден потребител
 app.post("/stats/precision-total", (req, res) => {
   const { token, userPreferences } = req.body;
 
@@ -1290,15 +1290,17 @@ app.post("/stats/precision-total", (req, res) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
     const userId = decoded.id;
 
-    // Извличане на всички препоръки на потребителите от базата данни
-    db.getAllUsersRecommendations(userId, (err, result) => {
+    // Извличане на всички препоръки на даден потребител от базата данни
+    db.getAllUsersDistinctRecommendations(userId, (err, result) => {
       if (err) {
-        return res.status(500).json({ error: "Error" });
+        return res
+          .status(500)
+          .json({ error: "Error retrieving user recommendations" });
       }
 
-      const total_recommendations_count = result.total_count;
-      const recommendations = result.recommendations;
-      let relevant_recommendations_count = 0; // Броя на релевантните препоръки
+      const total_recommendations_count = result.total_count; // Общият брой препоръки на даден потребител
+      const recommendations = result.recommendations; // Масив с всички препоръки на даден потребител
+      let relevant_recommendations_count = 0; // Броят на релевантните препоръки на даден потребител, които са му препоръчвани на него
 
       // Обработване на всяка препоръка и изчисляване на релевантността
       recommendations.map((recommendation) => {
@@ -1321,11 +1323,91 @@ app.post("/stats/precision-total", (req, res) => {
 
       // Връщане на резултатите като JSON
       res.json({
+        precision_exact: precision,
+        precision_fixed: parseFloat(precision.toFixed(2)),
+        precision_percentage: parseFloat((precision * 100).toFixed(2)),
         relevant_recommendations_count,
-        total_recommendations_count,
-        exact_precision: precision,
-        fixed_precision: parseFloat(precision.toFixed(2)),
-        percentage_precision: parseFloat((precision * 100).toFixed(2))
+        total_recommendations_count
+      });
+    });
+  });
+});
+
+// Изчисляване на Recall на база всички препоръки, правени някога в платформата
+app.post("/stats/recall-total", (req, res) => {
+  const { token, userPreferences } = req.body;
+
+  // Проверка дали липсва обектът с предпочитания на потребителя
+  if (!userPreferences) {
+    return res.status(400).json({
+      error: "Missing userPreferences object"
+    });
+  }
+
+  // Проверка на валидността на токена
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+
+    // Извличане на всички препоръки на потребителите от базата данни
+    db.getAllPlatformDistinctRecommendations((err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error retrieving recommendations" });
+      }
+
+      const total_platform_recommendations_count = result.total_count; // Общият брой препоръки в цялата платформа
+      const recommendations = result.recommendations; // Масив с всички препоръки в цялата платформа
+      let relevant_platform_recommendations_count = 0; // Броят на релевантните препоръки на даден потребител в цялата платформа, независимо дали те са му препоръчвани на него или не
+
+      // Обработване на всяка препоръка и изчисляване на релевантността
+      recommendations.forEach((recommendation) => {
+        const relevance = hf.checkRelevance(userPreferences, recommendation);
+
+        // Увеличаване на броя на релевантните препоръки, ако препоръката е релевантна
+        if (relevance.isRelevant) {
+          relevant_platform_recommendations_count++;
+        }
+      });
+
+      // Извличане на всички препоръки на даден потребител от базата данни
+      db.getAllUsersDistinctRecommendations(userId, (err, userResult) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: "Error retrieving user recommendations" });
+        }
+
+        const total_user_recommendations_count = userResult.total_count; // Общият брой препоръки на даден потребител
+        const userRecommendations = userResult.recommendations; // Масив с всички препоръки на даден потребител
+        let relevant_user_recommendations_count = 0; // Броят на релевантните препоръки на даден потребител, които са му препоръчвани на него
+
+        // Обработване на всяка препоръка и изчисляване на релевантността
+        userRecommendations.map((recommendation) => {
+          const relevance = hf.checkRelevance(userPreferences, recommendation);
+
+          // Увеличаване на броя на релевантните препоръки, ако препоръката е релевантна
+          if (relevance.isRelevant === true) {
+            relevant_user_recommendations_count++;
+          }
+        });
+
+        // Изчисляване на Recall - Броят на релевантните препоръки на даден потребител, които са му препоръчвани на него (True Positives - TP) / Броят на релевантните препоръки на даден потребител в цялата платформа, независимо дали те са му препоръчвани на него или не (True Positives + False Negatives -> TP + FN)
+        const recall =
+          relevant_user_recommendations_count /
+          relevant_platform_recommendations_count;
+
+        // Връщане на резултатите като JSON
+        res.json({
+          recall_exact: recall, // Оригиналната стойност
+          recall_fixed: parseFloat(recall.toFixed(2)), // Закръглена до 2 знака
+          recall_percentage: parseFloat((recall * 100).toFixed(2)), // Процентно представяне
+          relevant_user_recommendations_count,
+          relevant_platform_recommendations_count,
+          total_user_recommendations_count,
+          total_platform_recommendations_count
+        });
       });
     });
   });

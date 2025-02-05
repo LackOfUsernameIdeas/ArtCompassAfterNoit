@@ -3459,7 +3459,7 @@ const getUsersTopWritersWatchlist = (userId, limit, callback) => {
   });
 };
 
-const getAllUsersRecommendations = (userId, callback) => {
+const getAllUsersDistinctRecommendations = (userId, callback) => {
   const query = `
     SELECT imdbID, genre_en, type, runtime, year, rated 
     FROM movies_series_recommendations 
@@ -3473,6 +3473,23 @@ const getAllUsersRecommendations = (userId, callback) => {
     }
 
     const totalCount = results.length; // Get the total number of distinct recommendations
+    callback(null, { total_count: totalCount, recommendations: results });
+  });
+};
+
+const getAllPlatformDistinctRecommendations = (callback) => {
+  const query = `
+    SELECT imdbID, genre_en, type, runtime, year, rated 
+    FROM movies_series_recommendations 
+    GROUP BY imdbID;
+  `;
+
+  db.query(query, (error, results) => {
+    if (error) {
+      return callback(error, null);
+    }
+
+    const totalCount = results.length; // Get the total number of recommendations
     callback(null, { total_count: totalCount, recommendations: results });
   });
 };
@@ -3523,5 +3540,6 @@ module.exports = {
   getUsersTopDirectorsFromWatchlist,
   getUsersTopWriters,
   getUsersTopWritersWatchlist,
-  getAllUsersRecommendations
+  getAllUsersDistinctRecommendations,
+  getAllPlatformDistinctRecommendations
 };
