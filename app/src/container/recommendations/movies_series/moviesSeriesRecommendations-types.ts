@@ -91,7 +91,7 @@ export type RecommendationsAnalysis = {
   totalCount: number; // Общо броят на препоръките
   precisionValue: number; // Стойността на прецизността
   precisionPercentage: number; // Процентното изражение на прецизността
-  relevantRecommendations: string[]; // Списък с релевантни препоръки (imdbID)
+  relevantRecommendations: Analysis[]; // Списък с релевантни препоръки (imdbID)
 };
 
 // Пропс за компонентата Quiz, свързана с маркирането на филми.
@@ -232,4 +232,21 @@ export interface ConfirmationModalProps {
 
   // Броят на изпратените заявки
   submitCount: number;
+}
+
+// Интерфейс за критериите на модала за оценяване
+export interface CriteriaScores {
+  genres: number; // жанровете
+  type: number; // типа (филм/сериал)
+  mood: number; // настроението
+  timeAvailability: number; // наличното време за гледане
+  preferredAge: number; // предпочитаната възраст (спрямо година на издаване)
+  targetGroup: number; // целевата аудитория
+}
+
+export interface Analysis {
+  imdbID: string; // Уникален идентификатор на филма/сериала в IMDb
+  isRelevant: boolean; // Дали препоръката е подходяща според критериите
+  relevanceScore: number; // Общ резултат за релевантност
+  criteriaScores: CriteriaScores; // Подробен резултат по отделни критерии
 }

@@ -3,7 +3,8 @@ import {
   Question,
   MoviesSeriesUserPreferences,
   Recommendation,
-  RecommendationsAnalysis
+  RecommendationsAnalysis,
+  Analysis
 } from "./moviesSeriesRecommendations-types";
 import { NotificationState } from "../../types_common";
 import { openAIKey } from "./moviesSeriesRecommendations-data";
@@ -593,13 +594,10 @@ export const analyzeRecommendations = async (
     }
 
     // Извличане на резултатите
-    const data: { imdbID: string; isRelevant: boolean }[] =
-      await response.json();
+    const data: Analysis[] = await response.json();
 
     // Филтриране на релевантните препоръки
-    let relevantRecommendations = data
-      .filter((rec) => rec.isRelevant)
-      .map((rec) => rec.imdbID);
+    let relevantRecommendations = data.filter((rec) => rec.isRelevant);
     let relevantCount = relevantRecommendations.length;
 
     // Изчисляване на Precision за това генериране (current round)
