@@ -811,7 +811,7 @@ export class MoviesByProsperityBubbleChart extends Component<
       Екшън: "#3e0704",
       Комедия: "#5c0a06",
       Драма: "#7b0e08",
-      Трилър: "#9a110a",
+      Трилър: "#9A110A",
       Романтичен: "#ae413b",
       Анимация: "#c2706c",
       "Филм-ноар": "#cd8885"
@@ -996,7 +996,7 @@ export class Treemap extends Component<TreemapProps, TreemapState> {
     const primaryColor = window
       .getComputedStyle(root)
       .getPropertyValue("--primary-color"); // Извличане на CSS променливата
-    return primaryColor || "#9a110a"; // Връщане на стандартен червен цвят, ако няма дефиниран
+    return primaryColor || "#9A110A"; // Връщане на стандартен червен цвят, ако няма дефиниран
   }
 
   // Метод за актуализиране на цветния диапазон
