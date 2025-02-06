@@ -491,6 +491,12 @@ export const analyzeRecommendations = async (
     React.SetStateAction<RecommendationsAnalysis>
   >
 ) => {
+  console.log(
+    "NONformattedPreferencesForAnalysis: ",
+    moviesSeriesUserPreferences,
+    "NONformattedrecommendations: ",
+    recommendations
+  );
   let totalCount = recommendations.length;
   const { type, genres, moods, timeAvailability, age, targetGroup } =
     moviesSeriesUserPreferences;
@@ -507,11 +513,62 @@ export const analyzeRecommendations = async (
     preferred_target_group: targetGroup
   };
 
+  const formattedRecommendations = recommendations.map(
+    (recommendation: Recommendation) => {
+      const genresEn = recommendation.genre
+        ? recommendation.genre.split(", ")
+        : null;
+
+      const genresBg = genresEn?.map((genre: string) => {
+        const matchedGenre = moviesSeriesGenreOptions.find(
+          (option) => option.en.trim() === genre.trim()
+        );
+        return matchedGenre ? matchedGenre.bg : null;
+      });
+
+      const runtime = recommendation.runtimeGoogle || recommendation.runtime;
+      const imdbRating =
+        recommendation.imdbRatingGoogle || recommendation.imdbRating;
+
+      return {
+        imdbID: recommendation.imdbID || null,
+        title_en: recommendation.title || null,
+        title_bg: recommendation.bgName || null,
+        genre_en: genresEn?.join(", ") || null,
+        genre_bg: genresBg?.join(", ") || null,
+        reason: recommendation.reason || null,
+        description: recommendation.description || null,
+        year: recommendation.year || null,
+        rated: recommendation.rated || null,
+        released: recommendation.released || null,
+        runtime: runtime || null,
+        director: recommendation.director || null,
+        writer: recommendation.writer || null,
+        actors: recommendation.actors || null,
+        plot: recommendation.plot || null,
+        language: recommendation.language || null,
+        country: recommendation.country || null,
+        awards: recommendation.awards || null,
+        poster: recommendation.poster || null,
+        ratings: recommendation.ratings || [],
+        metascore: recommendation.metascore || null,
+        imdbRating: imdbRating || null,
+        imdbVotes: recommendation.imdbVotes || null,
+        type: recommendation.type || null,
+        DVD: recommendation.DVD || null,
+        boxOffice: recommendation.boxOffice || null,
+        production: recommendation.production || null,
+        website: recommendation.website || null,
+        totalSeasons: recommendation.totalSeasons || null
+      };
+    }
+  );
+
   console.log(
     "formattedPreferencesForAnalysis: ",
     formattedPreferencesForAnalysis,
-    "recommendations: ",
-    recommendations
+    "formattedRecommendations: ",
+    formattedRecommendations
   );
   try {
     // Изпраща заявка с предпочитанията и целия списък от препоръки
@@ -524,7 +581,7 @@ export const analyzeRecommendations = async (
         },
         body: JSON.stringify({
           userPreferences: formattedPreferencesForAnalysis,
-          recommendations: recommendations
+          recommendations: formattedRecommendations
         })
       }
     );

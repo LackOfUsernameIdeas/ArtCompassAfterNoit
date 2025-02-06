@@ -169,7 +169,7 @@ const matchMoodWithGenres = (mood, genres) => {
       "Sport",
       "Western"
     ],
-    "Разтревожен/-на": ["Thriller", "Horror", "Romance", "War"],
+    "Разтревожен/-на": ["Thriller", "Horror", "Romance", "War", "Sport"],
     "Вдъхновен/-на": [
       "Biography",
       "History",
@@ -256,6 +256,7 @@ const checkRelevance = (userPreferences, recommendation) => {
     const userGenres = userPreferences.preferred_genres_en
       .split(", ")
       .map((g) => g.toLowerCase());
+
     const recGenres = recommendation.genre_en
       .split(", ")
       .map((g) => g.toLowerCase());
@@ -324,10 +325,8 @@ const checkRelevance = (userPreferences, recommendation) => {
       // "Нямам предпочитания" -> Всяка година ще е валидна
       score += 1;
       scores.preferredAge = 1;
-    }
-
-    // Проверява се дали годината е в диапазон (например "2018–2024" или "2013–")
-    if (
+    } else if (
+      // Проверява се дали годината е в диапазон (например "2018–2024" или "2013–")
       recommendation.year.includes("–") ||
       recommendation.year.includes("-")
     ) {
