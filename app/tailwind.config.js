@@ -100,7 +100,39 @@ export default {
         twitter: "rgb(var(--twitter))",
         github: "rgb(var(--github))",
         google: "rgb(var(--google))",
-        youtube: "rgb(var(--youtube))"
+        youtube: "rgb(var(--youtube))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))"
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))"
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))"
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))"
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))"
+        },
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        chart: {
+          1: "hsl(var(--chart-1))",
+          2: "hsl(var(--chart-2))",
+          3: "hsl(var(--chart-3))",
+          4: "hsl(var(--chart-4))",
+          5: "hsl(var(--chart-5))"
+        }
       },
       gradientColorStops: {
         primary: "rgb(var(--primary))",
@@ -140,8 +172,29 @@ export default {
         instagram:
           "linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)",
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-1": "linear-gradient(102deg,transparent 41%,primary/50 0)",
         "gradient-1": "linear-gradient(102deg,light 41%,transparent 0)"
+      },
+      keyframes: {
+        "accordion-down": {
+          from: {
+            height: "0"
+          },
+          to: {
+            height: "var(--radix-accordion-content-height)"
+          }
+        },
+        "accordion-up": {
+          from: {
+            height: "var(--radix-accordion-content-height)"
+          },
+          to: {
+            height: "0"
+          }
+        }
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out"
       }
     },
     animation: {
@@ -192,34 +245,86 @@ export default {
         }
       },
       ring: {
-        "0%": { transform: "rotateZ(0)" },
-        "1%": { transform: "rotateZ(30deg)" },
-        "3%": { transform: "rotateZ(-28deg)" },
-        "5%": { transform: "rotateZ(34deg)" },
-        "7%": { transform: "rotateZ(-32deg)" },
-        "9%": { transform: "rotateZ(30deg)" },
-        "11%": { transform: "rotateZ(-28deg)" },
-        "13%": { transform: "rotateZ(26deg)" },
-        "15%": { transform: "rotateZ(-24deg)" },
-        "17%": { transform: "rotateZ(22deg)" },
-        "19%": { transform: "rotateZ(-20deg)" },
-        "21%": { transform: "rotateZ(18deg)" },
-        "23%": { transform: "rotateZ(-16deg)" },
-        "25%": { transform: "rotateZ(14deg)" },
-        "27%": { transform: "rotateZ(-12deg)" },
-        "29%": { transform: "rotateZ(10deg)" },
-        "31%": { transform: "rotateZ(-8deg)" },
-        "33%": { transform: "rotateZ(6deg)" },
-        "35%": { transform: "rotateZ(-4deg)" },
-        "37%": { transform: "rotateZ(2deg)" },
-        "39%": { transform: "rotateZ(-1deg)" },
-        "41%": { transform: "rotateZ(1deg)" },
-        "43%": { transform: "rotateZ(0)" },
-        "100%": { transform: "rotateZ(0)" }
+        "0%": {
+          transform: "rotateZ(0)"
+        },
+        "1%": {
+          transform: "rotateZ(30deg)"
+        },
+        "3%": {
+          transform: "rotateZ(-28deg)"
+        },
+        "5%": {
+          transform: "rotateZ(34deg)"
+        },
+        "7%": {
+          transform: "rotateZ(-32deg)"
+        },
+        "9%": {
+          transform: "rotateZ(30deg)"
+        },
+        "11%": {
+          transform: "rotateZ(-28deg)"
+        },
+        "13%": {
+          transform: "rotateZ(26deg)"
+        },
+        "15%": {
+          transform: "rotateZ(-24deg)"
+        },
+        "17%": {
+          transform: "rotateZ(22deg)"
+        },
+        "19%": {
+          transform: "rotateZ(-20deg)"
+        },
+        "21%": {
+          transform: "rotateZ(18deg)"
+        },
+        "23%": {
+          transform: "rotateZ(-16deg)"
+        },
+        "25%": {
+          transform: "rotateZ(14deg)"
+        },
+        "27%": {
+          transform: "rotateZ(-12deg)"
+        },
+        "29%": {
+          transform: "rotateZ(10deg)"
+        },
+        "31%": {
+          transform: "rotateZ(-8deg)"
+        },
+        "33%": {
+          transform: "rotateZ(6deg)"
+        },
+        "35%": {
+          transform: "rotateZ(-4deg)"
+        },
+        "37%": {
+          transform: "rotateZ(2deg)"
+        },
+        "39%": {
+          transform: "rotateZ(-1deg)"
+        },
+        "41%": {
+          transform: "rotateZ(1deg)"
+        },
+        "43%": {
+          transform: "rotateZ(0)"
+        },
+        "100%": {
+          transform: "rotateZ(0)"
+        }
       },
       wase: {
-        "0%, 100%": { transform: "rotate(-3deg)" },
-        "50%": { transform: "rotate(3deg)" }
+        "0%, 100%": {
+          transform: "rotate(-3deg)"
+        },
+        "50%": {
+          transform: "rotate(3deg)"
+        }
       },
       spin: {
         from: {
