@@ -2,7 +2,8 @@ import {
   Genre,
   Question,
   MoviesSeriesUserPreferences,
-  Recommendation
+  Recommendation,
+  RecommendationsAnalysis
 } from "./moviesSeriesRecommendations-types";
 import { NotificationState } from "../../types_common";
 import { openAIKey } from "./moviesSeriesRecommendations-data";
@@ -70,7 +71,6 @@ export const saveMoviesSeriesUserPreferences = async (
       interests: interests || null,
       date: date
     };
-    console.log("preferences: ", formattedPreferences);
 
     const response = await fetch(
       `${import.meta.env.VITE_API_BASE_URL}/save-preferences`,
@@ -146,18 +146,22 @@ const fetchIMDbIDWithFailover = async (movieName: string) => {
  * Връща списък с препоръки в JSON формат.
  *
  * @async
- * @function generateMovieRecommendations
+ * @function generateMoviesSeriesRecommendations
  * @param {string} date - Датата на генерирането на препоръките.
- * @param {MoviesSeriesUserPreferences} moviesSeriesUserPreferences - Преференциите на потребителя за филми/сериали.
+ * @param {MoviesSeriesUserPreferences} moviesSeriesUserPreferences - Предпочитанияте на потребителя за филми/сериали.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за задаване на препоръките в компонент.
+ * @param {React.Dispatch<React.SetStateAction<{relevantCount: number; totalCount: number;}>>} setRecommendationsAnalysis - Функция за задаване на анализ на препоръките.
  * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките.
  * @throws {Error} - Хвърля грешка, ако заявката за препоръки е неуспешна.
  */
-export const generateMovieRecommendations = async (
+export const generateMoviesSeriesRecommendations = async (
   date: string,
   moviesSeriesUserPreferences: MoviesSeriesUserPreferences,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
+  setRecommendationsAnalysis: React.Dispatch<
+    React.SetStateAction<RecommendationsAnalysis>
+  >,
   setBookmarkedMovies: React.Dispatch<
     React.SetStateAction<{
       [key: string]: any;
@@ -179,6 +183,7 @@ export const generateMovieRecommendations = async (
     depth,
     targetGroup
   } = moviesSeriesUserPreferences;
+
   try {
     const typeText = type === "Филм" ? "филма" : "сериала";
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -246,10 +251,10 @@ export const generateMovieRecommendations = async (
     const recommendations = JSON.parse(decodedData);
     console.log("recommendations: ", recommendations);
 
-    for (const movieTitle in recommendations) {
-      const movieName = movieTitle;
+    const recommendationsToAnalyze = [];
 
-      const imdbData = await fetchIMDbIDWithFailover(movieName);
+    for (const movieTitle in recommendations) {
+      const imdbData = await fetchIMDbIDWithFailover(movieTitle);
 
       if (Array.isArray(imdbData.items)) {
         const imdbItem = imdbData.items.find((item: { link: string }) =>
@@ -282,10 +287,12 @@ export const generateMovieRecommendations = async (
             const omdbData = await omdbResponse.json();
 
             console.log(
-              `OMDb data for ${movieName}: ${JSON.stringify(omdbData, null, 2)}`
+              `OMDb data for ${movieTitle}: ${JSON.stringify(
+                omdbData,
+                null,
+                2
+              )}`
             );
-
-            const runtimeForSaving = translatedRuntime || omdbData.Runtime;
 
             const recommendationData = {
               title: omdbData.Title,
@@ -326,8 +333,8 @@ export const generateMovieRecommendations = async (
               recommendationData
             ]);
 
-            // След това изпълняваме проверката и записа паралелно, използвайки
-            const checkAndSaveMoviesSeriesRecommendation = async () => {
+            // След това изпълняваме проверката и записа паралелно, използвайки self-invoking функцията
+            (async () => {
               // Проверяваме дали филмът съществува в таблицата за watchlist
               const existsInWatchlist =
                 await checkRecommendationExistsInWatchlist(imdbId, token);
@@ -347,16 +354,21 @@ export const generateMovieRecommendations = async (
                 date,
                 token
               );
-            };
+            })();
 
-            // Извикваме функцията, за да изпълним и двете операции
-            checkAndSaveMoviesSeriesRecommendation();
+            recommendationsToAnalyze.push(recommendationData);
           } else {
-            console.log(`IMDb ID not found for ${movieName}`);
+            console.log(`IMDb ID not found for ${movieTitle}`);
           }
         }
       }
     }
+
+    await analyzeRecommendations(
+      moviesSeriesUserPreferences,
+      recommendationsToAnalyze,
+      setRecommendationsAnalysis
+    ); // Извикване на функцията за анализ на предпочитанията и определяне на Precision
   } catch (error) {
     console.error("Error generating recommendations:", error);
   }
@@ -369,7 +381,7 @@ export const generateMovieRecommendations = async (
  *
  * @async
  * @function saveMoviesSeriesRecommendation
- * @param {any} recommendation - Обект, съдържащ данни за препоръчания филм или сериал.
+ * @param {Recommendation} recommendation - Обект, съдържащ данни за препоръчания филм или сериал.
  * @param {string} date - Дата на генерирането на препоръката.
  * @param {string | null} token - Токенът на потребителя за аутентификация.
  * @returns {Promise<void>} - Няма връщан резултат, но извършва записване на препоръката.
@@ -463,6 +475,97 @@ export const saveMoviesSeriesRecommendation = async (
 };
 
 /**
+ * Анализира препоръките и определя броя на релевантните сред тях.
+ *
+ * @async
+ * @function analyzeRecommendations
+ * @param {any} moviesSeriesUserPreferences - Предпочитания на потребителя за филми/сериали.
+ * @param {Array} recommendations - Масив от препоръки, които трябва да бъдат проверени.
+ * @param {React.Dispatch<React.SetStateAction<{relevantCount: number; totalCount: number;}>>} setRecommendationsAnalysis - Функция за задаване на анализ на препоръките.
+ * @returns {Promise<{relevantCount: number, totalCount: number}>} Обект с броя на релевантните препоръки и общия брой.
+ */
+export const analyzeRecommendations = async (
+  moviesSeriesUserPreferences: any,
+  recommendations: any,
+  setRecommendationsAnalysis: React.Dispatch<
+    React.SetStateAction<RecommendationsAnalysis>
+  >
+) => {
+  let totalCount = recommendations.length;
+  const { type, genres, moods, timeAvailability, age, targetGroup } =
+    moviesSeriesUserPreferences;
+
+  const preferredGenresEn =
+    genres.length > 0 ? genres.map((g: Genre) => g.en).join(", ") : null;
+
+  const formattedPreferencesForAnalysis = {
+    preferred_genres_en: preferredGenresEn,
+    mood: Array.isArray(moods) ? moods.join(", ") : null,
+    timeAvailability,
+    preferred_age: age,
+    preferred_type: type,
+    preferred_target_group: targetGroup
+  };
+
+  console.log(
+    "formattedPreferencesForAnalysis: ",
+    formattedPreferencesForAnalysis,
+    "recommendations: ",
+    recommendations
+  );
+  try {
+    // Изпраща заявка с предпочитанията и целия списък от препоръки
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/check-relevance`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          userPreferences: formattedPreferencesForAnalysis,
+          recommendations: recommendations
+        })
+      }
+    );
+
+    // Проверка за успешен отговор
+    if (!response.ok) {
+      console.error(`Error checking relevance: ${response.statusText}`);
+      return { relevantCount: 0, totalCount };
+    }
+
+    // Извличане на резултатите
+    const data: { imdbID: string; isRelevant: boolean }[] =
+      await response.json();
+
+    // Филтриране на релевантните препоръки
+    let relevantRecommendations = data
+      .filter((rec) => rec.isRelevant)
+      .map((rec) => rec.imdbID);
+    let relevantCount = relevantRecommendations.length;
+
+    // Изчисляване на Precision за това генериране (current round)
+    let precisionValue = totalCount > 0 ? relevantCount / totalCount : 0;
+    let precisionPercentage = parseFloat((precisionValue * 100).toFixed(2));
+
+    const result = {
+      relevantCount,
+      totalCount,
+      precisionValue,
+      precisionPercentage,
+      relevantRecommendations
+    };
+    setRecommendationsAnalysis(result);
+
+    return result;
+  } catch (error) {
+    console.error("Error fetching relevance data:", error);
+    return { relevantCount: 0, totalCount };
+  }
+};
+
+/**
  * Обработва изпращането на потребителски данни за генериране на препоръки.
  * Извършва валидация на полетата, изпраща заявка до сървъра и обновява списъка с препоръки.
  *
@@ -472,7 +575,7 @@ export const saveMoviesSeriesRecommendation = async (
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitted - Функция за задаване на статус за подадена заявка.
  * @param {React.Dispatch<React.SetStateAction<number>>} setSubmitCount - Функция за актуализиране на броя на подадените заявки.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за актуализиране на списъка с препоръки.
- * @param {MoviesSeriesUserPreferences} moviesSeriesUserPreferences - Преференции на потребителя за филми/сериали.
+ * @param {MoviesSeriesUserPreferences} moviesSeriesUserPreferences - Предпочитания на потребителя за филми/сериали.
  * @param {string | null} token - Токенът за аутентификация на потребителя.
  * @param {number} submitCount - Броят на подадените заявки.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките и записва данни.
@@ -486,6 +589,9 @@ export const handleSubmit = async (
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
   setSubmitCount: React.Dispatch<React.SetStateAction<number>>,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
+  setRecommendationsAnalysis: React.Dispatch<
+    React.SetStateAction<RecommendationsAnalysis>
+  >,
   setBookmarkedMovies: React.Dispatch<
     React.SetStateAction<{
       [key: string]: any;
@@ -567,10 +673,11 @@ export const handleSubmit = async (
         moviesSeriesUserPreferences,
         token
       );
-      await generateMovieRecommendations(
+      await generateMoviesSeriesRecommendations(
         date,
         moviesSeriesUserPreferences,
         setRecommendationList,
+        setRecommendationsAnalysis,
         setBookmarkedMovies,
         token
       );

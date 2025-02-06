@@ -268,7 +268,7 @@ export const processDataWithFallback = (
  * @async
  * @function generateBooksRecommendations
  * @param {string} date - Датата на генерирането на препоръките.
- * @param {BooksUserPreferences} booksUserPreferences - Преференциите на потребителя за книги.
+ * @param {BooksUserPreferences} booksUserPreferences - Предпочитанияте на потребителя за книги.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за задаване на препоръките в компонент.
  * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките.
@@ -443,8 +443,8 @@ export const generateBooksRecommendations = async (
           recommendationData
         ]);
 
-        // След това изпълняваме проверката и записа паралелно, използвайки
-        const checkAndSaveBooksRecommendation = async () => {
+        // След това изпълняваме проверката и записа паралелно, използвайки self-invoking функцията
+        (async () => {
           // Проверяваме дали книгата съществува в таблицата за readlist
           const existsInReadlist = await checkRecommendationExistsInReadlist(
             googleBooksData.id,
@@ -463,10 +463,7 @@ export const generateBooksRecommendations = async (
           }
           // Записваме препоръката в базата данни
           await saveBookRecommendation(recommendationData, date, token);
-        };
-
-        // Извикваме функцията, за да изпълним и двете операции
-        checkAndSaveBooksRecommendation();
+        })();
       } else {
         try {
           const goodreadsResponse = await fetch(
@@ -550,8 +547,8 @@ export const generateBooksRecommendations = async (
             recommendationData
           ]);
 
-          // След това изпълняваме проверката и записа паралелно, използвайки
-          const checkAndSaveBooksRecommendation = async () => {
+          // След това изпълняваме проверката и записа паралелно, използвайки self-invoking функцията
+          (async () => {
             // Проверяваме дали книгата съществува в таблицата за readlist
             const existsInReadlist = await checkRecommendationExistsInReadlist(
               bookId,
@@ -570,10 +567,7 @@ export const generateBooksRecommendations = async (
             }
             // Записваме препоръката в базата данни
             await saveBookRecommendation(recommendationData, date, token);
-          };
-
-          // Извикваме функцията, за да изпълним и двете операции
-          checkAndSaveBooksRecommendation();
+          })();
         } catch (error) {
           console.error(
             `Error processing book: ${book.real_edition_title}`,
@@ -684,7 +678,7 @@ export const saveBookRecommendation = async (
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitted - Функция за задаване на статус за подадена заявка.
  * @param {React.Dispatch<React.SetStateAction<number>>} setSubmitCount - Функция за актуализиране на броя на подадените заявки.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за актуализиране на списъка с препоръки.
- * @param {BooksUserPreferences} booksUserPreferences - Преференции на потребителя за книги.
+ * @param {BooksUserPreferences} booksUserPreferences - Предпочитания на потребителя за книги.
  * @param {string | null} token - Токенът за аутентификация на потребителя.
  * @param {number} submitCount - Броят на подадените заявки.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките и записва данни.

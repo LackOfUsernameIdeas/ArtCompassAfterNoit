@@ -30,6 +30,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   showViewRecommendations,
   alreadyHasRecommendations,
   setRecommendationList,
+  setRecommendationsAnalysis,
   setBookmarkedMovies
 }) => {
   const [type, setType] = useState("");
@@ -200,6 +201,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
           setSubmitted,
           setSubmitCount,
           setRecommendationList,
+          setRecommendationsAnalysis,
           setBookmarkedMovies,
           moviesSeriesUserPreferences,
           token,
@@ -514,6 +516,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                     setSubmitted={setSubmitted}
                     handleSubmit={handleSubmit}
                     setRecommendationList={setRecommendationList}
+                    setRecommendationsAnalysis={setRecommendationsAnalysis}
                     setBookmarkedMovies={setBookmarkedMovies}
                     setSubmitCount={setSubmitCount}
                     moviesSeriesUserPreferences={moviesSeriesUserPreferences}

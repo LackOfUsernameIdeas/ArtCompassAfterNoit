@@ -1,10 +1,14 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { RecommendationsList } from "./RecommendationsList";
 import { QuizQuestions } from "./QuizQuestions";
-import { handleRetakeQuiz } from "../helper_functions";
+import { analyzeRecommendations, handleRetakeQuiz } from "../helper_functions";
 import Loader from "../../../../components/common/loader/Loader";
-import { QuizProps } from "../moviesSeriesRecommendations-types";
+import {
+  QuizProps,
+  RecommendationsAnalysis
+} from "../moviesSeriesRecommendations-types";
+import MovieSeriesDataWidgets from "./MovieSeriesDataWidgets/MovieSeriesDataWidgets";
 
 export const Quiz: FC<QuizProps> = ({
   setBookmarkedMovies,
@@ -15,8 +19,18 @@ export const Quiz: FC<QuizProps> = ({
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [recommendationList, setRecommendationList] = useState<any[]>([]);
+  const [recommendationsAnalysis, setRecommendationsAnalysis] =
+    useState<RecommendationsAnalysis>({
+      relevantCount: 0,
+      totalCount: 0,
+      precisionValue: 0,
+      precisionPercentage: 0,
+      relevantRecommendations: []
+    });
 
   const alreadyHasRecommendations = recommendationList.length > 0;
+
+  console.log("recommendationsAnalysis: ", recommendationsAnalysis);
   return (
     <div className="flex items-center justify-center px-4">
       <CSSTransition
@@ -42,6 +56,7 @@ export const Quiz: FC<QuizProps> = ({
             showViewRecommendations={alreadyHasRecommendations && !submitted}
             alreadyHasRecommendations={alreadyHasRecommendations}
             setRecommendationList={setRecommendationList}
+            setRecommendationsAnalysis={setRecommendationsAnalysis}
             setBookmarkedMovies={setBookmarkedMovies}
           />
         </div>
@@ -71,6 +86,9 @@ export const Quiz: FC<QuizProps> = ({
             setAlertVisible={setAlertVisible}
             setBookmarkedMovies={setBookmarkedMovies}
             bookmarkedMovies={bookmarkedMovies}
+          />
+          <MovieSeriesDataWidgets
+            recommendationsAnalysis={recommendationsAnalysis}
           />
         </div>
       </CSSTransition>

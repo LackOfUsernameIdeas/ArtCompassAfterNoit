@@ -86,6 +86,14 @@ export interface MoviesSeriesUserPreferences {
   targetGroup: string; // Целева група
 }
 
+export type RecommendationsAnalysis = {
+  relevantCount: number; // Броят на релевантните препоръки
+  totalCount: number; // Общо броят на препоръките
+  precisionValue: number; // Стойността на прецизността
+  precisionPercentage: number; // Процентното изражение на прецизността
+  relevantRecommendations: string[]; // Списък с релевантни препоръки (imdbID)
+};
+
 // Пропс за компонентата Quiz, свързана с маркирането на филми.
 export interface QuizProps {
   setBookmarkedMovies: React.Dispatch<
@@ -144,6 +152,9 @@ export interface QuizQuestionProps {
   showViewRecommendations: boolean; // Флаг за показване на препоръките
   alreadyHasRecommendations: boolean; // Флаг за проверка дали вече има препоръки
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>; // Функция за задаване на списък с препоръки
+  setRecommendationsAnalysis: React.Dispatch<
+    React.SetStateAction<RecommendationsAnalysis>
+  >; // Функция за задаване на анализ на препоръките
   setBookmarkedMovies: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
   >; // Функция за актуализиране на маркираните филми
@@ -183,6 +194,9 @@ export interface ConfirmationModalProps {
     setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
     setSubmitCount: React.Dispatch<React.SetStateAction<number>>,
     setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
+    setRecommendationsAnalysis: React.Dispatch<
+      React.SetStateAction<RecommendationsAnalysis>
+    >,
     setBookmarkedMovies: React.Dispatch<
       React.SetStateAction<{
         [key: string]: any;
@@ -198,6 +212,10 @@ export interface ConfirmationModalProps {
 
   // Функция за задаване на списък с препоръки
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>;
+
+  setRecommendationsAnalysis: React.Dispatch<
+    React.SetStateAction<RecommendationsAnalysis>
+  >; // Функция за задаване на анализ на препоръките
 
   // Функция за задаване на списък с любими филми
   setBookmarkedMovies: React.Dispatch<

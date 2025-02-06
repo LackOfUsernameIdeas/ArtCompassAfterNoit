@@ -247,7 +247,7 @@ const Test: FC<Test> = () => {
     }
   };
 
-  const generateMovieRecommendations = async (date: string) => {
+  const generateMoviesSeriesRecommendations = async (date: string) => {
     try {
       const typeText = type === "Филм" ? "филма" : "сериала";
       const response = await fetch(
@@ -478,7 +478,7 @@ const Test: FC<Test> = () => {
     const date = new Date().toISOString();
 
     event.preventDefault();
-    generateMovieRecommendations(date);
+    generateMoviesSeriesRecommendations(date);
     saveMoviesSeriesUserPreferences(date);
 
     setSubmitCount((prevCount) => prevCount + 1);
