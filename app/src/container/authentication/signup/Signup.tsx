@@ -394,7 +394,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
                         {/* Лого за светъл режим */}
                         <div className="mb-[6rem] dark:hidden">
                           <img
-                            src={logoPink}
+                            src={logo}
                             className="authentication-image"
                             alt="Logo"
                             style={{ width: "100%", height: "auto" }}
@@ -404,7 +404,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
                         {/* Лого за тъмен режим */}
                         <div className="mb-[4rem] hidden dark:block">
                           <img
-                            src={logo}
+                            src={logoPink}
                             className="authentication-image"
                             alt="Logo"
                             style={{
