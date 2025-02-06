@@ -14097,7 +14097,11 @@ span.flatpickr-weekday {
 
 .apexcharts-text.apexcharts-yaxis-label tspan,
 .apexcharts-text.apexcharts-xaxis-label tspan {
-  @apply fill-textmuted;
+  @apply fill-textmuted font-Opsilon tracking-[0.07em];
+}
+
+.custom-chart .apexcharts-text.apexcharts-yaxis-label tspan {
+  @apply tracking-[0.04em];
 }
 
 .apexcharts-canvas .apexcharts-series.apexcharts-heatmap-series rect {
@@ -19944,6 +19948,10 @@ option.selectionList {
 
 .plot-modal {
   @apply flex flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative bg-white dark:bg-bodybg p-6 shadow-lg w-full max-w-lg space-y-4 z-50;
+}
+
+.opsilion {
+  @apply !font-Opsilon !font-light !tracking-wide;
 }
 
 .spinner {

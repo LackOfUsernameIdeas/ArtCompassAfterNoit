@@ -1,30 +1,37 @@
 const translate = async (entry) => {
+  // Изграждане на URL за заявка към Google Translate API
   const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bg&dt=t&q=${encodeURIComponent(
     entry
   )}`;
 
   try {
+    // Изпращане на заявката към API-то
     const response = await fetch(url);
     const data = await response.json();
 
+    // Обединяване на преведените части в един низ
     const flattenedTranslation = data[0].map((item) => item[0]).join(" ");
 
+    // Премахване на излишните интервали
     const mergedTranslation = flattenedTranslation.replace(/\s+/g, " ").trim();
     return mergedTranslation;
   } catch (error) {
+    // Обработка на грешка при превод
     console.error(`Error translating entry: ${entry}`, error);
     return entry;
   }
 };
 
-// Функция за рестартиране на лимита на потребителя
+// Функция за проверка и нулиране на броя заявки за деня
 const checkAndResetRequestsDaily = (userRequests) => {
   const currentDate = new Date().toISOString().split("T")[0];
 
+  // Ако няма записана дата за нулиране, задаваме текущата дата
   if (!userRequests.resetDate) {
     userRequests.resetDate = currentDate;
   }
 
+  // Ако датата е различна от текущата, нулираме заявките
   if (userRequests.resetDate !== currentDate) {
     userRequests = {};
     userRequests.resetDate = currentDate;
@@ -32,6 +39,7 @@ const checkAndResetRequestsDaily = (userRequests) => {
   }
 };
 
+// Функция за превод на предпочитан тип съдържание (филм/сериал)
 const translatePreferredType = (preferredType) => {
   const typeMapping = {
     Сериал: "series",
@@ -41,6 +49,7 @@ const translatePreferredType = (preferredType) => {
   return typeMapping[preferredType] || preferredType;
 };
 
+// Функция за съпоставяне на настроение с жанрове
 const matchMoodWithGenres = (mood, genres) => {
   const moodGenreMap = {
     "Развълнуван/-на": [
@@ -176,28 +185,31 @@ const matchMoodWithGenres = (mood, genres) => {
     ]
   };
 
+  // Проверка дали даден жанр съответства на настроението
   const matchingGenres = moodGenreMap[mood] || [];
   return genres.some((genre) => matchingGenres.includes(genre));
 };
 
+// Функция за конвертиране на време (часове и минути) в минути
 const parseRuntime = (runtime) => {
   if (!runtime || runtime.toLowerCase() === "n/a") return null;
 
-  const hourMatch = runtime.match(/(\d+)\s*ч/); // Match hours
-  const minMatch = runtime.match(/(\d+)\s*(м|min)/); // Match minutes
+  const hourMatch = runtime.match(/(\d+)\s*ч/); // Съвпадение за часове
+  const minMatch = runtime.match(/(\d+)\s*(м|min)/); // Съвпадение за минути
 
   let totalMinutes = 0;
 
   if (hourMatch) {
-    totalMinutes += parseInt(hourMatch[1], 10) * 60; // Convert hours to minutes
+    totalMinutes += parseInt(hourMatch[1], 10) * 60; // Преобразуване на часове в минути
   }
   if (minMatch) {
-    totalMinutes += parseInt(minMatch[1], 10); // Add minutes
+    totalMinutes += parseInt(minMatch[1], 10); // Добавяне на минутите
   }
 
   return totalMinutes > 0 ? totalMinutes : null;
 };
 
+// Функция за преобразуване на време за гледане в минути
 const getTimeAvailabilityInMinutes = (timeAvailability) => {
   const timeMapping = {
     "1 час": 60,
@@ -209,6 +221,7 @@ const getTimeAvailabilityInMinutes = (timeAvailability) => {
   return timeMapping[timeAvailability];
 };
 
+// Функция за определяне на прагова година спрямо възрастовите предпочитания
 const getYearThreshold = (preferredAge) => {
   const currentYear = new Date().getFullYear();
   const ageMapping = {
@@ -221,11 +234,24 @@ const getYearThreshold = (preferredAge) => {
   return ageMapping[preferredAge];
 };
 
+/**
+ * Проверява релевантността на препоръка спрямо предпочитанията на потребителя.
+ * @param {Object} userPreferences - Предпочитанията на потребителя.
+ * @param {Object} recommendation - Препоръчаното съдържание.
+ * @returns {Object} Обект, съдържащ дали е релевантно, общия резултат и подробни точки за всеки критерий.
+ */
 const checkRelevance = (userPreferences, recommendation) => {
   let score = 0;
-  const scores = {};
+  const scores = {
+    genres: 0,
+    type: 0,
+    mood: 0,
+    timeAvailability: 0,
+    preferredAge: 0,
+    targetGroup: 0
+  };
 
-  // ✅ 1. Match Preferred Genres
+  /** ✅ 1. Съответствие на предпочитани жанрове */
   if (userPreferences.preferred_genres_en && recommendation.genre_en) {
     const userGenres = userPreferences.preferred_genres_en
       .split(", ")
@@ -235,38 +261,38 @@ const checkRelevance = (userPreferences, recommendation) => {
       .map((g) => g.toLowerCase());
 
     if (recGenres.some((genre) => userGenres.includes(genre))) {
-      score += 2; // Strong match for preferred genre
+      score += 2; // Силно съответствие по жанр
       scores.genres = 2;
-    } else {
-      scores.genres = 0;
     }
   }
 
-  // ✅ 2. Match Preferred Type (Movie/Series)
+  /** ✅ 2. Съответствие на предпочитан тип (Филм/Сериал) */
   if (userPreferences.preferred_type && recommendation.type) {
     if (
       translatePreferredType(userPreferences.preferred_type) ===
       recommendation.type.toLowerCase()
     ) {
-      score += 1; // Match for movie/series preference
+      score += 1;
       scores.type = 1;
-    } else {
-      scores.type = 0;
     }
   }
 
-  // ✅ 3. Match Mood with Genre
+  /** ✅ 3. Съответствие на настроение с жанр */
   if (userPreferences.mood && recommendation.genre_en) {
     const recGenres = recommendation.genre_en.split(", ");
-    if (matchMoodWithGenres(userPreferences.mood, recGenres)) {
-      score += 1; // Match for mood-based genre association
+    const moods = userPreferences.mood.replace(/\/\s+/g, "/").split(/\s*,\s*/);
+
+    const moodMatch = moods.some((mood) =>
+      matchMoodWithGenres(mood, recGenres)
+    );
+
+    if (moodMatch) {
+      score += 1;
       scores.mood = 1;
-    } else {
-      scores.mood = 0;
     }
   }
 
-  // ✅ 4. Match Time Availability with Runtime
+  /** ✅ 4. Съответствие на наличното време с продължителността */
   if (userPreferences.timeAvailability && recommendation.runtime) {
     const timeAvailable = getTimeAvailabilityInMinutes(
       userPreferences.timeAvailability
@@ -279,37 +305,37 @@ const checkRelevance = (userPreferences, recommendation) => {
     }
 
     const movieRuntime = parseRuntime(recommendation.runtime);
-    const tolerance = 35; // Allow for a 35-minute tolerance
+    const tolerance = 35; // Позволява се толеранс от 35 минути
 
     if (movieRuntime !== null && timeAvailable !== null) {
       if (movieRuntime <= timeAvailable + tolerance) {
-        score += 1; // Movie fits within available time
+        score += 1; // Филмът попада в рамките на наличното време
         scores.timeAvailability = 1;
-      } else {
-        scores.timeAvailability = 0;
       }
     }
   }
 
-  // ✅ 5. Match Preferred Age with Release Year
+  /** ✅ 5. Съответствие на предпочитана възраст с година на издаване */
   if (userPreferences.preferred_age && recommendation.year) {
     const thresholdYear = getYearThreshold(userPreferences.preferred_age);
     const releaseYear = parseInt(recommendation.year, 10);
 
     if (thresholdYear === null) {
-      // "Нямам предпочитания" -> Всяко време ще е валидно
+      // "Нямам предпочитания" -> Всяка година ще е валидна
       score += 1;
       scores.preferredAge = 1;
     }
 
-    // Check if the year is a range like "2018–2024" or "2013–"
-    if (recommendation.year.includes("-")) {
-      const yearRange = recommendation.year.split("-");
+    // Проверява се дали годината е в диапазон (например "2018–2024" или "2013–")
+    if (
+      recommendation.year.includes("–") ||
+      recommendation.year.includes("-")
+    ) {
+      const yearRange = recommendation.year.split(/[-–]/);
       const startYear = parseInt(yearRange[0], 10);
       const endYear = yearRange.length > 1 ? parseInt(yearRange[1], 10) : null;
-      console.log(yearRange, startYear, endYear);
 
-      // If there's a valid end year, we use it, otherwise we assume it's ongoing.
+      // Ако има крайна година, тя се използва; иначе се приема, че филмът продължава
       if (
         (thresholdYear !== null && startYear >= thresholdYear) ||
         (endYear && endYear >= thresholdYear)
@@ -319,23 +345,27 @@ const checkRelevance = (userPreferences, recommendation) => {
       }
     } else if (!isNaN(releaseYear)) {
       if (thresholdYear !== null && releaseYear >= thresholdYear) {
-        // The movie is within the preferred range
+        // Филмът попада в предпочитания времеви диапазон
         score += 1;
         scores.preferredAge = 1;
-      } else {
-        if (!scores.preferredAge) {
-          scores.preferredAge = 0;
-        }
       }
     }
   }
 
-  // ✅ 6. Match Target Group
+  /** ✅ 6. Съответствие на целевата аудитория */
   if (userPreferences.preferred_target_group && recommendation.rated) {
     const targetMappings = {
       Деца: ["G", "PG", "TV-Y", "TV-Y7", "TV-Y7-FV", "Approved", "Passed"],
       Тийнейджъри: ["PG-13", "TV-14", "Not Rated", "Approved"],
-      Възрастни: ["PG-13", "R", "TV-MA", "TV-14", "Not Rated", "Approved"],
+      Възрастни: [
+        "PG-13",
+        "R",
+        "TV-MA",
+        "TV-14",
+        "NC-17",
+        "Not Rated",
+        "Approved"
+      ],
       Семейни: [
         "G",
         "PG",
@@ -373,14 +403,12 @@ const checkRelevance = (userPreferences, recommendation) => {
     ) {
       score += 1;
       scores.targetGroup = 1;
-    } else {
-      scores.targetGroup = 0;
     }
   }
 
-  // ✅ ?. Final Decision
+  /** ✅ 7. Финално решение */
   return {
-    isRelevant: score >= 2,
+    isRelevant: score >= 5,
     relevanceScore: score,
     criteriaScores: scores
   };

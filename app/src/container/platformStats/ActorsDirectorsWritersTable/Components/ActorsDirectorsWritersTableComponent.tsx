@@ -85,7 +85,7 @@ const ActorsDirectorsWritersTableComponent: FC<
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
         <div className="box custom-card h-[27.75rem]">
           <div className="box-header justify-between">
-            <div className="box-title !font-Opsilon !font-light !tracking-wide">
+            <div className="box-title opsilion">
               {
                 tableCategoryDisplayNames[
                   prosperitySortCategory as keyof typeof tableCategoryDisplayNames
@@ -103,7 +103,7 @@ const ActorsDirectorsWritersTableComponent: FC<
                   <button
                     key={category}
                     type="button"
-                    className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 !font-Opsilon !font-light !tracking-wide ${
+                    className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 opsilion ${
                       category === prosperitySortCategory
                         ? "ti-btn-primary-full text-white"
                         : "text-[#E74581] dark:text-[#CC3333] bg-[#AF0B48] dark:bg-[#9A110A] bg-opacity-10 dark:bg-opacity-10"
@@ -133,7 +133,7 @@ const ActorsDirectorsWritersTableComponent: FC<
                 className="table min-w-full whitespace-nowrap table-hover border table-bordered"
               >
                 <thead>
-                  <tr className="border border-inherit border-solid dark:border-defaultborder/10 !font-Opsilon !font-light !tracking-wide dark:bg-black/40 bg-gray-500/15">
+                  <tr className="border border-inherit border-solid dark:border-defaultborder/10 opsilion dark:bg-black/40 bg-gray-500/15">
                     <th
                       scope="col"
                       className="!text-start !text-[0.85rem] w-[40px]"
@@ -142,7 +142,7 @@ const ActorsDirectorsWritersTableComponent: FC<
                     </th>
                     <th
                       scope="col"
-                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                      className="!text-start !text-[0.85rem] opsilion"
                     >
                       {
                         tableCategoryDisplayNames[
@@ -152,55 +152,55 @@ const ActorsDirectorsWritersTableComponent: FC<
                     </th>
                     <th
                       scope="col"
-                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                      className="!text-start !text-[0.85rem] opsilion"
                     >
                       Просперитетен рейтинг
                     </th>
                     <th
                       scope="col"
-                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                      className="!text-start !text-[0.85rem] opsilion"
                     >
                       Среден IMDb рейтинг
                     </th>
                     <th
                       scope="col"
-                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                      className="!text-start !text-[0.85rem] opsilion"
                     >
                       Среден Rotten Tomatoes рейтинг
                     </th>
                     <th
                       scope="col"
-                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                      className="!text-start !text-[0.85rem] opsilion"
                     >
                       Среден Метаскор
                     </th>
                     <th
                       scope="col"
-                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                      className="!text-start !text-[0.85rem] opsilion"
                     >
                       Боксофис
                     </th>
                     <th
                       scope="col"
-                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                      className="!text-start !text-[0.85rem] opsilion"
                     >
                       Брой филми в платформата
                     </th>
                     <th
                       scope="col"
-                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                      className="!text-start !text-[0.85rem] opsilion"
                     >
                       Общо препоръки
                     </th>
                     <th
                       scope="col"
-                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                      className="!text-start !text-[0.85rem] opsilion"
                     >
                       Победи на награждавания
                     </th>
                     <th
                       scope="col"
-                      className="!text-start !text-[0.85rem] !font-Opsilon !font-light !tracking-wide"
+                      className="!text-start !text-[0.85rem] opsilion"
                     >
                       Номинации за награди
                     </th>
@@ -212,7 +212,7 @@ const ActorsDirectorsWritersTableComponent: FC<
                       key={index}
                       className="border border-inherit border-solid hover:bg-gray-100 dark:border-defaultborder/10 dark:hover:bg-light"
                     >
-                      <td className="!font-Opsilon !font-light !tracking-wide dark:bg-black/40 bg-gray-500/15">
+                      <td className="opsilion dark:bg-black/40 bg-gray-500/15">
                         {(currentTablePage - 1) * 5 + index + 1}
                       </td>
                       <td>{getCategoryName(item)}</td>
