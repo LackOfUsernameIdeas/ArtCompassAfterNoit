@@ -2,7 +2,6 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
 import {
   Check,
   X,
@@ -12,7 +11,8 @@ import {
   Target,
   Smile,
   ListIcon as Category,
-  HelpCircle
+  Info,
+  MoveDown
 } from "lucide-react";
 
 interface Recommendation {
@@ -69,6 +69,12 @@ const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
   return (
     <Card className="w-full">
       <CardContent className="p-6 bg-white dark:bg-bodybg2 rounded-lg">
+        <Card className="dark:border-black/10 bg-white dark:bg-bodybg2 font-semibold text-xl p-4 rounded-lg shadow-lg dark:shadow-xl mb-6">
+          <div className="flex items-center justify-start space-x-2">
+            <Clapperboard className="h-5 w-5 text-gray-500 dark:text-gray-300" />
+            <span>Тед Ласо (Ted Lasso) :</span>
+          </div>
+        </Card>
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center">
             <Badge
@@ -82,14 +88,10 @@ const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
               )}
               {recommendation.isRelevant ? "Релевантен" : "Нерелевантен"}
             </Badge>
-            <Button
-              variant="outline"
-              size="sm"
+            <Info
               onClick={onExplanationRequest}
-              className="hover:bg-primary/25 bg-primary/10 border-defaultborder dark:border-defaultborder/10 dark:text-defaulttextcolor/70"
-            >
-              <HelpCircle />
-            </Button>
+              className="w-10 h-10 dark:text-defaulttextcolor/70 cursor-pointer transition-transform duration-200 hover:scale-110 bg-black/20 hover:bg-black/30 rounded-full p-1.5"
+            />
           </div>
           <div className="flex items-center">
             <div className="text-2xl font-bold mr-4">

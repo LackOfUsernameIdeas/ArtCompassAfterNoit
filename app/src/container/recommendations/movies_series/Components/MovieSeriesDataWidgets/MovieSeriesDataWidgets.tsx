@@ -2,6 +2,7 @@ import type React from "react";
 import PrecisionFormula from "./PrecisionFormula";
 import Collapsible from "./Collapsible";
 import RelevantRecommendations from "./RelevantRecommendations";
+import Widget from "../../../../../components/common/widget/widget";
 
 interface RecommendationAnalysis {
   relevantCount: number;
@@ -92,19 +93,5 @@ const MovieDataWidgets: React.FC<MovieDataWidgetsProps> = ({
     </div>
   );
 };
-
-const Widget: React.FC<{
-  icon: React.ReactNode;
-  title: string;
-  value: string | number;
-}> = ({ icon, title, value }) => (
-  <div className="bg-white dark:bg-bodybg2 dark:text-defaulttextcolor/70 p-4 rounded-lg transition-all duration-300 hover:shadow-md">
-    <div className="flex items-center mb-2">
-      {icon}
-      <h3 className="ml-2 text-sm font-semibold">{title}</h3>
-    </div>
-    <p className="text-2xl font-bold">{value}</p>
-  </div>
-);
 
 export default MovieDataWidgets;

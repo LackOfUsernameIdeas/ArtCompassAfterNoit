@@ -5,7 +5,7 @@ import {
   PrecisionData,
   RecallData,
   RecommendationsAnalysis
-} from "./AIAnalysator-types";
+} from "./aiAnalysator-types";
 import MovieSeriesDataWidgets from "./Components/MovieSeriesDataWidgets";
 
 const precisionData: PrecisionData = {
