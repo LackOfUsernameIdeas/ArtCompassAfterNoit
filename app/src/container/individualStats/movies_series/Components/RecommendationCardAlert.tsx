@@ -156,7 +156,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
             </div>
 
             <div className="flex-grow w-full md:w-2/3 text-left ml-8">
-              <div className="sticky top-0 z-10 pb-4 mb-4">
+              <div className="top-0 z-10 pb-4 mb-4">
                 <a
                   href="#"
                   className="block text-2xl sm:text-xl md:text-2xl font-bold mb-1"

@@ -158,7 +158,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
 
         <div className="flex-grow">
           {/* Главна информация */}
-          <div className="sticky top-0 z-10">
+          <div className="top-0 z-10">
             <a href="#" className="block text-3xl font-bold mb-1">
               {recommendation.bgName || "Заглавие не е налично"}
             </a>

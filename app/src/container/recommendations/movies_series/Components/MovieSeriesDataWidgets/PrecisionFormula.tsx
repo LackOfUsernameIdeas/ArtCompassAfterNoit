@@ -4,15 +4,15 @@ interface PrecisionFormulaProps {
   relevantCount: number;
   totalCount: number;
   precisionValue: number;
+  precisionPercentage: number;
 }
 
 const PrecisionFormula: React.FC<PrecisionFormulaProps> = ({
   relevantCount,
   totalCount,
-  precisionValue
+  precisionValue,
+  precisionPercentage
 }) => {
-  const precisionPercentage = (precisionValue * 100).toFixed(2);
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-center w-full space-x-4">
@@ -27,12 +27,12 @@ const PrecisionFormula: React.FC<PrecisionFormulaProps> = ({
       <div className="text-lg text-gray-600 text-center">
         <div>където:</div>
         <div className="flex items-center justify-center space-x-2 mt-2">
-          <i className="ti ti-checklist text-xl"></i>
+          <i className="ti ti-checklist text-2xl"></i>
           <span>{relevantCount} = Брой релевантни неща</span>
         </div>
         <div className="flex items-center justify-center space-x-2">
-          <i className="ti ti-list text-xl"></i>
-          <span>{totalCount} = Брой на препоръки</span>
+          <i className="ti ti-list text-2xl"></i>
+          <span>{totalCount} = Общ брой препоръки</span>
         </div>
       </div>
       <div className="text-xl font-semibold text-gray-800 text-center">
