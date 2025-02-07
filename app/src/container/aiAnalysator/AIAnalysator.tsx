@@ -1,7 +1,13 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 import AIAnalysisDashboard from "./Components/AIAnalysisDashboard";
-import { F1ScoreData, PrecisionData, RecallData } from "./AIAnalysator-types";
+import {
+  F1ScoreData,
+  PrecisionData,
+  RecallData,
+  RecommendationsAnalysis
+} from "./AIAnalysator-types";
+import MovieSeriesDataWidgets from "./Components/MovieSeriesDataWidgets";
 
 const precisionData: PrecisionData = {
   precision_exact: 0.2932098765432099,
@@ -27,15 +33,102 @@ const f1ScoreData: F1ScoreData = {
   f1_score_percentage: 66.8
 };
 
+const recommendationsAnalysis: RecommendationsAnalysis = {
+  relevantCount: 4,
+  totalCount: 5,
+  precisionValue: 0.8,
+  precisionPercentage: 80,
+  relevantRecommendations: [
+    {
+      imdbID: "tt10986410",
+      isRelevant: true,
+      relevanceScore: 7,
+      criteriaScores: {
+        genres: 2,
+        type: 1,
+        mood: 1,
+        timeAvailability: 1,
+        preferredAge: 1,
+        targetGroup: 1
+      }
+    },
+    {
+      imdbID: "tt0965547",
+      isRelevant: false,
+      relevanceScore: 4,
+      criteriaScores: {
+        genres: 0,
+        type: 1,
+        mood: 1,
+        timeAvailability: 1,
+        preferredAge: 1,
+        targetGroup: 0
+      }
+    },
+    {
+      imdbID: "tt3398540",
+      isRelevant: true,
+      relevanceScore: 5,
+      criteriaScores: {
+        genres: 0,
+        type: 1,
+        mood: 1,
+        timeAvailability: 1,
+        preferredAge: 1,
+        targetGroup: 1
+      }
+    },
+    {
+      imdbID: "tt7414406",
+      isRelevant: true,
+      relevanceScore: 7,
+      criteriaScores: {
+        genres: 2,
+        type: 1,
+        mood: 1,
+        timeAvailability: 1,
+        preferredAge: 1,
+        targetGroup: 1
+      }
+    },
+    {
+      imdbID: "tt0758745",
+      isRelevant: true,
+      relevanceScore: 7,
+      criteriaScores: {
+        genres: 2,
+        type: 1,
+        mood: 1,
+        timeAvailability: 1,
+        preferredAge: 1,
+        targetGroup: 1
+      }
+    }
+  ]
+};
+
 const AIAnalysator: FC = () => {
+  // const [recommendationsAnalysis, setRecommendationsAnalysis] =
+  //   useState<RecommendationsAnalysis>({
+  //     relevantCount: 0,
+  //     totalCount: 0,
+  //     precisionValue: 0,
+  //     precisionPercentage: 0,
+  //     relevantRecommendations: []
+  //   });
+
   return (
     <FadeInWrapper>
-      <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
+      <main className="flex min-h-screen flex-col items-center justify-between p-[1.5rem]">
+        <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
           <AIAnalysisDashboard
             precisionData={precisionData}
             recallData={recallData}
             f1ScoreData={f1ScoreData}
+          />
+          <MovieSeriesDataWidgets
+            recommendationsAnalysis={recommendationsAnalysis}
+            currentIndex={1}
           />
         </div>
       </main>

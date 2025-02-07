@@ -39,3 +39,28 @@ export interface MetricCardProps {
   description: string;
   progress: number;
 }
+
+// Интерфейс за критериите на модала за оценяване
+export interface CriteriaScores {
+  genres: number; // жанровете
+  type: number; // типа (филм/сериал)
+  mood: number; // настроението
+  timeAvailability: number; // наличното време за гледане
+  preferredAge: number; // предпочитаната възраст (спрямо година на издаване)
+  targetGroup: number; // целевата аудитория
+}
+
+export interface Analysis {
+  imdbID: string; // Уникален идентификатор на филма/сериала в IMDb
+  isRelevant: boolean; // Дали препоръката е подходяща според критериите
+  relevanceScore: number; // Общ резултат за релевантност
+  criteriaScores: CriteriaScores; // Подробен резултат по отделни критерии
+}
+
+export type RecommendationsAnalysis = {
+  relevantCount: number; // Броят на релевантните препоръки
+  totalCount: number; // Общо броят на препоръките
+  precisionValue: number; // Стойността на прецизността
+  precisionPercentage: number; // Процентното изражение на прецизността
+  relevantRecommendations: Analysis[]; // Списък с релевантни препоръки (imdbID)
+};
