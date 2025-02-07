@@ -17,6 +17,8 @@ const initialState = {
   iconOverlay: "",
   colorPrimaryRgb: "154 17 10",
   colorPrimary: "154 17 10",
+  colorSecondaryRgb: "193 46 23",
+  colorSecondary: "193 46 23",
   bodyBg: "",
   Light: "",
   darkBg: "",
@@ -36,7 +38,9 @@ export default function reducer(state = initialState, action: any) {
       state = {
         ...payload,
         colorPrimaryRgb: payload.class === "dark" ? "175 11 72" : "154 17 10",
-        colorPrimary: payload.class === "dark" ? "175 11 72" : "154 17 10"
+        colorPrimary: payload.class === "dark" ? "175 11 72" : "154 17 10",
+        colorSecondaryRgb: payload.class === "dark" ? "256 52 12" : "193 46 23",
+        colorSecondary: payload.class === "dark" ? "256 52 12" : "193 46 23"
       };
       return state;
 

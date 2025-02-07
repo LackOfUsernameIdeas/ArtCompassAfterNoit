@@ -7,6 +7,8 @@ import {
   RecommendationsAnalysis
 } from "./aiAnalysator-types";
 import MovieSeriesDataWidgets from "./Components/MovieSeriesDataWidgets";
+import { Card } from "@/components/ui/card";
+import FadeInWrapper from "@/components/common/loader/fadeinwrapper";
 
 const precisionData: PrecisionData = {
   precision_exact: 0.2932098765432099,
@@ -133,21 +135,35 @@ const AIAnalysator: FC = () => {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-[1.5rem]">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
-        <AIAnalysisDashboard
-          precisionData={precisionData}
-          recallData={recallData}
-          f1ScoreData={f1ScoreData}
-        />
-        <MovieSeriesDataWidgets
-          recommendationsAnalysis={recommendationsAnalysis}
-          currentIndex={currentIndex}
-          handlePrev={handlePrev}
-          handleNext={handleNext}
-        />
+    <FadeInWrapper>
+      <div className="flex min-h-screen flex-col items-center justify-between p-[1.5rem]">
+        <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
+          <Card className="dark:border-black/10 bg-bodybg font-semibold text-xl p-4 rounded-lg shadow-lg dark:shadow-xl text-center">
+            <h2 className="!text-3xl text-defaulttextcolor dark:text-white/80">
+              Искате ли да знаете колко добре се е справил AI-ът с генерирането
+              на препоръки за филми и сериали?
+            </h2>
+            <hr className="my-4 border-defaulttextcolor/70" />
+            <p className="text-gray-600 !text-lg">
+              Примерно описание...Ако намерите някакъв проблем в нашето
+              приложение или имате препоръки, напишете ни и ние ще отговорим
+              възможно най-бързо!
+            </p>
+          </Card>
+          <AIAnalysisDashboard
+            precisionData={precisionData}
+            recallData={recallData}
+            f1ScoreData={f1ScoreData}
+          />
+          <MovieSeriesDataWidgets
+            recommendationsAnalysis={recommendationsAnalysis}
+            currentIndex={currentIndex}
+            handlePrev={handlePrev}
+            handleNext={handleNext}
+          />
+        </div>
       </div>
-    </main>
+    </FadeInWrapper>
   );
 };
 

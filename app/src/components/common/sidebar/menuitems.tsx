@@ -36,7 +36,7 @@ export const MENUITEMS = [
     children: [
       {
         path: `${import.meta.env.BASE_URL}app/saveLists/movies_series`,
-        icon: <i className="side-menu__icon ti ti-movie"></i>,
+        icon: <i className="side-sub-menu__icon ti ti-movie"></i>,
         type: "link",
         active: false,
         selected: false,
@@ -44,7 +44,7 @@ export const MENUITEMS = [
       },
       {
         path: `${import.meta.env.BASE_URL}app/saveLists/books`,
-        icon: <i className="side-menu__icon ti ti-book"></i>,
+        icon: <i className="side-sub-menu__icon ti ti-book"></i>,
         type: "link",
         active: false,
         selected: false,
@@ -66,7 +66,7 @@ export const MENUITEMS = [
         path: `${
           import.meta.env.BASE_URL
         }app/platformStats/moviesByProsperityBubbleChart`,
-        icon: <i className="side-menu__icon bx bx-bar-chart-alt-2"></i>,
+        icon: <i className="side-sub-menu__icon bx bx-movie"></i>,
         type: "link",
         active: false,
         selected: false,
@@ -76,7 +76,7 @@ export const MENUITEMS = [
         path: `${
           import.meta.env.BASE_URL
         }app/platformStats/actorsDirectorsWritersTable`,
-        icon: <i className="side-menu__icon bx bx-bar-chart-alt-2"></i>,
+        icon: <i className="side-sub-menu__icon bx bx-user"></i>,
         type: "link",
         active: false,
         selected: false,
@@ -86,7 +86,7 @@ export const MENUITEMS = [
         path: `${
           import.meta.env.BASE_URL
         }app/platformStats/genrePopularityOverTime`,
-        icon: <i className="side-menu__icon bx bx-bar-chart-alt-2"></i>,
+        icon: <i className="side-sub-menu__icon bx bx-category"></i>,
         type: "link",
         active: false,
         selected: false,
@@ -94,7 +94,7 @@ export const MENUITEMS = [
       },
       {
         path: `${import.meta.env.BASE_URL}app/platformStats/topRecommendations`,
-        icon: <i className="side-menu__icon bx bx-bar-chart-alt-2"></i>,
+        icon: <i className="side-sub-menu__icon bx bx-star"></i>,
         type: "link",
         active: false,
         selected: false,
@@ -104,7 +104,7 @@ export const MENUITEMS = [
         path: `${
           import.meta.env.BASE_URL
         }app/platformStats/moviesAndSeriesByRatings`,
-        icon: <i className="side-menu__icon bx bx-bar-chart-alt-2"></i>,
+        icon: <i className="side-sub-menu__icon bx bxs-star-half"></i>,
         type: "link",
         active: false,
         selected: false,
@@ -112,7 +112,7 @@ export const MENUITEMS = [
       },
       {
         path: `${import.meta.env.BASE_URL}app/platformStats/topCountries`,
-        icon: <i className="side-menu__icon bx bx-bar-chart-alt-2"></i>,
+        icon: <i className="side-sub-menu__icon bx bx-world"></i>,
         type: "link",
         active: false,
         selected: false,

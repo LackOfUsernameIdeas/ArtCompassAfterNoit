@@ -6,6 +6,7 @@ import Loader from "../../../components/common/loader/Loader";
 import WidgetCards from "./components/WidgetCardsComponents";
 import { DataType, UserData } from "./choose-types";
 import { fetchData } from "./helper_functions";
+import { Card } from "@/components/ui/card";
 
 const ChooseRecommendations: FC = () => {
   // Състояние за проследяване дали зареждаме съдържание
@@ -66,27 +67,24 @@ const ChooseRecommendations: FC = () => {
         unmountOnExit // Компонентът се премахва от DOM, ако не се показва
       >
         <div>
-          {/* Заглавие за добре дошли */}
-          <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">
-            <div>
-              <p className="font-semibold text-[1.125rem] text-defaulttextcolor dark:text-defaulttextcolor/70 !mb-0 ">
-                Добре дошли, {userData.first_name} {userData.last_name}!
-              </p>
-            </div>
-          </div>
-
           {/* Карти с информация за потребителя */}
-          <div className="grid grid-cols-12 gap-x-6">
+          <div className="grid grid-cols-12 gap-x-6 my-[1.5rem]">
             <WidgetCards data={data} />
           </div>
           {/* Въпрос и бутоните за избор */}
           <div className="flex items-center justify-center px-4">
-            <div className="w-full max-w-4xl py-8 px-4 text-center">
+            <div className="w-full max-w-4xl px-4 text-center">
               {/* Текстът на въпроса */}
-              <h2 className="text-2xl opsilion mb-4 text-defaulttextcolor">
-                {question.question}
-              </h2>
-              <h5 className="mb-8">Какво искате да разгледате в момента?</h5>
+              <Card className="dark:border-black/10 bg-bodybg font-semibold text-xl p-4 rounded-lg shadow-lg dark:shadow-xl text-center">
+                <h2 className="text-2xl opsilion text-defaulttextcolor dark:text-white/80">
+                  {question.question}
+                </h2>
+              </Card>
+              <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300 mt-[1.5rem]">
+                <h5 className="text-2xl font-semibold break-words">
+                  Какво искате да разгледате в момента?
+                </h5>
+              </div>
               {/* Бутоните, подравнени хоризонтално */}
               <div className="flex justify-between gap-4 w-full">
                 {question.options.map((option) => (
