@@ -76,7 +76,7 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
                     onMouseLeave={() => setIsLogoHovered(false)}
                   >
                     <img
-                      src={local_varaiable.class == "dark" ? logo : logoPink}
+                      src={local_varaiable.class == "dark" ? logoPink : logo}
                       alt="logo"
                       className="logo"
                       style={{
