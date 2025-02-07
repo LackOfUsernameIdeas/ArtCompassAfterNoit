@@ -19,12 +19,12 @@ const PrecisionFormula: React.FC<PrecisionFormulaProps> = ({
         <div className="text-2xl font-serif italic">Precision = </div>
         <div className="flex flex-col items-center">
           <div className="text-2xl font-serif">{relevantCount}</div>
-          <div className="w-full border-t border-gray-400 my-1"></div>
+          <div className="w-full border-t border-black/70 dark:border-defaultborder my-1"></div>
           <div className="text-2xl font-serif">{totalCount}</div>
         </div>
         <div className="text-2xl font-serif">= {precisionValue.toFixed(4)}</div>
       </div>
-      <div className="text-lg text-gray-600 text-center">
+      <div className="text-lg text-center">
         <div>където:</div>
         <div className="flex items-center justify-center space-x-2 mt-2">
           <i className="ti ti-checklist text-2xl"></i>
@@ -35,7 +35,7 @@ const PrecisionFormula: React.FC<PrecisionFormulaProps> = ({
           <span>{totalCount} = Общ брой препоръки</span>
         </div>
       </div>
-      <div className="text-xl font-semibold text-gray-800 text-center">
+      <div className="text-xl font-semibold text-center">
         Precision = {precisionPercentage}%
       </div>
     </div>
