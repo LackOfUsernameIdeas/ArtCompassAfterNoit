@@ -215,7 +215,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
 
             <div className="flex-grow w-full md:w-2/3 text-left ml-8">
               {/* Главна информация */}
-              <div className="sticky top-0 z-10">
+              <div className="top-0 z-10">
                 <a href="#" className="block text-3xl font-bold mb-1">
                   {selectedItem.title_bg || "Заглавие не е налично"}
                 </a>

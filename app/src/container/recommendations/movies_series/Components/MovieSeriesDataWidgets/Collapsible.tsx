@@ -1,5 +1,10 @@
 import type React from "react";
-import { useState } from "react";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent
+} from "@/components/ui/accordion";
 
 interface CollapsibleProps {
   title: React.ReactNode;
@@ -7,23 +12,21 @@ interface CollapsibleProps {
 }
 
 const Collapsible: React.FC<CollapsibleProps> = ({ title, children }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden">
-      <button
-        className="w-full px-4 py-2 bg-gray-50 text-left font-semibold text-gray-700 hover:bg-gray-100 transition-colors duration-200 flex justify-between items-center"
-        onClick={() => setIsOpen(!isOpen)}
+    <Accordion type="single" collapsible className="w-full">
+      <AccordionItem
+        value="item-1"
+        className="border border-gray-200 rounded-lg overflow-hidden"
       >
-        {title}
-        <i
-          className={`ti ${
-            isOpen ? "ti-chevron-up" : "ti-chevron-down"
-          } text-gray-600 text-lg`}
-        ></i>
-      </button>
-      {isOpen && <div className="p-4 bg-white">{children}</div>}
-    </div>
+        <AccordionTrigger
+          noHoverUnderline
+          className="px-4 py-2 bg-gray-50 hover:bg-gray-100 transition-colors duration-200"
+        >
+          <span className="font-semibold text-gray-700">{title}</span>
+        </AccordionTrigger>
+        <AccordionContent className="p-4 bg-white">{children}</AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 };
 

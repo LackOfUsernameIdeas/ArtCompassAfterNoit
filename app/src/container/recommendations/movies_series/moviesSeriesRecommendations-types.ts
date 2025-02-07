@@ -116,6 +116,8 @@ export interface RecommendationsProps {
       [key: string]: any; // Динамичен обект с маркирани книги
     }>
   >;
+  currentIndex: number;
+  setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
   setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
   setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
   bookmarkedMovies: { [key: string]: Recommendation }; // Списък с маркирани филми

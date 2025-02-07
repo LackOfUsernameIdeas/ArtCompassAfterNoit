@@ -19,6 +19,7 @@ export const Quiz: FC<QuizProps> = ({
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [recommendationList, setRecommendationList] = useState<any[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [recommendationsAnalysis, setRecommendationsAnalysis] =
     useState<RecommendationsAnalysis>({
       relevantCount: 0,
@@ -83,12 +84,15 @@ export const Quiz: FC<QuizProps> = ({
           <RecommendationsList
             recommendationList={recommendationList}
             setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+            currentIndex={currentIndex}
+            setCurrentIndex={setCurrentIndex}
             setAlertVisible={setAlertVisible}
             setBookmarkedMovies={setBookmarkedMovies}
             bookmarkedMovies={bookmarkedMovies}
           />
           <MovieSeriesDataWidgets
             recommendationsAnalysis={recommendationsAnalysis}
+            currentIndex={currentIndex}
           />
         </div>
       </CSSTransition>

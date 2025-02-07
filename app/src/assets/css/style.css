@@ -135,6 +135,8 @@ Background Image
   --pink: 231 145 188;
   --teal: 18 194 194;
   --purple: 137 32 173;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
   --default-text-color: 51 51 53;
   --default-border: 243 243 243;
   --default-background: 247 248 249;
@@ -169,6 +171,8 @@ Background Image
   --input-border: 49 51 53;
   --form-control-bg: 35 38 40;
   --default-text-color: 255 255 255;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 60 9.1% 97.8%;
 }
 
 /* Start Icons */
