@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import {
   Check,
   X,
-  Film,
+  Clapperboard,
   Clock,
-  Users,
+  Pen,
   Target,
   Smile,
   ListIcon as Category,
@@ -43,10 +43,10 @@ const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
 
   const criteriaIcons = {
     genres: Category,
-    type: Film,
+    type: Clapperboard,
     mood: Smile,
     timeAvailability: Clock,
-    preferredAge: Users,
+    preferredAge: Pen,
     targetGroup: Target
   };
 
@@ -54,8 +54,8 @@ const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
     genres: "Жанрове",
     type: "Тип",
     mood: "Настроение",
-    timeAvailability: "Време",
-    preferredAge: "Възрастова група",
+    timeAvailability: "Време за гледане",
+    preferredAge: "Време на създаване",
     targetGroup: "Целева група"
   };
 

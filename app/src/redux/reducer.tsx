@@ -35,8 +35,8 @@ export default function reducer(state = initialState, action: any) {
     case "ThemeChanger":
       state = {
         ...payload,
-        colorPrimaryRgb: payload.class === "dark" ? "154 17 10" : "175 11 72",
-        colorPrimary: payload.class === "dark" ? "154 17 10" : "175 11 72"
+        colorPrimaryRgb: payload.class === "dark" ? "175 11 72" : "154 17 10",
+        colorPrimary: payload.class === "dark" ? "175 11 72" : "154 17 10"
       };
       return state;
 
