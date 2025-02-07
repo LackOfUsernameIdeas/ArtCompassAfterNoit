@@ -9,7 +9,7 @@ export const MetricCard: FC<MetricCardProps> = ({
   description,
   progress
 }) => (
-  <Card>
+  <Card className="h-full flex flex-col">
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
       <CardTitle className="text-sm font-medium">{title}</CardTitle>
       <svg
@@ -25,9 +25,11 @@ export const MetricCard: FC<MetricCardProps> = ({
         <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
       </svg>
     </CardHeader>
-    <CardContent>
-      <div className="text-2xl font-bold">{value}%</div>
-      <p className="text-xs text-muted-foreground">{description}</p>
+    <CardContent className="flex flex-col flex-grow">
+      <div className="flex-grow">
+        <div className="text-2xl font-bold">{value}%</div>
+        <p className="text-xs text-muted-foreground">{description}</p>
+      </div>
       <Progress value={progress} className="mt-2" />
     </CardContent>
   </Card>
