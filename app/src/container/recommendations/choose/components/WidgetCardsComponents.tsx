@@ -85,7 +85,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                   <span
                     className={`text-[${
                       is1856 ? "1.25rem" : "1.125rem"
-                    }] !font-Opsilon tracking-wider`}
+                    }] opsilion`}
                   >
                     {data.usersCount?.[0]?.user_count || 0}{" "}
                     {/* Показва общия брой потребители или 0 */}
@@ -124,7 +124,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                   <span
                     className={`text-[${
                       is1856 ? "1.25rem" : "1.125rem"
-                    }] !font-Opsilon tracking-wider`}
+                    }] opsilion`}
                   >
                     {data.topGenres[0]?.genre_bg}{" "}
                     {/* Показва най-препоръчвания жанр на български */}
@@ -221,7 +221,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                   <span
                     className={`text-[${
                       is1856 ? "1.25rem" : "1.125rem"
-                    }] !font-Opsilon tracking-wider`}
+                    }] opsilion`}
                   >
                     {displayedValueAverages}
                   </span>
@@ -313,7 +313,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                   <span
                     className={`text-[${
                       is1966 ? "1.25rem" : "1.125rem"
-                    }] !font-Opsilon tracking-wider`}
+                    }] opsilion`}
                   >
                     {displayedValueAwards}
                   </span>

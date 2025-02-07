@@ -165,7 +165,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                 className="table min-w-full whitespace-nowrap table-hover border table-bordered"
               >
                 <thead>
-                  <tr className="border border-inherit border-solid dark:border-defaultborder/10 !font-Opsilon !font-light !tracking-wide dark:bg-black/40 bg-gray-500/15">
+                  <tr className="border border-inherit border-solid dark:border-defaultborder/10 opsilion dark:bg-black/40 bg-gray-500/15">
                     <th
                       scope="col"
                       className="!text-start !text-[0.85rem] w-[40px] !font-Opsilon"
@@ -245,7 +245,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                       key={index}
                       className="border border-inherit border-solid hover:bg-gray-100 dark:border-defaultborder/10 dark:hover:bg-light"
                     >
-                      <td className="!font-Opsilon !font-light !tracking-wide dark:bg-black/40 bg-gray-500/15">{(currentTablePage - 1) * 5 + index + 1}</td>
+                      <td className="opsilion dark:bg-black/40 bg-gray-500/15">{(currentTablePage - 1) * 5 + index + 1}</td>
                       <td>{getCategoryName(item)}</td>
                       <td>
                         {type === "recommendations"

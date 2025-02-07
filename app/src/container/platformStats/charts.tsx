@@ -583,7 +583,7 @@ export const TopCountriesChart: React.FC<TopCountriesProps> = ({
                   <strong>{country.country_bg}</strong>
                 </span>
                 :
-                <span className="text-xl font-Opsilon font-light !tracking-wide">
+                <span className="text-xl opsilion">
                   {" "}
                   {country.count}{" "}
                   <span className="font-Equilibrist text-sm">пъти</span>
@@ -1223,14 +1223,14 @@ export class TopRecommendationsBarChart extends Component<
         <div className="flex justify-center items-center">
           <div className="flex items-center mr-4">
             <span
-              className="!font-Opsilon tracking-wider w-3 h-3 mr-1 rounded-full inline-block"
+              className="opsilion w-3 h-3 mr-1 rounded-full inline-block"
               style={{ backgroundColor: movieColor }}
             ></span>
             <span className="opsilion">Филм</span>
           </div>
           <div className="flex items-center">
             <span
-              className="!font-Opsilon tracking-wider w-3 h-3 mr-1 rounded-full inline-block"
+              className="opsilion w-3 h-3 mr-1 rounded-full inline-block"
               style={{ backgroundColor: seriesColor }}
             ></span>
             <span className="opsilion">Сериал</span>

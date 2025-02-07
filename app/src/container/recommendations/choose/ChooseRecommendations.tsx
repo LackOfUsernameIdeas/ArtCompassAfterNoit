@@ -83,7 +83,7 @@ const ChooseRecommendations: FC = () => {
           <div className="flex items-center justify-center px-4">
             <div className="w-full max-w-4xl py-8 px-4 text-center">
               {/* Текстът на въпроса */}
-              <h2 className="text-2xl font-Opsilon mb-4 text-defaulttextcolor">
+              <h2 className="text-2xl opsilion mb-4 text-defaulttextcolor">
                 {question.question}
               </h2>
               <h5 className="mb-8">Какво искате да разгледате в момента?</h5>

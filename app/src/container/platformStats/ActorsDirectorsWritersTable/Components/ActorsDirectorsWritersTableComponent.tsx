@@ -13,6 +13,12 @@ import {
 import { useMediaQuery } from "react-responsive";
 import { tableCategoryDisplayNames } from "../../platformStats-data";
 import Pagination from "../../../../components/common/pagination/pagination";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent
+} from "@/components/ui/accordion";
 
 interface ActorsDirectorsWritersTableComponentProps {
   data: ActorsDirectorsWritersTableDataType;
@@ -83,6 +89,85 @@ const ActorsDirectorsWritersTableComponent: FC<
   return (
     <Fragment>
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
+        <div className="flex flex-col md:flex-row gap-8 box p-6 rounded-lg shadow-lg dark:text-gray-300 text-[#333335]">
+          {/* Лява част */}
+          <div className="md:w-1/2 flex flex-col justify-center items-center text-sm">
+            <p className="text-center">
+              Тук може да видите класация на режисьори, актьори и сценаристи филми според техния{" "}
+              <strong>просперитетен рейтинг</strong>.
+            </p>
+            <p className="text-center">
+              Всеки от тях е оценен на база няколко критерия:
+            </p>
+            <ul className="text-left coollist">
+              <li>Среден IMDb рейтинг на филмите</li>
+              <li>Среден рейтинг в Rotten Tomatoes</li>
+              <li>Среден Metascore</li>
+              <li>Общо приходи от боксофиса</li>
+              <li>Брой филми, препоръчвани в платформата</li>
+              <li>Брой пъти, в които са препоръчвани техни филми</li>
+              <li>Спечелени награди</li>
+              <li>Номинации за награди</li>
+            </ul>
+          </div>
+
+          {/* Дясна част*/}
+          <div className="md:w-1/2 text-sm]">
+            <Accordion type="single" collapsible className="space-y-4">
+              {/* IMDb */}
+              <AccordionItem value="imdb">
+                <AccordionTrigger className="opsilion">🎬 IMDb рейтинг</AccordionTrigger>
+                <AccordionContent>
+                  Средна оценка, която даден филм получава от потребителите на
+                  IMDb. Оценките варират от{" "}
+                  <span className="font-semibold">1 до 10</span> и
+                  отразяват популярността и качеството на филма.
+                </AccordionContent>
+              </AccordionItem>
+
+              {/* Rotten tomatoes */}
+              <AccordionItem value="rotten">
+                <AccordionTrigger className="opsilion">🍅 Среден Rotten Tomatoes рейтинг</AccordionTrigger>
+                <AccordionContent>
+                  Rotten Tomatoes е платформа, показваща процента на положителните рецензии от критици (Tomatometer) или от зрители (Audience Score).
+                  Средният рейтинг е средната оценка {" "}
+                  <span className="font-semibold"> (от 0 до 10)</span> на всички ревюта, вместо просто процента на положителните.
+                </AccordionContent>
+              </AccordionItem>
+
+              {/* Rotten tomatoes */}
+              <AccordionItem value="metascore">
+                <AccordionTrigger className="opsilion">💡 Среден Metascore рейтинг</AccordionTrigger>
+                <AccordionContent>
+                  Metascore е оценка от платформата Metacritic, която събира рецензии от критици и ги преобразува в обща числова стойност{" "}
+                  <span className="font-semibold">(от 0 до 100)</span>. 
+                  Средният Metascore рейтинг е усреднената стойност на тези оценки за даден/и филм/и.
+                </AccordionContent>
+              </AccordionItem>
+
+              {/*Боксофис*/}
+              <AccordionItem value="boxoffice">
+                <AccordionTrigger className="opsilion">💰 Боксофис</AccordionTrigger>
+                <AccordionContent>
+                  Общата сума на приходите от продажба на билети в киносалоните.
+                  Измерва се в{" "}
+                  <span className="font-semibold">
+                    милиони или милиарди долари
+                  </span>{" "}
+                  и е ключов показател за търговския успех на филма.
+                </AccordionContent>
+              </AccordionItem>
+
+            {/* Просперитет */}
+            <AccordionItem value="prosperity">
+              <AccordionTrigger className="opsilion">🎉 Просперитетен рейтинг</AccordionTrigger>
+              <AccordionContent>
+                ?????
+              </AccordionContent>
+            </AccordionItem>
+            </Accordion>
+          </div>
+        </div>
         <div className="box custom-card h-[27.75rem]">
           <div className="box-header justify-between">
             <div className="box-title opsilion">

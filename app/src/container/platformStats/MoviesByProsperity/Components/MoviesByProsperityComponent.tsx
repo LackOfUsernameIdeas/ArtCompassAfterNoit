@@ -19,8 +19,8 @@ const MoviesByProsperityComponent: FC<MoviesByProsperityComponentProps> = ({
     <Fragment>
       <div className="xl:col-span-6 col-span-12">
         <div className="flex flex-col md:flex-row gap-8 box p-6 rounded-lg shadow-lg dark:text-gray-300 text-[#333335">
-          {/* Left Section */}
-          <div className="!align-middle md:w-1/2 text-center text-sm">
+          {/* Лява част */}
+          <div className="md:w-1/2 flex flex-col justify-center items-center text-center text-sm">
             <p>
               Тук може да видите най-успешните филми според{" "}
               <strong>IMDb рейтинг</strong> и приходи
@@ -41,10 +41,10 @@ const MoviesByProsperityComponent: FC<MoviesByProsperityComponentProps> = ({
             <p>Големината на кръговете отразява просперитета на филма.</p>
           </div>
 
-          {/* Right Section - Accordion */}
+          {/* Дясна част*/}
           <div className="md:w-1/2 text-sm]">
             <Accordion type="single" collapsible className="space-y-4">
-              {/* IMDb Accordion */}
+              {/* IMDb */}
               <AccordionItem value="imdb">
                 <AccordionTrigger>🎬 IMDb рейтинг</AccordionTrigger>
                 <AccordionContent>
@@ -55,12 +55,12 @@ const MoviesByProsperityComponent: FC<MoviesByProsperityComponentProps> = ({
                 </AccordionContent>
               </AccordionItem>
 
-              {/* Box Office Accordion */}
+              {/*Боксофис*/}
               <AccordionItem value="boxoffice">
                 <AccordionTrigger>💰 Боксофис</AccordionTrigger>
                 <AccordionContent>
                   Общата сума на приходите от продажба на билети в киносалоните.
-                  Обикновено се измерва в{" "}
+                  Измерва се в{" "}
                   <span className="font-semibold">
                     милиони или милиарди долари
                   </span>{" "}
@@ -68,9 +68,9 @@ const MoviesByProsperityComponent: FC<MoviesByProsperityComponentProps> = ({
                 </AccordionContent>
               </AccordionItem>
 
-            {/* Prosperity Accordion */}
+            {/* Просперитет */}
             <AccordionItem value="prosperity">
-              <AccordionTrigger>💰 Просперитет</AccordionTrigger>
+              <AccordionTrigger>🎉 Просперитетен рейтинг</AccordionTrigger>
               <AccordionContent>
                 ?????
               </AccordionContent>
