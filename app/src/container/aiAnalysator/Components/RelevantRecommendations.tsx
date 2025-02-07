@@ -11,8 +11,7 @@ import {
   Target,
   Smile,
   ListIcon as Category,
-  Info,
-  MoveDown
+  Info
 } from "lucide-react";
 
 interface Recommendation {
@@ -71,7 +70,7 @@ const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
       <CardContent className="p-6 bg-white dark:bg-bodybg2 rounded-lg">
         <Card className="dark:border-black/10 bg-white dark:bg-bodybg2 font-semibold text-xl p-4 rounded-lg shadow-lg dark:shadow-xl mb-6">
           <div className="flex items-center justify-start space-x-2">
-            <Clapperboard className="h-5 w-5 text-gray-500 dark:text-gray-300" />
+            <Clapperboard className="h-5 w-5" />
             <span>Тед Ласо (Ted Lasso) :</span>
           </div>
         </Card>
