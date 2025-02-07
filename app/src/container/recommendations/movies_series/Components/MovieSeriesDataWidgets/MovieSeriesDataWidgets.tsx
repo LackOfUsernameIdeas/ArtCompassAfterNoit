@@ -25,10 +25,12 @@ interface RecommendationAnalysis {
 
 interface MovieDataWidgetsProps {
   recommendationsAnalysis: RecommendationAnalysis;
+  currentIndex: number;
 }
 
 const MovieDataWidgets: React.FC<MovieDataWidgetsProps> = ({
-  recommendationsAnalysis
+  recommendationsAnalysis,
+  currentIndex
 }) => {
   const {
     relevantCount,
@@ -85,7 +87,10 @@ const MovieDataWidgets: React.FC<MovieDataWidgetsProps> = ({
           precisionPercentage={precisionPercentage}
         />
       </Collapsible>
-      <RelevantRecommendations recommendations={relevantRecommendations} />
+      <RelevantRecommendations
+        recommendations={relevantRecommendations}
+        currentIndex={currentIndex}
+      />
     </div>
   );
 };

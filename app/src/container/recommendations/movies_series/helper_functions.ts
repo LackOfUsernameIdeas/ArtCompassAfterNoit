@@ -596,9 +596,8 @@ export const analyzeRecommendations = async (
     // Извличане на резултатите
     const data: Analysis[] = await response.json();
 
-    // Филтриране на релевантните препоръки
-    let relevantRecommendations = data.filter((rec) => rec.isRelevant);
-    let relevantCount = relevantRecommendations.length;
+    // Намиране на брой на релевантните препоръки
+    let relevantCount = data.filter((rec) => rec.isRelevant).length;
 
     // Изчисляване на Precision за това генериране (current round)
     let precisionValue = totalCount > 0 ? relevantCount / totalCount : 0;
@@ -609,7 +608,7 @@ export const analyzeRecommendations = async (
       totalCount,
       precisionValue,
       precisionPercentage,
-      relevantRecommendations
+      relevantRecommendations: data
     };
     setRecommendationsAnalysis(result);
 

@@ -9,10 +9,11 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
   recommendationList,
   setBookmarkedMovies,
   setCurrentBookmarkStatus,
+  currentIndex,
+  setCurrentIndex,
   setAlertVisible,
   bookmarkedMovies
 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [inTransition, setInTransition] = useState(false);
   const [direction, setDirection] = useState<"left" | "right">("right");
   const [isExpanded, setIsExpanded] = useState(false);

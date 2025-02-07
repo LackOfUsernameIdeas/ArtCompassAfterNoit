@@ -16,47 +16,50 @@ interface Recommendation {
 
 interface RelevantRecommendationsProps {
   recommendations: Recommendation[];
+  currentIndex: number;
 }
 
 const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
-  recommendations
+  recommendations,
+  currentIndex
 }) => {
+  const recommendation = recommendations[currentIndex]; // Генерираният филм/сериал
+
   return (
     <div className="space-y-4">
-      <h3 className="text-xl font-semibold text-gray-800">
-        Релевантни препоръки
-      </h3>
       <div className="space-y-4">
-        {recommendations.map((rec) => (
-          <div key={rec.imdbID} className="bg-gray-50 p-4 rounded-lg">
-            <div className="flex justify-between items-center mb-2">
-              <span className="font-semibold">IMDB ID: {rec.imdbID}</span>
-              <span className="flex items-center">
-                {rec.isRelevant ? (
-                  <i className="ti ti-check text-green-500 mr-1 text-xl"></i>
-                ) : (
-                  <i className="ti ti-x text-red-500 mr-1 text-xl"></i>
-                )}
-                {rec.isRelevant ? "Релевантен" : "Нерелевантен"}
-              </span>
-            </div>
-            <div className="mb-2">
-              <span className="font-semibold">Релевантност: </span>
-              {rec.relevanceScore}
-            </div>
-            <div>
-              <span className="font-semibold">Критерии:</span>
-              <ul className="list-disc list-inside">
-                <li>Жанрове: {rec.criteriaScores.genres}</li>
-                <li>Тип: {rec.criteriaScores.type}</li>
-                <li>Настроение: {rec.criteriaScores.mood}</li>
-                <li>Време: {rec.criteriaScores.timeAvailability}</li>
-                <li>Възрастова група: {rec.criteriaScores.preferredAge}</li>
-                <li>Целева група: {rec.criteriaScores.targetGroup}</li>
-              </ul>
-            </div>
+        <div key={recommendation.imdbID} className="bg-gray-50 p-4 rounded-lg">
+          <div className="flex justify-between items-center mb-2">
+            <span className="font-semibold">
+              IMDB ID: {recommendation.imdbID}
+            </span>
+            <span className="flex items-center">
+              {recommendation.isRelevant ? (
+                <i className="ti ti-check text-green-500 mr-1 text-xl"></i>
+              ) : (
+                <i className="ti ti-x text-red-500 mr-1 text-xl"></i>
+              )}
+              {recommendation.isRelevant ? "Релевантен" : "Нерелевантен"}
+            </span>
           </div>
-        ))}
+          <div className="mb-2">
+            <span className="font-semibold">Релевантност: </span>
+            {recommendation.relevanceScore}
+          </div>
+          <div>
+            <span className="font-semibold">Критерии:</span>
+            <ul className="list-disc list-inside">
+              <li>Жанрове: {recommendation.criteriaScores.genres}</li>
+              <li>Тип: {recommendation.criteriaScores.type}</li>
+              <li>Настроение: {recommendation.criteriaScores.mood}</li>
+              <li>Време: {recommendation.criteriaScores.timeAvailability}</li>
+              <li>
+                Възрастова група: {recommendation.criteriaScores.preferredAge}
+              </li>
+              <li>Целева група: {recommendation.criteriaScores.targetGroup}</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );
