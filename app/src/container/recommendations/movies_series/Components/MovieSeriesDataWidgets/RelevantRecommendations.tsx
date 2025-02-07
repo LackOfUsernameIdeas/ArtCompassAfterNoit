@@ -66,7 +66,7 @@ const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
   const onExplanationRequest = () => {};
   return (
     <Card className="w-full">
-      <CardContent className="p-6">
+      <CardContent className="p-6 bg-white dark:bg-bodybg2 rounded-lg">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center">
             <Badge
@@ -84,7 +84,7 @@ const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
               variant="outline"
               size="sm"
               onClick={onExplanationRequest}
-              className="flex items-center"
+              className="flex items-center hover:bg-primary/25 bg-primary/10 border-defaultborder dark:border-defaultborder/10 dark:text-defaulttextcolor/70"
             >
               <HelpCircle className="h-4 w-4 mr-2" />
               Обяснение
@@ -105,7 +105,7 @@ const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
             const Icon = criteriaIcons[key as keyof typeof criteriaIcons];
             const isGenre = key === "genres";
             return (
-              <Card key={key} className="overflow-hidden">
+              <Card key={key} className="bg-primary/10 overflow-hidden">
                 <CardContent className="p-3 flex items-center">
                   <Icon className="h-6 w-6 mr-3 text-primary flex-shrink-0" />
                   <div className="flex-grow min-w-0">

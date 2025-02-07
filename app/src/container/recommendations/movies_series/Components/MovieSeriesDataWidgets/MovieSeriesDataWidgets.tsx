@@ -41,7 +41,7 @@ const MovieDataWidgets: React.FC<MovieDataWidgetsProps> = ({
   } = recommendationsAnalysis;
 
   return (
-    <div className="bg-bodybg mt-2 p-6 rounded-xl shadow-lg space-y-6">
+    <div className="bg-bodybg mt-4 p-6 rounded-xl shadow-lg space-y-6">
       <h2 className="text-2xl font-bold mb-4">Анализ на препоръките</h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Widget
@@ -98,7 +98,7 @@ const Widget: React.FC<{
   title: string;
   value: string | number;
 }> = ({ icon, title, value }) => (
-  <div className="dark:bg-bodybg2 dark:text-defaulttextcolor/70 p-4 rounded-lg transition-all duration-300 hover:shadow-md">
+  <div className="bg-white dark:bg-bodybg2 dark:text-defaulttextcolor/70 p-4 rounded-lg transition-all duration-300 hover:shadow-md">
     <div className="flex items-center mb-2">
       {icon}
       <h3 className="ml-2 text-sm font-semibold">{title}</h3>

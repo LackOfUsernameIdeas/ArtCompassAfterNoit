@@ -35,7 +35,7 @@ const PrecisionFormula: React.FC<PrecisionFormulaProps> = ({
           <span>{totalCount} = Общ брой препоръки</span>
         </div>
       </div>
-      <div className="text-xl font-semibold text-center">
+      <div className="text-xl text-primary font-semibold text-center">
         Precision = {precisionPercentage}%
       </div>
     </div>
