@@ -1,5 +1,4 @@
 import { FC, useState } from "react";
-import FadeInWrapper from "../../components/common/loader/fadeinwrapper";
 import AIAnalysisDashboard from "./Components/AIAnalysisDashboard";
 import {
   F1ScoreData,
@@ -108,6 +107,7 @@ const recommendationsAnalysis: RecommendationsAnalysis = {
 };
 
 const AIAnalysator: FC = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
   // const [recommendationsAnalysis, setRecommendationsAnalysis] =
   //   useState<RecommendationsAnalysis>({
   //     relevantCount: 0,
@@ -117,22 +117,37 @@ const AIAnalysator: FC = () => {
   //     relevantRecommendations: []
   //   });
 
+  const handleNext = () => {
+    setCurrentIndex(
+      (prevIndex) =>
+        (prevIndex + 1) % recommendationsAnalysis.relevantRecommendations.length
+    );
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0
+        ? recommendationsAnalysis.relevantRecommendations.length - 1
+        : prevIndex - 1
+    );
+  };
+
   return (
-    <FadeInWrapper>
-      <main className="flex min-h-screen flex-col items-center justify-between p-[1.5rem]">
-        <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
-          <AIAnalysisDashboard
-            precisionData={precisionData}
-            recallData={recallData}
-            f1ScoreData={f1ScoreData}
-          />
-          <MovieSeriesDataWidgets
-            recommendationsAnalysis={recommendationsAnalysis}
-            currentIndex={1}
-          />
-        </div>
-      </main>
-    </FadeInWrapper>
+    <main className="flex min-h-screen flex-col items-center justify-between p-[1.5rem]">
+      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
+        <AIAnalysisDashboard
+          precisionData={precisionData}
+          recallData={recallData}
+          f1ScoreData={f1ScoreData}
+        />
+        <MovieSeriesDataWidgets
+          recommendationsAnalysis={recommendationsAnalysis}
+          currentIndex={currentIndex}
+          handlePrev={handlePrev}
+          handleNext={handleNext}
+        />
+      </div>
+    </main>
   );
 };
 

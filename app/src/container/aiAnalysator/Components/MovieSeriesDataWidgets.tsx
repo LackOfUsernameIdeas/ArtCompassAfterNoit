@@ -1,4 +1,4 @@
-import type React from "react";
+import React from "react";
 import PrecisionFormula from "./PrecisionFormula";
 import Collapsible from "./Collapsible";
 import RelevantRecommendations from "./RelevantRecommendations";
@@ -23,14 +23,18 @@ interface RecommendationAnalysis {
   }>;
 }
 
-interface MovieDataWidgetsProps {
+interface MovieSeriesDataWidgetsProps {
   recommendationsAnalysis: RecommendationAnalysis;
   currentIndex: number;
+  handlePrev: () => void;
+  handleNext: () => void;
 }
 
-const MovieDataWidgets: React.FC<MovieDataWidgetsProps> = ({
+const MovieSeriesDataWidgets: React.FC<MovieSeriesDataWidgetsProps> = ({
   recommendationsAnalysis,
-  currentIndex
+  currentIndex,
+  handlePrev,
+  handleNext
 }) => {
   const {
     relevantCount,
@@ -85,10 +89,53 @@ const MovieDataWidgets: React.FC<MovieDataWidgetsProps> = ({
           precisionPercentage={precisionPercentage}
         />
       </Collapsible>
-      <RelevantRecommendations
-        recommendations={relevantRecommendations}
-        currentIndex={currentIndex}
-      />
+      <div className="relative w-full mt-4">
+        {/* Left Arrow */}
+        <svg
+          onClick={handlePrev}
+          className="absolute top-1/2 transform -translate-y-1/2 left-[-7rem] text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            width: "5rem",
+            height: "5rem",
+            filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.3))"
+          }}
+        >
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+
+        {/* Relevant Recommendations - Full Width */}
+        <RelevantRecommendations
+          recommendations={relevantRecommendations}
+          currentIndex={currentIndex}
+        />
+
+        {/* Right Arrow */}
+        <svg
+          onClick={handleNext}
+          className="absolute top-1/2 transform -translate-y-1/2 right-[-7rem] text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            width: "5rem",
+            height: "5rem",
+            filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.3))"
+          }}
+        >
+          <path d="M9 18l6-6-6-6" />
+        </svg>
+      </div>
     </div>
   );
 };
@@ -107,4 +154,4 @@ const Widget: React.FC<{
   </div>
 );
 
-export default MovieDataWidgets;
+export default MovieSeriesDataWidgets;

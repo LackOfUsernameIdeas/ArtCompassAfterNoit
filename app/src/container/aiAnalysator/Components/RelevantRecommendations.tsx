@@ -1,4 +1,4 @@
-import type React from "react";
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -31,13 +31,11 @@ interface Recommendation {
 interface RelevantRecommendationsProps {
   recommendations: Recommendation[];
   currentIndex: number;
-  //   onExplanationRequest: () => void
 }
 
 const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
   recommendations,
   currentIndex
-  //   onExplanationRequest,
 }) => {
   if (recommendations.length === 0 || !recommendations[currentIndex]) {
     return null;
@@ -88,10 +86,9 @@ const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
               variant="outline"
               size="sm"
               onClick={onExplanationRequest}
-              className="flex items-center hover:bg-primary/25 bg-primary/10 border-defaultborder dark:border-defaultborder/10 dark:text-defaulttextcolor/70"
+              className="hover:bg-primary/25 bg-primary/10 border-defaultborder dark:border-defaultborder/10 dark:text-defaulttextcolor/70"
             >
-              <HelpCircle className="h-4 w-4 mr-2" />
-              Обяснение
+              <HelpCircle />
             </Button>
           </div>
           <div className="flex items-center">

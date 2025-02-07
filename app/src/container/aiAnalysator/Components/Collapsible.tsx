@@ -1,4 +1,4 @@
-import type React from "react";
+import React from "react";
 import {
   Accordion,
   AccordionItem,
@@ -10,7 +10,7 @@ interface CollapsibleProps {
   title: React.ReactNode;
   children: React.ReactNode;
 }
-//
+
 const Collapsible: React.FC<CollapsibleProps> = ({ title, children }) => {
   return (
     <Accordion type="single" collapsible className="w-full">
