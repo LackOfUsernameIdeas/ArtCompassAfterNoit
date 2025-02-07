@@ -3,8 +3,8 @@ import { FC } from "react";
 import { StatisticCardProps } from "../AIAnalysator-types";
 
 export const StatisticCard: FC<StatisticCardProps> = ({ title, value }) => (
-  <Card>
-    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+  <Card className="h-full flex flex-col justify-between">
+    <CardHeader>
       <CardTitle className="text-sm font-medium">{title}</CardTitle>
     </CardHeader>
     <CardContent>
