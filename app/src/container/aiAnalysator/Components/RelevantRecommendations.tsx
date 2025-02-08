@@ -13,7 +13,7 @@ import {
   ListIcon as Category
 } from "lucide-react";
 import Infobox from "../../../components/common/infobox/infobox";
-import { InfoboxModal } from "../../../components/common/infobox/infoboxModal";
+import { InfoboxModal } from "../../../components/common/infobox/InfoboxModal";
 
 interface Recommendation {
   isRelevant: boolean;

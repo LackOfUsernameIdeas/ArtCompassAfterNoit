@@ -560,14 +560,7 @@ Background Image
 
 /* Footer Styles */
 .footer {
-  background-color: #fff;
-  padding: 3rem 2rem;
-  box-shadow: 0 0 0.4rem rgba(0, 0, 0, 0.1);
-  border-top: 4px solid "bg-primary";
-  border-radius: 2rem;
-  margin-left: 4.5rem;
-  margin-right: 4.5rem;
-  margin-bottom: 1rem;
+  @apply bg-bodybg p-12 shadow-md border-t-4 border-primary rounded-[2rem] mx-[4.5rem] mb-4;
 }
 
 .footer .container {
@@ -7872,7 +7865,7 @@ label {
   @apply bg-white;
 }
 [data-page-style="modern"] .box {
-  @apply shadow-none bg-[#f3f6f8];
+  @apply shadow-none bg-bodybg shadow-lg dark:shadow-xl dark:border-black/10;
 }
 [data-page-style="modern"][class="dark"] {
   --light: 20, 20, 20;
