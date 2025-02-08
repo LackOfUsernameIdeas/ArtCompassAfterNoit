@@ -136,8 +136,8 @@ const AIAnalysator: FC = () => {
 
   return (
     <FadeInWrapper>
-      <div className="flex min-h-screen flex-col items-center justify-between p-[1.5rem]">
-        <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
+      <div className="p-[1.5rem]">
+        <div className="z-10 max-w-5xl w-full mx-auto font-mono text-sm">
           <Card className="dark:border-black/10 bg-bodybg font-semibold text-xl p-4 rounded-lg shadow-lg dark:shadow-xl text-center">
             <h2 className="!text-3xl text-defaulttextcolor dark:text-white/80">
               Искате ли да знаете колко добре се е справил AI-ът с генерирането
