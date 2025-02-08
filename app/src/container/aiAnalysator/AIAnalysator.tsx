@@ -120,6 +120,8 @@ const recommendationsAnalysis: RecommendationsAnalysis = {
 
 const AIAnalysator: FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [inTransition, setInTransition] = useState(false);
+  const [direction, setDirection] = useState<"left" | "right">("right");
   // const [recommendationsAnalysis, setRecommendationsAnalysis] =
   //   useState<RecommendationsAnalysis>({
   //     relevantCount: 0,
@@ -130,18 +132,31 @@ const AIAnalysator: FC = () => {
   //   });
 
   const handleNext = () => {
-    setCurrentIndex(
-      (prevIndex) =>
-        (prevIndex + 1) % recommendationsAnalysis.relevantRecommendations.length
-    );
+    setDirection("right");
+    setInTransition(true);
+
+    setTimeout(() => {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === recommendationsAnalysis.relevantRecommendations.length - 1
+          ? 0
+          : prevIndex + 1
+      );
+      setInTransition(false);
+    }, 500);
   };
 
   const handlePrev = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0
-        ? recommendationsAnalysis.relevantRecommendations.length - 1
-        : prevIndex - 1
-    );
+    setDirection("left");
+    setInTransition(true);
+
+    setTimeout(() => {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === 0
+          ? recommendationsAnalysis.relevantRecommendations.length - 1
+          : prevIndex - 1
+      );
+      setInTransition(false);
+    }, 500);
   };
 
   return (
@@ -170,6 +185,9 @@ const AIAnalysator: FC = () => {
             currentIndex={currentIndex}
             handlePrev={handlePrev}
             handleNext={handleNext}
+            inTransition={inTransition}
+            setInTransition={setInTransition}
+            direction={direction}
           />
         </div>
       </div>

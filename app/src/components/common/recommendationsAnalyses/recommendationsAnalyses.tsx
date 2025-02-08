@@ -1,4 +1,5 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
+import { CSSTransition } from "react-transition-group"; // Import CSSTransition
 import PrecisionFormula from "../precisionFormula/precisionFormula";
 import Collapsible from "../collapsible/collapsible";
 import RelevantRecommendations from "../relevantRecommendations/relevantRecommendations";
@@ -13,7 +14,10 @@ const RecommendationsAnalysesWidgets: React.FC<
   currentIndex,
   handlePrev,
   handleNext,
-  isSwitching = true
+  isSwitching = true,
+  inTransition,
+  setInTransition,
+  direction
 }) => {
   const {
     relevantCount,
@@ -31,58 +35,67 @@ const RecommendationsAnalysesWidgets: React.FC<
           препоръки:
         </h2>
       </Card>
-      <div className="bg-bodybg mt-4 p-6 rounded-xl shadow-lg space-y-6">
-        <div className="relative w-full">
-          {isSwitching && (
-            <svg
-              onClick={handlePrev}
-              className="absolute top-1/2 transform -translate-y-1/2 left-[-7rem] text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{
-                width: "5rem",
-                height: "5rem",
-                filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.3))"
-              }}
-            >
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-          )}
+      <CSSTransition
+        in={!inTransition} // Активиране на анимацията, когато 'inTransition' е false
+        timeout={500} // Задаване на времето за анимация (например 500ms)
+        classNames={`slide-${direction}`} // Определяне на посоката на анимацията въз основа на 'isSwitching'
+        onExited={() => setInTransition(false)} // Нулиране на състоянието след като анимацията приключи
+        unmountOnExit // Премахване на компонента, когато анимацията завърши
+      >
+        <div className="bg-bodybg mt-4 p-6 rounded-xl shadow-lg space-y-6">
+          <div className="relative w-full">
+            {isSwitching && (
+              <svg
+                onClick={handlePrev}
+                className="absolute top-1/2 transform -translate-y-1/2 left-[-7rem] text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{
+                  width: "5rem",
+                  height: "5rem",
+                  filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.3))"
+                }}
+              >
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            )}
 
-          <RelevantRecommendations
-            relevantRecommendations={relevantRecommendations}
-            currentIndex={currentIndex}
-            title_en={relevantRecommendations[currentIndex].title_en}
-            title_bg={relevantRecommendations[currentIndex].title_bg}
-          />
+            <RelevantRecommendations
+              relevantRecommendations={relevantRecommendations}
+              currentIndex={currentIndex}
+              title_en={relevantRecommendations[currentIndex].title_en}
+              title_bg={relevantRecommendations[currentIndex].title_bg}
+            />
 
-          {isSwitching && (
-            <svg
-              onClick={handleNext}
-              className="absolute top-1/2 transform -translate-y-1/2 right-[-7rem] text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{
-                width: "5rem",
-                height: "5rem",
-                filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.3))"
-              }}
-            >
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          )}
+            {isSwitching && (
+              <svg
+                onClick={handleNext}
+                className="absolute top-1/2 transform -translate-y-1/2 right-[-7rem] text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{
+                  width: "5rem",
+                  height: "5rem",
+                  filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.3))"
+                }}
+              >
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            )}
+          </div>
         </div>
-      </div>
+      </CSSTransition>
+
       <div className="bg-bodybg mt-4 p-6 rounded-xl shadow-lg space-y-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Widget

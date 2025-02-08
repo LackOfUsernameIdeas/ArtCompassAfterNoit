@@ -30,6 +30,9 @@ export interface RecommendationsAnalysesWidgetsProps {
   handlePrev: () => void; // Функция за преминаване към предишната препоръка
   handleNext: () => void; // Функция за преминаване към следващата препоръка
   isSwitching?: boolean; // Флаг, указващ дали се извършва превключване между препоръки
+  inTransition: boolean; // Флаг, указващ дали се извършва анимация на прехода
+  setInTransition: React.Dispatch<React.SetStateAction<boolean>>; // Функция за промяна на състоянието на прехода
+  direction: "left" | "right"; // Посока на превключване на препоръките
 }
 
 export interface RelevantRecommendationsProps {
