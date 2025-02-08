@@ -56,7 +56,7 @@ const updatePrimaryColor = () => {
 };
 
 interface GenrePopularityOverTimeProps {
-  seriesData: any[]; // Масив от динамични данни за heatmap диаграмата
+  seriesData: { name: string; data: { x: string; y: number }[] }[];
 }
 
 interface State {
@@ -74,160 +74,75 @@ export class GenrePopularityOverTime extends Component<
   constructor(props: GenrePopularityOverTimeProps) {
     super(props);
 
-    const initialColor = updatePrimaryColor();
-    const initialColorRange = chroma
-      .scale([
-        chroma(initialColor).brighten(1).hex(),
-        chroma(initialColor).saturate(2).darken(2).hex(),
-        chroma(initialColor).darken(5).saturate(1.5).hex(),
-        chroma(initialColor).darken(10).saturate(1.5).hex(),
-        chroma(initialColor).darken(20).saturate(2).hex(),
-        chroma(initialColor).darken(40).saturate(2.5).hex(),
-        chroma(initialColor).darken(80).saturate(3).hex(),
-        chroma(initialColor).darken(160).saturate(4).hex(),
-        chroma(initialColor).darken(320).saturate(5).hex()
-      ])
-      .mode("lab")
-      .domain([0, 100])
-      .colors(1000);
-
     this.state = {
-      options: {
-        chart: {
-          type: "heatmap",
-          toolbar: {
-            show: false
-          }
-        },
-        plotOptions: {
-          heatmap: {
-            shadeIntensity: 0.5,
-            radius: 0,
-            useFillColorAsStroke: true,
-            colorScale: {
-              ranges: initialColorRange.map((color, index) => ({
-                from: index * 10,
-                to: (index + 1) * 10,
-                color: color
-              }))
-            }
-          }
-        },
-        dataLabels: {
-          enabled: false
-        },
-        grid: {
-          borderColor: ""
-        },
-        stroke: {
-          width: 1
-        },
-        xaxis: {
-          labels: {
-            show: true
-          },
-          tickAmount: 12,
-          axisTicks: {
-            show: true,
-            interval: 1
-          }
-        },
-        yaxis: {
-          labels: {
-            show: true
-          }
-        },
-        tooltip: {
-          custom: function ({
-            seriesIndex,
-            dataPointIndex,
-            w
-          }: {
-            seriesIndex: number;
-            dataPointIndex: number;
-            w: any;
-          }) {
-            const genre = w.config.series[seriesIndex].name;
-            const count = w.config.series[seriesIndex].data[dataPointIndex].y;
-
-            return `<div style="padding: 10px; font-family: Opsilon; letter-spacing: 0.05em;">
-                      <strong>Жанр: ${genre}</strong><br>
-                    </div>
-                    <div style="padding: 10px; font-family: Equilibrist !important;">
-                      <span>Брой препоръчвания: ${count}</span>
-                    </div>`;
-          }
-        },
-        legend: {
-          show: false // Изключваме легендата
-        }
-      }
+      options: this.getUpdatedOptions()
     };
   }
 
-  // Извиква се при първоначалното монтиране на компонента
   componentDidMount() {
-    this.updateColorRange();
-
-    // Инициализира наблюдател за промени в класовете на root елемента (теми)
-    this.observer = new MutationObserver(() => {
-      this.updateColorRange();
-    });
-
+    this.observer = new MutationObserver(this.updateColorRange);
     this.observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"]
     });
   }
 
-  // Извиква се при демонтиране на компонента
   componentWillUnmount() {
-    // Изчиства наблюдателя
-    if (this.observer) {
-      this.observer.disconnect();
-    }
+    this.observer?.disconnect();
   }
 
-  // Обновява цветната гама за heatmap диаграмата
-  updateColorRange() {
-    const primaryHex = updatePrimaryColor();
+  updateColorRange = () => {
+    this.setState({ options: this.getUpdatedOptions() });
+  };
 
-    // Генерира нова цветна гама на базата на основния цвят
-    const newColorRange = chroma
+  getUpdatedOptions() {
+    const primaryHex = updatePrimaryColor();
+    const colorScale = chroma
       .scale([
         chroma(primaryHex).brighten(1).hex(),
         chroma(primaryHex).saturate(2).darken(2).hex(),
         chroma(primaryHex).darken(5).saturate(1.5).hex(),
         chroma(primaryHex).darken(10).saturate(1.5).hex(),
-        chroma(primaryHex).darken(20).saturate(2).hex(),
-        chroma(primaryHex).darken(40).saturate(2.5).hex(),
-        chroma(primaryHex).darken(80).saturate(3).hex(),
-        chroma(primaryHex).darken(160).saturate(4).hex(),
-        chroma(primaryHex).darken(320).saturate(5).hex()
+        chroma(primaryHex).darken(20).saturate(2).hex()
       ])
       .mode("lab")
       .domain([0, 100])
       .colors(1000);
 
-    // Актуализира състоянието с новата цветна гама
-    this.setState((prevState) => ({
-      options: {
-        ...prevState.options,
-        plotOptions: {
-          ...prevState.options.plotOptions,
-          heatmap: {
-            ...prevState.options.plotOptions.heatmap,
-            colorScale: {
-              ranges: newColorRange.map((color, index) => ({
-                from: index * 1,
-                to: (index + 1) * 1,
-                color: color
-              }))
-            }
+    return {
+      chart: { type: "heatmap", toolbar: { show: false } },
+      plotOptions: {
+        heatmap: {
+          shadeIntensity: 0.5,
+          radius: 0,
+          useFillColorAsStroke: true,
+          colorScale: {
+            ranges: colorScale.map((color, index) => ({
+              from: index * 10,
+              to: (index + 1) * 10,
+              color: color
+            }))
           }
         }
-      }
-    }));
+      },
+      dataLabels: { enabled: false },
+      grid: { borderColor: "" },
+      stroke: { width: 1 },
+      xaxis: {
+        labels: { show: true },
+        tickAmount: 12,
+        axisTicks: { show: true, interval: 1 }
+      },
+      yaxis: { labels: { show: true } },
+      tooltip: {
+        custom: ({ seriesIndex, dataPointIndex, w }: any) => {
+          const genre = w.config.series[seriesIndex].name;
+          const count = w.config.series[seriesIndex].data[dataPointIndex].y;
+          return `<div style="padding: 10px;"><strong>Жанр: ${genre}</strong><br>Брой препоръчвания: ${count}</div>`;
+        }
+      },
+      legend: { show: false }
+    };
   }
 
   render() {
@@ -237,7 +152,7 @@ export class GenrePopularityOverTime extends Component<
         series={this.props.seriesData}
         type="heatmap"
         height={350}
-        width="100%" // Осигурява адаптивност спрямо контейнера
+        width="100%"
       />
     );
   }
