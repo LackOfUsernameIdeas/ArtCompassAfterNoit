@@ -12,8 +12,8 @@ import {
   Smile,
   ListIcon as Category
 } from "lucide-react";
-import Infobox from "../../../components/common/infobox/infobox";
-import { InfoboxModal } from "../../../components/common/infobox/InfoboxModal";
+import Infobox from "../infobox/infobox";
+import { InfoboxModal } from "../infobox/InfoboxModal";
 
 interface Recommendation {
   isRelevant: boolean;
@@ -31,11 +31,15 @@ interface Recommendation {
 interface RelevantRecommendationsProps {
   recommendations: Recommendation[];
   currentIndex: number;
+  title_en: string;
+  title_bg: string;
 }
 
 const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
   recommendations,
-  currentIndex
+  currentIndex,
+  title_en,
+  title_bg
 }) => {
   if (recommendations.length === 0 || !recommendations[currentIndex]) {
     return null;
@@ -68,7 +72,7 @@ const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
   };
 
   const handleInfoButtonClick = () => {
-    setIsModalOpen((prev) => !prev); // Open modal
+    setIsModalOpen((prev) => !prev);
   };
 
   return (
@@ -78,9 +82,12 @@ const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
           <Card className="dark:border-black/10 bg-white dark:bg-bodybg2 font-semibold text-xl p-4 rounded-lg shadow-lg dark:shadow-xl mb-6">
             <div className="flex items-center justify-start space-x-2">
               <Clapperboard className="h-5 w-5" />
-              <span>Тед Ласо (Ted Lasso) :</span>
+              <span>
+                {title_en} ({title_bg}) :
+              </span>
             </div>
           </Card>
+
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
               <Badge

@@ -6,7 +6,7 @@ import {
   RecallData,
   RecommendationsAnalysis
 } from "./aiAnalysator-types";
-import MovieSeriesDataWidgets from "./Components/MovieSeriesDataWidgets";
+import RecommendationsAnalysesWidgets from "@/components/common/recommendationsAnalyses/recommendationsAnalyses";
 import { Card } from "@/components/ui/card";
 import FadeInWrapper from "@/components/common/loader/fadeinwrapper";
 
@@ -155,7 +155,7 @@ const AIAnalysator: FC = () => {
             recallData={recallData}
             f1ScoreData={f1ScoreData}
           />
-          <MovieSeriesDataWidgets
+          <RecommendationsAnalysesWidgets
             recommendationsAnalysis={recommendationsAnalysis}
             currentIndex={currentIndex}
             handlePrev={handlePrev}

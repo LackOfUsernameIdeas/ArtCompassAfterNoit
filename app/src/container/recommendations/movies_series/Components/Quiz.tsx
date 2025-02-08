@@ -1,14 +1,14 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { RecommendationsList } from "./RecommendationsList";
 import { QuizQuestions } from "./QuizQuestions";
-import { analyzeRecommendations, handleRetakeQuiz } from "../helper_functions";
-import Loader from "../../../../components/common/loader/Loader";
+import { handleRetakeQuiz } from "../helper_functions";
+import Loader from "@/components/common/loader/Loader";
 import {
   QuizProps,
   RecommendationsAnalysis
 } from "../moviesSeriesRecommendations-types";
-import MovieSeriesDataWidgets from "./MovieSeriesDataWidgets/MovieSeriesDataWidgets";
+import RecommendationsAnalysesWidgets from "@/components/common/recommendationsAnalyses/recommendationsAnalyses";
 
 export const Quiz: FC<QuizProps> = ({
   setBookmarkedMovies,
@@ -30,6 +30,21 @@ export const Quiz: FC<QuizProps> = ({
     });
 
   const alreadyHasRecommendations = recommendationList.length > 0;
+
+  const handleNext = () => {
+    setCurrentIndex(
+      (prevIndex) =>
+        (prevIndex + 1) % recommendationsAnalysis.relevantRecommendations.length
+    );
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0
+        ? recommendationsAnalysis.relevantRecommendations.length - 1
+        : prevIndex - 1
+    );
+  };
 
   console.log("recommendationsAnalysis: ", recommendationsAnalysis);
   return (
@@ -90,9 +105,12 @@ export const Quiz: FC<QuizProps> = ({
             setBookmarkedMovies={setBookmarkedMovies}
             bookmarkedMovies={bookmarkedMovies}
           />
-          <MovieSeriesDataWidgets
+          <RecommendationsAnalysesWidgets
             recommendationsAnalysis={recommendationsAnalysis}
             currentIndex={currentIndex}
+            handlePrev={handlePrev}
+            handleNext={handleNext}
+            isSwitching={false}
           />
         </div>
       </CSSTransition>
