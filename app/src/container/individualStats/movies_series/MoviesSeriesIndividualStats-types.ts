@@ -28,7 +28,7 @@ export interface UserData {
 export interface PlotModalProps {
   isOpen: boolean; // Статус на модала (отворен/затворен)
   onClose: () => void; // Функция за затваряне на модала
-  plot: string; // Сюжет на филма/сериала
+  plot: string | undefined; // Сюжет на филма/сериала
 }
 
 // Данни за популярността на жанровете по години
