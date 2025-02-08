@@ -59,6 +59,8 @@ export interface CriteriaScores {
 // Интерфейс за анализа на препоръките
 export interface Analysis {
   imdbID: string; // Уникален идентификатор на филма/сериала в IMDb
+  title_en: string; // Английско заглавие на филма/сериала
+  title_bg: string; // Българско заглавие на филма/сериала
   isRelevant: boolean; // Дали препоръката е релевантна
   relevanceScore: number; // Общ резултат за релевантност
   criteriaScores: CriteriaScores; // Подробен резултат по отделни критерии

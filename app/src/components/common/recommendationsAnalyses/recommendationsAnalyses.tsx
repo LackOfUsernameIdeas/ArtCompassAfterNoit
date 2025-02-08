@@ -4,34 +4,7 @@ import Collapsible from "../collapsible/collapsible";
 import RelevantRecommendations from "../relevantRecommendations/relevantRecommendations";
 import Widget from "../widget/widget";
 import { Card } from "@/components/ui/card";
-
-interface RecommendationAnalysis {
-  relevantCount: number;
-  totalCount: number;
-  precisionValue: number;
-  precisionPercentage: number;
-  relevantRecommendations: Array<{
-    imdbID: string;
-    isRelevant: boolean;
-    relevanceScore: number;
-    criteriaScores: {
-      genres: number;
-      type: number;
-      mood: number;
-      timeAvailability: number;
-      preferredAge: number;
-      targetGroup: number;
-    };
-  }>;
-}
-
-interface RecommendationsAnalysesWidgetsProps {
-  recommendationsAnalysis: RecommendationAnalysis;
-  currentIndex: number;
-  handlePrev: () => void;
-  handleNext: () => void;
-  isSwitching?: boolean;
-}
+import { RecommendationsAnalysesWidgetsProps } from "./recommendationsAnalyses-types";
 
 const RecommendationsAnalysesWidgets: React.FC<
   RecommendationsAnalysesWidgetsProps
@@ -82,10 +55,10 @@ const RecommendationsAnalysesWidgets: React.FC<
           )}
 
           <RelevantRecommendations
-            recommendations={relevantRecommendations}
+            relevantRecommendations={relevantRecommendations}
             currentIndex={currentIndex}
-            title_en="Ted Lasso"
-            title_bg="Тед Ласо"
+            title_en={relevantRecommendations[currentIndex].title_en}
+            title_bg={relevantRecommendations[currentIndex].title_bg}
           />
 
           {isSwitching && (

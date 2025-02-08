@@ -14,40 +14,24 @@ import {
 } from "lucide-react";
 import Infobox from "../infobox/infobox";
 import { InfoboxModal } from "../infobox/InfoboxModal";
-
-interface Recommendation {
-  isRelevant: boolean;
-  relevanceScore: number;
-  criteriaScores: {
-    genres: number;
-    type: number;
-    mood: number;
-    timeAvailability: number;
-    preferredAge: number;
-    targetGroup: number;
-  };
-}
-
-interface RelevantRecommendationsProps {
-  recommendations: Recommendation[];
-  currentIndex: number;
-  title_en: string;
-  title_bg: string;
-}
+import { RelevantRecommendationsProps } from "../recommendationsAnalyses/recommendationsAnalyses-types";
 
 const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
-  recommendations,
+  relevantRecommendations,
   currentIndex,
   title_en,
   title_bg
 }) => {
-  if (recommendations.length === 0 || !recommendations[currentIndex]) {
+  if (
+    relevantRecommendations.length === 0 ||
+    !relevantRecommendations[currentIndex]
+  ) {
     return null;
   }
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const recommendation = recommendations[currentIndex];
+  const recommendation = relevantRecommendations[currentIndex];
 
   const criteriaIcons = {
     genres: Category,

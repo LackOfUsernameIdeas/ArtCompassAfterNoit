@@ -42,32 +42,8 @@ const recommendationsAnalysis: RecommendationsAnalysis = {
   relevantRecommendations: [
     {
       imdbID: "tt10986410",
-      isRelevant: true,
-      relevanceScore: 7,
-      criteriaScores: {
-        genres: 2,
-        type: 1,
-        mood: 1,
-        timeAvailability: 1,
-        preferredAge: 1,
-        targetGroup: 1
-      }
-    },
-    {
-      imdbID: "tt0965547",
-      isRelevant: false,
-      relevanceScore: 4,
-      criteriaScores: {
-        genres: 0,
-        type: 1,
-        mood: 1,
-        timeAvailability: 1,
-        preferredAge: 1,
-        targetGroup: 0
-      }
-    },
-    {
-      imdbID: "tt3398540",
+      title_en: "Ted Lasso",
+      title_bg: "Тед Ласо",
       isRelevant: true,
       relevanceScore: 5,
       criteriaScores: {
@@ -80,11 +56,13 @@ const recommendationsAnalysis: RecommendationsAnalysis = {
       }
     },
     {
-      imdbID: "tt7414406",
+      imdbID: "tt0758745",
+      title_en: "Friday Night Lights",
+      title_bg: "Светлините на града: Петък вечер",
       isRelevant: true,
-      relevanceScore: 7,
+      relevanceScore: 5,
       criteriaScores: {
-        genres: 2,
+        genres: 0,
         type: 1,
         mood: 1,
         timeAvailability: 1,
@@ -93,11 +71,43 @@ const recommendationsAnalysis: RecommendationsAnalysis = {
       }
     },
     {
-      imdbID: "tt0758745",
+      imdbID: "tt3398540",
+      title_en: "Haikyu!!",
+      title_bg: "Хайкю!!",
       isRelevant: true,
-      relevanceScore: 7,
+      relevanceScore: 5,
       criteriaScores: {
-        genres: 2,
+        genres: 0,
+        type: 1,
+        mood: 1,
+        timeAvailability: 1,
+        preferredAge: 1,
+        targetGroup: 1
+      }
+    },
+    {
+      imdbID: "tt2891574",
+      title_en: "Ballers",
+      title_bg: "Играчи",
+      isRelevant: true,
+      relevanceScore: 5,
+      criteriaScores: {
+        genres: 0,
+        type: 1,
+        mood: 1,
+        timeAvailability: 1,
+        preferredAge: 1,
+        targetGroup: 1
+      }
+    },
+    {
+      imdbID: "tt7221388",
+      title_en: "Cobra Kai",
+      title_bg: "Кобра Кай",
+      isRelevant: true,
+      relevanceScore: 5,
+      criteriaScores: {
+        genres: 0,
         type: 1,
         mood: 1,
         timeAvailability: 1,
