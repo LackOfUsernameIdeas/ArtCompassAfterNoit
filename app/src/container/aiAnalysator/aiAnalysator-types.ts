@@ -74,3 +74,65 @@ export type RecommendationsAnalysis = {
   precisionPercentage: number; // Процентна стойност на прецизността
   relevantRecommendations: Analysis[]; // Списък с релевантни препоръки (imdbID)
 };
+
+// Тип за потребителските предпочитания
+export type UserPreferences = {
+  token: string; // Токен за удостоверяване на потребителя
+  preferred_genres_en: string; // Предпочитани жанрове на английски (като CSV стринг)
+  preferred_genres_bg: string; // Предпочитани жанрове на български (като CSV стринг)
+  mood: string | null; // Настроение на потребителя (може да бъде null)
+  timeAvailability: string | null; // Свободно време за гледане (може да бъде null)
+  preferred_age: string | null; // Предпочитана възрастова група (може да бъде null)
+  preferred_type: string; // Предпочитан тип съдържание (филм, сериал и т.н.)
+  preferred_actors: string; // Предпочитани актьори (като CSV стринг)
+  preferred_directors: string; // Предпочитани режисьори (като CSV стринг)
+  preferred_countries: string; // Предпочитани държави за филмово съдържание (като CSV стринг)
+  preferred_pacing: string; // Предпочитан темп на разказа
+  preferred_depth: string; // Предпочитана дълбочина на сюжета
+  preferred_target_group: string; // Предпочитана целева аудитория
+  interests: string | null; // Интереси на потребителя (или null, ако няма)
+  date: Date; // Дата на създаване или последна промяна на предпочитанията
+};
+
+// Интерфейс за филм с всички основни данни за филма или сериала.
+export interface MovieSeriesRecommendationAfterSaving {
+  id?: string; // ID на филма или сериала
+  user_id?: string; // ID на потребителя, свързан с филма или сериала
+  imdbID: string; // IMDb идентификатор
+  title: string; // Английско заглавие на филма или сериала
+  bgName: string; // Българско заглавие на филма или сериала
+  genre: string; // Жанрове на английски
+  reason: string; // Причина за препоръката на филма или сериала
+  description: string; // Описание на филма или сериала
+  year: string; // Година на издаване
+  rated: string; // Възрастова оценка
+  released: string; // Дата на излизане
+  runtime: string; // Времетраене в минути
+  runtimeGoogle: string; // Времетраене, директно от Гугъл
+  director: string; // Име на режисьора
+  writer: string; // Име на сценариста
+  actors: string; // Списък с актьори
+  plot: string; // Сюжет на филма или сериала
+  language: string; // Езици на филма или сериала
+  country: string; // Страни, участващи в производството
+  awards: string; // Награди, спечелени от филма или сериала
+  poster: string; // URL на постера
+  ratings: { Source: string; Value: string }[]; // Масив с рейтингови източници и стойности
+  metascore: string; // Метаскор стойност
+  imdbRating: string; // IMDb рейтинг
+  imdbRatingGoogle: string; // IMDb рейтинг от Гугъл
+  imdbVotes: string; // Брой IMDb гласове
+  type: string; // Вид (например, филм)
+  DVD: string; // Информация за DVD издание (ако е налично)
+  boxOffice: string; // Приходи от бокс офиса
+  production: string; // Продуцентско студио (ако е налично)
+  website: string; // Официален уебсайт (ако е наличен)
+  totalSeasons?: string | null; // Общо сезони (за сериали)
+  date?: string; // Дата на въвеждане на данните
+}
+
+export type RelevanceResponse = {
+  lastSavedUserPreferences?: UserPreferences; // Предпочитания на потребителя (по избор)
+  lastSavedRecommendations: MovieSeriesRecommendationAfterSaving; // Списък с последно генерирани препоръки
+  relevanceResults: Analysis[]; // Списък с релевантни препоръки
+};

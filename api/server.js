@@ -1276,6 +1276,58 @@ app.post("/check-relevance", (req, res) => {
   res.json(relevanceResults);
 });
 
+// Проверка дали даден филм/сериал е подходящ за конкретните потребителски предпочитания - AI Анализатор страница
+app.post("/check-relevance-for-last-saved-recommendations", (req, res) => {
+  const { token } = req.body;
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+
+    const userId = decoded.id;
+
+    db.getLastUserPreferences(userId, (err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error fetching last saved user recommendations." });
+      }
+
+      db.getLastGeneratedMoviesSeriesRecommendations(
+        userId,
+        result.date,
+        (err, recommendationsResult) => {
+          if (err) {
+            return res.status(500).json({
+              error:
+                "Error fetching last generated movies series recommendations."
+            });
+          }
+
+          // Обработване на всяка препоръка и изчисляване на релевантността
+          const relevanceResults = recommendationsResult.map(
+            (recommendation) => {
+              const relevance = hf.checkRelevance(result, recommendation);
+
+              return {
+                imdbID: recommendation.imdbID,
+                title_en: recommendation.title_en,
+                title_bg: recommendation.title_bg,
+                ...relevance
+              };
+            }
+          );
+
+          // Връщане на резултатите като JSON
+          res.json({
+            lastSavedUserPreferences: result,
+            lastSavedRecommendations: recommendationsResult,
+            relevanceResults: relevanceResults
+          });
+        }
+      );
+    });
+  });
+});
+
 // Изчисляване на Precision на база всички препоръки, правени някога за даден потребител
 app.post("/stats/ai/precision-total", (req, res) => {
   const { token, userPreferences } = req.body;

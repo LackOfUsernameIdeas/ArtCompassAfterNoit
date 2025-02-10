@@ -15,9 +15,9 @@ const RecommendationsAnalysesWidgets: React.FC<
   handlePrev,
   handleNext,
   isSwitching = true,
-  inTransition,
+  inTransition = false,
   setInTransition,
-  direction
+  direction = "right"
 }) => {
   const {
     relevantCount,
@@ -39,7 +39,7 @@ const RecommendationsAnalysesWidgets: React.FC<
         in={!inTransition} // Активиране на анимацията, когато 'inTransition' е false
         timeout={500} // Задаване на времето за анимация (например 500ms)
         classNames={`slide-${direction}`} // Определяне на посоката на анимацията въз основа на 'isSwitching'
-        onExited={() => setInTransition(false)} // Нулиране на състоянието след като анимацията приключи
+        onExited={setInTransition ? () => setInTransition(false) : () => {}} // Нулиране на състоянието след като анимацията приключи
         unmountOnExit // Премахване на компонента, когато анимацията завърши
       >
         <div className="bg-bodybg mt-4 p-6 rounded-xl shadow-lg space-y-6">

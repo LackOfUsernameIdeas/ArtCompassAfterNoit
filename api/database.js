@@ -3494,6 +3494,38 @@ const getAllPlatformDistinctRecommendations = (callback) => {
   });
 };
 
+const getLastUserPreferences = (userId, callback) => {
+  const query = `
+    SELECT * 
+    FROM movies_series_user_preferences 
+    WHERE user_id = ? 
+    ORDER BY date DESC LIMIT 1
+  `;
+
+  db.query(query, [userId], (err, results) => {
+    if (err) return callback(err, null);
+    callback(null, results.length ? results[0] : null);
+  });
+};
+
+const getLastGeneratedMoviesSeriesRecommendations = (
+  userId,
+  date,
+  callback
+) => {
+  const query = `
+    SELECT * 
+    FROM movies_series_recommendations
+    WHERE user_id = ? 
+    AND date = ?;
+  `;
+
+  db.query(query, [userId, date], (err, results) => {
+    if (err) return callback(err, null);
+    callback(null, results);
+  });
+};
+
 module.exports = {
   checkEmailExists,
   createUser,
@@ -3541,5 +3573,7 @@ module.exports = {
   getUsersTopWriters,
   getUsersTopWritersWatchlist,
   getAllUsersDistinctRecommendations,
-  getAllPlatformDistinctRecommendations
+  getAllPlatformDistinctRecommendations,
+  getLastUserPreferences,
+  getLastGeneratedMoviesSeriesRecommendations
 };

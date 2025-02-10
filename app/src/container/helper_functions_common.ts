@@ -1,11 +1,15 @@
 import { moviesSeriesGenreOptions } from "./data_common";
 import {
   ActorData,
+  Analysis,
   BookRecommendation,
   DirectorData,
+  Genre,
   MovieSeriesRecommendation,
+  MovieSeriesRecommendationBeforeSaving,
   NotificationState,
   NotificationType,
+  RecommendationsAnalysis,
   WriterData
 } from "./types_common";
 
@@ -738,4 +742,171 @@ export const handleBookBookmarkClick = (
       // Връщане на актуализирания обект със списъка с отметки
       return updatedBookmarks;
     });
+};
+
+/**
+ * Форматира предпочитанията за анализ в зависимост от флага `shouldFormat`.
+ *
+ * @param {any} moviesSeriesUserPreferences - Предпочитания на потребителя за филми/сериали.
+ * @returns {any} Форматираните или неформатирани предпочитания в зависимост от флага.
+ */
+const formatPreferences = (moviesSeriesUserPreferences: any) => {
+  const { type, genres, moods, timeAvailability, age, targetGroup } =
+    moviesSeriesUserPreferences;
+
+  // Форматираме предпочитаните жанрове (на английски)
+  const preferredGenresEn =
+    genres.length > 0 ? genres.map((g: Genre) => g.en).join(", ") : "";
+
+  // Връщаме форматираните предпочитания
+  return {
+    preferred_genres_en: preferredGenresEn,
+    mood: Array.isArray(moods) ? moods.join(", ") : "",
+    timeAvailability,
+    preferred_age: age,
+    preferred_type: type,
+    preferred_target_group: targetGroup
+  };
+};
+
+/**
+ * Форматира препоръките, като разделя жанровете и добавя допълнителни данни за всяка препоръка.
+ *
+ * @param {Array} recommendations - Масив от препоръки, които трябва да бъдат форматирани.
+ * @returns {Array} Форматираните препоръки.
+ */
+const formatRecommendations = (
+  recommendations: MovieSeriesRecommendationBeforeSaving[]
+): any[] => {
+  return recommendations.map((recommendation) => {
+    // Разделяме жанровете на английски, ако има
+    const genresEn = recommendation.genre
+      ? recommendation.genre.split(", ")
+      : null;
+
+    // Преобразуваме жанровете на английски в жанрове на български
+    const genresBg = genresEn?.map((genre: string) => {
+      const matchedGenre = moviesSeriesGenreOptions.find(
+        (option) => option.en.trim() === genre.trim()
+      );
+      return matchedGenre ? matchedGenre.bg : null;
+    });
+
+    // Вземаме времето на изпълнение от Google или от оригиналния запис
+    const runtime = recommendation.runtimeGoogle || recommendation.runtime;
+
+    // Вземаме IMDb рейтинга от Google или от оригиналния запис
+    const imdbRating =
+      recommendation.imdbRatingGoogle || recommendation.imdbRating;
+
+    // Връщаме форматираните данни за всяка препоръка
+    return {
+      imdbID: recommendation.imdbID || null,
+      title_en: recommendation.title || null,
+      title_bg: recommendation.bgName || null,
+      genre_en: genresEn?.join(", ") || null,
+      genre_bg: genresBg?.join(", ") || null,
+      reason: recommendation.reason || null,
+      description: recommendation.description || null,
+      year: recommendation.year || null,
+      rated: recommendation.rated || null,
+      released: recommendation.released || null,
+      runtime: runtime || null,
+      director: recommendation.director || null,
+      writer: recommendation.writer || null,
+      actors: recommendation.actors || null,
+      plot: recommendation.plot || null,
+      language: recommendation.language || null,
+      country: recommendation.country || null,
+      awards: recommendation.awards || null,
+      poster: recommendation.poster || null,
+      ratings: recommendation.ratings || [],
+      metascore: recommendation.metascore || null,
+      imdbRating: imdbRating || null,
+      imdbVotes: recommendation.imdbVotes || null,
+      type: recommendation.type || null,
+      DVD: recommendation.DVD || null,
+      boxOffice: recommendation.boxOffice || null,
+      production: recommendation.production || null,
+      website: recommendation.website || null,
+      totalSeasons: recommendation.totalSeasons || null
+    };
+  });
+};
+
+/**
+ * Анализира препоръките и определя броя на релевантните сред тях.
+ *
+ * @async
+ * @function analyzeRecommendations
+ * @param {any} moviesSeriesUserPreferences - Предпочитания на потребителя за филми/сериали.
+ * @param {Array} recommendations - Масив от препоръки, които трябва да бъдат проверени.
+ * @param {React.Dispatch<React.SetStateAction<RecommendationsAnalysis | null>>} setRecommendationsAnalysis - Функция за задаване на анализ на препоръките.
+ * @param {boolean} [shouldFormat=false] - Параметър за указване дали да се ре-форматират предпочитанията и препоръките.
+ * @returns {Promise<{relevantCount: number, totalCount: number}>} Обект с броя на релевантните препоръки и общия брой.
+ */
+export const analyzeRecommendations = async (
+  moviesSeriesUserPreferences: any,
+  recommendations: any,
+  setRecommendationsAnalysis: React.Dispatch<
+    React.SetStateAction<RecommendationsAnalysis>
+  >,
+  shouldFormat: boolean = true
+) => {
+  let totalCount = recommendations.length;
+
+  const formattedPreferencesForAnalysis = shouldFormat
+    ? formatPreferences(moviesSeriesUserPreferences)
+    : moviesSeriesUserPreferences;
+
+  const formattedRecommendations = shouldFormat
+    ? formatRecommendations(recommendations)
+    : recommendations;
+
+  try {
+    // Изпраща заявка с предпочитанията и целия списък от препоръки
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/check-relevance`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          userPreferences: formattedPreferencesForAnalysis,
+          recommendations: formattedRecommendations
+        })
+      }
+    );
+
+    // Проверка за успешен отговор
+    if (!response.ok) {
+      console.error(`Error checking relevance: ${response.statusText}`);
+      return { relevantCount: 0, totalCount };
+    }
+
+    // Извличане на резултатите
+    const data: Analysis[] = await response.json();
+
+    // Намиране на брой на релевантните препоръки
+    let relevantCount = data.filter((rec) => rec.isRelevant).length;
+
+    // Изчисляване на Precision за това генериране (current round)
+    let precisionValue = totalCount > 0 ? relevantCount / totalCount : 0;
+    let precisionPercentage = parseFloat((precisionValue * 100).toFixed(2));
+
+    const result = {
+      relevantCount,
+      totalCount,
+      precisionValue,
+      precisionPercentage,
+      relevantRecommendations: data
+    };
+    setRecommendationsAnalysis(result);
+
+    return result;
+  } catch (error) {
+    console.error("Error fetching relevance data:", error);
+    return { relevantCount: 0, totalCount };
+  }
 };

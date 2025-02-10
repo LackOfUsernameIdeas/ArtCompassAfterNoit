@@ -91,7 +91,7 @@ export type RecommendationsAnalysis = {
   totalCount: number; // Общо броят на препоръките
   precisionValue: number; // Стойността на прецизността
   precisionPercentage: number; // Процентното изражение на прецизността
-  relevantRecommendations: Analysis[]; // Списък с релевантни препоръки (imdbID)
+  relevantRecommendations: Analysis[]; // Списък с релевантни препоръки
 };
 
 // Пропс за компонентата Quiz, свързана с маркирането на филми.

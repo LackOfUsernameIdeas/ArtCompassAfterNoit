@@ -40,6 +40,43 @@ export interface WriterData extends CommonData {
   writer_bg: string; // Име на писателя на български
 }
 
+// Интерфейс за филм с всички основни данни за филма или сериала.
+export interface MovieSeriesRecommendationBeforeSaving {
+  id?: string; // ID на филма или сериала
+  user_id?: string; // ID на потребителя, свързан с филма или сериала
+  imdbID: string; // IMDb идентификатор
+  title: string; // Английско заглавие на филма или сериала
+  bgName: string; // Българско заглавие на филма или сериала
+  genre: string; // Жанрове на английски
+  reason: string; // Причина за препоръката на филма или сериала
+  description: string; // Описание на филма или сериала
+  year: string; // Година на издаване
+  rated: string; // Възрастова оценка
+  released: string; // Дата на излизане
+  runtime: string; // Времетраене в минути
+  runtimeGoogle: string; // Времетраене, директно от Гугъл
+  director: string; // Име на режисьора
+  writer: string; // Име на сценариста
+  actors: string; // Списък с актьори
+  plot: string; // Сюжет на филма или сериала
+  language: string; // Езици на филма или сериала
+  country: string; // Страни, участващи в производството
+  awards: string; // Награди, спечелени от филма или сериала
+  poster: string; // URL на постера
+  ratings: { Source: string; Value: string }[]; // Масив с рейтингови източници и стойности
+  metascore: string; // Метаскор стойност
+  imdbRating: string; // IMDb рейтинг
+  imdbRatingGoogle: string; // IMDb рейтинг от Гугъл
+  imdbVotes: string; // Брой IMDb гласове
+  type: string; // Вид (например, филм)
+  DVD: string; // Информация за DVD издание (ако е налично)
+  boxOffice: string; // Приходи от бокс офиса
+  production: string; // Продуцентско студио (ако е налично)
+  website: string; // Официален уебсайт (ако е наличен)
+  totalSeasons?: string | null; // Общо сезони (за сериали)
+  date?: string; // Дата на въвеждане на данните
+}
+
 // Интерфейс за филм с всички основни данни за филма.
 export interface MovieSeriesRecommendation {
   id: number; // Уникален идентификатор за записа в базата данни
@@ -114,4 +151,37 @@ export interface BookRecommendation {
   book_format: string; // Вид на книгата (тип корица, е-книги)
   imageLink: string; // Линк към изображение на книгата
   source: string; // Източник (напр. Google Books)
+}
+
+export type RecommendationsAnalysis = {
+  relevantCount: number; // Броят на релевантните препоръки
+  totalCount: number; // Общо броят на препоръките
+  precisionValue: number; // Стойността на прецизността
+  precisionPercentage: number; // Процентното изражение на прецизността
+  relevantRecommendations: Analysis[]; // Списък с релевантни препоръки
+};
+
+export interface Analysis {
+  imdbID: string; // Уникален идентификатор на филма/сериала в IMDb
+  title_en: string; // Английско заглавие на филма/сериала
+  title_bg: string; // Българско заглавие на филма/сериала
+  isRelevant: boolean; // Дали препоръката е подходяща според критериите
+  relevanceScore: number; // Общ резултат за релевантност
+  criteriaScores: CriteriaScores; // Подробен резултат по отделни критерии
+}
+
+// Интерфейс за критериите на модала за оценяване
+export interface CriteriaScores {
+  genres: number; // жанровете
+  type: number; // типа (филм/сериал)
+  mood: number; // настроението
+  timeAvailability: number; // наличното време за гледане
+  preferredAge: number; // предпочитаната възраст (спрямо година на издаване)
+  targetGroup: number; // целевата аудитория
+}
+
+// Интерфейс за жанр с английско и българско име.
+export interface Genre {
+  en: string; // Английско име на жанра
+  bg: string; // Българско име на жанра
 }
