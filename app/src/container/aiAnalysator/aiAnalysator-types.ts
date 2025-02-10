@@ -133,6 +133,6 @@ export interface MovieSeriesRecommendationAfterSaving {
 
 export type RelevanceResponse = {
   lastSavedUserPreferences?: UserPreferences; // Предпочитания на потребителя (по избор)
-  lastSavedRecommendations: MovieSeriesRecommendationAfterSaving; // Списък с последно генерирани препоръки
+  lastSavedRecommendations: MovieSeriesRecommendationAfterSaving[]; // Списък с последно генерирани препоръки
   relevanceResults: Analysis[]; // Списък с релевантни препоръки
 };
