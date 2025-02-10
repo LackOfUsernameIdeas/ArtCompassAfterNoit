@@ -1,10 +1,7 @@
 // ==============================
 // Импортиране на типове и интерфейси
 // ==============================
-import {
-  FilteredTableData,
-  DataType
-} from "./moviesSeriesIndividualStats-types";
+import { FilteredTableData, DataType } from "./a";
 import {
   removeFromWatchlist,
   saveToWatchlist

@@ -1,9 +1,5 @@
 import { FC, Fragment, useEffect, useState, useMemo } from "react";
-import {
-  Category,
-  DataType,
-  FilteredTableData
-} from "../moviesSeriesIndividualStats-types";
+import { Category, DataType, FilteredTableData } from "../a";
 import { filterTableData } from "../helper_functions";
 import {
   isActor,

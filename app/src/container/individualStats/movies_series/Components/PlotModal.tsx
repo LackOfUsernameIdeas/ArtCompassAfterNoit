@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from "react";
 import { CSSTransition } from "react-transition-group";
-import { PlotModalProps } from "../moviesSeriesIndividualStats-types";
+import { PlotModalProps } from "../a";
 
 // Компонент за модал, който показва пълен сюжет/пълно описание
 export const PlotModal: FC<PlotModalProps> = ({ isOpen, onClose, plot }) => {

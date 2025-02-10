@@ -1,8 +1,5 @@
 import { FC, Fragment, useEffect, useState, useMemo, useCallback } from "react";
-import {
-  MoviesAndSeriesRecommendationsTableProps,
-  Rating
-} from "../moviesSeriesIndividualStats-types";
+import { MoviesAndSeriesRecommendationsTableProps, Rating } from "../a";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
