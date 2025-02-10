@@ -1266,6 +1266,8 @@ app.post("/check-relevance", (req, res) => {
 
     return {
       imdbID: recommendation.imdbID,
+      title_en: recommendation.title_en,
+      title_bg: recommendation.title_bg,
       ...relevance
     };
   });

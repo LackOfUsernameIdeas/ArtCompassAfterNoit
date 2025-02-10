@@ -36,12 +36,10 @@ const GenrePopularityOverTimeComponent: FC<
               Популярност на жанровете през времето
             </div>
           </div>
-          <div className="xl:col-span-6 col-span-12">
-            <div className="box custom-box">
-              <div className="box-body">
-                <div id="heatmap-colorrange">
-                  <GenrePopularityOverTime seriesData={seriesDataForHeatmap} />
-                </div>
+          <div className="box custom-box !shadow-none">
+            <div className="box-body">
+              <div id="heatmap-colorrange">
+                <GenrePopularityOverTime seriesData={seriesDataForHeatmap} />
               </div>
             </div>
           </div>

@@ -560,14 +560,7 @@ Background Image
 
 /* Footer Styles */
 .footer {
-  background-color: #fff;
-  padding: 3rem 2rem;
-  box-shadow: 0 0 0.4rem rgba(0, 0, 0, 0.1);
-  border-top: 4px solid "bg-primary";
-  border-radius: 2rem;
-  margin-left: 4.5rem;
-  margin-right: 4.5rem;
-  margin-bottom: 1rem;
+  @apply bg-bodybg p-12 shadow-md border-t-4 border-primary rounded-[2rem] mx-[4.5rem] mb-4;
 }
 
 .footer .container {
@@ -4768,6 +4761,9 @@ label {
 .app-sidebar .side-menu__icon {
   @apply me-2.5 w-[1.15rem] h-[1.15rem] text-[1.15rem] text-center text-[#a3aed1] fill-[#a3aed1] dark:text-[#8f9bb3] rounded-md;
 }
+.app-sidebar .side-sub-menu__icon {
+  @apply me-2 w-[1.15rem] h-[1.15rem] text-[1.15rem] text-center text-[#a3aed1] fill-[#a3aed1] dark:text-[#8f9bb3] rounded-md;
+}
 .app-sidebar .side-menu__angle {
   @apply origin-center absolute end-3 text-[0.85rem] text-[#a3aed1] dark:text-[#8f9bb3] transition-all ease-linear duration-[0.05s];
 }
@@ -6728,7 +6724,8 @@ label {
   [data-nav-style="menu-click"][data-nav-layout="horizontal"]
     .app-sidebar
     .main-sidebar,
-  [data-nav-style="menu-click"][data-toggled="menu-click-closed"]
+  .side-menu__icon
+    [data-nav-style="menu-click"][data-toggled="menu-click-closed"]
     .app-sidebar
     .main-sidebar {
     @apply overflow-visible h-[90%];
@@ -7868,7 +7865,7 @@ label {
   @apply bg-white;
 }
 [data-page-style="modern"] .box {
-  @apply shadow-none bg-[#f3f6f8];
+  @apply bg-bodybg shadow-lg dark:shadow-xl dark:border-black/10;
 }
 [data-page-style="modern"][class="dark"] {
   --light: 20, 20, 20;
@@ -10768,9 +10765,18 @@ label {
   @apply text-[#ffffff] !important;
 }
 [data-menu-styles="light"] .app-sidebar .side-menu__item {
-  @apply text-[#536485];
+  @apply text-[#ffffff];
 }
 [data-menu-styles="light"] .app-sidebar .side-menu__item:hover {
+  @apply text-[#ffffff] bg-white/[0.10] !important;
+}
+[data-menu-styles="light"] .app-sidebar .side-sub-menu__icon {
+  @apply text-[#536485] !important;
+}
+[data-menu-styles="light"] .app-sidebar .side-sub-menu__item {
+  @apply text-[#536485];
+}
+[data-menu-styles="light"] .app-sidebar .side-sub-menu__item:hover {
   @apply text-[#536485] bg-white/[0.10] !important;
 }
 [data-menu-styles="light"]
@@ -16038,7 +16044,7 @@ body {
 }
 
 .box {
-  @apply flex flex-col shadow-sm rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 bg-white  text-[0.813rem]  mb-6 relative dark:bg-bodybg;
+  @apply flex flex-col shadow-sm rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 bg-bodybg text-[0.813rem] mb-6 relative;
 }
 
 .box-header {
@@ -16057,7 +16063,7 @@ body {
 }
 
 .box .box-header .box-title {
-  @apply before:absolute before:h-4 before:w-[0.2rem] before:top-[0.15rem] before:-start-[0.65rem] before:bg-gradient-to-b before:from-primary/50 before:to-[#2c0700] before:rounded-md;
+  @apply before:absolute before:h-4 before:w-[0.2rem] before:top-[0.15rem] before:-start-[0.65rem] before:bg-gradient-to-b before:from-primary/90 before:to-[#2c0700] before:rounded-md;
 }
 
 .custom-box .custom-box-header .box-title {
@@ -19847,20 +19853,20 @@ option.selectionList {
 }
 @layer utilities {
   .glow-effect {
-    @apply shadow-[0_0_6px_rgb(var(--secondary))] dark:shadow-[0_0_6px_rgba(255,255,255,0.8)];
+    @apply shadow-[0_0_6px_rgb(var(--secondary))] dark:shadow-[0_0_6px_rgba(var(--primary))];
   }
 }
 
 .glow-next {
-  @apply shadow-[0_0px_8px_rgba(255,255,255,0.8)];
+  @apply shadow-[0_0_15px_rgb(var(--primary))];
 }
 
 .question {
-  @apply flex flex-col rounded-md border-2 border-secondary dark:border-white text-secondary dark:text-defaulttextcolor/70 text-[0.813rem] relative bg-[rgb(var(--body-bg))];
+  @apply flex flex-col rounded-md border-2 border-secondary dark:border-primary text-primary dark:text-defaulttextcolor/70 text-[0.813rem] relative bg-[rgb(var(--body-bg))];
 }
 
 .input-field {
-  @apply flex border-2 border-secondary dark:border-white glow-effect flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative dark:bg-bodybg focus-within:ring-4 focus-within:ring-[#d94545] focus-within:border-[#d94545];
+  @apply flex border-2 border-secondary dark:border-primary glow-effect flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative dark:bg-bodybg focus-within:ring-4 focus-within:ring-[#d94545] focus-within:border-[#d94545];
 }
 
 .input-field input:focus {
@@ -19987,7 +19993,8 @@ option.selectionList {
 }
 
 .coollist {
-  list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' width='10' viewBox='0 0 50 50'%3E%3Cpath d='M46.4 16.2c-2.3-2.3-5.4-3.5-8.4-4.5-.5-.2-1.1-.3-1.6-.5-1.6-1.6-3.7-2.8-6.2-3.2-1-.2-1.9.1-2.5.6-.9-.3-1.8-.6-2.7-.8-3.2-1-6.4-1.8-9.5-.1-1 .5-1.9 1.2-2.7 2-6.4 1.4-11.7 5-12.4 12.7C0 27 1.9 31.5 4.9 34.9c.1.6.2 1.1.4 1.7 1 3.2 3.3 5.7 6.7 6.5 2.7.6 5.4-.2 7.9-1.2 3.3.4 6.7.3 9.9 0 6.5-.7 13.3-2.8 17.1-8.5 3.6-5.2 4-12.6-.5-17.2zm-17.3.9c2.1.4 4 1.7 4.7 3.8 0 .5-.1 1.1-.2 1.6-.3 1.4-.8 2.6-1.6 3.7-.7.2-1.5.1-2.3-.4-.8-.4-1.6-1-2.2-1.6-.4-.4-1.2-1.7-1.6-1.9 3.4 1.3 5.1-3 3.2-5.2zm-11.6 9.7c.2-1.9 1.1-3.9 2.3-5.5-.4 2.1.3 4.2 1.7 6 1.3 1.7 3.1 3.2 5 4.2-.2.1-.4.2-.6.4-.1 0-.1.1-.2.1-3.9.2-8.7-.8-8.2-5.2zm-6.4 3.1c.1.3.1.7.2 1 .2.6.4 1.2.7 1.8-.4-.2-.7-.5-1-.7.1-.8.1-1.4.1-2.1zm31.2-1.3c-.9 1.7-2.1 3.1-3.7 4.1 2-2.1 3.4-4.7 4-7.6.2-.7.3-1.4.3-2.1.6 1.5.5 3.3-.6 5.6z' fill='%23000000' /%3E%3C/svg%3E");  list-style-type: none;
+  list-style-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' width='10' viewBox='0 0 50 50'%3E%3Cpath d='M46.4 16.2c-2.3-2.3-5.4-3.5-8.4-4.5-.5-.2-1.1-.3-1.6-.5-1.6-1.6-3.7-2.8-6.2-3.2-1-.2-1.9.1-2.5.6-.9-.3-1.8-.6-2.7-.8-3.2-1-6.4-1.8-9.5-.1-1 .5-1.9 1.2-2.7 2-6.4 1.4-11.7 5-12.4 12.7C0 27 1.9 31.5 4.9 34.9c.1.6.2 1.1.4 1.7 1 3.2 3.3 5.7 6.7 6.5 2.7.6 5.4-.2 7.9-1.2 3.3.4 6.7.3 9.9 0 6.5-.7 13.3-2.8 17.1-8.5 3.6-5.2 4-12.6-.5-17.2zm-17.3.9c2.1.4 4 1.7 4.7 3.8 0 .5-.1 1.1-.2 1.6-.3 1.4-.8 2.6-1.6 3.7-.7.2-1.5.1-2.3-.4-.8-.4-1.6-1-2.2-1.6-.4-.4-1.2-1.7-1.6-1.9 3.4 1.3 5.1-3 3.2-5.2zm-11.6 9.7c.2-1.9 1.1-3.9 2.3-5.5-.4 2.1.3 4.2 1.7 6 1.3 1.7 3.1 3.2 5 4.2-.2.1-.4.2-.6.4-.1 0-.1.1-.2.1-3.9.2-8.7-.8-8.2-5.2zm-6.4 3.1c.1.3.1.7.2 1 .2.6.4 1.2.7 1.8-.4-.2-.7-.5-1-.7.1-.8.1-1.4.1-2.1zm31.2-1.3c-.9 1.7-2.1 3.1-3.7 4.1 2-2.1 3.4-4.7 4-7.6.2-.7.3-1.4.3-2.1.6 1.5.5 3.3-.6 5.6z' fill='%23000000' /%3E%3C/svg%3E");
+  list-style-type: none;
   list-style-type: none;
 }
 

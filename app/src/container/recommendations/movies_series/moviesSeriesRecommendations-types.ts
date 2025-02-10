@@ -33,16 +33,16 @@ export interface Question {
   description?: string; // Допълнително описание на въпроса
 }
 
-// Интерфейс за филм с всички основни данни за филма.
+// Интерфейс за филм с всички основни данни за филма или сериала.
 export interface Recommendation {
-  id?: string; // ID на филма
-  user_id?: string; // ID на потребителя, свързан с филма
+  id?: string; // ID на филма или сериала
+  user_id?: string; // ID на потребителя, свързан с филма или сериала
   imdbID: string; // IMDb идентификатор
-  title: string; // Английско заглавие на филма
-  bgName: string; // Българско заглавие на филма
+  title: string; // Английско заглавие на филма или сериала
+  bgName: string; // Българско заглавие на филма или сериала
   genre: string; // Жанрове на английски
-  reason: string; // Причина за препоръката на филма
-  description: string; // Описание на филма
+  reason: string; // Причина за препоръката на филма или сериала
+  description: string; // Описание на филма или сериала
   year: string; // Година на издаване
   rated: string; // Възрастова оценка
   released: string; // Дата на излизане
@@ -51,10 +51,10 @@ export interface Recommendation {
   director: string; // Име на режисьора
   writer: string; // Име на сценариста
   actors: string; // Списък с актьори
-  plot: string; // Сюжет на филма
-  language: string; // Езици на филма
+  plot: string; // Сюжет на филма или сериала
+  language: string; // Езици на филма или сериала
   country: string; // Страни, участващи в производството
-  awards: string; // Награди, спечелени от филма
+  awards: string; // Награди, спечелени от филма или сериала
   poster: string; // URL на постера
   ratings: { Source: string; Value: string }[]; // Масив с рейтингови източници и стойности
   metascore: string; // Метаскор стойност
@@ -248,6 +248,8 @@ export interface CriteriaScores {
 
 export interface Analysis {
   imdbID: string; // Уникален идентификатор на филма/сериала в IMDb
+  title_en: string; // Английско заглавие на филма/сериала
+  title_bg: string; // Българско заглавие на филма/сериала
   isRelevant: boolean; // Дали препоръката е подходяща според критериите
   relevanceScore: number; // Общ резултат за релевантност
   criteriaScores: CriteriaScores; // Подробен резултат по отделни критерии

@@ -24,6 +24,16 @@ const Switcher: FC<SwitcherProps> = ({
       ? `--primary: ${local_varaiable.colorPrimary}`
       : ""
   };
+  ${
+    local_varaiable.colorSecondaryRgb != ""
+      ? `--secondary-rgb: ${local_varaiable.colorSecondaryRgb}`
+      : ""
+  };
+  ${
+    local_varaiable.colorSecondary != ""
+      ? `--secondary: ${local_varaiable.colorSecondary}`
+      : ""
+  };
   ${local_varaiable.darkBg != "" ? `--dark-bg: ${local_varaiable.darkBg}` : ""};
   ${local_varaiable.bodyBg != "" ? `--body-bg: ${local_varaiable.bodyBg}` : ""};
   ${

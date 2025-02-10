@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { FC } from "react";
-import { MetricCardProps } from "../AIAnalysator-types";
+import { MetricCardProps } from "../aiAnalysator-types";
 
 export const MetricCard: FC<MetricCardProps> = ({
   title,

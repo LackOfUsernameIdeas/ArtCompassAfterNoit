@@ -1,10 +1,8 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import { DataType } from "./moviesSeriesIndividualStats-types";
+import { DataType } from "./MoviesSeriesIndividualStats-types";
 import { fetchData } from "./helper_functions";
 import {
   checkRecommendationExistsInWatchlist,
-  removeFromWatchlist,
-  saveToWatchlist,
   validateToken
 } from "../../helper_functions_common";
 import { useNavigate } from "react-router-dom";
@@ -156,12 +154,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
         />
       )}
       <Fragment>
-        <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">
-          <div>
-            <p className="font-semibold text-[1.125rem] text-defaulttextcolor dark:text-defaulttextcolor/70 !mb-0 "></p>
-          </div>
-        </div>
-        <div className="grid grid-cols-12 gap-6">
+        <div className="grid grid-cols-12 gap-6 my-[1.5rem]">
           <div className="xl:col-span-12 col-span-12">
             <div
               className="accordion accordionicon-left accordions-items-separate"

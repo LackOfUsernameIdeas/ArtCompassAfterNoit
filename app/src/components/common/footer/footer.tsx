@@ -51,6 +51,9 @@ const Footer: FC = () => (
                 <li>
                   <a href="/app/recommendations">Нови Препоръки</a>
                 </li>
+                <li>
+                  <a href="/app/aiAnalysator">AI Анализатор</a>
+                </li>
               </ul>
             </div>
 
