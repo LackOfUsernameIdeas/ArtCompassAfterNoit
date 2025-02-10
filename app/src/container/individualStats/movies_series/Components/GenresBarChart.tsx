@@ -1,5 +1,5 @@
 import { FC, Fragment } from "react";
-import { TopGenres } from "../a";
+import { TopGenres } from "../moviesSeriesIndividualStats-types";
 import { Categorybar } from "./Charts";
 
 interface GenresBarChartProps {

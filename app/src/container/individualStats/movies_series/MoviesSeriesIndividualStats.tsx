@@ -1,5 +1,5 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import { DataType } from "./a";
+import { DataType } from "./moviesSeriesIndividualStats-types";
 import { fetchData } from "./helper_functions";
 import {
   checkRecommendationExistsInWatchlist,
