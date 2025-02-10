@@ -123,6 +123,11 @@ const AIAnalysator: FC = () => {
     }, 500);
   }, [recommendationsAnalysis]);
 
+  // Показване на съдържание само след като е дошъл отговорът от заявките
+  const renderRecommendationsAnalysis =
+    recommendationsAnalysis.relevantRecommendations.length > 0;
+
+  console.log("recommendationsAnalysis: ", recommendationsAnalysis);
   return (
     <FadeInWrapper>
       <div className="p-[1.5rem]">
@@ -146,7 +151,7 @@ const AIAnalysator: FC = () => {
               f1ScoreData={f1ScoreData}
             />
           )}
-          {recommendationsAnalysis && (
+          {renderRecommendationsAnalysis && (
             <RecommendationsAnalysesWidgets
               recommendationsAnalysis={recommendationsAnalysis}
               currentIndex={currentIndex}
