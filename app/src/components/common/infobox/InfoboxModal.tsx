@@ -5,7 +5,7 @@ interface InfoboxModalProps {
   onClick: () => void;
   isModalOpen: boolean;
   title: string | JSX.Element;
-  description: string;
+  description: string | JSX.Element;
 }
 export const InfoboxModal: FC<InfoboxModalProps> = ({
   onClick,

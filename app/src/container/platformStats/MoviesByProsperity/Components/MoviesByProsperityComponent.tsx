@@ -88,8 +88,8 @@ const MoviesByProsperityComponent: FC<MoviesByProsperityComponentProps> = ({
                 </AccordionTrigger>
                 <AccordionContent className="pl-4">
                   <p>
-                    Просперитетът е авторска единица, която е сборът на няколко
-                    критерии.
+                    <strong>Просперитетът</strong> се получава като се изчисли
+                    сборът на стойностите на няколко критерии.
                   </p>
                   <p>
                     За всеки критерий се задава определено процентно отношение,

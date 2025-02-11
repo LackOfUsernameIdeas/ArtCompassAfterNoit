@@ -15,6 +15,7 @@ import GenresBarChart from "./Components/GenresBarChart";
 import CountWidgets from "./Components/CountWidgets";
 import BookmarkAlert from "./Components/BookmarkAlert";
 import ErrorCard from "../../../components/common/error/error";
+import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
 
 interface IndividualStatsProps {}
 
@@ -56,6 +57,8 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
 
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleNotificationClose = () => {
     // Функция за затваряне на известията
@@ -136,6 +139,10 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
 
   const handleDismiss = () => {
     setAlertVisible(false);
+  };
+
+  const handleModalToggle = () => {
+    setIsModalOpen(!isModalOpen);
   };
 
   return (
@@ -220,6 +227,12 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                         , според авторската мерна единица -{" "}
                         <span className="font-bold text-primary">
                           „Просперитетен рейтинг“
+                        </span>
+                        <span
+                          className="text-gray-500 cursor-pointer hover:text-primary/80"
+                          onClick={handleModalToggle}
+                        >
+                          {" <<Натиснете тук, за да научите повече>> "}
                         </span>
                         , сред най-често препоръчваните{" "}
                         <span className="font-bold text-primary">
@@ -334,6 +347,12 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                           <span className="font-bold text-primary">
                             „Просперитетен рейтинг“
                           </span>
+                          <span
+                            className="text-gray-500 cursor-pointer hover:text-primary/80"
+                            onClick={handleModalToggle}
+                          >
+                            {" <<Натиснете тук, за да научите повече>> "}
+                          </span>
                           , сред вашите запазвани предпочитания в списъка ви за
                           гледане. Също така, можете да видите кои са{" "}
                           <span className="font-bold text-primary">
@@ -375,6 +394,35 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
             </div>
           </div>
         </div>
+        <InfoboxModal
+          onClick={handleModalToggle}
+          isModalOpen={isModalOpen}
+          title="Просперитетен рейтинг"
+          description={
+            <>
+              <ul>
+                <li>
+                  <strong>Просперитетът</strong> се получава като се изчисли
+                  сборът на стойностите на няколко критерии.
+                </li>
+                <br />
+                <li>
+                  За всеки критерий се задава определено процентно отношение,
+                  което отразява неговата важност спрямо останалите:
+                </li>
+                <br />
+                <ul className="coollist pl-5">
+                  <li>30% за спечелени награди</li>
+                  <li>25% за номинации</li>
+                  <li>15% за приходите от боксофис</li>
+                  <li>10% за Метаскор</li>
+                  <li>10% за IMDb рейтинг</li>
+                  <li>10% за Rotten Tomatoes рейтинг</li>
+                </ul>
+              </ul>
+            </>
+          }
+        />
       </Fragment>
     </FadeInWrapper>
   );

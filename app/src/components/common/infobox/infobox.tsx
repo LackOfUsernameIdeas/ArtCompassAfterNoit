@@ -1,4 +1,3 @@
-import { CircleHelp } from "lucide-react";
 import { FC } from "react";
 
 interface InfoboxProps {
