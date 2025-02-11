@@ -18,27 +18,36 @@ const MoviesByProsperityComponent: FC<MoviesByProsperityComponentProps> = ({
   return (
     <Fragment>
       <div className="xl:col-span-6 col-span-12">
-        <div className="flex flex-col md:flex-row gap-8 box p-6 rounded-lg shadow-lg dark:text-gray-300 text-[#333335">
+        <div className="flex flex-col md:flex-row gap-8 box p-6 rounded-lg shadow-lg dark:text-gray-300 text-[#333335]">
           {/* Лява част */}
           <div className="md:w-1/2 flex flex-col justify-center items-center text-center text-sm">
             <p>
               Тук може да видите най-успешните филми според{" "}
-              <strong>IMDb рейтинг</strong> и приходи
-              от <strong>боксофиса</strong>.
+              <span className="font-semibold text-primary">IMDb рейтинг</span> и
+              приходи от{" "}
+              <span className="font-semibold text-primary">боксофиса</span>.
             </p>
             <p>
               Филмите са разпределени по жанрове, като всеки жанр е отбелязан с{" "}
-              <strong>различен цвят</strong>.
+              <span className="font-semibold text-primary">различен цвят</span>.
             </p>
             <p>
-              <strong>Оста X</strong> представя
-              приходите от боксофиса в милиони долари.
+              <span className="font-semibold text-primary">Оста X</span>{" "}
+              представя приходите от боксофиса в милиони долари.
             </p>
             <p>
-              <strong>Оста Y</strong> представя
-              рейтинга в IMDb.
+              <span className="font-semibold text-primary">Оста Y</span>{" "}
+              представя{" "}
+              <span className="font-semibold text-primary">
+                рейтинга в IMDb
+              </span>
+              .
             </p>
-            <p>Големината на кръговете отразява просперитета на филма.</p>
+            <p>
+              Големината на кръговете отразява{" "}
+              <span className="font-semibold text-primary">просперитета</span>{" "}
+              на филма.
+            </p>
           </div>
 
           {/* Дясна част*/}
@@ -46,18 +55,22 @@ const MoviesByProsperityComponent: FC<MoviesByProsperityComponentProps> = ({
             <Accordion type="single" collapsible className="space-y-4">
               {/* IMDb */}
               <AccordionItem value="imdb">
-                <AccordionTrigger>🎬 IMDb рейтинг</AccordionTrigger>
+                <AccordionTrigger className="opsilion">
+                  🎬 IMDb рейтинг
+                </AccordionTrigger>
                 <AccordionContent className="pl-4">
                   Средна оценка, която даден филм получава от потребителите на
                   IMDb. Оценките варират от{" "}
-                  <span className="font-semibold">1 до 10</span> и
-                  отразяват популярността и качеството на филма.
+                  <span className="font-semibold">1 до 10</span> и отразяват
+                  популярността и качеството на филма.
                 </AccordionContent>
               </AccordionItem>
 
               {/*Боксофис*/}
               <AccordionItem value="boxoffice">
-                <AccordionTrigger>💰 Боксофис</AccordionTrigger>
+                <AccordionTrigger className="opsilion">
+                  💰 Боксофис
+                </AccordionTrigger>
                 <AccordionContent className="pl-4">
                   Общата сума на приходите от продажба на билети в киносалоните.
                   Измерва се в{" "}
@@ -68,22 +81,30 @@ const MoviesByProsperityComponent: FC<MoviesByProsperityComponentProps> = ({
                 </AccordionContent>
               </AccordionItem>
 
-            {/* Просперитет */}
-            <AccordionItem value="prosperity">
-              <AccordionTrigger>🎉 Просперитетен рейтинг</AccordionTrigger>
-              <AccordionContent className="pl-4">
-                <p>Просперитетът е авторска единица, която е сборът на няколко критерии.</p>
-                <p>За всеки критерий се задава определено процентно отношение, което отразява неговата важност спрямо останалите:</p>
-                <ul className="text-left coollist">
-                  <li> 30% за спечелени награди </li>
-                  <li> 25% за номинации </li>
-                  <li> 15% за приходите от боксофис </li>
-                  <li> 10% за Метаскор </li>
-                  <li> 10% за IMDb рейтинг </li>
-                  <li> 10% за Rotten Tomatoes рейтинг </li>
-                </ul>
-              </AccordionContent>
-            </AccordionItem>
+              {/* Просперитет */}
+              <AccordionItem value="prosperity">
+                <AccordionTrigger className="opsilion">
+                  🎉 Просперитетен рейтинг
+                </AccordionTrigger>
+                <AccordionContent className="pl-4">
+                  <p>
+                    Просперитетът е авторска единица, която е сборът на няколко
+                    критерии.
+                  </p>
+                  <p>
+                    За всеки критерий се задава определено процентно отношение,
+                    което отразява неговата важност спрямо останалите:
+                  </p>
+                  <ul className="text-left coollist">
+                    <li> 30% за спечелени награди </li>
+                    <li> 25% за номинации </li>
+                    <li> 15% за приходите от боксофис </li>
+                    <li> 10% за Метаскор </li>
+                    <li> 10% за IMDb рейтинг </li>
+                    <li> 10% за Rotten Tomatoes рейтинг </li>
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
             </Accordion>
           </div>
         </div>

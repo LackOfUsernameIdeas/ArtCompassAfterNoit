@@ -12,6 +12,12 @@ import { NotificationState } from "../../types_common";
 import MoviesAndSeriesTable from "./Components/MoviesAndSeriesTable";
 import BookmarkAlert from "./Components/BookmarkAlert";
 import ErrorCard from "../../../components/common/error/error";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent
+} from "@/components/ui/accordion";
 
 const Watchlist: FC = () => {
   // Състояния за задържане на извлечени данни
@@ -133,6 +139,75 @@ const Watchlist: FC = () => {
       )}
       <Fragment>
         <div className="mt-[1.5rem]">
+          <div className="text-center !text-lg box p-6 flex flex-col md:flex-row gap-6 justify-center items-center">
+            <p className="leading-relaxed md:w-1/2 mx-auto">
+              В тази страница можете да разгледате подробна информация за
+              добавените от вас филми и сериали в{" "}
+              <span className="font-bold text-primary">
+                списъка ви за гледане
+              </span>
+              !
+            </p>
+            <div className="md:w-1/2 text-sm">
+              <Accordion type="single" collapsible className="space-y-4">
+                {/* Metascore */}
+                <AccordionItem value="metascore">
+                  <AccordionTrigger className="opsilion">
+                    💡Metascore рейтинг
+                  </AccordionTrigger>
+                  <AccordionContent className="pl-4">
+                    Metascore е оценка от платформата Metacritic, която събира
+                    рецензии от критици и ги преобразува в обща числова стойност{" "}
+                    <span className="font-semibold">(от 0 до 100)</span>.
+                    Средният Metascore рейтинг е усреднената стойност на тези
+                    оценки за даден/и филм/и.
+                  </AccordionContent>
+                </AccordionItem>
+
+                {/* Боксофис */}
+                <AccordionItem value="boxoffice">
+                  <AccordionTrigger className="opsilion">
+                    💰 Боксофис
+                  </AccordionTrigger>
+                  <AccordionContent className="pl-4">
+                    Общата сума на приходите от продажба на билети в
+                    киносалоните. Измерва се в{" "}
+                    <span className="font-semibold">
+                      милиони или милиарди долари
+                    </span>{" "}
+                    и е ключов показател за търговския успех на филма.
+                  </AccordionContent>
+                </AccordionItem>
+
+                {/* Просперитет */}
+                <AccordionItem value="prosperity">
+                  <AccordionTrigger className="opsilion">
+                    🎉 Просперитетен рейтинг
+                  </AccordionTrigger>
+                  <AccordionContent className="pl-4">
+                    <p>
+                      Просперитетът е авторска единица, която е сборът на
+                      няколко критерии.
+                    </p>
+                    <p>
+                      За всеки критерий се задава определено процентно
+                      отношение, което отразява неговата важност спрямо
+                      останалите:
+                    </p>
+                    <ul className="text-left coollist">
+                      <li> 30% за спечелени награди </li>
+                      <li> 25% за номинации </li>
+                      <li> 15% за приходите от боксофис </li>
+                      <li> 10% за Метаскор </li>
+                      <li> 10% за IMDb рейтинг </li>
+                      <li> 10% за Rotten Tomatoes рейтинг </li>
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          </div>
+
           <MoviesAndSeriesTable
             type="watchlist"
             data={data.topRecommendationsWatchlist.watchlist}

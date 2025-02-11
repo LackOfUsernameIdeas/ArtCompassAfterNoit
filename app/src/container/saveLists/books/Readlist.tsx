@@ -134,6 +134,16 @@ const Readlist: FC<ReadlistProps> = () => {
       )}
       <Fragment>
         <div className="mt-[1.5rem]">
+          <div className="text-center !text-lg box p-6 flex flex-col">
+            <p className="leading-relaxed">
+              В тази страница можете да разгледате подробна информация за
+              добавените от вас книги в{" "}
+              <span className="font-bold text-primary">
+                списъка ви за четене
+              </span>
+              !
+            </p>
+          </div>
           <BooksTable
             data={data.topRecommendationsReadlist}
             setBookmarkedBooks={setBookmarkedBooks}

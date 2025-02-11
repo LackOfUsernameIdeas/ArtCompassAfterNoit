@@ -210,7 +210,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                     className="hs-accordion-content w-full overflow-hidden transition-[height] duration-300"
                     aria-labelledby="hs-basic-with-title-and-arrow-stretched-heading-one"
                   >
-                    <div className="text-center !text-lg box p-6 flex flex-col mt-5 ml-5 mr-5 bg-gray-100 rounded-lg shadow-lg">
+                    <div className="text-center !text-lg box p-6 flex flex-col mt-5 ml-5 mr-5">
                       <p className="leading-relaxed">
                         В тази секция можете да се натъкнете на информация за
                         това кои са най-успешните{" "}
@@ -219,7 +219,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                         </span>
                         , според авторската мерна единица -{" "}
                         <span className="font-bold text-primary">
-                          „Просперитет“
+                          „Просперитетен рейтинг“
                         </span>
                         , сред най-често препоръчваните{" "}
                         <span className="font-bold text-primary">
@@ -323,7 +323,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                       className="hs-accordion-content accordion-body hidden w-full overflow-hidden transition-[height] duration-300"
                       aria-labelledby="hs-basic-with-title-and-arrow-stretched-heading-two"
                     >
-                      <div className="text-center !text-lg box p-6 flex flex-col mt-3 ml-5 mr-5 bg-gray-100 rounded-lg shadow-lg">
+                      <div className="text-center !text-lg box p-6 flex flex-col mt-3 ml-5 mr-5">
                         <p className="leading-relaxed">
                           В тази секция можете да се натъкнете на информация за
                           това кои са най-успешните{" "}
@@ -332,7 +332,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                           </span>
                           , според авторската мерна единица -{" "}
                           <span className="font-bold text-primary">
-                            „Просперитет“
+                            „Просперитетен рейтинг“
                           </span>
                           , сред вашите запазвани предпочитания в списъка ви за
                           гледане. Също така, можете да видите кои са{" "}
@@ -346,7 +346,6 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                           сте запазили!
                         </p>
                       </div>
-
                       <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5">
                         <ActorsDirectorsWritersTable
                           data={data}
