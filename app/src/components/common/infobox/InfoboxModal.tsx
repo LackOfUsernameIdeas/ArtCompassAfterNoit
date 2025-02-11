@@ -4,10 +4,14 @@ import { CSSTransition } from "react-transition-group";
 interface InfoboxModalProps {
   onClick: () => void;
   isModalOpen: boolean;
+  title: string | JSX.Element;
+  description: string;
 }
 export const InfoboxModal: FC<InfoboxModalProps> = ({
   onClick,
-  isModalOpen
+  isModalOpen,
+  title,
+  description
 }) => {
   const [animationState, setAnimationState] = useState({
     opacity: 0,
@@ -38,14 +42,14 @@ export const InfoboxModal: FC<InfoboxModalProps> = ({
             transition: "opacity 300ms, transform 300ms"
           }}
         >
-          <h2 className="text-lg font-semibold">Пълен сюжет</h2>
-          <p className="text-sm">description</p>
-          <div className="flex justify-end space-x-4">
+          <h2 className="text-lg font-semibold">{title}</h2>
+          <p className="text-sm">{description}</p>
+          <div className="flex justify-end">
             <button
               onClick={onClick}
-              className="bg-primary text-white rounded-lg px-4 py-2 hover:bg-secondary transform transition-transform duration-200 hover:scale-105"
+              className="bg-primary hover:bg-primary/90 text-white font-medium rounded-lg px-5 py-2.5 text-center transition-all duration-200 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
             >
-              Затвори
+              Close
             </button>
           </div>
         </div>

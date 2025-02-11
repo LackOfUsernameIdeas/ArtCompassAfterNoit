@@ -3,7 +3,14 @@ import { DataType } from "../choose-types";
 import { handleDropdownClick } from "../helper_functions";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
-import { getAveragesOptions, getAwardOptions } from "../choose-data";
+import {
+  averagesInfo,
+  awardsInfo,
+  getAveragesOptions,
+  getAwardOptions
+} from "../choose-data";
+import Infobox from "@/components/common/infobox/infobox";
+import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
 
 // Дефиниране на типа за пропсвете, предавани на този компонент
 interface WidgetCardsComponentProps {
@@ -27,6 +34,11 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
   const [isAveragesMenuOpen, setIsAveragesMenuOpen] = useState(false);
   const [isAwardsMenuOpen, setIsAwardsMenuOpen] = useState(false);
 
+  // Състояния за управление на отворените информационни полета
+  const [isAveragesModalOpen, setIsAveragesModalOpen] =
+    useState<boolean>(false);
+  const [isAwardsModalOpen, setIsAwardsModalOpen] = useState<boolean>(false);
+
   // Ефект за инициализиране на показваните стойности от данните
   useEffect(() => {
     if (
@@ -48,10 +60,20 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
     setIsAwardsMenuOpen((prev) => !prev); // Превключете състоянието
   };
 
-  // Превключва падащото меню за средните
+  // Превключва падащото меню за средните статистики
   const toggleAveragesMenu = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault(); // Предотвратете стандартното поведение на линка
     setIsAveragesMenuOpen((prev) => !prev); // Превключете състоянието
+  };
+
+  // Превключва информационното поле за средните статистики
+  const handleAveragesInfoButtonClick = () => {
+    setIsAveragesModalOpen((prev) => !prev);
+  };
+
+  // Превключва информационното поле за наградите
+  const handleAwardsInfoButtonClick = () => {
+    setIsAwardsModalOpen((prev) => !prev);
   };
 
   // Генерира опции за падащото меню за наградите
@@ -64,7 +86,6 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
   const is1532 = useMediaQuery({ query: "(max-width: 1532px)" });
   const is1966 = useMediaQuery({ query: "(max-width: 1966px)" });
 
-  // Връща JSX за рендиране на компонента
   return (
     <Fragment>
       {/* Карта 1: Общ брой потребители */}
@@ -217,14 +238,38 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center space-x-1">
                   <span
                     className={`text-[${
                       is1856 ? "1.25rem" : "1.125rem"
                     }] opsilion`}
                   >
-                    {displayedValueAverages}
+                    <div className="flex flex-wrap">
+                      {displayedValueAverages}
+                    </div>
                   </span>
+                  <Infobox
+                    onClick={handleAveragesInfoButtonClick}
+                    width={17}
+                    height={17}
+                  />
+                  <InfoboxModal
+                    onClick={handleAveragesInfoButtonClick}
+                    isModalOpen={isAveragesModalOpen}
+                    title={
+                      <>
+                        <span>{`Текуща статистика: `}</span>
+                        <span className="underline">
+                          {displayedNameAverages}
+                        </span>
+                      </>
+                    }
+                    description={
+                      (averagesInfo as { [key: string]: string })[
+                        displayedNameAverages
+                      ]
+                    }
+                  />
                 </div>
               </div>
               <div>
@@ -309,7 +354,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                     </ul>
                   </div>
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center space-x-1">
                   <span
                     className={`text-[${
                       is1966 ? "1.25rem" : "1.125rem"
@@ -317,6 +362,26 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                   >
                     {displayedValueAwards}
                   </span>
+                  <Infobox
+                    onClick={handleAwardsInfoButtonClick}
+                    width={17}
+                    height={17}
+                  />
+                  <InfoboxModal
+                    onClick={handleAwardsInfoButtonClick}
+                    isModalOpen={isAwardsModalOpen}
+                    title={
+                      <>
+                        <span>{`Текуща статистика: `}</span>
+                        <span className="underline">{displayedNameAwards}</span>
+                      </>
+                    }
+                    description={
+                      (awardsInfo as { [key: string]: string })[
+                        displayedNameAwards
+                      ]
+                    }
+                  />
                 </div>
               </div>
               <div>

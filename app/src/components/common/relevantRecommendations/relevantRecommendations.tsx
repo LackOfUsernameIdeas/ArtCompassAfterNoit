@@ -133,7 +133,12 @@ const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
         </CardContent>
       </Card>
 
-      <InfoboxModal onClick={handleInfoButtonClick} isModalOpen={isModalOpen} />
+      <InfoboxModal
+        onClick={handleInfoButtonClick}
+        isModalOpen={isModalOpen}
+        title="Пълен сюжет"
+        description="Example description"
+      />
     </Fragment>
   );
 };
