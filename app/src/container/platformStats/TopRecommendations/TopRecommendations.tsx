@@ -62,10 +62,11 @@ const TopRecommendations: FC<TopRecommendationsProps> = () => {
           onClose={handleNotificationClose}
         />
       )}
-      <Fragment>          
-        <div className="text-center !text-sm box p-6 flex flex-col ">
+      <Fragment>
+        <div className="text-center !text-sm box p-6 flex flex-col mt-[1.5rem]">
           <p>
-            Тук може да видите кои са най-често препоръчваните актьори, режисьори, сценаристи, филми и сериали
+            Тук може да видите кои са най-често препоръчваните актьори,
+            режисьори, сценаристи, филми и сериали
           </p>
         </div>
         <div className="grid grid-cols-12 gap-x-6 mt-[1.5rem]">

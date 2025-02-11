@@ -210,6 +210,32 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                     className="hs-accordion-content w-full overflow-hidden transition-[height] duration-300"
                     aria-labelledby="hs-basic-with-title-and-arrow-stretched-heading-one"
                   >
+                    <div className="text-center !text-lg box p-6 flex flex-col mt-5 ml-5 mr-5 bg-gray-100 rounded-lg shadow-lg">
+                      <p className="leading-relaxed">
+                        В тази секция можете да се натъкнете на информация за
+                        това кои са най-успешните{" "}
+                        <span className="font-bold text-primary">
+                          актьори, режисьори, сценаристи
+                        </span>
+                        , според авторската мерна единица -{" "}
+                        <span className="font-bold text-primary">
+                          „Просперитет“
+                        </span>
+                        , сред най-често препоръчваните{" "}
+                        <span className="font-bold text-primary">
+                          специално за вас
+                        </span>{" "}
+                        предпочитания. Също така, можете да видите кои са
+                        най-често препоръчваните{" "}
+                        <span className="font-bold text-primary">за ВАС</span>{" "}
+                        жанрове и колко на{" "}
+                        <span className="font-bold text-primary">
+                          брой филми и сериали
+                        </span>{" "}
+                        са ви били препоръчвани някога!
+                      </p>
+                    </div>
+
                     <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5">
                       <div className="xxl:col-span-6 col-span-12">
                         <MoviesAndSeriesRecommendationsTable
@@ -297,6 +323,30 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                       className="hs-accordion-content accordion-body hidden w-full overflow-hidden transition-[height] duration-300"
                       aria-labelledby="hs-basic-with-title-and-arrow-stretched-heading-two"
                     >
+                      <div className="text-center !text-lg box p-6 flex flex-col mt-3 ml-5 mr-5 bg-gray-100 rounded-lg shadow-lg">
+                        <p className="leading-relaxed">
+                          В тази секция можете да се натъкнете на информация за
+                          това кои са най-успешните{" "}
+                          <span className="font-bold text-primary">
+                            актьори, режисьори, сценаристи
+                          </span>
+                          , според авторската мерна единица -{" "}
+                          <span className="font-bold text-primary">
+                            „Просперитет“
+                          </span>
+                          , сред вашите запазвани предпочитания в списъка ви за
+                          гледане. Също така, можете да видите кои са{" "}
+                          <span className="font-bold text-primary">
+                            ВАШИТЕ топ жанрове
+                          </span>{" "}
+                          и колко на{" "}
+                          <span className="font-bold text-primary">
+                            брой филми и сериали
+                          </span>{" "}
+                          сте запазили!
+                        </p>
+                      </div>
+
                       <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5">
                         <ActorsDirectorsWritersTable
                           data={data}
