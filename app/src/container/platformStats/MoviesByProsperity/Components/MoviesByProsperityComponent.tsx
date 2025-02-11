@@ -42,12 +42,12 @@ const MoviesByProsperityComponent: FC<MoviesByProsperityComponentProps> = ({
           </div>
 
           {/* Дясна част*/}
-          <div className="md:w-1/2 text-sm]">
+          <div className="md:w-1/2 text-sm">
             <Accordion type="single" collapsible className="space-y-4">
               {/* IMDb */}
               <AccordionItem value="imdb">
                 <AccordionTrigger>🎬 IMDb рейтинг</AccordionTrigger>
-                <AccordionContent>
+                <AccordionContent className="pl-4">
                   Средна оценка, която даден филм получава от потребителите на
                   IMDb. Оценките варират от{" "}
                   <span className="font-semibold">1 до 10</span> и
@@ -58,7 +58,7 @@ const MoviesByProsperityComponent: FC<MoviesByProsperityComponentProps> = ({
               {/*Боксофис*/}
               <AccordionItem value="boxoffice">
                 <AccordionTrigger>💰 Боксофис</AccordionTrigger>
-                <AccordionContent>
+                <AccordionContent className="pl-4">
                   Общата сума на приходите от продажба на билети в киносалоните.
                   Измерва се в{" "}
                   <span className="font-semibold">
@@ -71,8 +71,17 @@ const MoviesByProsperityComponent: FC<MoviesByProsperityComponentProps> = ({
             {/* Просперитет */}
             <AccordionItem value="prosperity">
               <AccordionTrigger>🎉 Просперитетен рейтинг</AccordionTrigger>
-              <AccordionContent>
-                ?????
+              <AccordionContent className="pl-4">
+                <p>Просперитетът е авторска единица, която е сборът на няколко критерии.</p>
+                <p>За всеки критерий се задава определено процентно отношение, което отразява неговата важност спрямо останалите:</p>
+                <ul className="text-left coollist">
+                  <li> 30% за спечелени награди </li>
+                  <li> 25% за номинации </li>
+                  <li> 15% за приходите от боксофис </li>
+                  <li> 10% за Метаскор </li>
+                  <li> 10% за IMDb рейтинг </li>
+                  <li> 10% за Rotten Tomatoes рейтинг </li>
+                </ul>
               </AccordionContent>
             </AccordionItem>
             </Accordion>

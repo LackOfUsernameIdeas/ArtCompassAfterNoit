@@ -13,6 +13,12 @@ const TopCountriesComponent: FC<TopCountriesComponentProps> = ({ data }) => {
   return (
     <Fragment>
       <div className="xxl:col-span-12 xl:col-span-6 col-span-12">
+        <div className="text-center !text-sm box p-6 flex flex-col ">
+          <p>
+            Тук може да видите колко пъти са препоръчвани различните жанровете филми с различни държави на произход. 
+            Можете да видите и кои са държавите с най-много препоръки.
+          </p>
+        </div>
         <div className="box">
           <div className="box-header justify-between">
             <div className="box-title opsilion">

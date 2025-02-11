@@ -62,7 +62,12 @@ const TopRecommendations: FC<TopRecommendationsProps> = () => {
           onClose={handleNotificationClose}
         />
       )}
-      <Fragment>
+      <Fragment>          
+        <div className="text-center !text-sm box p-6 flex flex-col ">
+          <p>
+            Тук може да видите кои са най-често препоръчваните актьори, режисьори, сценаристи, филми и сериали
+          </p>
+        </div>
         <div className="grid grid-cols-12 gap-x-6 mt-[1.5rem]">
           <div className="xxl:col-span-6 col-span-12">
             <TopActorsDirectorsWritersComponent data={data} />

@@ -11,6 +11,12 @@ import { useMediaQuery } from "react-responsive";
 import { moviesAndSeriesCategoryDisplayNames } from "../../platformStats-data";
 import { Tooltip } from "react-tooltip";
 import Pagination from "../../../../components/common/pagination/pagination";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent
+} from "@/components/ui/accordion";
 
 interface MoviesAndSeriesByRatingsComponentProps {
   data: MoviesAndSeriesByRatingsDataType;
@@ -77,6 +83,51 @@ const MoviesAndSeriesByRatingsComponent: FC<
   return (
     <Fragment>
       <div className="xl:col-span-6 col-span-12">
+                <div className="flex flex-col md:flex-row gap-8 box p-6 rounded-lg shadow-lg dark:text-gray-300 text-[#333335]">
+          {/* Лява част */}
+          <div className="md:w-1/2 flex flex-col justify-center items-center text-sm">
+            <p className="text-center">
+              Тук може да видите класация на филмите и сериалите по техния{" "}
+              <strong>IMDb, Rotten Tomatoes или Метаскор рейтинг</strong>.
+            </p>
+          </div>
+
+          {/* Дясна част*/}
+          <div className="md:w-1/2 text-sm]">
+            <Accordion type="single" collapsible className="space-y-4">
+              {/* IMDb */}
+              <AccordionItem value="imdb">
+                <AccordionTrigger className="opsilion">🎬 IMDb рейтинг</AccordionTrigger>
+                <AccordionContent className="pl-4">
+                  Средна оценка, която даден филм получава от потребителите на
+                  IMDb. Оценките варират от{" "}
+                  <span className="font-semibold">1 до 10</span> и
+                  отразяват популярността и качеството на филма.
+                </AccordionContent>
+              </AccordionItem>
+
+              {/* Rotten tomatoes */}
+              <AccordionItem value="rotten">
+                <AccordionTrigger className="opsilion">🍅 Среден Rotten Tomatoes рейтинг</AccordionTrigger>
+                <AccordionContent className="pl-4">
+                  Rotten Tomatoes е платформа, показваща процента на положителните рецензии от критици (Tomatometer) или от зрители (Audience Score).
+                  Средният рейтинг е средната оценка {" "}
+                  <span className="font-semibold"> (от 0 до 10)</span> на всички ревюта, вместо просто процента на положителните.
+                </AccordionContent>
+              </AccordionItem>
+
+              {/* Rotten tomatoes */}
+              <AccordionItem value="metascore">
+                <AccordionTrigger className="opsilion">💡 Среден Metascore рейтинг</AccordionTrigger>
+                <AccordionContent className="pl-4">
+                  Metascore е оценка от платформата Metacritic, която събира рецензии от критици и ги преобразува в обща числова стойност{" "}
+                  <span className="font-semibold">(от 0 до 100)</span>. 
+                  Средният Metascore рейтинг е усреднената стойност на тези оценки за даден/и филм/и.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        </div>
         <div className="box custom-box">
           <div className="custom-box-header justify-between">
             <div className={`box-title opsilion`}>

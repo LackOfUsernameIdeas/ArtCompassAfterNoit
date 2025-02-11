@@ -93,7 +93,7 @@ const ActorsDirectorsWritersTableComponent: FC<
           {/* Лява част */}
           <div className="md:w-1/2 flex flex-col justify-center items-center text-sm">
             <p className="text-center">
-              Тук може да видите класация на режисьори, актьори и сценаристи филми според техния{" "}
+              Тук може да видите класация на режисьори, актьори и сценаристи според техния{" "}
               <strong>просперитетен рейтинг</strong>.
             </p>
             <p className="text-center">
@@ -117,7 +117,7 @@ const ActorsDirectorsWritersTableComponent: FC<
               {/* IMDb */}
               <AccordionItem value="imdb">
                 <AccordionTrigger className="opsilion">🎬 IMDb рейтинг</AccordionTrigger>
-                <AccordionContent>
+                <AccordionContent className="pl-4">
                   Средна оценка, която даден филм получава от потребителите на
                   IMDb. Оценките варират от{" "}
                   <span className="font-semibold">1 до 10</span> и
@@ -128,7 +128,7 @@ const ActorsDirectorsWritersTableComponent: FC<
               {/* Rotten tomatoes */}
               <AccordionItem value="rotten">
                 <AccordionTrigger className="opsilion">🍅 Среден Rotten Tomatoes рейтинг</AccordionTrigger>
-                <AccordionContent>
+                <AccordionContent className="pl-4">
                   Rotten Tomatoes е платформа, показваща процента на положителните рецензии от критици (Tomatometer) или от зрители (Audience Score).
                   Средният рейтинг е средната оценка {" "}
                   <span className="font-semibold"> (от 0 до 10)</span> на всички ревюта, вместо просто процента на положителните.
@@ -138,7 +138,7 @@ const ActorsDirectorsWritersTableComponent: FC<
               {/* Rotten tomatoes */}
               <AccordionItem value="metascore">
                 <AccordionTrigger className="opsilion">💡 Среден Metascore рейтинг</AccordionTrigger>
-                <AccordionContent>
+                <AccordionContent className="pl-4">
                   Metascore е оценка от платформата Metacritic, която събира рецензии от критици и ги преобразува в обща числова стойност{" "}
                   <span className="font-semibold">(от 0 до 100)</span>. 
                   Средният Metascore рейтинг е усреднената стойност на тези оценки за даден/и филм/и.
@@ -148,7 +148,7 @@ const ActorsDirectorsWritersTableComponent: FC<
               {/*Боксофис*/}
               <AccordionItem value="boxoffice">
                 <AccordionTrigger className="opsilion">💰 Боксофис</AccordionTrigger>
-                <AccordionContent>
+                <AccordionContent className="pl-4">
                   Общата сума на приходите от продажба на билети в киносалоните.
                   Измерва се в{" "}
                   <span className="font-semibold">
@@ -161,8 +161,17 @@ const ActorsDirectorsWritersTableComponent: FC<
             {/* Просперитет */}
             <AccordionItem value="prosperity">
               <AccordionTrigger className="opsilion">🎉 Просперитетен рейтинг</AccordionTrigger>
-              <AccordionContent>
-                ?????
+              <AccordionContent className="pl-4">
+                <p>Просперитетът е авторска единица, която е сборът на няколко критерии.</p>
+                <p>За всеки критерий се задава определено процентно отношение, което отразява неговата важност спрямо останалите:</p>
+                <ul className="text-left coollist">
+                  <li> 30% за спечелени награди </li>
+                  <li> 25% за номинации </li>
+                  <li> 15% за приходите от боксофис </li>
+                  <li> 10% за Метаскор </li>
+                  <li> 10% за IMDb рейтинг </li>
+                  <li> 10% за Rotten Tomatoes рейтинг </li>
+                </ul>
               </AccordionContent>
             </AccordionItem>
             </Accordion>

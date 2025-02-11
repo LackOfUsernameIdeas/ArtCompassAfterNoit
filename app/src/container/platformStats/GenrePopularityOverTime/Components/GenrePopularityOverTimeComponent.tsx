@@ -2,12 +2,6 @@ import { FC, Fragment } from "react";
 import { GenrePopularityOverTimeDataType } from "../../platformStats-types";
 import { generateHeatmapSeriesData } from "../../helper_functions";
 import { GenrePopularityOverTime } from "../../charts";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent
-} from "@/components/ui/accordion";
 
 interface GenrePopularityOverTimeComponentProps {
   data: GenrePopularityOverTimeDataType;
@@ -23,11 +17,18 @@ const GenrePopularityOverTimeComponent: FC<
   return (
     <Fragment>
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
-          {/* Лява част */}
-          <div className="!text-lg box p-6 flex flex-col ">
-            <p className="text-center">
+          <div className="text-center !text-sm box p-6 flex flex-col ">
+            <p>
               Тук може да видите колко пъти са препоръчвани различните жанровете филми излезнали през съответната годината.<br/>
               По-тъмните квадрати означават по-голяма популярност, докато по-светлите – по-малка. 
+            </p>
+            <p>
+              <strong>Оста X</strong> представя
+              годината.
+            </p>
+            <p>
+              <strong>Оста Y</strong> представя
+              жанра.
             </p>
           </div>
         <div className="box">
