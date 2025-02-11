@@ -227,7 +227,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                         </span>{" "}
                         предпочитания. Също така, можете да видите кои са
                         най-често препоръчваните{" "}
-                        <span className="font-bold text-primary">за ВАС</span>{" "}
+                        <span className="font-bold text-primary">ЗА ВАС</span>{" "}
                         жанрове и колко на{" "}
                         <span className="font-bold text-primary">
                           брой филми и сериали
