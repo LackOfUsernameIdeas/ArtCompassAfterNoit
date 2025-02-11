@@ -258,7 +258,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                     isModalOpen={isAveragesModalOpen}
                     title={
                       <>
-                        <span>{`Текуща статистика: `}</span>
+                        <span>{`Избрана статистика: `}</span>
                         <span className="underline">
                           {displayedNameAverages}
                         </span>
@@ -372,7 +372,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                     isModalOpen={isAwardsModalOpen}
                     title={
                       <>
-                        <span>{`Текуща статистика: `}</span>
+                        <span>{`Избрана статистика: `}</span>
                         <span className="underline">{displayedNameAwards}</span>
                       </>
                     }
