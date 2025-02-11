@@ -229,7 +229,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                           „Просперитетен рейтинг“
                         </span>
                         <span
-                          className="text-gray-500 cursor-pointer hover:text-primary/80"
+                          className="text-gray-500 cursor-pointer hover:text-primary/80 transition-all duration-150"
                           onClick={handleModalToggle}
                         >
                           {" <<Натиснете тук, за да научите повече>> "}
@@ -348,7 +348,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                             „Просперитетен рейтинг“
                           </span>
                           <span
-                            className="text-gray-500 cursor-pointer hover:text-primary/80"
+                            className="text-gray-500 cursor-pointer hover:text-primary/80 transition-all duration-150"
                             onClick={handleModalToggle}
                           >
                             {" <<Натиснете тук, за да научите повече>> "}
