@@ -141,7 +141,7 @@ const Watchlist: FC = () => {
       <Fragment>
         <div className="mt-[1.5rem]">
           <div className="text-center !text-lg box p-6 flex flex-col md:flex-row gap-6 justify-center items-center">
-            <Card className="bg-gray-50 dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed md:w-1/2 mx-auto">
+            <Card className="bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed md:w-1/2 mx-auto">
               <h2 className="text-2xl opsilion text-defaulttextcolor dark:text-white/80">
                 В тази страница можете да разгледате подробна информация за
                 добавените от вас филми и сериали в{" "}
@@ -159,11 +159,16 @@ const Watchlist: FC = () => {
                     💡Metascore рейтинг
                   </AccordionTrigger>
                   <AccordionContent className="pl-4">
-                    Metascore е оценка от платформата Metacritic, която събира
-                    рецензии от критици и ги преобразува в обща числова стойност{" "}
-                    <span className="font-semibold">(от 0 до 100)</span>.
-                    Средният Metascore рейтинг е усреднената стойност на тези
-                    оценки за даден/и филм/и.
+                    <span className="font-semibold">Metascore</span> е оценка от
+                    платформата{" "}
+                    <span className="font-semibold">Metacritic</span>, която
+                    събира рецензии от критици и ги преобразува в обща числова
+                    стойност{" "}
+                    <span className="font-semibold">(от 0 до 100)</span>.{" "}
+                    <span className="font-semibold">
+                      Средният Metascore рейтинг
+                    </span>{" "}
+                    е усреднената стойност на тези оценки за даден/и филм/и.
                   </AccordionContent>
                 </AccordionItem>
 
@@ -187,23 +192,33 @@ const Watchlist: FC = () => {
                   <AccordionTrigger className="opsilion">
                     🎉 Просперитетен рейтинг
                   </AccordionTrigger>
-                  <AccordionContent className="pl-4">
+                  <AccordionContent className="px-5 py-3 space-y-3">
                     <p>
-                      <strong>Просперитетът</strong> се получава като се изчисли
-                      сборът на стойностите на няколко критерии.
+                      <strong className="text-lg">Просперитетът </strong>
+                      се получава като се изчисли сборът на стойностите на
+                      няколко критерии. За всеки критерий се задава определено
+                      процентно отношение, което отразява неговата важност
+                      спрямо останалите:
                     </p>
-                    <p>
-                      За всеки критерий се задава определено процентно
-                      отношение, което отразява неговата важност спрямо
-                      останалите:
-                    </p>
-                    <ul className="text-left coollist">
-                      <li> 30% за спечелени награди </li>
-                      <li> 25% за номинации </li>
-                      <li> 15% за приходите от боксофис </li>
-                      <li> 10% за Метаскор </li>
-                      <li> 10% за IMDb рейтинг </li>
-                      <li> 10% за Rotten Tomatoes рейтинг </li>
+                    <ul className="list-disc coollist pl-6 pt-3 space-y-1">
+                      <li>
+                        <strong>30%</strong> за спечелени награди
+                      </li>
+                      <li>
+                        <strong>25%</strong> за номинации
+                      </li>
+                      <li>
+                        <strong>15%</strong> за приходите от боксофис
+                      </li>
+                      <li>
+                        <strong>10%</strong> за Метаскор
+                      </li>
+                      <li>
+                        <strong>10%</strong> за IMDb рейтинг
+                      </li>
+                      <li>
+                        <strong>10%</strong> за Rotten Tomatoes рейтинг
+                      </li>
                     </ul>
                   </AccordionContent>
                 </AccordionItem>

@@ -12,6 +12,7 @@ import { NotificationState } from "../../types_common";
 import BooksTable from "./Components/BooksTable";
 import BookmarkAlert from "./Components/BookmarkAlert";
 import ErrorCard from "../../../components/common/error/error";
+import { Card } from "@/components/ui/card";
 
 interface ReadlistProps {}
 
@@ -135,14 +136,14 @@ const Readlist: FC<ReadlistProps> = () => {
       <Fragment>
         <div className="mt-[1.5rem]">
           <div className="text-center !text-lg box p-6 flex flex-col">
-            <p className="leading-relaxed">
+            <h2 className="text-2xl opsilion text-defaulttextcolor dark:text-white/80">
               В тази страница можете да разгледате подробна информация за
               добавените от вас книги в{" "}
               <span className="font-bold text-primary">
                 списъка ви за четене
               </span>
               !
-            </p>
+            </h2>
           </div>
           <BooksTable
             data={data.topRecommendationsReadlist}
