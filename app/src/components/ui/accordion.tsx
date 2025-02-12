@@ -12,7 +12,10 @@ const AccordionItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AccordionPrimitive.Item
     ref={ref}
-    className={cn("border-b", className)}
+    className={cn(
+      "bg-white dark:bg-bodybg2 rounded-md overflow-hidden shadow-sm",
+      className
+    )}
     {...props}
   />
 ));
@@ -20,16 +23,16 @@ AccordionItem.displayName = "AccordionItem";
 
 const AccordionTrigger = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger> & {
-    noHoverUnderline?: boolean;
-  }
->(({ className, children, noHoverUnderline, ...props }, ref) => (
-  <AccordionPrimitive.Header className="flex">
+  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
+>(({ className, children, ...props }, ref) => (
+  <AccordionPrimitive.Header>
     <AccordionPrimitive.Trigger
       ref={ref}
       className={cn(
-        "flex flex-1 items-center justify-between py-4 text-sm font-medium transition-all text-left [&[data-state=open]>svg]:rotate-180",
-        !noHoverUnderline && "hover:underline",
+        "flex w-full items-center justify-between px-4 py-4 text-sm font-medium transition-all",
+        "text-defaulttextcolor dark:text-defaulttextcolor/70",
+        "hover:bg-gray-50 dark:hover:bg-bodybg/40",
+        "[&[data-state=open]>svg]:rotate-180",
         className
       )}
       {...props}
@@ -48,10 +51,15 @@ const AccordionContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Content
     ref={ref}
-    className="overflow-hidden text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
+    className={cn(
+      "overflow-hidden text-sm",
+      "data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down",
+      "bg-gray-200 dark:bg-bodybg/50",
+      className
+    )}
     {...props}
   >
-    <div className={cn("pb-4 pt-0", className)}>{children}</div>
+    <div className="px-4 py-3">{children}</div>
   </AccordionPrimitive.Content>
 ));
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;

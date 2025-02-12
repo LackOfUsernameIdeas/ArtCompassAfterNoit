@@ -18,6 +18,7 @@ import {
   AccordionTrigger,
   AccordionContent
 } from "@/components/ui/accordion";
+import { Card } from "@/components/ui/card";
 
 const Watchlist: FC = () => {
   // Състояния за задържане на извлечени данни
@@ -140,14 +141,16 @@ const Watchlist: FC = () => {
       <Fragment>
         <div className="mt-[1.5rem]">
           <div className="text-center !text-lg box p-6 flex flex-col md:flex-row gap-6 justify-center items-center">
-            <p className="leading-relaxed md:w-1/2 mx-auto">
-              В тази страница можете да разгледате подробна информация за
-              добавените от вас филми и сериали в{" "}
-              <span className="font-bold text-primary">
-                списъка ви за гледане
-              </span>
-              !
-            </p>
+            <Card className="bg-gray-50 dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed md:w-1/2 mx-auto">
+              <h2 className="text-2xl opsilion text-defaulttextcolor dark:text-white/80">
+                В тази страница можете да разгледате подробна информация за
+                добавените от вас филми и сериали в{" "}
+                <span className="font-bold text-primary">
+                  списъка ви за гледане
+                </span>
+                !
+              </h2>
+            </Card>
             <div className="md:w-1/2 text-sm">
               <Accordion type="single" collapsible className="space-y-4">
                 {/* Metascore */}
