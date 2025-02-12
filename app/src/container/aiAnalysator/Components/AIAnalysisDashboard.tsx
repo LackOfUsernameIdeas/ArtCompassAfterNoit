@@ -36,12 +36,12 @@ const AIAnalysisDashboard: FC<AIAnalysisDashboardProps> = ({
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
         <Widget
           icon={<i className="ti ti-list-numbers text-3xl" />}
-          title="Общ брой препоръки"
+          title="Брой на генерираните от вас препоръки"
           value={precisionData.total_recommendations_count}
         />
         <Widget
           icon={<i className="ti ti-copy-check text-3xl" />}
-          title="Релевантни препоръки"
+          title="Брой на релевантни препоръки сред вашите генерирани"
           value={precisionData.relevant_recommendations_count}
         />
         <Widget
@@ -51,7 +51,7 @@ const AIAnalysisDashboard: FC<AIAnalysisDashboardProps> = ({
         />
         <Widget
           icon={<i className="ti ti-checkbox text-3xl" />}
-          title="Релевантни препоръки в платформата"
+          title="Брой на релевантни за вас препоръки в платформата"
           value={recallData.relevant_platform_recommendations_count}
         />
       </div>

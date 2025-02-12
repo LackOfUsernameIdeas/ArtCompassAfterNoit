@@ -17,6 +17,12 @@ import {
 } from "./helper_functions";
 import { analyzeRecommendations } from "../helper_functions_common";
 import ErrorCard from "@/components/common/error/error";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent
+} from "@/components/ui/accordion";
 
 const AIAnalysator: FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -145,19 +151,95 @@ const AIAnalysator: FC = () => {
     <FadeInWrapper>
       {!showError ? (
         <div className="p-[1.5rem]">
-          <div className="z-10 max-w-5xl w-full mx-auto font-mono text-sm">
-            <Card className="dark:border-black/10 bg-bodybg font-semibold text-xl p-4 rounded-lg shadow-lg dark:shadow-xl text-center">
-              <h2 className="!text-3xl text-defaulttextcolor dark:text-white/80">
-                Искате ли да знаете колко добре се е справил AI-ът с
-                генерирането на препоръки за филми и сериали?
-              </h2>
-              <hr className="my-4 border-defaulttextcolor/70" />
-              <p className="text-gray-600 !text-lg">
-                Примерно описание...Ако намерите някакъв проблем в нашето
-                приложение или имате препоръки, напишете ни и ние ще отговорим
-                възможно най-бързо!
-              </p>
-            </Card>
+          <div className="z-10 max-w-6xl w-full mx-auto font-mono text-sm">
+            <div className="text-center !text-lg box p-6 flex flex-col gap-6 !rounded-xl justify-center items-center">
+              <Card className="bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto">
+                <h2 className="text-4xl opsilion text-defaulttextcolor dark:text-white/80">
+                  Искате ли да знаете колко добре се е справил AI-ът с
+                  генерирането на препоръки специално за Вас?
+                </h2>
+              </Card>
+              <Card className="bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 w-full rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto">
+                <h2 className="text-xl text-defaulttextcolor dark:text-white/80">
+                  За целта е препоръчително първо да се запознаете със следните
+                  понятия:
+                </h2>
+              </Card>
+              <div className="text-sm w-full">
+                <Accordion type="single" collapsible className="space-y-4">
+                  {/* Metascore */}
+                  <AccordionItem value="metascore">
+                    <AccordionTrigger className="opsilion">
+                      💡Metascore рейтинг
+                    </AccordionTrigger>
+                    <AccordionContent className="pl-4">
+                      <span className="font-semibold">Metascore</span> е оценка
+                      от платформата{" "}
+                      <span className="font-semibold">Metacritic</span>, която
+                      събира рецензии от критици и ги преобразува в обща числова
+                      стойност{" "}
+                      <span className="font-semibold">(от 0 до 100)</span>.{" "}
+                      <span className="font-semibold">
+                        Средният Metascore рейтинг
+                      </span>{" "}
+                      е усреднената стойност на тези оценки за даден/и филм/и.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  {/* Боксофис */}
+                  <AccordionItem value="boxoffice">
+                    <AccordionTrigger className="opsilion">
+                      💰 Боксофис
+                    </AccordionTrigger>
+                    <AccordionContent className="pl-4">
+                      Общата сума на приходите от продажба на билети в
+                      киносалоните. Измерва се в{" "}
+                      <span className="font-semibold">
+                        милиони или милиарди долари
+                      </span>{" "}
+                      и е ключов показател за търговския успех на филма.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  {/* Просперитет */}
+                  <AccordionItem value="prosperity">
+                    <AccordionTrigger className="opsilion">
+                      🎉 Просперитетен рейтинг
+                    </AccordionTrigger>
+                    <AccordionContent className="px-5 py-3 space-y-3">
+                      <p>
+                        <strong className="text-lg">Просперитетът </strong>
+                        се получава като се изчисли сборът на стойностите на
+                        няколко критерии. За всеки критерий се задава определено
+                        процентно отношение, което отразява неговата важност
+                        спрямо останалите:
+                      </p>
+                      <ul className="list-disc coollist pl-6 pt-3 space-y-1">
+                        <li>
+                          <strong>30%</strong> за спечелени награди
+                        </li>
+                        <li>
+                          <strong>25%</strong> за номинации
+                        </li>
+                        <li>
+                          <strong>15%</strong> за приходите от боксофис
+                        </li>
+                        <li>
+                          <strong>10%</strong> за Метаскор
+                        </li>
+                        <li>
+                          <strong>10%</strong> за IMDb рейтинг
+                        </li>
+                        <li>
+                          <strong>10%</strong> за Rotten Tomatoes рейтинг
+                        </li>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
+            </div>
+
             {precisionData && recallData && f1ScoreData && (
               <AIAnalysisDashboard
                 precisionData={precisionData}

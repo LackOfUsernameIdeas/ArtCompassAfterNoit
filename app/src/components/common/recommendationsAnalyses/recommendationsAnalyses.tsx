@@ -100,12 +100,12 @@ const RecommendationsAnalysesWidgets: React.FC<
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Widget
             icon={<i className="ti ti-checklist text-3xl"></i>}
-            title="Брой релевантни неща"
+            title="Брой релевантни препоръки"
             value={relevantCount}
           />
           <Widget
             icon={<i className="ti ti-list text-3xl"></i>}
-            title="Общ брой препоръки"
+            title="Общ брой генерирани препоръки"
             value={totalCount}
           />
           <Widget
@@ -128,7 +128,8 @@ const RecommendationsAnalysesWidgets: React.FC<
           title={
             <div className="flex items-center">
               <i className="ti ti-math-function text-2xl mr-2"></i>
-              Формула за изчисление на Precision
+              Изчисляване на Precision за{" "}
+              {isSwitching ? "последното" : "текущото"} генериране на препоръки
             </div>
           }
         >
