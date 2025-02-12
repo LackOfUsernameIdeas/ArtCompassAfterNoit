@@ -1,10 +1,10 @@
 const initialState = {
   lang: "bg",
   dir: "ltr",
-  class: "dark",
-  dataMenuStyles: "dark",
+  class: `${import.meta.env.VITE_DEFAULT_THEME}`,
+  dataMenuStyles: `${import.meta.env.VITE_DEFAULT_THEME}`,
   dataNavLayout: "horizontal",
-  dataHeaderStyles: "dark",
+  dataHeaderStyles: `${import.meta.env.VITE_DEFAULT_THEME}`,
   dataVerticalStyle: "overlay",
   toggled: "",
   dataNavStyle: "menu-click",

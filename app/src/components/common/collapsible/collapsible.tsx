@@ -18,10 +18,7 @@ const Collapsible: React.FC<CollapsibleProps> = ({ title, children }) => {
         value="item-1"
         className="border dark:border-defaultborder/10 rounded-lg overflow-hidden"
       >
-        <AccordionTrigger
-          noHoverUnderline
-          className="px-4 py-2 dark:bg-bodybg2 bg-white hover:dark:bg-white/10 transition-colors duration-200"
-        >
+        <AccordionTrigger className="px-4 py-2 dark:bg-bodybg2 bg-white hover:dark:bg-white/10 transition-colors duration-200">
           <span className="font-semibold dark:text-defaulttextcolor/70">
             {title}
           </span>
