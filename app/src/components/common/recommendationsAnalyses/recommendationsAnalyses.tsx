@@ -29,7 +29,7 @@ const RecommendationsAnalysesWidgets: React.FC<
 
   return (
     <Fragment>
-      <Card className="dark:border-black/10 bg-bodybg font-semibold text-xl p-4 rounded-lg shadow-lg dark:shadow-xl text-center mt-4">
+      <Card className="dark:border-black/10 bg-bodybg font-semibold text-xl max-w-7xl p-4 rounded-lg shadow-lg dark:shadow-xl text-center mt-4">
         <h2 className="!text-2xl font-bold">
           Анализ на {isSwitching ? "последно генерираните" : "текущите"}{" "}
           препоръки:
@@ -42,7 +42,7 @@ const RecommendationsAnalysesWidgets: React.FC<
         onExited={setInTransition ? () => setInTransition(false) : () => {}} // Нулиране на състоянието след като анимацията приключи
         unmountOnExit // Премахване на компонента, когато анимацията завърши
       >
-        <div className="bg-bodybg mt-4 p-6 rounded-xl shadow-lg space-y-6">
+        <div className="bg-bodybg mt-4 p-6 rounded-xl shadow-lg space-y-6 max-w-7xl">
           <div className="relative w-full">
             {isSwitching && (
               <svg
@@ -96,7 +96,7 @@ const RecommendationsAnalysesWidgets: React.FC<
         </div>
       </CSSTransition>
 
-      <div className="bg-bodybg mt-4 p-6 rounded-xl shadow-lg space-y-6">
+      <div className="bg-bodybg mt-4 p-6 max-w-7xl rounded-xl shadow-lg space-y-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Widget
             icon={<i className="ti ti-checklist text-3xl"></i>}
