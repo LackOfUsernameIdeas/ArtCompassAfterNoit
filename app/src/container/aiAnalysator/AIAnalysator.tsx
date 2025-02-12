@@ -167,73 +167,138 @@ const AIAnalysator: FC = () => {
               </Card>
               <div className="text-sm w-full">
                 <Accordion type="single" collapsible className="space-y-4">
-                  {/* Metascore */}
-                  <AccordionItem value="metascore">
+                  {/* Relevance */}
+                  <AccordionItem value="relevance">
                     <AccordionTrigger className="opsilion">
-                      💡Metascore рейтинг
+                      🎯 Релевантност
                     </AccordionTrigger>
-                    <AccordionContent className="pl-4">
-                      <span className="font-semibold">Metascore</span> е оценка
-                      от платформата{" "}
-                      <span className="font-semibold">Metacritic</span>, която
-                      събира рецензии от критици и ги преобразува в обща числова
-                      стойност{" "}
-                      <span className="font-semibold">(от 0 до 100)</span>.{" "}
+                    <AccordionContent>
+                      Свойство, което дадена препоръка може да притежава. Дали
+                      даден филм или сериал е{" "}
+                      <span className="font-semibold">релевантен </span> се
+                      определя спрямо това дали неговите характеристики като{" "}
                       <span className="font-semibold">
-                        Средният Metascore рейтинг
+                        жанр, емоционално състояние, разполагаемо време за
+                        гледане
                       </span>{" "}
-                      е усреднената стойност на тези оценки за даден/и филм/и.
+                      и други се съобразяват с{" "}
+                      <span className="font-semibold">ВАШИТЕ </span>{" "}
+                      индивидуални потребителски предпочитания. Всичко това се
+                      случва с помощта на{" "}
+                      <span className="font-semibold">
+                        Алгоритъма за релевантност{" "}
+                      </span>
+                      , описан по-надолу в страницата.
                     </AccordionContent>
                   </AccordionItem>
 
-                  {/* Боксофис */}
-                  <AccordionItem value="boxoffice">
+                  {/* Precision */}
+                  <AccordionItem value="precision">
                     <AccordionTrigger className="opsilion">
-                      💰 Боксофис
+                      ✅ Precision
                     </AccordionTrigger>
-                    <AccordionContent className="pl-4">
-                      Общата сума на приходите от продажба на билети в
-                      киносалоните. Измерва се в{" "}
-                      <span className="font-semibold">
-                        милиони или милиарди долари
-                      </span>{" "}
-                      и е ключов показател за търговския успех на филма.
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  {/* Просперитет */}
-                  <AccordionItem value="prosperity">
-                    <AccordionTrigger className="opsilion">
-                      🎉 Просперитетен рейтинг
-                    </AccordionTrigger>
-                    <AccordionContent className="px-5 py-3 space-y-3">
+                    <AccordionContent>
                       <p>
-                        <strong className="text-lg">Просперитетът </strong>
-                        се получава като се изчисли сборът на стойностите на
-                        няколко критерии. За всеки критерий се задава определено
-                        процентно отношение, което отразява неговата важност
-                        спрямо останалите:
+                        Измерва каква част от препоръките, които сте направили,
+                        са <span className="font-semibold">наистина </span>{" "}
+                        релевантни. Високата стойност на{" "}
+                        <span className="font-semibold">Precision</span>{" "}
+                        означава, че когато системата препоръчва нещо, то
+                        вероятно ще бъде подходящо за вас.
                       </p>
-                      <ul className="list-disc coollist pl-6 pt-3 space-y-1">
-                        <li>
-                          <strong>30%</strong> за спечелени награди
-                        </li>
-                        <li>
-                          <strong>25%</strong> за номинации
-                        </li>
-                        <li>
-                          <strong>15%</strong> за приходите от боксофис
-                        </li>
-                        <li>
-                          <strong>10%</strong> за Метаскор
-                        </li>
-                        <li>
-                          <strong>10%</strong> за IMDb рейтинг
-                        </li>
-                        <li>
-                          <strong>10%</strong> за Rotten Tomatoes рейтинг
-                        </li>
-                      </ul>
+                      <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
+                        <div className="flex items-center space-x-2 justify-center items-center">
+                          <span className="font-semibold">Precision =</span>
+                          <div className="text-center">
+                            <p className="text-primary text-sm">
+                              всички РЕЛЕВАНТНИ препоръки правени някога НА ВАС
+                            </p>
+                            <div className="border-b border-gray-400 dark:border-gray-600 my-2"></div>
+                            <p className="text-secondary text-sm">
+                              всички препоръки, които някога са правени НА ВАС
+                            </p>
+                          </div>
+                        </div>
+                      </Card>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  {/* Recall */}
+                  <AccordionItem value="recall">
+                    <AccordionTrigger className="opsilion">
+                      🔍 Recall
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <p>
+                        Измерва каква част от всички препоръки, които са
+                        определени като релевантни, са били препоръчани на{" "}
+                        <span className="font-semibold">ВАС</span>. Високата
+                        стойност на Recall означава, че системата{" "}
+                        <span className="font-semibold">НЕ </span> пропуска{" "}
+                        <span className="font-semibold">
+                          важни (релевантни){" "}
+                        </span>{" "}
+                        препоръки, дори ако включва някои нерелевантни.
+                      </p>
+                      <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
+                        <div className="flex items-center space-x-2 justify-center items-center">
+                          <span className="font-semibold">Recall =</span>
+                          <div className="text-center">
+                            <p className="text-primary text-sm">
+                              всички РЕЛЕВАНТНИ препоръки правени някога НА ВАС
+                            </p>
+                            <div className="border-b border-gray-400 dark:border-gray-600 my-2"></div>
+                            <p className="text-secondary text-sm">
+                              всички препоръки, които са РЕЛЕВАНТНИ на ВАШИТЕ
+                              предпочитания, измежду тези в цялата система
+                            </p>
+                          </div>
+                        </div>
+                      </Card>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  {/* F1 Score */}
+                  <AccordionItem value="f1-score">
+                    <AccordionTrigger className="opsilion">
+                      ⚖️ F1 Score
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <p>
+                        <span className="font-semibold">
+                          Балансиран показател
+                        </span>
+                        , който комбинира стойностите на{" "}
+                        <span className="font-semibold">Precision</span> и{" "}
+                        <span className="font-semibold">Recall</span>,
+                        показвайки колко добре системата намира точния баланс
+                        между тях. Високият{" "}
+                        <span className="font-semibold">F1 Score</span>{" "}
+                        означава, че системата има добро представяне както по
+                        отношение на{" "}
+                        <span className="font-semibold">
+                          точността на препоръките
+                        </span>
+                        , така и на
+                        <span className="font-semibold">
+                          покритието спрямо всички възможности
+                        </span>
+                        .
+                      </p>
+                      <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
+                        <div className="flex items-center space-x-2 justify-center items-center">
+                          <span className="font-semibold">F1 Score =</span>
+                          <div className="text-center">
+                            <p className="text-primary text-sm">
+                              2 x Precision x Recall
+                            </p>
+                            <div className="border-b border-gray-400 dark:border-gray-600 my-2"></div>
+                            <p className="text-secondary text-sm">
+                              Precision + Recall
+                            </p>
+                          </div>
+                        </div>
+                      </Card>
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
