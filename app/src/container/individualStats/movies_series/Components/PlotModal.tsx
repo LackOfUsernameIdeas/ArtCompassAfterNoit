@@ -26,7 +26,7 @@ export const PlotModal: FC<PlotModalProps> = ({ isOpen, onClose, plot }) => {
         {/* Затъмняване на фона, когато модалът е отворен */}
         <div className="fixed inset-0 bg-black bg-opacity-70 z-40"></div>
         <div
-          className="plot-modal"
+          className="modal"
           style={{
             ...animationState,
             transition: "opacity 300ms, transform 300ms"

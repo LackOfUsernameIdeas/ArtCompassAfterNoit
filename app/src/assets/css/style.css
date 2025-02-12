@@ -19956,8 +19956,8 @@ option.selectionList {
   text-align: center;
 }
 
-.plot-modal {
-  @apply flex flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative bg-white dark:bg-bodybg p-6 shadow-lg w-full max-w-lg space-y-4 z-50;
+.modal {
+  @apply flex flex-col rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.813rem] relative bg-bodybg dark:bg-bodybg p-6 shadow-lg w-full max-w-lg space-y-4 z-50;
 }
 
 .opsilion {
