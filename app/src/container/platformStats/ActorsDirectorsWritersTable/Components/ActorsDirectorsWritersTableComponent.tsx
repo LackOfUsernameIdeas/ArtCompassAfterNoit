@@ -19,6 +19,7 @@ import {
   AccordionTrigger,
   AccordionContent
 } from "@/components/ui/accordion";
+import { Card } from "@/components/ui/card";
 
 interface ActorsDirectorsWritersTableComponentProps {
   data: ActorsDirectorsWritersTableDataType;
@@ -89,27 +90,57 @@ const ActorsDirectorsWritersTableComponent: FC<
   return (
     <Fragment>
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
-        <div className="flex flex-col md:flex-row gap-8 box p-6 rounded-lg shadow-lg dark:text-gray-300 text-[#333335]">
+        <div className="flex flex-col md:flex-row gap-8 box p-6 rounded-lg shadow-lg dark:text-gray-300 text-[#333335] justify-center items-center">
           {/* Лява част */}
-          <div className="md:w-1/2 flex flex-col justify-center items-center text-sm">
-            <p className="text-center">
+          <Card className="bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed md:w-1/2 mx-auto">
+            <h2 className="text-2xl opsilion text-defaulttextcolor dark:text-white/80">
               Тук може да видите класация на режисьори, актьори и сценаристи
-              според техния <strong>просперитетен рейтинг</strong>.
-            </p>
-            <p className="text-center">
-              Всеки от тях е оценен на база няколко критерия:
-            </p>
-            <ul className="text-left coollist">
-              <li>Среден IMDb рейтинг на филмите</li>
-              <li>Среден рейтинг в Rotten Tomatoes</li>
-              <li>Среден Metascore</li>
-              <li>Общо приходи от боксофиса</li>
-              <li>Брой филми, препоръчвани в платформата</li>
-              <li>Брой пъти, в които са препоръчвани техни филми</li>
-              <li>Спечелени награди</li>
-              <li>Номинации за награди</li>
-            </ul>
-          </div>
+              според техния{" "}
+              <span className="font-semibold text-primary">
+                просперитетен рейтинг
+              </span>
+              . Всеки от тях е оценен на база няколко критерия:
+              <ul className="text-left coollist pl-7 pt-5">
+                <li>
+                  Среден{" "}
+                  <span className="font-semibold text-primary">
+                    IMDb рейтинг
+                  </span>{" "}
+                  на филмите
+                </li>
+                <li>
+                  Среден{" "}
+                  <span className="font-semibold text-primary">
+                    Rotten Tomatoes рейтинг
+                  </span>
+                </li>
+                <li>
+                  Среден{" "}
+                  <span className="font-semibold text-primary">Metascore</span>
+                </li>
+                <li>
+                  Общо приходи от{" "}
+                  <span className="font-semibold text-primary">боксофиса</span>
+                </li>
+                <li>
+                  <span className="font-semibold text-primary">Брой</span>{" "}
+                  филми, препоръчвани в платформата
+                </li>
+                <li>
+                  <span className="font-semibold text-primary">Брой</span> пъти,
+                  в които са препоръчвани техни филми
+                </li>
+                <li>
+                  Спечелени{" "}
+                  <span className="font-semibold text-primary">награди</span>
+                </li>
+                <li>
+                  <span className="font-semibold text-primary">Номинации</span>{" "}
+                  за награди
+                </li>
+              </ul>
+            </h2>
+          </Card>
 
           {/* Дясна част*/}
           <div className="md:w-1/2 text-sm]">
@@ -121,8 +152,8 @@ const ActorsDirectorsWritersTableComponent: FC<
                 </AccordionTrigger>
                 <AccordionContent className="pl-4">
                   Средна оценка, която даден филм получава от потребителите на
-                  IMDb. Оценките варират от{" "}
-                  <span className="font-semibold">1 до 10</span> и отразяват
+                  <span className="font-semibold"> IMDb</span>. Оценките варират
+                  от <span className="font-semibold">1 до 10</span> и отразяват
                   популярността и качеството на филма.
                 </AccordionContent>
               </AccordionItem>
@@ -133,11 +164,14 @@ const ActorsDirectorsWritersTableComponent: FC<
                   🍅 Среден Rotten Tomatoes рейтинг
                 </AccordionTrigger>
                 <AccordionContent className="pl-4">
-                  Rotten Tomatoes е платформа, показваща процента на
-                  положителните рецензии от критици (Tomatometer) или от зрители
-                  (Audience Score). Средният рейтинг е средната оценка{" "}
+                  <span className="font-semibold">Rotten Tomatoes</span> е
+                  платформа, показваща процента на положителните рецензии от
+                  критици <span className="font-semibold"> (Tomatometer)</span>{" "}
+                  или от зрители
+                  <span className="font-semibold"> (Audience Score)</span>.
+                  Средният рейтинг е средната оценка{" "}
                   <span className="font-semibold"> (от 0 до 10)</span> на всички
-                  ревюта, вместо просто процента на положителните.
+                  ревюта, вместо просто процента на положителните рецензии.
                 </AccordionContent>
               </AccordionItem>
 
@@ -147,11 +181,15 @@ const ActorsDirectorsWritersTableComponent: FC<
                   💡 Среден Metascore рейтинг
                 </AccordionTrigger>
                 <AccordionContent className="pl-4">
-                  Metascore е оценка от платформата Metacritic, която събира
-                  рецензии от критици и ги преобразува в обща числова стойност{" "}
-                  <span className="font-semibold">(от 0 до 100)</span>. Средният
-                  Metascore рейтинг е усреднената стойност на тези оценки за
-                  даден/и филм/и.
+                  <span className="font-semibold">Metascore</span> е оценка от
+                  платформата <span className="font-semibold">Metacritic</span>,
+                  която събира рецензии от критици и ги преобразува в обща
+                  числова стойност{" "}
+                  <span className="font-semibold">(от 0 до 100)</span>.{" "}
+                  <span className="font-semibold">
+                    Средният Metascore рейтинг
+                  </span>{" "}
+                  е усреднената стойност на тези оценки за даден/и филм/и.
                 </AccordionContent>
               </AccordionItem>
 

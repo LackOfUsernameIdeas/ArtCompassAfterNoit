@@ -63,11 +63,14 @@ const TopRecommendations: FC<TopRecommendationsProps> = () => {
         />
       )}
       <Fragment>
-        <div className="text-center !text-sm box p-6 flex flex-col mt-[1.5rem]">
-          <p>
-            Тук може да видите кои са най-често препоръчваните актьори,
-            режисьори, сценаристи, филми и сериали
-          </p>
+        <div className="text-center !text-lg box p-6 flex flex-col mt-[1.5rem]">
+          <h2 className="text-2xl opsilion text-defaulttextcolor dark:text-white/80">
+            Тук може да видите кои са най-често препоръчваните{" "}
+            <span className="font-bold text-primary">
+              актьори, режисьори, сценаристи, филми и сериали{" "}
+            </span>
+            !
+          </h2>
         </div>
         <div className="grid grid-cols-12 gap-x-6 mt-[1.5rem]">
           <div className="xxl:col-span-6 col-span-12">

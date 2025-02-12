@@ -7,6 +7,7 @@ import {
   AccordionTrigger,
   AccordionContent
 } from "@/components/ui/accordion";
+import { Card } from "@/components/ui/card";
 
 interface MoviesByProsperityComponentProps {
   data: MoviesByProsperityDataType;
@@ -18,38 +19,28 @@ const MoviesByProsperityComponent: FC<MoviesByProsperityComponentProps> = ({
   return (
     <Fragment>
       <div className="xl:col-span-6 col-span-12">
-        <div className="flex flex-col md:flex-row gap-8 box p-6 rounded-lg shadow-lg dark:text-gray-300 text-[#333335]">
+        <div className="flex flex-col md:flex-row gap-8 box p-6 rounded-lg shadow-lg dark:text-gray-300 text-[#333335] justify-center items-center">
           {/* Лява част */}
-          <div className="md:w-1/2 flex flex-col justify-center items-center text-center text-sm">
-            <p>
+          <Card className="bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed md:w-1/2 mx-auto">
+            <h2 className="text-2xl opsilion text-defaulttextcolor dark:text-white/80">
               Тук може да видите най-успешните филми според{" "}
               <span className="font-semibold text-primary">IMDb рейтинг</span> и
               приходи от{" "}
               <span className="font-semibold text-primary">боксофиса</span>.
-            </p>
-            <p>
               Филмите са разпределени по жанрове, като всеки жанр е отбелязан с{" "}
               <span className="font-semibold text-primary">различен цвят</span>.
-            </p>
-            <p>
-              <span className="font-semibold text-primary">Оста X</span>{" "}
+              <span className="font-semibold text-primary"> Оста X</span>{" "}
               представя приходите от боксофиса в милиони долари.
-            </p>
-            <p>
-              <span className="font-semibold text-primary">Оста Y</span>{" "}
+              <span className="font-semibold text-primary"> Оста Y</span>{" "}
               представя{" "}
               <span className="font-semibold text-primary">
                 рейтинга в IMDb
               </span>
-              .
-            </p>
-            <p>
-              Големината на кръговете отразява{" "}
+              . Големината на кръговете отразява{" "}
               <span className="font-semibold text-primary">просперитета</span>{" "}
               на филма.
-            </p>
-          </div>
-
+            </h2>
+          </Card>
           {/* Дясна част*/}
           <div className="md:w-1/2 text-sm">
             <Accordion type="single" collapsible className="space-y-4">
@@ -60,8 +51,8 @@ const MoviesByProsperityComponent: FC<MoviesByProsperityComponentProps> = ({
                 </AccordionTrigger>
                 <AccordionContent className="pl-4">
                   Средна оценка, която даден филм получава от потребителите на
-                  IMDb. Оценките варират от{" "}
-                  <span className="font-semibold">1 до 10</span> и отразяват
+                  <span className="font-semibold"> IMDb</span>. Оценките варират
+                  от <span className="font-semibold">1 до 10</span> и отразяват
                   популярността и качеството на филма.
                 </AccordionContent>
               </AccordionItem>
