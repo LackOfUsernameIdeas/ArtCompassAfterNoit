@@ -26,6 +26,8 @@ import TopRecommendations from "./container/platformStats/TopRecommendations/Top
 import MoviesAndSeriesByRatings from "./container/platformStats/MoviesAndSeriesByRatings/MoviesAndSeriesByRatings.tsx";
 import TopCountries from "./container/platformStats/TopCountries/TopCountries.tsx";
 import AIAnalysator from "./container/aiAnalysator/AIAnalysator.tsx";
+import Landing from "./container/landing/landing.tsx";
+import LandingLayout from "./pages/LandingLayout.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.Fragment>
@@ -33,7 +35,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <React.Suspense fallback={<div>Зареждане...</div>}>
         <Routes>
           <Route path="/" element={<Navigate to="/signin" />} />
-
+          {/* <Route path="/" element={<LandingLayout />}>
+            <Route path={`/`} element={<Landing />} />
+          </Route> */}
           <Route
             path="/app"
             element={
