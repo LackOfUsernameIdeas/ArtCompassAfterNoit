@@ -6,6 +6,7 @@ import RelevantRecommendations from "../relevantRecommendations/relevantRecommen
 import Widget from "../widget/widget";
 import { Card } from "@/components/ui/card";
 import { RecommendationsAnalysesWidgetsProps } from "./recommendationsAnalyses-types";
+import { useNavigate } from "react-router-dom";
 
 const RecommendationsAnalysesWidgets: React.FC<
   RecommendationsAnalysesWidgetsProps
@@ -26,15 +27,27 @@ const RecommendationsAnalysesWidgets: React.FC<
     precisionPercentage,
     relevantRecommendations
   } = recommendationsAnalysis;
-
+  const navigate = useNavigate();
   return (
     <Fragment>
       <Card className="dark:border-black/10 bg-bodybg font-semibold text-xl max-w-7xl p-4 rounded-lg shadow-lg dark:shadow-xl text-center mt-4">
         <h2 className="!text-2xl font-bold">
           Анализ на {isSwitching ? "последно генерираните" : "текущите"}{" "}
           препоръки:
-        </h2>
+        </h2>{" "}
+        <p className="text-lg text-gray-600">
+          Искате да видите по-подробен анализ?{" "}
+          <button
+            onClick={() =>
+              navigate(`${import.meta.env.BASE_URL}app/aiAnalysator`)
+            }
+            className="text-primary font-semibold hover:text-secondary transition-colors underline"
+          >
+            Посетете AI Анализатор.
+          </button>
+        </p>{" "}
       </Card>
+
       <CSSTransition
         in={!inTransition} // Активиране на анимацията, когато 'inTransition' е false
         timeout={500} // Задаване на времето за анимация (например 500ms)
