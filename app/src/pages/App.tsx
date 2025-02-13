@@ -38,7 +38,7 @@ function App() {
             htmlAttributes={{
               lang: "en",
               dir: "ltr",
-              "data-menu-styles": "dark",
+              "data-menu-styles": `${import.meta.env.VITE_DEFAULT_THEME}`,
               class: "light",
               "data-nav-layout": "vertical",
               "data-header-styles": "light",
@@ -51,10 +51,8 @@ function App() {
           <div className="page">
             <Header />
             <Sidebar />
-            <div className="content main-index">
-              <div className="main-content" onClick={Bodyclickk}>
-                <Outlet />
-              </div>
+            <div className="main-content" onClick={Bodyclickk}>
+              <Outlet />
             </div>
             <Footer />
           </div>

@@ -7,6 +7,8 @@ import WidgetCards from "./components/WidgetCardsComponents";
 import { DataType, UserData } from "./choose-types";
 import { fetchData } from "./helper_functions";
 import { Card } from "@/components/ui/card";
+import MainMetricsWidget from "@/container/aiAnalysator/Components/MainMetricsWidget";
+import Widget from "@/components/common/widget/widget";
 
 const ChooseRecommendations: FC = () => {
   // Състояние за проследяване дали зареждаме съдържание
@@ -67,10 +69,43 @@ const ChooseRecommendations: FC = () => {
         unmountOnExit // Компонентът се премахва от DOM, ако не се показва
       >
         <div>
-          {/* Карти с информация за потребителя */}
-          <div className="grid grid-cols-12 gap-x-6 my-[1.5rem]">
-            <WidgetCards data={data} />
+          {/* Карти с информация за AI */}
+          <div className="bg-bodybg p-6 rounded-xl shadow-lg space-y-6 my-[1.5rem]">
+            {/* Карти с информация за потребителя */}
+            <div className="grid grid-cols-12 gap-x-6">
+              <Widget
+                className="col-span-3 bg-bodybg"
+                icon={<i className="ti ti-database text-3xl" />}
+                title="Общ брой препоръки в платформата"
+                value={100}
+              />
+              <MainMetricsWidget
+                className="col-span-3 bg-bodybg"
+                icon={<i className="ti ti-percentage-60 text-2xl"></i>}
+                title="Precision"
+                value={`${100}%`}
+                description={`${100} от общо ${100} препоръки, които сте направили, са релевантни`}
+                progress={100}
+              />
+              <MainMetricsWidget
+                className="col-span-3 bg-bodybg"
+                icon={<i className="ti ti-percentage-40 text-2xl"></i>}
+                title="Recall"
+                value={`${100}%`}
+                description={`${100} от общо ${100} релевантни препоръки в системата са отправени към вас`}
+                progress={100}
+              />
+              <MainMetricsWidget
+                className="col-span-3 bg-bodybg"
+                icon={<i className="ti ti-percentage-70 text-2xl"></i>}
+                title="F1 Score"
+                value={`${100}%`}
+                description="Баланс между Precision и Recall"
+                progress={100}
+              />
+            </div>
           </div>
+
           {/* Въпрос и бутоните за избор */}
           <div className="flex items-center justify-center px-4">
             <div className="w-full max-w-4xl px-4 text-center">
@@ -98,6 +133,10 @@ const ChooseRecommendations: FC = () => {
                 ))}
               </div>
             </div>
+          </div>
+          {/* Карти с информация за потребителя */}
+          <div className="grid grid-cols-12 gap-x-6 my-[1.5rem]">
+            <WidgetCards data={data} />
           </div>
         </div>
       </CSSTransition>

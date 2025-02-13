@@ -79,13 +79,19 @@ const Navbar2 = () => {
         </li>
         <li className="slide">
           {" "}
+          <a href="#wantedJob" className="side-menu__item">
+            <span className="side-menu__label">Wanted Job</span>{" "}
+          </a>{" "}
+        </li>
+        <li className="slide">
+          {" "}
           <a href="#employers" className="side-menu__item">
             <span className="side-menu__label">For Employers</span>{" "}
           </a>
         </li>
         <li className="slide">
           {" "}
-          <a href="#career-advice" className="side-menu__item">
+          <a href="#careerAdvice" className="side-menu__item">
             <span className="side-menu__label">Career Advice</span>{" "}
           </a>
         </li>

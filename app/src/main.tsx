@@ -34,10 +34,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <React.Suspense fallback={<div>Зареждане...</div>}>
         <Routes>
-          <Route path="/" element={<Navigate to="/signin" />} />
-          {/* <Route path="/" element={<LandingLayout />}>
+          {/* <Route path="/" element={<Navigate to="/signin" />} /> */}
+          <Route path="/" element={<LandingLayout />}>
             <Route path={`/`} element={<Landing />} />
-          </Route> */}
+          </Route>
           <Route
             path="/app"
             element={

@@ -1964,7 +1964,7 @@ Background Image
   [data-nav-layout="horizontal"][class="dark"]
     .landing-body
     .app-sidebar.sticky {
-    @apply bg-primary/10 !important;
+    @apply bg-bodybg !important;
   }
   [data-nav-layout="horizontal"][class="dark"]
     .landing-body
@@ -2460,7 +2460,7 @@ Background Image
     @apply top-0 px-0 h-auto shadow-none border-0 !important;
   }
   [data-nav-layout="horizontal"] .landing-body .app-sidebar .side-menu__label {
-    @apply text-white dark:text-defaulttextcolor/10 opacity-[0.8];
+    @apply text-white dark:text-defaulttextcolor opacity-[0.8];
   }
   [data-nav-layout="horizontal"] .landing-body .app-sidebar .main-sidebar {
     @apply h-auto !important;
@@ -2483,7 +2483,7 @@ Background Image
     .landing-body
     .app-sidebar.app-sidebar
     .side-menu__label {
-    @apply text-white dark:text-defaulttextcolor/10;
+    @apply text-white dark:text-defaulttextcolor;
   }
   [data-nav-layout="horizontal"]
     .landing-body
@@ -2506,7 +2506,7 @@ Background Image
     .app-sidebar.app-sidebar
     .side-menu__item:hover
     .side-menu__label {
-    @apply text-white dark:text-defaulttextcolor/10;
+    @apply text-white dark:text-defaulttextcolor;
   }
   [data-nav-layout="horizontal"] .landing-body .app-header {
     @apply hidden;
