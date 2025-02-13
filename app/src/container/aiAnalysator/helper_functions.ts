@@ -14,10 +14,10 @@ import {
  * @returns {Promise<Object>} Промис, който връща JSON с резултатите за релевантност.
  */
 export const checkRelevanceForLastSavedRecommendations = async (
-  token: string
+  token: string,
+  setShowError: React.Dispatch<React.SetStateAction<boolean>>
 ): Promise<RelevanceResponse> => {
   try {
-    // Изпращане на POST заявка към сървъра
     const response = await fetch(
       `${
         import.meta.env.VITE_API_BASE_URL
@@ -31,13 +31,17 @@ export const checkRelevanceForLastSavedRecommendations = async (
       }
     );
 
-    // Проверка за грешки при заявката
+    const data = await response.json();
+
+    const isError =
+      !response.ok || data.message === "No user preferences found.";
+
+    setShowError(isError);
+
     if (!response.ok) {
       throw new Error(`Error with request: ${response.statusText}`);
     }
 
-    // Преобразуване на отговора в JSON
-    const data = await response.json();
     return data;
   } catch (error) {
     console.error("Грешка при проверката на релевантността:", error);

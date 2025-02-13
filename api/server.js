@@ -1290,7 +1290,14 @@ app.post("/check-relevance-for-last-saved-recommendations", (req, res) => {
           .status(500)
           .json({ error: "Error fetching last saved user recommendations." });
       }
-
+      if (!result) {
+        return res.json({
+          message: "No user preferences found.",
+          lastSavedUserPreferences: null,
+          lastSavedRecommendations: [],
+          relevanceResults: []
+        });
+      }
       db.getLastGeneratedMoviesSeriesRecommendations(
         userId,
         result.date,
@@ -1301,7 +1308,6 @@ app.post("/check-relevance-for-last-saved-recommendations", (req, res) => {
                 "Error fetching last generated movies series recommendations."
             });
           }
-
           // Обработване на всяка препоръка и изчисляване на релевантността
           const relevanceResults = recommendationsResult.map(
             (recommendation) => {
