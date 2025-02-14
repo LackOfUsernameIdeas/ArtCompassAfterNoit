@@ -40,7 +40,7 @@ function App() {
               dir: "ltr",
               "data-menu-styles": `${import.meta.env.VITE_DEFAULT_THEME}`,
               class: "light",
-              "data-nav-layout": "vertical",
+              "data-nav-layout": "horizontal",
               "data-header-styles": "light",
               "data-vertical-style": "overlay",
               loader: "disable",
@@ -51,8 +51,10 @@ function App() {
           <div className="page">
             <Header />
             <Sidebar />
-            <div className="main-content" onClick={Bodyclickk}>
-              <Outlet />
+            <div className="content main-index">
+              <div className="main-content" onClick={Bodyclickk}>
+                <Outlet />
+              </div>
             </div>
             <Footer />
           </div>

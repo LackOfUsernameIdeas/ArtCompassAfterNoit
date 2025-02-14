@@ -134,10 +134,6 @@ const ChooseRecommendations: FC = () => {
               </div>
             </div>
           </div>
-          {/* Карти с информация за потребителя */}
-          <div className="grid grid-cols-12 gap-x-6 my-[1.5rem]">
-            <WidgetCards data={data} />
-          </div>
         </div>
       </CSSTransition>
 

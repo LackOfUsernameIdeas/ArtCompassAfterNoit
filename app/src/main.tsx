@@ -36,7 +36,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Routes>
           {/* <Route path="/" element={<Navigate to="/signin" />} /> */}
           <Route path="/" element={<LandingLayout />}>
-            <Route path={`/`} element={<Landing />} />
+            <Route path="/" element={<Landing />} />
           </Route>
           <Route
             path="/app"

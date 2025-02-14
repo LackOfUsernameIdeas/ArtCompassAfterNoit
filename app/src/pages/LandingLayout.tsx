@@ -6,16 +6,11 @@ import Landingswitcher from "../components/common/switcher/landingswitcher";
 import Footer from "@/components/common/footer/footer";
 
 function Landinglayout() {
-  const [MyclassName, setMyClass] = useState("");
-
   useEffect(() => {
     import("preline");
   }, []);
 
   const Bodyclickk = () => {
-    if (localStorage.getItem("artverticalstyles") == "icontext") {
-      setMyClass("");
-    }
     if (window.innerWidth > 992) {
       let html = document.documentElement;
       if (html.getAttribute("icon-overlay") === "open") {

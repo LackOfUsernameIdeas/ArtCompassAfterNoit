@@ -244,7 +244,7 @@ export const Defaultmenu = (actionfunction: any) => {
   actionfunction({
     ...theme,
     dataVerticalStyle: "overlay",
-    dataNavLayout: "vertical",
+    dataNavLayout: "horizontal",
     toggled: "",
     dataNavStyle: ""
   });
@@ -261,7 +261,7 @@ export const Closedmenu = (actionfunction: any) => {
   const theme = store.getState();
   actionfunction({
     ...theme,
-    dataNavLayout: "vertical",
+    dataNavLayout: "horizontal",
     dataVerticalStyle: "closed",
     toggled: "close-menu-close",
     dataNavStyle: ""
@@ -286,7 +286,7 @@ export const iconTextfn = (actionfunction: any) => {
   const theme = store.getState();
   actionfunction({
     ...theme,
-    dataNavLayout: "vertical",
+    dataNavLayout: "horizontal",
     dataVerticalStyle: "icontext",
     toggled: "icon-text-close",
     dataNavStyle: ""
@@ -308,7 +308,7 @@ export const iconOverayFn = (actionfunction: any) => {
   const theme = store.getState();
   actionfunction({
     ...theme,
-    dataNavLayout: "vertical",
+    dataNavLayout: "horizontal",
     dataVerticalStyle: "overlay",
     toggled: "icon-overlay-close",
     dataNavStyle: ""
@@ -358,7 +358,7 @@ export const DetachedFn = (actionfunction: any) => {
   const theme = store.getState();
   actionfunction({
     ...theme,
-    dataNavLayout: "vertical",
+    dataNavLayout: "horizontal",
     dataVerticalStyle: "detached",
     toggled: "detached-close",
     dataNavStyle: ""
@@ -381,7 +381,7 @@ export const DoubletFn = (actionfunction: any) => {
   const theme = store.getState();
   actionfunction({
     ...theme,
-    dataNavLayout: "vertical",
+    dataNavLayout: "horizontal",
     dataVerticalStyle: "doublemenu",
     toggled: "double-menu-open",
     dataNavStyle: ""
@@ -760,8 +760,8 @@ export const Reset = (actionfunction: any) => {
     lang: "en",
     dir: "ltr",
     class: "light",
-    dataMenuStyles: "dark",
-    dataNavLayout: "vertical",
+    dataMenuStyles: "light",
+    dataNavLayout: "horizontal",
     dataHeaderStyles: "light",
     dataVerticalStyle: "overlay",
     StylebodyBg: "107 64 64",
@@ -774,8 +774,10 @@ export const Reset = (actionfunction: any) => {
     dataMenuPosition: "fixed",
     dataHeaderPosition: "fixed",
     iconOverlay: "",
-    colorPrimaryRgb: "",
-    colorPrimary: "",
+    colorPrimaryRgb: "154 17 10",
+    colorPrimary: "154 17 10",
+    colorSecondaryRgb: "193 46 23",
+    colorSecondary: "193 46 23",
     bodyBg: "",
     Light: "",
     darkBg: "",
@@ -812,8 +814,10 @@ export const Reset1 = (actionfunction: any) => {
     dataNavStyle: "menu-click",
     dataMenuPosition: "fixed",
     iconOverlay: "",
-    colorPrimaryRgb: "",
-    colorPrimary: "",
+    colorPrimaryRgb: "154 17 10",
+    colorPrimary: "154 17 10",
+    colorSecondaryRgb: "193 46 23",
+    colorSecondary: "193 46 23",
     bgImg: "",
     iconText: "",
     body: {

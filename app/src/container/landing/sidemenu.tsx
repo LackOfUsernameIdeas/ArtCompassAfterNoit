@@ -68,31 +68,31 @@ const Navbar2 = () => {
       <ul className="main-menu">
         <li className="slide">
           <a className="side-menu__item active" href="#home">
-            <span className="side-menu__label">Home</span>{" "}
+            <span className="side-menu__label">Начало</span>{" "}
           </a>
         </li>
         <li className="slide">
           {" "}
-          <a href="#candidate" className="side-menu__item">
-            <span className="side-menu__label">Candidates</span>{" "}
+          <a href="#description" className="side-menu__item">
+            <span className="side-menu__label">Описание</span>{" "}
           </a>{" "}
         </li>
         <li className="slide">
           {" "}
-          <a href="#wantedJob" className="side-menu__item">
-            <span className="side-menu__label">Wanted Job</span>{" "}
+          <a href="#aianalysis" className="side-menu__item">
+            <span className="side-menu__label">AI Анализ</span>{" "}
           </a>{" "}
         </li>
         <li className="slide">
           {" "}
-          <a href="#employers" className="side-menu__item">
-            <span className="side-menu__label">For Employers</span>{" "}
+          <a href="#accordion" className="side-menu__item">
+            <span className="side-menu__label">Разяснения</span>{" "}
           </a>
         </li>
         <li className="slide">
           {" "}
-          <a href="#careerAdvice" className="side-menu__item">
-            <span className="side-menu__label">Career Advice</span>{" "}
+          <a href="#additionalStats" className="side-menu__item">
+            <span className="side-menu__label">Други статистики</span>{" "}
           </a>
         </li>
       </ul>
