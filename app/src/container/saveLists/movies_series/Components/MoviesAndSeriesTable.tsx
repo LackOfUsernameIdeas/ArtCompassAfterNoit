@@ -240,53 +240,27 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
               </button>
             </div>
           </div>
-          <div className="box-body">
-            <div className="overflow-x-auto">
-              <table className="table min-w-full whitespace-nowrap table-hover border table-bordered no-hover-text">
-                <thead>
-                  <tr className="border border-inherit">
-                    <th>#</th>
-                    <th>Заглавие</th>
-                    <th>Заглавие - Английски</th>
-                    <th>Тип</th>
-                    {type === "recommendations" && <th>Брой Препоръки</th>}
-                    <th>Просперитет</th>
-                    <th>Боксофис</th>
-                    <th>Общо Победи</th>
-                    <th>Общо Номинации</th>
-                    <th>IMDb Рейтинг</th>
-                    <th>Metascore</th>
-                  </tr>
-                </thead>
-                {/* Данните за филмите/сериалите в таблицата*/}
-                <tbody className="no-hover-text">
-                  {paginatedData.map((item, index) => (
-                    <tr
-                      key={index}
-                      className="border border-inherit border-solid hover:bg-primary/70 dark:border-defaultborder/10 dark:hover:bg-primary/50 cursor-pointer hover:text-white"
-                      onClick={() => handleRowClick(item)}
-                    >
-                      <td>
-                        {(currentTablePage - 1) * itemsPerTablePage + index + 1}
-                      </td>
-                      <td>{item.title_bg}</td>
-                      <td>{item.title_en}</td>
-                      <td>{getTranslatedType(item.type)}</td>
-                      {type == "recommendations" &&
-                        "recommendations" in item && (
-                          <td>{item.recommendations}</td>
-                        )}
-                      <td>{item.prosperityScore}</td>
-                      <td>{item.boxOffice}</td>
-                      <td>{item.total_wins}</td>
-                      <td>{item.total_nominations}</td>
-                      <td>{item.imdbRating}</td>
-                      <td>{item.metascore}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
+            {paginatedData.map((item, index) => (
+              <div
+                key={index}
+                className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-4 cursor-pointer hover:bg-primary/70 dark:hover:bg-primary/50 hover:text-white transition"
+                onClick={() => handleRowClick(item)}
+              >
+                <h3 className="text-lg font-bold mb-1">{item.title_bg}</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{item.title_en}</p>
+                <p className="text-sm font-semibold mt-2">{getTranslatedType(item.type)}</p>
+                {type === "recommendations" && "recommendations" in item && (
+                  <p className="text-sm">Препоръки: {item.recommendations}</p>
+                )}
+                <p className="text-sm">Просперитет: {item.prosperityScore}</p>
+                <p className="text-sm">Боксофис: {item.boxOffice}</p>
+                <p className="text-sm">Победи: {item.total_wins}</p>
+                <p className="text-sm">Номинации: {item.total_nominations}</p>
+                <p className="text-sm">IMDb: {item.imdbRating}</p>
+                <p className="text-sm">Metascore: {item.metascore}</p>
+              </div>
+            ))}
           </div>
           {/* Пагинация */}
           <div className="box-footer">
