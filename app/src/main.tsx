@@ -26,7 +26,7 @@ import TopRecommendations from "./container/platformStats/TopRecommendations/Top
 import MoviesAndSeriesByRatings from "./container/platformStats/MoviesAndSeriesByRatings/MoviesAndSeriesByRatings.tsx";
 import TopCountries from "./container/platformStats/TopCountries/TopCountries.tsx";
 import AIAnalysator from "./container/aiAnalysator/AIAnalysator.tsx";
-import Landing from "./container/landing/landing.tsx";
+import Landing from "./container/landing/a.tsx";
 import LandingLayout from "./pages/LandingLayout.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

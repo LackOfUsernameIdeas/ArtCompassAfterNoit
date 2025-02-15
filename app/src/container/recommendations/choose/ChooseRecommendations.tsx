@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { CSSTransition } from "react-transition-group";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
 import Loader from "../../../components/common/loader/Loader";
-import WidgetCards from "./components/WidgetCardsComponents";
 import { DataType, UserData } from "./choose-types";
 import { fetchData } from "./helper_functions";
 import { Card } from "@/components/ui/card";
