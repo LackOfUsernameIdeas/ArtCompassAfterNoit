@@ -431,7 +431,7 @@ const Jobslanding: FC<JobslandingProps> = ({ ThemeChanger }: any) => {
                 </AccordionItem>
 
                 <AccordionItem value="concept">
-                  <AccordionTrigger>
+                  <AccordionTrigger className="opsilion">
                     🔍 Как работи алгоритъмът?
                   </AccordionTrigger>
                   <AccordionContent>
@@ -492,7 +492,7 @@ const Jobslanding: FC<JobslandingProps> = ({ ThemeChanger }: any) => {
                 </AccordionItem>
 
                 <AccordionItem value="calculation">
-                  <AccordionTrigger>
+                  <AccordionTrigger className="opsilion">
                     🎯 Как се изчислява крайният резултат?
                   </AccordionTrigger>
                   <AccordionContent>
