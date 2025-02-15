@@ -10,12 +10,15 @@ export interface PlotModalProps {
 // Основни данни за филм
 export interface MovieData {
   title_en: string; // Заглавие на филма на английски
+  poster: string; // URL на постера
   boxOffice: number | string; // Приходи от бокс офис
   imdbRating: number; // Рейтинг в IMDb
   metascore: number; // Metascore рейтинг
   rottenTomatoes: number; // Рейтинг в Rotten Tomatoes
   type?: "movie" | "series"; // Тип на филма (филм или сериал)
   title_bg: string; // Заглавие на филма на български
+  genre_bg: string; // Жанр на български
+  runtime: string; // Времетраене
 }
 
 // Данни за препоръки на филми/сериали
