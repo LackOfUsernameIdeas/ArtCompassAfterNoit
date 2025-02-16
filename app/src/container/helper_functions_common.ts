@@ -842,6 +842,8 @@ const formatRecommendations = (
  * @param {any} moviesSeriesUserPreferences - Предпочитания на потребителя за филми/сериали.
  * @param {Array} recommendations - Масив от препоръки, които трябва да бъдат проверени.
  * @param {React.Dispatch<React.SetStateAction<RecommendationsAnalysis | null>>} setRecommendationsAnalysis - Функция за задаване на анализ на препоръките.
+ * @param {string} date - Датата на генерирането на препоръките.
+ * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
  * @param {boolean} [shouldFormat=false] - Параметър за указване дали да се ре-форматират предпочитанията и препоръките.
  * @returns {Promise<{relevantCount: number, totalCount: number}>} Обект с броя на релевантните препоръки и общия брой.
  */
@@ -851,7 +853,9 @@ export const analyzeRecommendations = async (
   setRecommendationsAnalysis: React.Dispatch<
     React.SetStateAction<RecommendationsAnalysis>
   >,
-  shouldFormat: boolean = true
+  shouldFormat: boolean = true,
+  date?: string,
+  token?: string | null
 ) => {
   let totalCount = recommendations.length;
 
@@ -904,9 +908,64 @@ export const analyzeRecommendations = async (
     };
     setRecommendationsAnalysis(result);
 
+    // // Записване на анализа в базата данни
+    // await saveAnalysisToDatabase({
+    //   relevantCount,
+    //   totalCount,
+    //   precisionValue,
+    //   precisionPercentage,
+    //   relevantRecommendations: data,
+    //   date: date ? date : null,
+    //   token: token ? token : null
+    // });
+
     return result;
   } catch (error) {
     console.error("Error fetching relevance data:", error);
     return { relevantCount: 0, totalCount };
+  }
+};
+
+/**
+ * Функция за запис на анализа в базата данни
+ * @async
+ * @function saveAnalysisToDatabase
+ * @param {Object} analysisData - Данни за анализа.
+ * @param {number} analysisData.relevantCount - Брой на релевантните препоръки.
+ * @param {number} analysisData.totalCount - Общо количество на препоръките.
+ * @param {number} analysisData.precisionValue - Стойност на precision.
+ * @param {number} analysisData.precisionPercentage - Процент на precision.
+ * @param {number} analysisData.relevantRecommendations - Масив с препоръки след анализ.
+ * @param {string | null} analysisData.date - Датата на генерирането на препоръките.
+ * @param {string | null} analysisData.token - Токенът на потребителя, използван за аутентификация.
+ * @returns {Promise<void>}
+ */
+const saveAnalysisToDatabase = async (analysisData: {
+  relevantCount: number;
+  totalCount: number;
+  precisionValue: number;
+  precisionPercentage: number;
+  relevantRecommendations: Analysis[];
+  date: string | null;
+  token: string | null;
+}): Promise<void> => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/save-analysis`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(analysisData)
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error saving analysis: ${response.statusText}`);
+    }
+    console.log("Analysis saved successfully.");
+  } catch (error) {
+    console.error("Error saving analysis data to database:", error);
   }
 };

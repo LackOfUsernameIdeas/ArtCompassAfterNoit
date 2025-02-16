@@ -3686,6 +3686,26 @@ const saveF1Score = (userId, statsType, data, callback) => {
   });
 };
 
+const saveAnalysis = (userId, data, callback) => {
+  const query = `
+    INSERT INTO analysis (
+      user_id, total_count, relevant_count, 
+      precision_value, precision_percentage, date
+    ) VALUES (?, ?, ?, ?, ?, ?, ?);
+  `;
+
+  const values = [
+    userId,
+    data.totalCount,
+    data.relevantCount,
+    data.precisionValue,
+    data.precisionPercentage,
+    data.date
+  ];
+
+  db.query(query, values, callback);
+};
+
 module.exports = {
   checkEmailExists,
   createUser,

@@ -1281,7 +1281,6 @@ app.post("/check-relevance-for-last-saved-recommendations", (req, res) => {
   const { token } = req.body;
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
-
     const userId = decoded.id;
 
     db.getLastUserPreferences(userId, (err, result) => {
@@ -1331,6 +1330,16 @@ app.post("/check-relevance-for-last-saved-recommendations", (req, res) => {
         }
       );
     });
+  });
+});
+
+// Запазване на данни за Precision на текущото генериране
+app.post("/save-analysis", (req, res) => {
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+
+    db.saveAnalysis(userId, req.body, (err, decoded) => {});
   });
 });
 

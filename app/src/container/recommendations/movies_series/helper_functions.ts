@@ -367,7 +367,10 @@ export const generateMoviesSeriesRecommendations = async (
     await analyzeRecommendations(
       moviesSeriesUserPreferences,
       recommendationsToAnalyze,
-      setRecommendationsAnalysis
+      setRecommendationsAnalysis,
+      true,
+      date,
+      token
     ); // Извикване на функцията за анализ на предпочитанията и определяне на Precision
   } catch (error) {
     console.error("Error generating recommendations:", error);
