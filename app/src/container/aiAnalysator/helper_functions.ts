@@ -120,11 +120,13 @@ export const getRecallTotal = async (
 /**
  * @function getF1Score
  * @description Изпраща заявка към сървъра за изчисляване на F1-score на база Precision и Recall.
+ * @param {string} token - Токен за удостоверяване.
  * @param {number} precision_exact - Точната стойност на Precision.
  * @param {number} recall_exact - Точната стойност на Recall.
  * @returns {Promise<F1ScoreData>} Промис, който връща JSON с резултатите за F1-score.
  */
 export const getF1Score = async (
+  token: string,
   precision_exact: number,
   recall_exact: number
 ): Promise<F1ScoreData> => {
@@ -136,7 +138,7 @@ export const getF1Score = async (
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ precision_exact, recall_exact })
+        body: JSON.stringify({ token, precision_exact, recall_exact })
       }
     );
 

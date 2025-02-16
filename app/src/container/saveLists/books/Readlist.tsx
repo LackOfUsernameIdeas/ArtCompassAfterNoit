@@ -108,8 +108,8 @@ const Readlist: FC<ReadlistProps> = () => {
     return (
       <ErrorCard
         message="🔍 За да можете да разгледате Вашия списък за четене, моля, първо генерирайте книги и ги добавете в списъка! 📋"
-        redirectUrl={`${import.meta.env.BASE_URL}app/recommendations/`}
-        redirectText="Генерирайте книги"
+        redirectUrl={`${import.meta.env.BASE_URL}app/recommendations/books`}
+        redirectText="Генерирайте нови препоръки"
       />
     );
   }

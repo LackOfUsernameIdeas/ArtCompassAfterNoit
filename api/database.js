@@ -3526,6 +3526,166 @@ const getLastGeneratedMoviesSeriesRecommendations = (
   });
 };
 
+const savePrecision = (userId, statsType, data, callback) => {
+  // Запитване за последно запазените стойности на стойността на Precision за даден потребител и тип статистика
+  const checkQuery = `
+    SELECT precision_exact, precision_fixed, precision_percentage
+    FROM movies_series_recommendations_metrics
+    WHERE user_id = ? AND stats_type = ?
+    ORDER BY date DESC LIMIT 1
+  `;
+
+  const checkValues = [userId, statsType];
+
+  db.query(checkQuery, checkValues, (err, results) => {
+    if (err) {
+      console.error(
+        "Грешка при проверка на последните запазени статистики:",
+        err
+      );
+      return callback(err);
+    }
+
+    // Ако няма запис за този потребител или стойността на Precision е променена, записваме новите стойности
+    if (
+      results.length === 0 ||
+      parseFloat(results[0].precision_exact) !== data.precision_exact
+    ) {
+      // Записване на нови стойности за Precision
+      const saveQuery = `
+        INSERT INTO movies_series_recommendations_metrics (
+          user_id, stats_type,
+          precision_exact, precision_fixed, precision_percentage,
+          relevant_recommendations_count, total_recommendations_count
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+      `;
+
+      const values = [
+        userId,
+        statsType,
+        data.precision_exact || null,
+        data.precision_fixed || null,
+        data.precision_percentage || null,
+        data.relevant_recommendations_count || null,
+        data.total_recommendations_count || null
+      ];
+
+      console.log(values);
+
+      db.query(saveQuery, values, callback);
+    } else {
+      callback(null, { message: "No new Precision data to save." });
+    }
+  });
+};
+
+const saveRecall = (userId, statsType, data, callback) => {
+  // Запитване за последно запазените стойности на стойността на Recall за даден потребител и тип статистика
+  const checkQuery = `
+    SELECT recall_exact, recall_fixed, recall_percentage, 
+    relevant_platform_recommendations_count, 
+    total_platform_recommendations_count
+    FROM movies_series_recommendations_metrics
+    WHERE user_id = ? AND stats_type = ?
+    ORDER BY date DESC LIMIT 1
+  `;
+
+  const checkValues = [userId, statsType];
+
+  db.query(checkQuery, checkValues, (err, results) => {
+    if (err) {
+      console.error("Error checking last saved stats:", err);
+      return callback(err);
+    }
+
+    if (
+      // Ако стойността на recall_exact се е променила или relevant_platform_recommendations_count или total_platform_recommendations_count са се увеличили от последния път, нови данни се запазват
+      results.length === 0 ||
+      parseFloat(results[0].recall_exact) !== data.recall_exact ||
+      results[0].relevant_platform_recommendations_count !==
+        data.relevant_platform_recommendations_count ||
+      results[0].total_platform_recommendations_count !==
+        data.total_platform_recommendations_count
+    ) {
+      // Записване на нови стойности за Recall
+      const saveQuery = `
+        INSERT INTO movies_series_recommendations_metrics (
+          user_id, stats_type,
+          recall_exact, recall_fixed, recall_percentage,
+          relevant_user_recommendations_count, relevant_platform_recommendations_count,
+          total_user_recommendations_count, total_platform_recommendations_count
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+
+      const values = [
+        userId,
+        statsType,
+        data.recall_exact || null,
+        data.recall_fixed || null,
+        data.recall_percentage || null,
+        data.relevant_user_recommendations_count || null,
+        data.relevant_platform_recommendations_count || null,
+        data.total_user_recommendations_count || null,
+        data.total_platform_recommendations_count || null
+      ];
+
+      db.query(saveQuery, values, callback);
+    } else {
+      callback(null, { message: "No new recall data to save." });
+    }
+  });
+};
+
+const saveF1Score = (userId, statsType, data, callback) => {
+  // Запитване за последно запазените стойности на стойността на F1 Score за даден потребител и тип статистика
+  const checkQuery = `
+    SELECT f1_score_exact, f1_score_fixed, f1_score_percentage
+    FROM movies_series_recommendations_metrics
+    WHERE user_id = ? AND stats_type = ?
+    ORDER BY date DESC LIMIT 1
+  `;
+
+  const checkValues = [userId, statsType];
+
+  db.query(checkQuery, checkValues, (err, results) => {
+    if (err) {
+      console.error(
+        "Грешка при проверка на последните запазени статистики:",
+        err
+      );
+      return callback(err);
+    }
+
+    // Ако няма запис за този потребител или стойността на F1 Score е променена, записваме новите стойности
+    if (
+      results.length === 0 ||
+      parseFloat(results[0].f1_score_exact) !== data.f1_score_exact
+    ) {
+      // Записване на нови стойности за F1 Score
+      const saveQuery = `
+        INSERT INTO movies_series_recommendations_metrics (
+          user_id, stats_type,
+          f1_score_exact, f1_score_fixed, f1_score_percentage
+        ) VALUES (?, ?, ?, ?, ?)
+      `;
+
+      const values = [
+        userId,
+        statsType,
+        data.f1_score_exact || null,
+        data.f1_score_fixed || null,
+        data.f1_score_percentage || null
+      ];
+
+      console.log(values);
+
+      db.query(saveQuery, values, callback);
+    } else {
+      callback(null, { message: "No new F1 Score data to save." });
+    }
+  });
+};
+
 module.exports = {
   checkEmailExists,
   createUser,
@@ -3575,5 +3735,8 @@ module.exports = {
   getAllUsersDistinctRecommendations,
   getAllPlatformDistinctRecommendations,
   getLastUserPreferences,
-  getLastGeneratedMoviesSeriesRecommendations
+  getLastGeneratedMoviesSeriesRecommendations,
+  savePrecision,
+  saveRecall,
+  saveF1Score
 };

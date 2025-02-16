@@ -1377,18 +1377,48 @@ app.post("/stats/ai/precision-total", (req, res) => {
         };
       });
 
-      // Изчисляване на Precision
-      const precision =
-        relevant_recommendations_count / total_recommendations_count;
+      // Изчисляване на Precision (закръгляне и на двете стойности до 16 знака след десетичната запетая и сравняване)
+      const precision_exact =
+        total_recommendations_count > 0
+          ? Math.round(
+              (relevant_recommendations_count / total_recommendations_count) *
+                Math.pow(10, 16)
+            ) / Math.pow(10, 16)
+          : 0;
 
-      // Връщане на резултатите като JSON
-      res.json({
-        precision_exact: precision,
-        precision_fixed: parseFloat(precision.toFixed(2)),
-        precision_percentage: parseFloat((precision * 100).toFixed(2)),
-        relevant_recommendations_count,
-        total_recommendations_count
-      });
+      const precision_fixed = parseFloat(precision_exact.toFixed(2)); // Закръглена до 2 знака
+      const precision_percentage = parseFloat(
+        (precision_exact * 100).toFixed(2)
+      ); // Процентно представяне
+
+      // Съхраняване на резултатите в базата данни
+      db.savePrecision(
+        userId,
+        "precision",
+        {
+          precision_exact,
+          precision_fixed,
+          precision_percentage,
+          relevant_recommendations_count,
+          total_recommendations_count
+        },
+        (err) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({ error: "Error saving AI precision stats" });
+          }
+
+          // Връщане на резултатите като JSON
+          res.json({
+            precision_exact,
+            precision_fixed,
+            precision_percentage,
+            relevant_recommendations_count,
+            total_recommendations_count
+          });
+        }
+      );
     });
   });
 });
@@ -1454,20 +1484,50 @@ app.post("/stats/ai/recall-total", (req, res) => {
         });
 
         // Изчисляване на Recall - Броят на релевантните препоръки на даден потребител, които са му препоръчвани на него (True Positives - TP) / Броят на релевантните препоръки на даден потребител в цялата платформа, независимо дали те са му препоръчвани на него или не (True Positives + False Negatives -> TP + FN)
-        const recall =
-          relevant_user_recommendations_count /
-          relevant_platform_recommendations_count;
+        // (закръгляне и на двете стойности до 16 знака след десетичната запетая и сравняване)
+        const recall_exact =
+          relevant_platform_recommendations_count > 0
+            ? Math.round(
+                (relevant_user_recommendations_count /
+                  relevant_platform_recommendations_count) *
+                  Math.pow(10, 16)
+              ) / Math.pow(10, 16)
+            : 0;
 
-        // Връщане на резултатите като JSON
-        res.json({
-          recall_exact: recall, // Оригиналната стойност
-          recall_fixed: parseFloat(recall.toFixed(2)), // Закръглена до 2 знака
-          recall_percentage: parseFloat((recall * 100).toFixed(2)), // Процентно представяне
-          relevant_user_recommendations_count,
-          relevant_platform_recommendations_count,
-          total_user_recommendations_count,
-          total_platform_recommendations_count
-        });
+        const recall_fixed = parseFloat(recall_exact.toFixed(2)); // Закръглена до 2 знака
+        const recall_percentage = parseFloat((recall_exact * 100).toFixed(2)); // Процентно представяне
+
+        // Съхраняване на резултатите в базата данни
+        db.saveRecall(
+          userId,
+          "recall",
+          {
+            recall_exact,
+            recall_fixed,
+            recall_percentage,
+            relevant_user_recommendations_count,
+            relevant_platform_recommendations_count,
+            total_user_recommendations_count,
+            total_platform_recommendations_count
+          },
+          (err) => {
+            if (err) {
+              return res
+                .status(500)
+                .json({ error: "Error saving AI recall stats" });
+            }
+            // Връщане на резултатите като JSON
+            res.json({
+              recall_exact,
+              recall_fixed,
+              recall_percentage,
+              relevant_user_recommendations_count,
+              relevant_platform_recommendations_count,
+              total_user_recommendations_count,
+              total_platform_recommendations_count
+            });
+          }
+        );
       });
     });
   });
@@ -1475,26 +1535,57 @@ app.post("/stats/ai/recall-total", (req, res) => {
 
 // Изчисляване на F1-score на база Precision и Recall
 app.post("/stats/ai/f1-score", (req, res) => {
-  const { precision_exact, recall_exact } = req.body;
+  const { token, precision_exact, recall_exact } = req.body;
 
-  // Проверка дали липсват входни стойности
-  if (precision_exact === undefined || recall_exact === undefined) {
-    return res.status(400).json({
-      error: "Missing precision_exact or recall_exact"
-    });
-  }
+  // Проверка на валидността на токена
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
 
-  // Изчисляване на F1-score
-  const f1_score =
-    precision_exact + recall_exact === 0
-      ? 0
-      : (2 * precision_exact * recall_exact) / (precision_exact + recall_exact);
+    // Проверка дали липсват входни стойности
+    if (precision_exact === undefined || recall_exact === undefined) {
+      return res.status(400).json({
+        error: "Missing precision_exact or recall_exact"
+      });
+    }
 
-  // Връщане на резултата като JSON
-  res.json({
-    f1_score_exact: f1_score,
-    f1_score_fixed: parseFloat(f1_score.toFixed(2)),
-    f1_score_percentage: parseFloat((f1_score * 100).toFixed(2))
+    // Изчисляване на F1 Score по общата формула
+    const f1_score =
+      precision_exact + recall_exact === 0
+        ? 0
+        : (2 * precision_exact * recall_exact) /
+          (precision_exact + recall_exact);
+
+    // Закръгляне на F1 Score до 16 знака след десетичната запетая
+    const f1_score_exact =
+      Math.round(f1_score * Math.pow(10, 16)) / Math.pow(10, 16);
+
+    const f1_score_fixed = parseFloat(f1_score_exact.toFixed(2)); // Закръглена до 2 знака
+    const f1_score_percentage = parseFloat((f1_score_exact * 100).toFixed(2)); // Процентно представяне
+
+    // Съхраняване на резултатите в базата данни
+    db.saveF1Score(
+      userId,
+      "f1score",
+      {
+        f1_score_exact,
+        f1_score_fixed,
+        f1_score_percentage
+      },
+      (err) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: "Error saving AI f1 score stats" });
+        }
+        // Връщане на резултата като JSON
+        res.json({
+          f1_score_exact,
+          f1_score_fixed,
+          f1_score_percentage
+        });
+      }
+    );
   });
 });
 

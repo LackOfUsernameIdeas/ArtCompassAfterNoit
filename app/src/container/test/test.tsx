@@ -335,9 +335,7 @@ const Test: FC<Test> = () => {
         .replace(/^'|'$/g, "") // Remove single quotes at the beginning and end
         .trim();
       console.log("unescapedData: ", unescapedData);
-      const escapedData = decodeURIComponent(unescapedData);
-      console.log("escapedData: ", escapedData);
-      const recommendations = JSON.parse(escapedData);
+      const recommendations = JSON.parse(unescapedData);
       console.log("recommendations: ", recommendations);
 
       for (const movieTitle in recommendations) {

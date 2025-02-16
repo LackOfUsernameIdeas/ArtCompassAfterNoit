@@ -315,9 +315,7 @@ export const generateBooksRecommendations = async (
       .replace(/^'|'$/g, "")
       .trim();
     console.log("unescapedData: ", unescapedData);
-    const decodedData = decodeURIComponent(unescapedData);
-    console.log("decodedData: ", decodedData);
-    const recommendations = JSON.parse(decodedData);
+    const recommendations = JSON.parse(unescapedData);
     console.log("recommendations: ", recommendations);
 
     for (const book of recommendations) {

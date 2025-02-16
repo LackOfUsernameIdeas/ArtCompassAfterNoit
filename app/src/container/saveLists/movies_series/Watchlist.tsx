@@ -113,8 +113,10 @@ const Watchlist: FC = () => {
     return (
       <ErrorCard
         message="🔍 За да можете да разгледате Вашия списък за гледане, моля, първо генерирайте филми или сериали и ги добавете в списъка! 📋"
-        redirectUrl={`${import.meta.env.BASE_URL}app/recommendations/`}
-        redirectText="Генерирайте филми/сериали"
+        redirectUrl={`${
+          import.meta.env.BASE_URL
+        }app/recommendations/movies_series`}
+        redirectText="Генерирайте нови препоръки"
       />
     );
   }

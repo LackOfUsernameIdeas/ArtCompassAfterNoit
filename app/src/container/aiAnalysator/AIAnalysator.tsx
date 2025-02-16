@@ -71,6 +71,7 @@ const AIAnalysator: FC = () => {
           ]);
 
           const f1ScoreObject = await getF1Score(
+            token,
             precisionObject.precision_exact,
             recallObject.recall_exact
           );
@@ -316,7 +317,9 @@ const AIAnalysator: FC = () => {
         <ErrorCard
           message="🔍 За да можете да разгледате колко добре се е справил AI-ът с
                 генерирането на препоръки за вас, моля, първо генерирайте препоръки за филми и сериали."
-          redirectUrl={`${import.meta.env.BASE_URL}app/recommendations/`}
+          redirectUrl={`${
+            import.meta.env.BASE_URL
+          }app/recommendations/movies_series`}
           redirectText="Генерирайте нови препоръки"
         />
       )}
