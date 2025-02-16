@@ -908,16 +908,18 @@ export const analyzeRecommendations = async (
     };
     setRecommendationsAnalysis(result);
 
-    // // Записване на анализа в базата данни
-    // await saveAnalysisToDatabase({
-    //   relevantCount,
-    //   totalCount,
-    //   precisionValue,
-    //   precisionPercentage,
-    //   relevantRecommendations: data,
-    //   date: date ? date : null,
-    //   token: token ? token : null
-    // });
+    // Записване на анализа в базата данни
+    date &&
+      token &&
+      (await saveAnalysisToDatabase({
+        relevantCount,
+        totalCount,
+        precisionValue,
+        precisionPercentage,
+        relevantRecommendations: data,
+        date,
+        token
+      }));
 
     return result;
   } catch (error) {
@@ -936,8 +938,8 @@ export const analyzeRecommendations = async (
  * @param {number} analysisData.precisionValue - Стойност на precision.
  * @param {number} analysisData.precisionPercentage - Процент на precision.
  * @param {number} analysisData.relevantRecommendations - Масив с препоръки след анализ.
- * @param {string | null} analysisData.date - Датата на генерирането на препоръките.
- * @param {string | null} analysisData.token - Токенът на потребителя, използван за аутентификация.
+ * @param {string} analysisData.date - Датата на генерирането на препоръките.
+ * @param {string} analysisData.token - Токенът на потребителя, използван за аутентификация.
  * @returns {Promise<void>}
  */
 const saveAnalysisToDatabase = async (analysisData: {
@@ -946,8 +948,8 @@ const saveAnalysisToDatabase = async (analysisData: {
   precisionValue: number;
   precisionPercentage: number;
   relevantRecommendations: Analysis[];
-  date: string | null;
-  token: string | null;
+  date: string;
+  token: string;
 }): Promise<void> => {
   try {
     const response = await fetch(
