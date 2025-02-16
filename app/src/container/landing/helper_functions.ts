@@ -21,29 +21,13 @@ export const handleDropdownClick = (
 /**
  * Извлича данни от API за платформата и ги запазва в състоянието.
  *
- * @param {string} token - Токен за удостоверяване.
  * @param {React.Dispatch<React.SetStateAction<any>>} setUserData - Функция за задаване на потребителски данни.
- * @param {React.Dispatch<React.SetStateAction<any>>} setData - Функция за задаване на общи данни.
  * @throws {Error} - Хвърля грешка, ако заявката е неуспешна.
  */
 export const fetchData = async (
-  token: string,
-  setData: React.Dispatch<React.SetStateAction<any>>,
-  setUserData: React.Dispatch<React.SetStateAction<any>>
+  setData: React.Dispatch<React.SetStateAction<any>>
 ): Promise<void> => {
   try {
-    // Fetch user data independently
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/user-data`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      }
-    })
-      .then((res) => res.json())
-      .then((userData) => setUserData(userData))
-      .catch((error) => console.error("Error fetching user data:", error));
-
     // Fetch statistics data independently
     const endpoints = [
       { key: "usersCount", endpoint: "/stats/platform/users-count" },
@@ -61,8 +45,7 @@ export const fetchData = async (
       fetch(`${import.meta.env.VITE_API_BASE_URL}${endpoint}`, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          "Content-Type": "application/json"
         }
       })
         .then((res) => res.json())

@@ -179,6 +179,12 @@ const Signincover: FC<SignincoverProps> = () => {
             {/* Празна колона за подравняване */}
             <div className="xxl:col-span-3 xl:col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-2"></div>
             <div className="xxl:col-span-6 xl:col-span-6 lg:col-span-6 md:col-span-6 sm:col-span-8 col-span-12">
+              {/* Линк за връщане към началната страница */}
+              <p className="text-[0.75rem] text-[#8c9097] dark:text-white/50 ml-[1.5rem]">
+                <Link to={`${import.meta.env.BASE_URL}`}>
+                  {"<< Обратно към главната страница"}
+                </Link>
+              </p>
               <div className="p-[3rem]">
                 {/* Заглавие за вход */}
                 <p className="h5 font-semibold mb-2">Имате профил?</p>

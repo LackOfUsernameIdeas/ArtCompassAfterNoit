@@ -1,4 +1,4 @@
-import { FC, Fragment, useEffect } from "react";
+import { FC, Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 // Import Swiper styles
 import "swiper/css";
@@ -17,10 +17,22 @@ import {
   AccordionItem,
   AccordionTrigger
 } from "@/components/ui/accordion";
+import WidgetCardsComponents from "./components/WidgetCardsComponents";
+import { DataType } from "./landing-types";
+import { fetchData } from "./helper_functions";
 
 interface JobslandingProps {}
 
 const Jobslanding: FC<JobslandingProps> = ({ ThemeChanger }: any) => {
+  // Състояния за задържане на извлечени данни
+  const [data, setData] = useState<DataType>({
+    usersCount: [], // Броя на потребителите
+    topGenres: [], // Топ жанрове
+    oscarsByMovie: [], // Оскари по филми
+    totalAwards: [], // Общо награди
+    averageBoxOfficeAndScores: [] // Среден боксофис и оценки
+  });
+
   useEffect(() => {
     const rootDiv = document.getElementById("root");
     if (rootDiv) {
@@ -31,6 +43,12 @@ const Jobslanding: FC<JobslandingProps> = ({ ThemeChanger }: any) => {
       }
     };
   }, []);
+
+  // useEffect за извличане на данни, когато компонентът се зареди за първи път
+  useEffect(() => {
+    fetchData(setData); // Извличаме данни с помощта на функцията fetchData
+    console.log("fetching"); // Лог за следене на извличането на данни
+  }, []); // Празен масив - изпълнява се само веднъж при зареждане на компонента
 
   const Topup = () => {
     if (window.scrollY > 30 && document.querySelector(".landing-body")) {
@@ -163,7 +181,7 @@ const Jobslanding: FC<JobslandingProps> = ({ ThemeChanger }: any) => {
                     </p>
                     <Link
                       className="mx-1 text-primary font-semibold leading-[1]"
-                      to="#"
+                      to={`${import.meta.env.BASE_URL}signup`}
                     >
                       Създайте свой профил сега
                       <i className="ri-arrow-right-s-line align-middle rtl:rotate-180"></i>
@@ -630,121 +648,12 @@ const Jobslanding: FC<JobslandingProps> = ({ ThemeChanger }: any) => {
           className="section section-bg text-defaultsize text-defaulttextcolor mb-[15rem]"
           id="additionalStats"
         >
-          <div className="container text-center">
+          <div className="container">
             <div className=" gap-6 mb-[3rem] justify-center text-center">
               <h3 className="font-semibold mb-2">Други главни статистики:</h3>
             </div>
             <div className="grid grid-cols-12 gap-x-6 justify-center">
-              <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
-                <div className="box custom-box">
-                  <div className="box-body h-[5.5rem]">
-                    <div className="flex items-center justify-between">
-                      {/* Лява секция, показваща общия брой потребители */}
-                      <div className="flex-grow">
-                        <p className={`mb-0 text-[#8c9097] dark:text-white/50`}>
-                          Общ брой потребители
-                        </p>
-                        <div className="flex items-center">
-                          <span className={`text-[1.25rem] opsilion`}>
-                            {20} {/* Показва общия брой потребители или 0 */}
-                          </span>
-                        </div>
-                      </div>
-                      {/* Дясна секция, показваща икона */}
-                      <div>
-                        <span className="avatar avatar-md !rounded-full bg-primary/10 !text-secondary text-[1.125rem]">
-                          <i
-                            className={`bi bi-person text-primary text-[1rem]`}
-                          ></i>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
-                <div className="box custom-box">
-                  <div className="box-body h-[5.5rem]">
-                    <div className="flex items-center justify-between">
-                      {/* Лява секция, показваща общия брой потребители */}
-                      <div className="flex-grow">
-                        <p className={`mb-0 text-[#8c9097] dark:text-white/50`}>
-                          Най-препоръчван жанр
-                        </p>
-                        <div className="flex items-center">
-                          <span className={`text-[1.25rem] opsilion`}>
-                            {`${"Драма"}`}{" "}
-                            {/* Показва общия брой потребители или 0 */}
-                          </span>
-                        </div>
-                      </div>
-                      {/* Дясна секция, показваща икона */}
-                      <div>
-                        <span className="avatar avatar-md !rounded-full bg-primary/10 !text-secondary text-[1.125rem]">
-                          <i
-                            className={`bi bi-film text-primary text-[1rem]`}
-                          ></i>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>{" "}
-              <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
-                <div className="box custom-box">
-                  <div className="box-body h-[5.5rem]">
-                    <div className="flex items-center justify-between">
-                      {/* Лява секция, показваща общия брой потребители */}
-                      <div className="flex-grow">
-                        <p className={`mb-0 text-[#8c9097] dark:text-white/50`}>
-                          Среден Боксофис
-                        </p>
-                        <div className="flex items-center">
-                          <span className={`text-[1.25rem] opsilion`}>
-                            {`${"$77,572,149"}`}{" "}
-                            {/* Показва общия брой потребители или 0 */}
-                          </span>
-                        </div>
-                      </div>
-                      {/* Дясна секция, показваща икона */}
-                      <div>
-                        <span className="avatar avatar-md !rounded-full bg-primary/10 !text-secondary text-[1.125rem]">
-                          <i
-                            className={`bi bi-clipboard-data text-primary text-[1rem]`}
-                          ></i>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>{" "}
-              <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
-                <div className="box custom-box">
-                  <div className="box-body h-[5.5rem]">
-                    <div className="flex items-center justify-between">
-                      {/* Лява секция, показваща общия брой потребители */}
-                      <div className="flex-grow">
-                        <p className={`mb-0 text-[#8c9097] dark:text-white/50`}>
-                          Общ брой спечелени награди
-                        </p>
-                        <div className="flex items-center">
-                          <span className={`text-[1.25rem] opsilion`}>
-                            {7978} {/* Показва общия брой потребители или 0 */}
-                          </span>
-                        </div>
-                      </div>
-                      {/* Дясна секция, показваща икона */}
-                      <div>
-                        <span className="avatar avatar-md !rounded-full bg-primary/10 !text-secondary text-[1.125rem]">
-                          <i
-                            className={`bi bi-trophy text-primary text-[1rem]`}
-                          ></i>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <WidgetCardsComponents data={data} />
             </div>
           </div>
         </section>

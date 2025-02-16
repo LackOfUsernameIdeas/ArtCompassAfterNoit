@@ -195,9 +195,6 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                         onClick={toggleAveragesMenu}
                         aria-expanded={isAveragesMenuOpen ? "true" : "false"}
                       >
-                        <span className={`${is1532 && "hidden"}`}>
-                          Сортирай по
-                        </span>
                         <i
                           className={`ri-arrow-${
                             isAveragesMenuOpen ? "up" : "down"
@@ -314,9 +311,6 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                       onClick={toggleAwardsMenu}
                       aria-expanded={isAwardsMenuOpen ? "true" : "false"}
                     >
-                      <span className={`${is1532 && "hidden"}`}>
-                        Сортирай по
-                      </span>
                       <i
                         className={`ri-arrow-${
                           isAwardsMenuOpen ? "up" : "down"
@@ -326,7 +320,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                     <ul
                       className={`hs-dropdown-menu ti-dropdown-menu ${
                         isAwardsMenuOpen ? "block" : "hidden"
-                      }`}
+                      } z-50`}
                       role="menu"
                     >
                       {awardOptions.map(({ label, value }) => (

@@ -23,14 +23,6 @@ const ChooseRecommendations: FC = () => {
     averageBoxOfficeAndScores: [] // Среден боксофис и оценки
   });
 
-  // Състояние за потребителски данни
-  const [userData, setUserData] = useState<UserData>({
-    id: 0, // Уникално ID на потребителя
-    first_name: "", // Собствено име на потребителя
-    last_name: "", // Фамилно име на потребителя
-    email: "" // Имейл на потребителя
-  });
-
   // Въпросът, който ще се покаже на потребителя, и опциите за избор
   const question = {
     question:
@@ -50,12 +42,8 @@ const ChooseRecommendations: FC = () => {
 
   // useEffect за извличане на данни, когато компонентът се зареди за първи път
   useEffect(() => {
-    const token =
-      localStorage.getItem("authToken") || sessionStorage.getItem("authToken"); // Проверяваме за токен в localStorage или sessionStorage
-    if (token) {
-      fetchData(token, setData, setUserData); // Извличаме данни с помощта на функцията fetchData
-      console.log("fetching"); // Лог за следене на извличането на данни
-    }
+    fetchData(setData); // Извличаме данни с помощта на функцията fetchData
+    console.log("fetching"); // Лог за следене на извличането на данни
   }, []); // Празен масив - изпълнява се само веднъж при зареждане на компонента
 
   return (
