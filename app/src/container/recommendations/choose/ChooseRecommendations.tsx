@@ -3,24 +3,23 @@ import { useNavigate } from "react-router-dom";
 import { CSSTransition } from "react-transition-group";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
 import Loader from "../../../components/common/loader/Loader";
-import { DataType, UserData } from "./choose-types";
+import { DataType } from "./choose-types";
 import { fetchData } from "./helper_functions";
+import { getAverageMetrics } from "../../helper_functions_common";
 import { Card } from "@/components/ui/card";
 import MainMetricsWidget from "@/container/aiAnalysator/Components/MainMetricsWidget";
-import Widget from "@/components/common/widget/widget";
 
 const ChooseRecommendations: FC = () => {
   // Състояние за проследяване дали зареждаме съдържание
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate(); // Хук за пренасочване към различни страници
 
-  // Състояния за задържане на извлечени данни
+  // Състояние за задържане на извлечени данни
   const [data, setData] = useState<DataType>({
-    usersCount: [], // Броя на потребителите
-    topGenres: [], // Топ жанрове
-    oscarsByMovie: [], // Оскари по филми
-    totalAwards: [], // Общо награди
-    averageBoxOfficeAndScores: [] // Среден боксофис и оценки
+    averagePrecisionPercentage: "", // Средна прецизност в проценти
+    averagePrecisionLastRoundPercentage: "", // Средна прецизност за последния кръг в проценти
+    averageRecallPercentage: "", // Среден Recall в проценти
+    averageF1ScorePercentage: "" // Среден F1 резултат в проценти
   });
 
   // Въпросът, който ще се покаже на потребителя, и опциите за избор
@@ -42,8 +41,24 @@ const ChooseRecommendations: FC = () => {
 
   // useEffect за извличане на данни, когато компонентът се зареди за първи път
   useEffect(() => {
-    fetchData(setData); // Извличаме данни с помощта на функцията fetchData
-    console.log("fetching"); // Лог за следене на извличането на данни
+    const fetchDataAndUpdate = async () => {
+      try {
+        const averageMetrics = await getAverageMetrics(); // Изчакваме да получим данните
+        setData((prevData) => ({
+          ...prevData,
+          averagePrecisionPercentage:
+            averageMetrics.average_precision_percentage,
+          averagePrecisionLastRoundPercentage:
+            averageMetrics.average_precision_last_round_percentage,
+          averageRecallPercentage: averageMetrics.average_recall_percentage,
+          averageF1ScorePercentage: averageMetrics.average_f1_score_percentage
+        }));
+      } catch (error) {
+        console.error("Error fetching average metrics:", error);
+      }
+    };
+
+    fetchDataAndUpdate();
   }, []); // Празен масив - изпълнява се само веднъж при зареждане на компонента
 
   return (
@@ -60,35 +75,37 @@ const ChooseRecommendations: FC = () => {
           <div className="bg-bodybg p-6 rounded-xl shadow-lg space-y-6 my-[1.5rem]">
             {/* Карти с информация за потребителя */}
             <div className="grid grid-cols-12 gap-x-6">
-              <Widget
+              <MainMetricsWidget
                 className="col-span-3 bg-bodybg"
-                icon={<i className="ti ti-database text-3xl" />}
-                title="Общ брой препоръки в платформата"
-                value={100}
+                icon={<i className="ti ti-percentage-60 text-2xl"></i>}
+                title="Среден Precision (за последно генериране)"
+                value={`${data.averagePrecisionLastRoundPercentage}%`}
+                description="Средна стойност спрямо всички потребители (отнася се за последно
+              генерираните от тях препоръки)"
               />
               <MainMetricsWidget
                 className="col-span-3 bg-bodybg"
                 icon={<i className="ti ti-percentage-60 text-2xl"></i>}
-                title="Precision"
-                value={`${100}%`}
-                description={`${100} от общо ${100} препоръки, които сте направили, са релевантни`}
-                progress={100}
+                title="Среден Precision (като цяло)"
+                value={`${data.averagePrecisionPercentage}%`}
+                description="Средна стойност спрямо всички потребители (отнася се за всички препоръки в
+              платформата)"
               />
               <MainMetricsWidget
                 className="col-span-3 bg-bodybg"
                 icon={<i className="ti ti-percentage-40 text-2xl"></i>}
-                title="Recall"
-                value={`${100}%`}
-                description={`${100} от общо ${100} релевантни препоръки в системата са отправени към вас`}
-                progress={100}
+                title="Среден Recall"
+                value={`${data.averageRecallPercentage}%`}
+                description="Средна стойност спрямо всички потребители (отнася се за всички препоръки в
+              платформата)"
               />
               <MainMetricsWidget
                 className="col-span-3 bg-bodybg"
                 icon={<i className="ti ti-percentage-70 text-2xl"></i>}
-                title="F1 Score"
-                value={`${100}%`}
-                description="Баланс между Precision и Recall"
-                progress={100}
+                title="Среден F1 Score"
+                value={`${data.averageF1ScorePercentage}%`}
+                description="Средна стойност спрямо всички потребители (отнася се за всички препоръки в
+              платформата)"
               />
             </div>
           </div>

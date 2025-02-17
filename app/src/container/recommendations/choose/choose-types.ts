@@ -5,12 +5,10 @@ export type UsersCountData = {
 
 // Обобщени данни за платформата (топ препоръки, жанрове и др.)
 export type DataType = {
-  usersCount: UsersCountData[]; // Брой потребители
-  topGenres: any[]; // Топ жанрове
-  oscarsByMovie: any[]; // Оскари по филми
-  totalAwards: any[]; // Общо награди
-  averageBoxOfficeAndScores: any[]; // Средни стойности за бокс офис и рейтинги
-  [key: `sorted${string}ByProsperity`]: any[]; // Подредени данни по просперитет
+  averagePrecisionPercentage: string; // Средна прецизност в проценти
+  averagePrecisionLastRoundPercentage: string; // Средна прецизност за последния кръг в проценти
+  averageRecallPercentage: string; // Среден Recall в проценти
+  averageF1ScorePercentage: string; // Среден F1 резултат в проценти
 };
 
 export interface UserData {

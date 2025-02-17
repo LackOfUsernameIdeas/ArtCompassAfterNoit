@@ -32,7 +32,6 @@ export const fetchData = async (
     const endpoints = [
       { key: "usersCount", endpoint: "/stats/platform/users-count" },
       { key: "topGenres", endpoint: "/stats/platform/top-genres" },
-      { key: "oscarsByMovie", endpoint: "/stats/platform/oscars-by-movie" },
       { key: "totalAwards", endpoint: "/stats/platform/total-awards" },
       {
         key: "averageBoxOfficeAndScores",

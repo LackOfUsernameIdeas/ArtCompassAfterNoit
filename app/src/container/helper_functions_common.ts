@@ -980,3 +980,34 @@ const saveAnalysisToDatabase = async (analysisData: {
     console.error("Error saving analysis data to database:", error);
   }
 };
+
+/**
+ * Извършва заявка за изчисляване на средните метрики за precision, recall и F1 score.
+ *
+ * @async
+ * @function getAverageMetrics
+ * @returns {Promise<void>} - Няма върнат резултат, но изпраща заявка към сървъра.
+ * @throws {Error} - Хвърля грешка, ако не може да се получат метриките.
+ */
+export const getAverageMetrics = async (): Promise<any> => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/stats/ai/average-metrics`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to retrieve average metrics.");
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error retrieving average metrics:", error);
+  }
+};

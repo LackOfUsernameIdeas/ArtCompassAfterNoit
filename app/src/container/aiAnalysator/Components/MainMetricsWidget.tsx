@@ -6,7 +6,7 @@ const MainMetricsWidget: FC<{
   title: string;
   value: string;
   description: string;
-  progress: number;
+  progress?: number;
   className?: string;
 }> = ({ icon, title, value, description, progress, className }) => (
   <div
@@ -18,11 +18,13 @@ const MainMetricsWidget: FC<{
     </div>
     <div className="flex-grow">
       <p className="text-2xl font-bold">{value}</p>
-      <p className="text-xs text-muted-foreground mt-1">{description}</p>
     </div>
-    <div className="mt-auto">
-      <Progress value={progress} />
-    </div>
+    <p className="text-xs text-muted-foreground mt-auto">{description}</p>{" "}
+    {progress && (
+      <div className="mt-2">
+        <Progress value={progress} />
+      </div>
+    )}
   </div>
 );
 
