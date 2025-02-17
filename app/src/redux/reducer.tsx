@@ -40,7 +40,29 @@ export default function reducer(state = initialState, action: any) {
         colorPrimaryRgb: payload.class === "dark" ? "175 11 72" : "154 17 10",
         colorPrimary: payload.class === "dark" ? "175 11 72" : "154 17 10",
         colorSecondaryRgb: payload.class === "dark" ? "256 52 12" : "193 46 23",
-        colorSecondary: payload.class === "dark" ? "256 52 12" : "193 46 23"
+        colorSecondary: payload.class === "dark" ? "256 52 12" : "193 46 23",
+        lang: "bg",
+        dir: "ltr",
+        dataNavLayout: "horizontal",
+        dataVerticalStyle: "overlay",
+        toggled: "",
+        dataNavStyle: "menu-click",
+        horStyle: "",
+        dataPageStyle: "modern",
+        dataWidth: "fullwidth",
+        dataMenuPosition: "fixed",
+        dataHeaderPosition: "fixed",
+        loader: "disable",
+        iconOverlay: "",
+        bodyBg: "",
+        Light: "",
+        darkBg: "",
+        inputBorder: "",
+        bgImg: "",
+        iconText: "",
+        body: {
+          class: ""
+        }
       };
       return state;
 

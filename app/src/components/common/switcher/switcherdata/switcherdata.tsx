@@ -6,13 +6,35 @@ export function Dark(actionfunction: any) {
   const theme = store.getState();
   actionfunction({
     ...theme,
+    lang: "bg",
+    dir: "ltr",
     class: "dark",
     dataHeaderStyles: "dark",
     dataMenuStyles: "dark",
+    dataNavLayout: "horizontal",
+    dataVerticalStyle: "overlay",
+    toggled: "",
+    dataNavStyle: "menu-click",
+    horStyle: "",
+    dataPageStyle: "modern",
+    dataWidth: "fullwidth",
+    dataMenuPosition: "fixed",
+    dataHeaderPosition: "fixed",
+    loader: "disable",
+    iconOverlay: "",
+    colorPrimaryRgb: "154 17 10",
+    colorPrimary: "154 17 10",
+    colorSecondaryRgb: "193 46 23",
+    colorSecondary: "193 46 23",
     bodyBg: "",
+    Light: "",
     darkBg: "",
     inputBorder: "",
-    Light: ""
+    bgImg: "",
+    iconText: "",
+    body: {
+      class: ""
+    }
   });
   localStorage.setItem("artdarktheme", "dark");
   localStorage.removeItem("artlighttheme");
@@ -23,13 +45,35 @@ export function Light(actionfunction: any) {
   const theme = store.getState();
   actionfunction({
     ...theme,
+    lang: "bg",
+    dir: "ltr",
     class: "light",
     dataHeaderStyles: "light",
-    darkBg: "",
+    dataMenuStyles: "light",
+    dataNavLayout: "horizontal",
+    dataVerticalStyle: "overlay",
+    toggled: "",
+    dataNavStyle: "menu-click",
+    horStyle: "",
+    dataPageStyle: "modern",
+    dataWidth: "fullwidth",
+    dataMenuPosition: "fixed",
+    dataHeaderPosition: "fixed",
+    loader: "disable",
+    iconOverlay: "",
+    colorPrimaryRgb: "154 17 10",
+    colorPrimary: "154 17 10",
+    colorSecondaryRgb: "193 46 23",
+    colorSecondary: "193 46 23",
     bodyBg: "",
-    inputBorder: "",
     Light: "",
-    dataMenuStyles: theme.dataNavLayout == "horizontal" ? "light" : "dark"
+    darkBg: "",
+    inputBorder: "",
+    bgImg: "",
+    iconText: "",
+    body: {
+      class: ""
+    }
   });
   localStorage.setItem("artlighttheme", "light");
   localStorage.removeItem("artdarktheme");
@@ -63,11 +107,35 @@ export const HorizontalClick = (actionfunction: any) => {
   const theme = store.getState();
   actionfunction({
     ...theme,
+    lang: "bg",
+    dir: "ltr",
+    class: "light",
+    dataHeaderStyles: "light",
+    dataMenuStyles: "light",
     dataNavLayout: "horizontal",
-    dataVerticalStyle: "",
-    dataNavStyle: localStorage.artnavstyles
-      ? localStorage.artnavstyles
-      : "menu-click"
+    dataVerticalStyle: "overlay",
+    toggled: "",
+    dataNavStyle: "menu-click",
+    horStyle: "",
+    dataPageStyle: "modern",
+    dataWidth: "fullwidth",
+    dataMenuPosition: "fixed",
+    dataHeaderPosition: "fixed",
+    loader: "disable",
+    iconOverlay: "",
+    colorPrimaryRgb: "154 17 10",
+    colorPrimary: "154 17 10",
+    colorSecondaryRgb: "193 46 23",
+    colorSecondary: "193 46 23",
+    bodyBg: "",
+    Light: "",
+    darkBg: "",
+    inputBorder: "",
+    bgImg: "",
+    iconText: "",
+    body: {
+      class: ""
+    }
   });
   localStorage.setItem("artlayout", "horizontal");
   localStorage.removeItem("artverticalstyles");
@@ -81,13 +149,37 @@ export const Vertical = (actionfunction: any) => {
   const theme = store.getState();
   actionfunction({
     ...theme,
-    dataNavLayout: "vertical",
-    dataMenuStyles: "dark",
+    lang: "bg",
+    dir: "ltr",
+    class: "light",
+    dataHeaderStyles: "light",
+    dataMenuStyles: "light",
+    dataNavLayout: "horizontal",
     dataVerticalStyle: "overlay",
     toggled: "",
-    dataNavStyle: ""
+    dataNavStyle: "menu-click",
+    horStyle: "",
+    dataPageStyle: "modern",
+    dataWidth: "fullwidth",
+    dataMenuPosition: "fixed",
+    dataHeaderPosition: "fixed",
+    loader: "disable",
+    iconOverlay: "",
+    colorPrimaryRgb: "154 17 10",
+    colorPrimary: "154 17 10",
+    colorSecondaryRgb: "193 46 23",
+    colorSecondary: "193 46 23",
+    bodyBg: "",
+    Light: "",
+    darkBg: "",
+    inputBorder: "",
+    bgImg: "",
+    iconText: "",
+    body: {
+      class: ""
+    }
   });
-  localStorage.setItem("artlayout", "vertical");
+  localStorage.setItem("artlayout", "horizontal");
   localStorage.removeItem("artnavstyles");
 };
 
@@ -243,10 +335,35 @@ export const Defaultmenu = (actionfunction: any) => {
   const theme = store.getState();
   actionfunction({
     ...theme,
-    dataVerticalStyle: "overlay",
+    lang: "bg",
+    dir: "ltr",
+    class: "light",
+    dataHeaderStyles: "light",
+    dataMenuStyles: "light",
     dataNavLayout: "horizontal",
+    dataVerticalStyle: "overlay",
     toggled: "",
-    dataNavStyle: ""
+    dataNavStyle: "menu-click",
+    horStyle: "",
+    dataPageStyle: "modern",
+    dataWidth: "fullwidth",
+    dataMenuPosition: "fixed",
+    dataHeaderPosition: "fixed",
+    loader: "disable",
+    iconOverlay: "",
+    colorPrimaryRgb: "154 17 10",
+    colorPrimary: "154 17 10",
+    colorSecondaryRgb: "193 46 23",
+    colorSecondary: "193 46 23",
+    bodyBg: "",
+    Light: "",
+    darkBg: "",
+    inputBorder: "",
+    bgImg: "",
+    iconText: "",
+    body: {
+      class: ""
+    }
   });
   localStorage.removeItem("artnavstyles");
   localStorage.setItem("artverticalstyles", "default");
@@ -757,22 +874,21 @@ export const Reset = (actionfunction: any) => {
   Vertical(actionfunction);
   actionfunction({
     ...theme,
-    lang: "en",
+    lang: "bg",
     dir: "ltr",
-    class: "light",
-    dataMenuStyles: "light",
+    class: `${import.meta.env.VITE_DEFAULT_THEME}`,
+    dataMenuStyles: `${import.meta.env.VITE_DEFAULT_THEME}`,
     dataNavLayout: "horizontal",
-    dataHeaderStyles: "light",
+    dataHeaderStyles: `${import.meta.env.VITE_DEFAULT_THEME}`,
     dataVerticalStyle: "overlay",
-    StylebodyBg: "107 64 64",
-    StyleDarkBg: "93 50 50",
     toggled: "",
-    dataNavStyle: "",
+    dataNavStyle: "menu-click",
     horStyle: "",
-    dataPageStyle: "regular",
+    dataPageStyle: "modern",
     dataWidth: "fullwidth",
     dataMenuPosition: "fixed",
     dataHeaderPosition: "fixed",
+    loader: "disable",
     iconOverlay: "",
     colorPrimaryRgb: "154 17 10",
     colorPrimary: "154 17 10",
@@ -801,23 +917,30 @@ export const Reset1 = (actionfunction: any) => {
   Vertical(actionfunction);
   actionfunction({
     ...theme,
-    lang: "en",
+    lang: "bg",
     dir: "ltr",
-    class: "light",
-    dataMenuStyles: "dark",
+    class: `${import.meta.env.VITE_DEFAULT_THEME}`,
+    dataMenuStyles: `${import.meta.env.VITE_DEFAULT_THEME}`,
     dataNavLayout: "horizontal",
-    dataHeaderStyles: "",
+    dataHeaderStyles: `${import.meta.env.VITE_DEFAULT_THEME}`,
     dataVerticalStyle: "overlay",
-    StylebodyBg: "107 64 64",
-    StyleDarkBg: "93 50 50",
     toggled: "",
     dataNavStyle: "menu-click",
+    horStyle: "",
+    dataPageStyle: "modern",
+    dataWidth: "fullwidth",
     dataMenuPosition: "fixed",
+    dataHeaderPosition: "fixed",
+    loader: "disable",
     iconOverlay: "",
     colorPrimaryRgb: "154 17 10",
     colorPrimary: "154 17 10",
     colorSecondaryRgb: "193 46 23",
     colorSecondary: "193 46 23",
+    bodyBg: "",
+    Light: "",
+    darkBg: "",
+    inputBorder: "",
     bgImg: "",
     iconText: "",
     body: {
