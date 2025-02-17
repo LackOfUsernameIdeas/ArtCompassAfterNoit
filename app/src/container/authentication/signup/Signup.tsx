@@ -190,192 +190,206 @@ const Signupcover: FC<SignupcoverProps> = () => {
       <div className="grid grid-cols-12 authentication mx-0 text-defaulttextcolor text-defaultsize">
         <div className="xxl:col-span-7 xl:col-span-7 lg:col-span-12 col-span-12">
           <div className="flex justify-center items-center h-full">
-            <div className="p-[3rem]">
-              <p className="h5 font-semibold mb-2">Създаване на профил</p>
-              <p className="mb-4 text-[#8c9097] dark:text-white/50 opacity-[0.7] font-normal">
-                Присъединете се към (име на проекта) и създайте профил!
+            {/* Празна колона за подравняване */}
+            <div className="xxl:col-span-3 xl:col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-2"></div>
+            <div className="xxl:col-span-6 xl:col-span-6 lg:col-span-6 md:col-span-6 sm:col-span-8 col-span-12">
+              {/* Линк за връщане към началната страница */}
+              <p className="text-[0.75rem] text-[#8c9097] dark:text-white/50 ml-[1.5rem]">
+                <Link to={`${import.meta.env.BASE_URL}`}>
+                  {"<< Обратно към главната страница"}
+                </Link>
               </p>
-              <div className="form-wrapper max-w-lg mx-auto">
-                {alerts.map((alert, idx) => (
-                  <div
-                    className={`alert alert-${alert.color} flex items-center`}
-                    role="alert"
-                    key={idx}
-                    style={{
-                      maxWidth: "100%",
-                      height: "auto",
-                      marginBottom: "1rem",
-                      wordBreak: "break-word",
-                      padding: "0.75rem 1rem",
-                      minHeight: "auto",
-                      alignItems: "center"
-                    }}
-                  >
+              <div className="p-[3rem]">
+                <p className="h5 font-semibold mb-2">Създаване на профил</p>
+                <p className="mb-4 text-[#8c9097] dark:text-white/50 opacity-[0.7] font-normal">
+                  Присъединете се към (име на проекта) и създайте профил!
+                </p>
+                <div className="form-wrapper max-w-lg mx-auto">
+                  {alerts.map((alert, idx) => (
                     <div
+                      className={`alert alert-${alert.color} flex items-center`}
+                      role="alert"
+                      key={idx}
                       style={{
-                        marginRight: "0.5rem",
-                        fontSize: "1.25rem",
-                        lineHeight: "1"
+                        maxWidth: "100%",
+                        height: "auto",
+                        marginBottom: "1rem",
+                        wordBreak: "break-word",
+                        padding: "0.75rem 1rem",
+                        minHeight: "auto",
+                        alignItems: "center"
                       }}
                     >
-                      {alert.icon}
+                      <div
+                        style={{
+                          marginRight: "0.5rem",
+                          fontSize: "1.25rem",
+                          lineHeight: "1"
+                        }}
+                      >
+                        {alert.icon}
+                      </div>
+                      <div style={{ lineHeight: "1.2" }}>
+                        <b>{alert.message}</b>
+                      </div>
                     </div>
-                    <div style={{ lineHeight: "1.2" }}>
-                      <b>{alert.message}</b>
-                    </div>
-                  </div>
-                ))}
+                  ))}
 
-                <form onSubmit={handleSubmit}>
-                  <div className="grid grid-cols-12 gap-y-4">
-                    <div className="xl:col-span-12 col-span-12 mt-0">
-                      <label
-                        htmlFor="signup-firstname"
-                        className="form-label text-default"
-                      >
-                        Име
-                      </label>
-                      <input
-                        type="text"
-                        className={`form-control form-control-lg w-full !rounded-md ${
-                          emptyFields.firstName ? "empty-field" : ""
-                        }`}
-                        id="firstName"
-                        placeholder="Въведете своето първо име"
-                        value={formData.firstName}
-                        onChange={(e) => handleInputChange(e)}
-                      />
-                    </div>
-                    <div className="xl:col-span-12 col-span-12">
-                      <label
-                        htmlFor="signup-lastname"
-                        className="form-label text-default"
-                      >
-                        Фамилия
-                      </label>
-                      <input
-                        type="text"
-                        className={`form-control form-control-lg w-full !rounded-md ${
-                          emptyFields.lastName ? "empty-field" : ""
-                        }`}
-                        id="lastName"
-                        placeholder="Въведете своята фамилия"
-                        value={formData.lastName}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                    <div className="xl:col-span-12 col-span-12">
-                      <label
-                        htmlFor="signup-email"
-                        className="form-label text-default"
-                      >
-                        Имейл
-                      </label>
-                      <input
-                        type="text"
-                        className={`form-control form-control-lg w-full !rounded-md ${
-                          emptyFields.email ? "empty-field" : ""
-                        }`}
-                        id="email"
-                        placeholder="Въведете своя имейл"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                    <div className="xl:col-span-12 col-span-12">
-                      <label
-                        htmlFor="signup-password"
-                        className="form-label text-default"
-                      >
-                        Парола
-                      </label>
-                      <div className="input-group">
+                  <form onSubmit={handleSubmit}>
+                    <div className="grid grid-cols-12 gap-y-4">
+                      <div className="xl:col-span-12 col-span-12 mt-0">
+                        <label
+                          htmlFor="signup-firstname"
+                          className="form-label text-default"
+                        >
+                          Име
+                        </label>
                         <input
-                          type={passwordshow1 ? "text" : "password"}
-                          className={`form-control form-control-lg w-full !rounded-e-none ${
-                            emptyFields.password ? "empty-field" : ""
+                          type="text"
+                          className={`form-control form-control-lg w-full !rounded-md ${
+                            emptyFields.firstName ? "empty-field" : ""
                           }`}
-                          id="password"
-                          placeholder="Въведете парола от поне 8 знака"
-                          value={formData.password}
+                          id="firstName"
+                          placeholder="Въведете своето първо име"
+                          value={formData.firstName}
+                          onChange={(e) => handleInputChange(e)}
+                        />
+                      </div>
+                      <div className="xl:col-span-12 col-span-12">
+                        <label
+                          htmlFor="signup-lastname"
+                          className="form-label text-default"
+                        >
+                          Фамилия
+                        </label>
+                        <input
+                          type="text"
+                          className={`form-control form-control-lg w-full !rounded-md ${
+                            emptyFields.lastName ? "empty-field" : ""
+                          }`}
+                          id="lastName"
+                          placeholder="Въведете своята фамилия"
+                          value={formData.lastName}
                           onChange={handleInputChange}
                         />
-                        <button
-                          aria-label="button"
-                          className="ti-btn ti-btn-light !rounded-s-none !mb-0"
-                          onClick={() => setpasswordshow1(!passwordshow1)}
-                          type="button"
-                          id="button-addon2"
+                      </div>
+                      <div className="xl:col-span-12 col-span-12">
+                        <label
+                          htmlFor="signup-email"
+                          className="form-label text-default"
                         >
-                          <i
-                            className={`${
-                              passwordshow1 ? "ri-eye-line" : "ri-eye-off-line"
-                            } align-middle`}
-                          ></i>
+                          Имейл
+                        </label>
+                        <input
+                          type="text"
+                          className={`form-control form-control-lg w-full !rounded-md ${
+                            emptyFields.email ? "empty-field" : ""
+                          }`}
+                          id="email"
+                          placeholder="Въведете своя имейл"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="xl:col-span-12 col-span-12">
+                        <label
+                          htmlFor="signup-password"
+                          className="form-label text-default"
+                        >
+                          Парола
+                        </label>
+                        <div className="input-group">
+                          <input
+                            type={passwordshow1 ? "text" : "password"}
+                            className={`form-control form-control-lg w-full !rounded-e-none ${
+                              emptyFields.password ? "empty-field" : ""
+                            }`}
+                            id="password"
+                            placeholder="Въведете парола от поне 8 знака"
+                            value={formData.password}
+                            onChange={handleInputChange}
+                          />
+                          <button
+                            aria-label="button"
+                            className="ti-btn ti-btn-light !rounded-s-none !mb-0"
+                            onClick={() => setpasswordshow1(!passwordshow1)}
+                            type="button"
+                            id="button-addon2"
+                          >
+                            <i
+                              className={`${
+                                passwordshow1
+                                  ? "ri-eye-line"
+                                  : "ri-eye-off-line"
+                              } align-middle`}
+                            ></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div className="xl:col-span-12 col-span-12 mb-4">
+                        <label
+                          htmlFor="signup-confirmpassword"
+                          className="form-label text-default"
+                        >
+                          Потвърждаване на паролата
+                        </label>
+                        <div className="input-group">
+                          <input
+                            type={passwordshow2 ? "text" : "password"}
+                            className={`form-control form-control-lg w-full !rounded-e-none ${
+                              emptyFields.confirmPassword ? "empty-field" : ""
+                            }`}
+                            id="confirmPassword"
+                            placeholder="Повторете своята парола"
+                            value={formData.confirmPassword}
+                            onChange={handleInputChange}
+                          />
+                          <button
+                            aria-label="button"
+                            className="ti-btn ti-btn-light !rounded-s-none !mb-0"
+                            onClick={() => setpasswordshow2(!passwordshow2)}
+                            type="button"
+                            id="button-addon21"
+                          >
+                            <i
+                              className={`${
+                                passwordshow2
+                                  ? "ri-eye-line"
+                                  : "ri-eye-off-line"
+                              } align-middle`}
+                            ></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div className="xl:col-span-12 col-span-12 grid mt-2">
+                        <button
+                          type="submit"
+                          className="ti-btn ti-btn-lg bg-primary text-white !font-medium dark:border-defaultborder/10"
+                        >
+                          Създай профил
                         </button>
                       </div>
                     </div>
-                    <div className="xl:col-span-12 col-span-12 mb-4">
-                      <label
-                        htmlFor="signup-confirmpassword"
-                        className="form-label text-default"
-                      >
-                        Потвърждаване на паролата
-                      </label>
-                      <div className="input-group">
-                        <input
-                          type={passwordshow2 ? "text" : "password"}
-                          className={`form-control form-control-lg w-full !rounded-e-none ${
-                            emptyFields.confirmPassword ? "empty-field" : ""
-                          }`}
-                          id="confirmPassword"
-                          placeholder="Повторете своята парола"
-                          value={formData.confirmPassword}
-                          onChange={handleInputChange}
-                        />
-                        <button
-                          aria-label="button"
-                          className="ti-btn ti-btn-light !rounded-s-none !mb-0"
-                          onClick={() => setpasswordshow2(!passwordshow2)}
-                          type="button"
-                          id="button-addon21"
-                        >
-                          <i
-                            className={`${
-                              passwordshow2 ? "ri-eye-line" : "ri-eye-off-line"
-                            } align-middle`}
-                          ></i>
-                        </button>
-                      </div>
-                    </div>
-                    <div className="xl:col-span-12 col-span-12 grid mt-2">
-                      <button
-                        type="submit"
-                        className="ti-btn ti-btn-lg bg-primary text-white !font-medium dark:border-defaultborder/10"
-                      >
-                        Създай профил
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-              <div className="text-center">
-                <p className="text-[0.75rem] text-[#8c9097] dark:text-white/50 mt-4">
-                  Вече имате профил?{" "}
-                  <Link
-                    to={`${import.meta.env.BASE_URL}signin/`}
-                    className="text-primary"
-                  >
-                    Влезнете в профила си!
-                  </Link>
-                </p>
+                  </form>
+                </div>
+                <div className="text-center">
+                  <p className="text-[0.75rem] text-[#8c9097] dark:text-white/50 mt-4">
+                    Вече имате профил?{" "}
+                    <Link
+                      to={`${import.meta.env.BASE_URL}signin/`}
+                      className="text-primary"
+                    >
+                      Влезнете в профила си!
+                    </Link>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
         {/* Страничен панел с изображение или лого */}
         <div className="xxl:col-span-5 xl:col-span-5 lg:col-span-5 col-span-12 xl:block hidden px-0">
-          <div className="authentication-cover ">
+          <div className="authentication-cover">
             <div className="aunthentication-cover-content rounded">
               <div className="swiper keyboard-control">
                 <Swiper

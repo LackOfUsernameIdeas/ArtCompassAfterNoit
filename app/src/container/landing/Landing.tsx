@@ -15,6 +15,8 @@ import { DataType } from "./landing-types";
 import { fetchData } from "./helper_functions";
 import AIStatsWidgetCardsComponent from "./components/AIStatsWidgetCardsComponents";
 import { getAverageMetrics } from "../helper_functions_common";
+import logo from "../../assets/images/brand-logos/logo-large.png";
+import logoPink from "../../assets/images/brand-logos/logo-large-pink.png";
 
 interface LandingProps {}
 
@@ -168,23 +170,34 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
         </div>
       </aside>
       <div className="main-content !p-0 landing-main dark:text-defaulttextcolor/70">
-        <div className="landing-banner !h-auto" id="home">
-          <section className="section !pb-0 text-[0.813rem]">
-            <div className="container main-banner-container">
-              <Card className="dark:border-black/10 bg-bodybg font-semibold text-xl p-4 rounded-lg shadow-lg dark:shadow-xl text-center">
-                <h2 className="text-2xl opsilion text-defaulttextcolor dark:text-white/80">
-                  ДОБРЕ ДОШЛИ!
-                </h2>
-              </Card>
-            </div>
-          </section>
-        </div>
+        <section className="section bg-light !pb-0 text-[0.813rem]" id="home">
+          <div className="container flex flex-col items-center h-full">
+            {/* Лого за светъл режим */}
+            <img
+              src={logo}
+              alt="Logo"
+              className="dark:hidden mb-[4rem]"
+              style={{ width: "50%", height: "auto" }}
+            />
+
+            {/* Лого за тъмен режим */}
+            <img
+              src={logoPink}
+              alt="Logo"
+              className="hidden dark:block mb-[4rem]"
+              style={{
+                width: "50%",
+                height: "auto"
+              }}
+            />
+          </div>
+        </section>
         <section
           className="section bg-light dark:!bg-black/10 text-defaulttextcolor"
           id="description"
         >
           <div className="container text-center">
-            <div className=" justify-center text-center mb-12">
+            <div className="justify-center text-center mb-12">
               <div className="xl:col-span-6 col-span-12">
                 <h3 className="font-semibold mb-2">Как работи АртКомпас?</h3>
                 <span className="text-[#8c9097] dark:text-white/50 text-[0.9375rem] font-normal block">
@@ -196,9 +209,9 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
               </div>
             </div>
             <div className="grid grid-cols-12 gap-6 text-start">
-              <div className="col-span-12 md:col-span-4">
-                <div className="box border dark:border-defaultborder/10">
-                  <div className="box-body rounded">
+              <div className="md:col-span-4 col-span-12">
+                <div className="box border dark:border-defaultborder/10 flex flex-col h-full">
+                  <div className="box-body rounded flex flex-col flex-grow">
                     <div className="mb-4 ms-1">
                       <div className="icon-style">
                         <span className="avatar avatar-lg avatar-rounded bg-primary svg-white">
@@ -215,7 +228,7 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                       изживеете едно уникално кино и библиопреживяване.
                     </p>
                     <Link
-                      className="mx-1 text-primary font-semibold leading-[1]"
+                      className="mx-1 text-primary font-semibold leading-[1] mt-auto"
                       to={`${import.meta.env.BASE_URL}signup`}
                     >
                       Създайте свой профил сега
@@ -225,8 +238,8 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                 </div>
               </div>
               <div className="md:col-span-4 col-span-12">
-                <div className="box border dark:border-defaultborder/10">
-                  <div className="box-body rounded">
+                <div className="box border dark:border-defaultborder/10 flex flex-col h-full">
+                  <div className="box-body rounded flex flex-col flex-grow">
                     <div className="mb-4 ms-1">
                       <div className="icon-style">
                         <span className="avatar avatar-lg avatar-rounded bg-primary svg-white">
@@ -244,8 +257,8 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                       показатели за оценка на машинното обучение!
                     </p>
                     <Link
-                      className="mx-1 text-primary font-semibold leading-[1]"
-                      to="#"
+                      className="mx-1 text-primary font-semibold leading-[1] mt-auto"
+                      to={`${import.meta.env.BASE_URL}signin`}
                     >
                       Тествайте AI
                       <i className="ri-arrow-right-s-line align-middle rtl:rotate-180"></i>
@@ -254,8 +267,8 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                 </div>
               </div>
               <div className="md:col-span-4 col-span-12">
-                <div className="box border dark:border-defaultborder/10">
-                  <div className="box-body rounded">
+                <div className="box border dark:border-defaultborder/10 flex flex-col h-full">
+                  <div className="box-body rounded flex flex-col flex-grow">
                     <div className="mb-4 ms-1">
                       <div className="icon-style">
                         <span className="avatar avatar-lg avatar-rounded bg-primary svg-white">
@@ -272,8 +285,8 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                       четене. Направете първата крачка още сега!
                     </p>
                     <Link
-                      className="mx-1 text-primary font-semibold leading-[1]"
-                      to="#"
+                      className="mx-1 text-primary font-semibold leading-[1] mt-auto"
+                      to={`${import.meta.env.BASE_URL}signin`}
                     >
                       Рзгледайте нови препоръки
                       <i className="ri-arrow-right-s-line align-middle rtl:rotate-180"></i>
@@ -287,17 +300,11 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
         <section className="section bg-light" id="aianalysis">
           <div className="container">
             <AIStatsWidgetCardsComponent data={data} />
-            <Card className="dark:border-black/10 bg-bodybg font-semibold text-xl p-4 rounded-lg shadow-lg dark:shadow-xl text-center">
+            <Card className="dark:border-black/10 bg-bodybg font-semibold text-xl p-4 rounded-lg shadow-lg dark:shadow-xl text-center mt-8">
               <h2 className="text-2xl opsilion text-defaulttextcolor dark:text-white/80">
                 За да придобиете по-ясна представа за значенията на тези
                 показатели за оценка на машинното обучение, моля, разгледайте
-                <a
-                  href="#accordion"
-                  className="side-menu__item text-gray-500 cursor-pointer hover:text-primary/80 transition-all duration-150"
-                >
-                  {" <<секцията за разяснения>> "}
-                </a>
-                !
+                секцията с разяснения на термините отдолу:
               </h2>
             </Card>
           </div>
@@ -534,7 +541,7 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
           id="additionalStats"
         >
           <div className="container">
-            <div className=" gap-6 mb-[3rem] justify-center text-center">
+            <div className="gap-6 mb-[3rem] justify-center text-center">
               <h3 className="font-semibold mb-2">Други главни статистики:</h3>
             </div>
             <div className="grid grid-cols-12 gap-x-6 justify-center">

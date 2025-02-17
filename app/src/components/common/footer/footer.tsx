@@ -46,7 +46,9 @@ const Footer: FC = () => (
             </div>
 
             <div className="footer-column">
-              <h3 className="footer-title">Бързи Връзки</h3>
+              <h3 className="footer-title !text-[1.25rem] !max-sm:text-[1.1rem]">
+                Бързи Връзки
+              </h3>
               <ul className="footer-links">
                 <li>
                   <a href="/app/recommendations">Нови Препоръки</a>
@@ -58,7 +60,9 @@ const Footer: FC = () => (
             </div>
 
             <div className="footer-column">
-              <h3 className="footer-title">Източници</h3>
+              <h3 className="footer-title !text-[1.25rem] !max-sm:text-[1.1rem]">
+                Източници
+              </h3>
               <ul className="footer-links">
                 <li>
                   <a
@@ -100,7 +104,9 @@ const Footer: FC = () => (
             </div>
 
             <div className="footer-column">
-              <h3 className="footer-title">Използвани технологии</h3>
+              <h3 className="footer-title !text-[1.25rem] !max-sm:text-[1.1rem]">
+                Използвани технологии
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 auto-rows-min footer-links">
                 <div className="flex items-center space-x-2 ml-[2rem]">
                   <i className="ti ti-brand-python text-xs"></i>

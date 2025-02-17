@@ -13,8 +13,8 @@ const AIStatsWidgetCardsComponent: React.FC<AIStatsWidgetCardProps> = ({
   return (
     <div className="grid grid-cols-12 gap-6">
       <div className="lg:col-span-3 md:col-span-6 sm:col-span-6 col-span-12">
-        <div className="box feature-style">
-          <div className="box-body">
+        <div className="box feature-style flex flex-col h-full">
+          <div className="box-body flex flex-col flex-grow">
             <Link aria-label="anchor" to="#" className="stretched-link"></Link>
             <div className="feature-style-icon bg-primary/10">
               <svg
@@ -42,8 +42,8 @@ const AIStatsWidgetCardsComponent: React.FC<AIStatsWidgetCardProps> = ({
         </div>
       </div>
       <div className="lg:col-span-3 md:col-span-6 sm:col-span-6 col-span-12">
-        <div className="box feature-style">
-          <div className="box-body">
+        <div className="box feature-style flex flex-col h-full">
+          <div className="box-body flex flex-col flex-grow">
             <Link aria-label="anchor" to="#" className="stretched-link"></Link>
             <div className="feature-style-icon bg-primary/10">
               <svg
@@ -72,8 +72,8 @@ const AIStatsWidgetCardsComponent: React.FC<AIStatsWidgetCardProps> = ({
         </div>
       </div>
       <div className="lg:col-span-3 md:col-span-6 sm:col-span-6 col-span-12">
-        <div className="box feature-style">
-          <div className="box-body">
+        <div className="box feature-style flex flex-col h-full">
+          <div className="box-body flex flex-col flex-grow">
             <Link aria-label="anchor" to="#" className="stretched-link"></Link>
             <div className="feature-style-icon bg-primary/10">
               <svg
@@ -99,8 +99,8 @@ const AIStatsWidgetCardsComponent: React.FC<AIStatsWidgetCardProps> = ({
         </div>
       </div>
       <div className="lg:col-span-3 md:col-span-6 sm:col-span-6 col-span-12">
-        <div className="box feature-style">
-          <div className="box-body">
+        <div className="box feature-style flex flex-col h-full">
+          <div className="box-body flex flex-col flex-grow">
             <Link aria-label="anchor" to="#" className="stretched-link"></Link>
             <div className="feature-style-icon bg-primary/10">
               <svg
