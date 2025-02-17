@@ -3688,18 +3688,19 @@ const saveF1Score = (userId, statsType, data, callback) => {
 
 const saveAnalysis = (userId, data, callback) => {
   const query = `
-    INSERT INTO analysis (
-      user_id, total_count, relevant_count, 
-      precision_value, precision_percentage, date
+    INSERT INTO movies_series_analysis (
+      user_id, relevant_count, total_count, 
+      precision_value, precision_percentage, relevant_recommendations, date
     ) VALUES (?, ?, ?, ?, ?, ?, ?);
   `;
 
   const values = [
     userId,
-    data.totalCount,
     data.relevantCount,
+    data.totalCount,
     data.precisionValue,
     data.precisionPercentage,
+    JSON.stringify(data.relevantRecommendations),
     data.date
   ];
 
@@ -3758,5 +3759,6 @@ module.exports = {
   getLastGeneratedMoviesSeriesRecommendations,
   savePrecision,
   saveRecall,
-  saveF1Score
+  saveF1Score,
+  saveAnalysis
 };

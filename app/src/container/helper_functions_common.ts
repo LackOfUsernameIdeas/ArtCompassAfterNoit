@@ -908,6 +908,15 @@ export const analyzeRecommendations = async (
     };
     setRecommendationsAnalysis(result);
 
+    console.log({
+      relevantCount,
+      totalCount,
+      precisionValue,
+      precisionPercentage,
+      relevantRecommendations: data,
+      date,
+      token
+    });
     // Записване на анализа в базата данни
     date &&
       token &&

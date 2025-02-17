@@ -1340,7 +1340,13 @@ app.post("/save-analysis", (req, res) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
     const userId = decoded.id;
 
-    db.saveAnalysis(userId, req.body, (err, result) => {});
+    db.saveAnalysis(userId, req.body, (err, result) => {
+      if (err) return res.status(500).json({ error: "Error saving analysis." });
+
+      res
+        .status(201)
+        .json({ message: "AI Precision Analysis saved successfully!" });
+    });
   });
 });
 
