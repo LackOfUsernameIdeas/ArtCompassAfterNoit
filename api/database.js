@@ -3707,6 +3707,61 @@ const saveAnalysis = (userId, data, callback) => {
   db.query(query, values, callback);
 };
 
+const calculateAverageMetrics = (callback) => {
+  // Query to retrieve average precision, recall, and F1 score from movies_series_recommendations_metrics
+  const queryMetrics = `
+    SELECT 
+      AVG(precision_exact) AS avg_precision, 
+      AVG(recall_exact) AS avg_recall, 
+      AVG(f1_score_exact) AS avg_f1_score
+    FROM movies_series_recommendations_metrics
+  `;
+
+  // Query to retrieve average precision from movies_series_analysis (last recorded values)
+  const queryAnalysis = `
+    SELECT 
+      AVG(precision_value) AS average_precision_last_round
+    FROM movies_series_analysis
+  `;
+
+  db.query(queryMetrics, (err, metricsResults) => {
+    if (err) {
+      console.error("Error calculating average metrics:", err);
+      return callback(err);
+    }
+
+    db.query(queryAnalysis, (err, analysisResults) => {
+      if (err) {
+        console.error(
+          "Error calculating average precision from analysis:",
+          err
+        );
+        return callback(err);
+      }
+
+      // Изчисляване на обикновените и процентните стойности (умножаване по 100)
+      const avgPrecision = metricsResults[0]?.avg_precision || 0;
+      const avgRecall = metricsResults[0]?.avg_recall || 0;
+      const avgF1Score = metricsResults[0]?.avg_f1_score || 0;
+      const avgPrecisionLastRound =
+        analysisResults[0]?.average_precision_last_round || 0;
+
+      callback(null, {
+        average_precision: avgPrecision,
+        average_precision_percentage: (avgPrecision * 100).toFixed(2),
+        average_precision_last_round: avgPrecisionLastRound,
+        average_precision_last_round_percentage: (
+          avgPrecisionLastRound * 100
+        ).toFixed(2),
+        average_recall: avgRecall,
+        average_recall_percentage: (avgRecall * 100).toFixed(2),
+        average_f1_score: avgF1Score,
+        average_f1_score_percentage: (avgF1Score * 100).toFixed(2)
+      });
+    });
+  });
+};
+
 module.exports = {
   checkEmailExists,
   createUser,
@@ -3760,5 +3815,6 @@ module.exports = {
   savePrecision,
   saveRecall,
   saveF1Score,
-  saveAnalysis
+  saveAnalysis,
+  calculateAverageMetrics
 };

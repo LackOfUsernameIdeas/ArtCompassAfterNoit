@@ -1340,13 +1340,27 @@ app.post("/save-analysis", (req, res) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
     const userId = decoded.id;
 
-    db.saveAnalysis(userId, req.body, (err, result) => {
+    db.saveAnalysis(userId, req.body, (err) => {
       if (err) return res.status(500).json({ error: "Error saving analysis." });
 
       res
         .status(201)
         .json({ message: "AI Precision Analysis saved successfully!" });
     });
+  });
+});
+
+// Ендпоинт за изчисляване на средните метрики
+app.get("/stats/ai/average-metrics", (req, res) => {
+  // Изчисляване на средните стойности за precision, recall и F1 score
+  db.calculateAverageMetrics((err, result) => {
+    if (err)
+      return res
+        .status(500)
+        .json({ error: "Грешка при изчисляването на метриките." });
+
+    // Връщане на резултата като JSON отговор
+    res.status(200).json(result);
   });
 });
 
