@@ -23,6 +23,7 @@ import {
   AccordionTrigger,
   AccordionContent
 } from "@/components/ui/accordion";
+import UserPreferences from "@/components/common/userPreferences/userPreferences";
 
 const AIAnalysator: FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -135,11 +136,30 @@ const AIAnalysator: FC = () => {
   const renderRecommendationsAnalysis =
     recommendationsAnalysis.relevantRecommendations.length > 0;
 
+  const preferences = {
+    id: 37,
+    user_id: 1,
+    preferred_genres_en: "Romance, Horror, Crime",
+    preferred_genres_bg: "Романтичен, Ужаси, Криминален",
+    mood: "",
+    timeAvailability: "1 час",
+    preferred_age: "",
+    preferred_type: "Филм",
+    preferred_actors: "Нямам предпочитания",
+    preferred_directors: "Нямам предпочитания",
+    preferred_countries: "Нямам предпочитания",
+    preferred_pacing: "бързи с много напрежение",
+    preferred_depth: "Средни - с ясни сюжетни линии",
+    preferred_target_group: "Тийнейджъри",
+    interests: null,
+    date: "2024-10-31 08:21:09"
+  };
   return (
     <FadeInWrapper>
       {!showError ? (
         <div className="p-[1.5rem]">
           <div className="z-10 max-w-6xl w-full mx-auto font-mono text-sm">
+            <UserPreferences preferences={preferences} />
             <div className="text-center !text-lg box p-6 flex flex-col gap-6 !rounded-xl justify-center items-center">
               <Card className="bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto">
                 <h2 className="text-4xl opsilion text-defaulttextcolor dark:text-white/80">
@@ -320,7 +340,7 @@ const AIAnalysator: FC = () => {
           redirectUrl={`${
             import.meta.env.BASE_URL
           }app/recommendations/movies_series`}
-          redirectText="Генерирайте нови препоръки"
+          redirectText="Към нови препоръки"
         />
       )}
     </FadeInWrapper>

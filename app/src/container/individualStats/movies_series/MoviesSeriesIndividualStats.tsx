@@ -136,7 +136,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
         redirectUrl={`${
           import.meta.env.BASE_URL
         }app/recommendations/movies_series`}
-        redirectText="Генерирайте нови препоръки"
+        redirectText="Генерирайте нови препоръки за филми/сериали"
       />
     );
   }

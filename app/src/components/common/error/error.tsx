@@ -49,7 +49,6 @@ const ErrorCard: React.FC<ErrorCardProps> = ({
           <div className="text-center animate-float">
             <div className="mb-4 relative">
               <Compass className="w-12 h-12 mx-auto text-blue-500 dark:text-blue-400 animate-pulse" />
-              <h2 className="text-3xl font-bold">Към страницата:</h2>
             </div>
             <Button
               variant="outline"

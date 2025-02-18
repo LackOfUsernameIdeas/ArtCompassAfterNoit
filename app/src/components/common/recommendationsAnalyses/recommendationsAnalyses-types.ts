@@ -33,6 +33,7 @@ export interface RecommendationsAnalysesWidgetsProps {
   inTransition?: boolean; // Флаг, указващ дали се извършва анимация на прехода
   setInTransition?: React.Dispatch<React.SetStateAction<boolean>>; // Функция за промяна на състоянието на прехода
   direction?: "left" | "right"; // Посока на превключване на препоръките
+  newGeneration?: boolean; // Посока на превключване на препоръките
 }
 
 export interface RelevantRecommendationsProps {

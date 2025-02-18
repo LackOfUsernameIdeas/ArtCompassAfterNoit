@@ -111,6 +111,7 @@ export const Quiz: FC<QuizProps> = ({
             handlePrev={handlePrev}
             handleNext={handleNext}
             isSwitching={false}
+            newGeneration
           />
         </div>
       </CSSTransition>

@@ -1619,6 +1619,17 @@ app.post("/stats/ai/f1-score", (req, res) => {
   });
 });
 
+// Вземане на данни за най-препоръчвани филми/сериали в платформата
+app.get("/translate", async (req, res) => {
+  try {
+    const translatedText = await hf.translate(); // Pass the text to the translate function
+    res.json({ translatedText }); // Return the translated text
+  } catch (error) {
+    console.error("Error during translation:", error);
+    res.status(500).json({ error: "Error fetching translation" });
+  }
+});
+
 // Стартиране на сървъра
 app.listen(5000, () => {
   console.log("Server started on port 5000.");
