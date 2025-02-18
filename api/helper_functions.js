@@ -33,13 +33,7 @@ const translate = async () => {
       jobs: [
         {
           kind: "default",
-          sentences: [
-            {
-              text: "Hel",
-              id: 1,
-              prefix: ""
-            }
-          ],
+          sentences: [{ text: "business", id: 1, prefix: "" }],
           raw_en_context_before: [],
           raw_en_context_after: [],
           preferred_num_beams: 4
@@ -47,10 +41,7 @@ const translate = async () => {
       ],
       lang: {
         target_lang: "BG",
-        preference: {
-          weight: {},
-          default: "default"
-        },
+        preference: { weight: {}, default: "default" },
         source_lang_computed: "EN"
       },
       priority: 1,
@@ -58,14 +49,11 @@ const translate = async () => {
         quality: "normal",
         mode: "translate",
         browserType: 1,
-        textType: "plaintext",
-        termbase: {
-          dictionary: "Hel\tДобро утро"
-        }
+        textType: "plaintext"
       },
-      timestamp: 1739902449090
+      timestamp: 1739905767318
     },
-    id: 26920005
+    id: 94060005
   };
 
   try {
