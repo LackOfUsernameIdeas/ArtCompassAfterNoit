@@ -41,11 +41,11 @@ const getUserById = (userId, callback) => {
 
 const saveMovieSeriesRecommendation = (userId, data, callback) => {
   const query = `INSERT INTO movies_series_recommendations (
-  user_id, imdbID, title_en, title_bg, genre_en, genre_bg, reason, description, year,
-  rated, released, runtime, director, writer, actors, plot, language, 
-  country, awards, poster, ratings, metascore, imdbRating, imdbVotes, 
-  type, DVD, boxOffice, production, website, totalSeasons, date
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+    user_id, imdbID, title_en, title_bg, genre_en, genre_bg, reason, description, year,
+    rated, released, runtime, director, writer, actors, plot, language, 
+    country, awards, poster, ratings, metascore, imdbRating, imdbVotes, 
+    type, DVD, boxOffice, production, website, totalSeasons, date
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
 
   const values = [
     userId,
@@ -3212,7 +3212,7 @@ const getUsersTopWriters = (userId, limit, callback) => {
   });
 };
 
-const getUsersTopWritersWatchlist = (userId, limit, callback) => {
+const getUsersTopWritersFromWatchlist = (userId, limit, callback) => {
   const query = `
     SELECT writer, COUNT(*) AS saved_count
     FROM (
@@ -3807,7 +3807,7 @@ module.exports = {
   getUsersTopDirectors,
   getUsersTopDirectorsFromWatchlist,
   getUsersTopWriters,
-  getUsersTopWritersWatchlist,
+  getUsersTopWritersFromWatchlist,
   getAllUsersDistinctRecommendations,
   getAllPlatformDistinctRecommendations,
   getLastUserPreferences,

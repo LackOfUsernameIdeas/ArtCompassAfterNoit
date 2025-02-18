@@ -1166,7 +1166,7 @@ app.post("/stats/individual/watchlist-top-writers", (req, res) => {
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
     const userId = decoded.id;
-    db.getUsersTopWritersWatchlist(userId, limit, (err, result) => {
+    db.getUsersTopWritersFromWatchlist(userId, limit, (err, result) => {
       if (err) {
         return res
           .status(500)
