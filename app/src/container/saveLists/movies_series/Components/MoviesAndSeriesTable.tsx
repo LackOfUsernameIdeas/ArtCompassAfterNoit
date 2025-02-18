@@ -4,6 +4,22 @@ import RecommendationCardAlert from "./RecommendationCardAlert";
 import { MovieSeriesRecommendation } from "../../../types_common";
 import FilterSidebar from "./FilterSidebar";
 
+// Custom CSS for the dropdown arrow
+const customStyles = `
+  .custom-select {
+    appearance: none;
+    background: transparent;
+    padding-right: 2rem; /* Space for the arrow */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b7280'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 1.5em;
+  }
+  .custom-select:hover {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+  }
+`;
+
 const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
   data,
   bookmarkedMovies,
@@ -14,6 +30,8 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
   const [selectedItem, setSelectedItem] = useState<MovieSeriesRecommendation | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filteredData, setFilteredData] = useState(data);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12); // Default items per page
 
   const handleMovieClick = (item: MovieSeriesRecommendation) => setSelectedItem(item);
 
@@ -26,15 +44,11 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
     year: string[];
   }) => {
     const filtered = data.filter((item) => {
-      // Split genres into an array and trim whitespace
       const movieGenres = item.genre_bg.split(",").map((genre) => genre.trim());
-
-      // Check if any of the selected genres match the movie's genres
       const matchesGenre =
         filters.genres.length === 0 ||
         filters.genres.some((selectedGenre) => movieGenres.includes(selectedGenre));
 
-      // Clean runtime string (e.g., "120 мин" -> "120") and convert to number
       const runtime = parseInt(item.runtime.replace(/\D/g, ""), 10);
       const matchesRuntime = filters.runtime.length === 0 || filters.runtime.some((r) => {
         if (r === "Под 60 минути") return runtime < 60;
@@ -46,7 +60,6 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
 
       const matchesType = filters.type.length === 0 || filters.type.includes(getTranslatedType(item.type));
 
-      // Convert year to a number for comparison
       const year = parseInt(item.year, 10);
       const matchesYear = filters.year.length === 0 || filters.year.some((y) => {
         if (y === "Преди 2000") return year < 2000;
@@ -60,10 +73,40 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
     });
 
     setFilteredData(filtered);
+    setCurrentPage(1); // Reset to the first page when filters are applied
+  };
+
+  // Calculate the total number of pages
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  // Get the current page's data
+  const currentData = filteredData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleItemsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setItemsPerPage(Number(event.target.value));
+    setCurrentPage(1); // Reset to the first page when items per page changes
   };
 
   return (
     <Fragment>
+      {/* Inject custom styles for the dropdown arrow */}
+      <style>{customStyles}</style>
+
       {isFilterOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -86,16 +129,29 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
         <div className="box custom-card">
           <div className="box-header justify-between flex items-center">
-            <div className="box-title">Списък За Гледане</div>
+            <div className="box-title flex items-center gap-4">
+              Списък За Гледане
+              <select
+                className="custom-select bg-transparent text-primary border border-primary rounded-md px-3 py-1.5 text-sm focus:outline-none hover:bg-primary hover:text-white transition"
+                value={itemsPerPage}
+                onChange={handleItemsPerPageChange}
+              >
+                <option value={6}>6 елемента на страница</option>
+                <option value={12}>12 елемента на страница</option>
+                <option value={24}>24 елемента на страница</option>
+                <option value={36}>36 елемента на страница</option>
+                <option value={48}>48 елемента на страница</option>
+              </select>
+            </div>
             <button
-              className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition"
+              className="bg-transparent text-primary border border-primary rounded-md px-3 py-1.5 text-sm focus:outline-none hover:bg-primary hover:text-white transition"
               onClick={() => setIsFilterOpen(true)}
             >
               Филтриране
             </button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
-            {filteredData.map((item, index) => (
+            {currentData.map((item, index) => (
               <div
                 key={index}
                 className="bg-white dark:bg-bodybg2/50 shadow-lg rounded-lg p-4 cursor-pointer hover:bg-primary dark:hover:bg-primary hover:text-white transition flex flex-col items-center"
@@ -129,6 +185,26 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
                 </div>
               </div>
             ))}
+          </div>
+          {/* Pagination Controls */}
+          <div className="flex justify-center items-center gap-4 mt-4">
+            <button
+              className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition"
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+            >
+              Предишна
+            </button>
+            <span className="text-defaulttextcolor dark:text-white/80">
+              Страница {currentPage} от {totalPages}
+            </span>
+            <button
+              className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition"
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+            >
+              Следваща
+            </button>
           </div>
         </div>
       </div>

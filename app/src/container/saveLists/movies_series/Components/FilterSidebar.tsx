@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { X, ChevronUp, ChevronDown } from "lucide-react";
 import { moviesSeriesGenreOptions } from "../../../data_common";
 
@@ -23,6 +23,36 @@ const FilterSidebar: FC<FilterSidebarProps> = ({ isOpen, onClose, onApplyFilters
   const [selectedRuntime, setSelectedRuntime] = useState<string[]>([]);
   const [selectedType, setSelectedType] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState<string[]>([]);
+
+  // Disable page scroll when the sidebar is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    // Cleanup function to remove the class when the component unmounts
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
+  }, [isOpen]);
+
+  // Reset all filters
+  const handleResetFilters = () => {
+    setSelectedGenres([]);
+    setSelectedRuntime([]);
+    setSelectedType([]);
+    setSelectedYear([]);
+
+    // Apply the reset filters immediately
+    onApplyFilters({
+      genres: [],
+      runtime: [],
+      type: [],
+      year: [],
+    });
+  };
 
   const toggleGenreVisibility = () => setIsGenreVisible(!isGenreVisible);
   const toggleRuntimeVisibility = () => setIsRuntimeVisible(!isRuntimeVisible);
@@ -65,9 +95,9 @@ const FilterSidebar: FC<FilterSidebarProps> = ({ isOpen, onClose, onApplyFilters
 
   return (
     <div
-      className={`fixed top-0 right-0 h-full w-64 bg-bodybg dark:bg-bodybg shadow-lg transition-transform transform ${
+      className={`fixed top-0 right-0 h-full w-full md:w-96 bg-bodybg dark:bg-bodybg shadow-lg transition-transform transform ${
         isOpen ? "translate-x-0" : "translate-x-full"
-      } z-50 p-4`}
+      } z-50 p-4 overflow-y-auto`}
     >
       <button
         className="absolute top-4 right-4 dark:text-white hover:text-black"
@@ -179,13 +209,21 @@ const FilterSidebar: FC<FilterSidebarProps> = ({ isOpen, onClose, onApplyFilters
           )}
         </div>
 
-        {/* Apply Button */}
-        <button
-          className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition w-full mt-4"
-          onClick={handleApplyFilters}
-        >
-          Приложи
-        </button>
+        {/* Reset and Apply Buttons */}
+        <div className="flex flex-col gap-2">
+          <button
+            className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400 transition w-full"
+            onClick={handleResetFilters}
+          >
+            Нулиране на филтрите
+          </button>
+          <button
+            className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition w-full"
+            onClick={handleApplyFilters}
+          >
+            Приложи
+          </button>
+        </div>
       </div>
     </div>
   );
