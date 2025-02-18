@@ -50,24 +50,30 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
             {filteredTableData.map((item, index) => (
-              <div
-                key={index}
-                className="bg-white dark:bg-bodybg2/50 shadow-lg rounded-2xl p-4 cursor-pointer hover:bg-primary dark:hover:bg-primary hover:text-white transition grid grid-cols-[auto,1fr] items-center gap-2 text-center"
-                onClick={() => handleMovieClick(item)}
-              >
-                <div className="grid grid-cols-[auto,1fr] items-center gap-2 w-full">
-                  <img
-                    src={item.poster}
-                    alt={`${item.title_bg || "Movie"} Poster`}
-                    className="rounded-lg w-20 h-auto shadow-lg"
-                  />
+            <div
+              key={index}
+              className="bg-white dark:bg-bodybg2/50 shadow-lg rounded-2xl p-4 cursor-pointer hover:bg-primary dark:hover:bg-primary hover:text-white transition grid grid-cols-[auto,1fr] items-center gap-2 text-center"
+              onClick={() => handleMovieClick(item)}
+            >
+              <div className="grid grid-cols-[auto,1fr] items-center gap-2 w-full">
+                <img
+                  src={item.poster}
+                  alt={`${item.title_bg || "Movie"} Poster`}
+                  className="rounded-lg w-20 h-auto shadow-lg"
+                />
+                {/* Grouped genre, type, and runtime together in a column */}
+                <div className="flex flex-col items-start">
                   <p>{item.genre_bg}</p>
                   <p>{item.type}</p>
                   <p>{item.runtime}</p>
-                  {/* {translatedTypes} */}
                 </div>
-                <h5 className="opsilion col-span-2 mt-2 text-center box">{item.title_en}/{item.title_bg}</h5>
               </div>
+            <div className="col-span-2 bg-white dark:bg-bodybg2/50 dark:border-black/10 rounded-md shadow-lg dark:shadow-xl text-center">
+              <h5 className="opsilion text-xl text-defaulttextcolor dark:text-white/80">
+                {item.title_en}/{item.title_bg}
+              </h5>
+            </div>
+            </div>
             ))}
           </div>
         </div>
