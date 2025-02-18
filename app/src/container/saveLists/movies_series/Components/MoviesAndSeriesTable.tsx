@@ -26,10 +26,16 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
     year: string[];
   }) => {
     const filtered = data.filter((item) => {
-      const matchesGenre = filters.genres.length === 0 || filters.genres.includes(item.genre_bg);
+      // Split genres into an array and trim whitespace
+      const movieGenres = item.genre_bg.split(",").map((genre) => genre.trim());
 
-      // Convert runtime to a number for comparison
-      const runtime = parseInt(item.runtime, 10);
+      // Check if any of the selected genres match the movie's genres
+      const matchesGenre =
+        filters.genres.length === 0 ||
+        filters.genres.some((selectedGenre) => movieGenres.includes(selectedGenre));
+
+      // Clean runtime string (e.g., "120 мин" -> "120") and convert to number
+      const runtime = parseInt(item.runtime.replace(/\D/g, ""), 10);
       const matchesRuntime = filters.runtime.length === 0 || filters.runtime.some((r) => {
         if (r === "Под 60 минути") return runtime < 60;
         if (r === "60 до 120 минути") return runtime >= 60 && runtime <= 120;
