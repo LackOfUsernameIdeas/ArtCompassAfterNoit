@@ -18,7 +18,8 @@ const RecommendationsAnalysesWidgets: React.FC<
   isSwitching = true,
   inTransition = false,
   setInTransition,
-  direction = "right"
+  direction = "right",
+  newGeneration
 }) => {
   const {
     relevantCount,
@@ -31,21 +32,31 @@ const RecommendationsAnalysesWidgets: React.FC<
   return (
     <Fragment>
       <Card className="dark:border-black/10 bg-bodybg font-semibold text-xl max-w-7xl p-4 rounded-lg shadow-lg dark:shadow-xl text-center mt-4">
-        <h2 className="!text-2xl font-bold">
+        <h2 className="!text-3xl font-bold">
           Анализ на {isSwitching ? "последно генерираните" : "текущите"}{" "}
           препоръки:
-        </h2>{" "}
-        <p className="text-lg text-gray-600">
-          Искате да видите по-подробен анализ?{" "}
+        </h2>
+        <p className="text-sm text-gray-600">
+          {newGeneration
+            ? "Искате да видите по-подробен анализ? "
+            : "Искате да видите анализ за други препоръки? "}
           <button
             onClick={() =>
-              navigate(`${import.meta.env.BASE_URL}app/aiAnalysator`)
+              navigate(
+                `${
+                  newGeneration
+                    ? `${import.meta.env.BASE_URL}app/aiAnalysator`
+                    : `${
+                        import.meta.env.BASE_URL
+                      }app/recommendations/movies_series`
+                }`
+              )
             }
             className="text-primary font-semibold hover:text-secondary transition-colors underline"
           >
-            Посетете AI Анализатор.
+            {newGeneration ? "Посетете AI Анализатор." : "Към нови препоръки."}
           </button>
-        </p>{" "}
+        </p>
       </Card>
 
       <CSSTransition
