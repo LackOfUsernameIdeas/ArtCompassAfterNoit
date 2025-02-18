@@ -87,11 +87,11 @@ const MoviesAndSeriesByRatingsComponent: FC<
         <div className="flex flex-col md:flex-row gap-8 box p-6 rounded-lg shadow-lg dark:text-gray-300 text-[#333335] justify-center items-center">
           {/* Лява част */}
           <Card className="bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed md:w-1/2 mx-auto">
-            <h2 className="text-2xl opsilion text-defaulttextcolor dark:text-white/80">
+            <h2 className="text-2xl font-Equilibrist text-defaulttextcolor dark:text-white/80">
               В тази страница можете да видите класация на филмите и сериалите
-              по техния добавените от вас книги в{" "}
+              по техния{" "}
               <span className="font-bold text-primary">
-                IMDb, Rotten Tomatoes или Метаскор рейтинг{" "}
+                IMDb, Rotten Tomatoes или Метаскор рейтинг
               </span>
               !
             </h2>

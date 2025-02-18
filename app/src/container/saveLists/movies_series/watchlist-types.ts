@@ -19,6 +19,7 @@ export interface MovieData {
   title_bg: string; // Заглавие на филма на български
   genre_bg: string; // Жанр на български
   runtime: string; // Времетраене
+  year: string; // Година на излизане
 }
 
 // Данни за препоръки на филми/сериали

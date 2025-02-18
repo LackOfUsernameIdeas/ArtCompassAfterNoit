@@ -93,49 +93,49 @@ const ActorsDirectorsWritersTableComponent: FC<
         <div className="flex flex-col md:flex-row gap-8 box p-6 rounded-lg shadow-lg dark:text-gray-300 text-[#333335] justify-center items-center">
           {/* Лява част */}
           <Card className="bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed md:w-1/2 mx-auto">
-            <h2 className="text-2xl opsilion text-defaulttextcolor dark:text-white/80">
+            <h2 className="text-xl font-Equilibrist text-defaulttextcolor dark:text-white/80">
               Тук може да видите класация на режисьори, актьори и сценаристи
               според техния{" "}
-              <span className="font-semibold text-primary">
+              <span className="font-bold text-primary">
                 просперитетен рейтинг
               </span>
               . Всеки от тях е оценен на база няколко критерия:
               <ul className="text-left coollist pl-7 pt-5">
                 <li>
                   Среден{" "}
-                  <span className="font-semibold text-primary">
+                  <span className="font-bold text-primary">
                     IMDb рейтинг
                   </span>{" "}
                   на филмите
                 </li>
                 <li>
                   Среден{" "}
-                  <span className="font-semibold text-primary">
+                  <span className="font-bold text-primary">
                     Rotten Tomatoes рейтинг
                   </span>
                 </li>
                 <li>
                   Среден{" "}
-                  <span className="font-semibold text-primary">Metascore</span>
+                  <span className="font-bold text-primary">Metascore</span>
                 </li>
                 <li>
                   Общо приходи от{" "}
-                  <span className="font-semibold text-primary">боксофиса</span>
+                  <span className="font-bold text-primary">боксофиса</span>
                 </li>
                 <li>
-                  <span className="font-semibold text-primary">Брой</span>{" "}
+                  <span className="font-bold text-primary">Брой</span>{" "}
                   филми, препоръчвани в платформата
                 </li>
                 <li>
-                  <span className="font-semibold text-primary">Брой</span> пъти,
+                  <span className="font-bold text-primary">Брой</span> пъти,
                   в които са препоръчвани техни филми
                 </li>
                 <li>
                   Спечелени{" "}
-                  <span className="font-semibold text-primary">награди</span>
+                  <span className="font-bold text-primary">награди</span>
                 </li>
                 <li>
-                  <span className="font-semibold text-primary">Номинации</span>{" "}
+                  <span className="font-bold text-primary">Номинации</span>{" "}
                   за награди
                 </li>
               </ul>
