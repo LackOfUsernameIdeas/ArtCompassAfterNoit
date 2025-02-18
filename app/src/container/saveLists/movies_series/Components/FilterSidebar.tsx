@@ -22,12 +22,12 @@ const FilterSidebar: FC<FilterSidebarProps> = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className={`fixed top-0 right-0 h-full w-64 bg-white dark:bg-bodybg2 shadow-lg transition-transform transform ${
+      className={`fixed top-0 right-0 h-full w-64 bg-bodybg dark:bg-bodybg shadow-lg transition-transform transform ${
         isOpen ? "translate-x-0" : "translate-x-full"
       } z-50 p-4`}
     >
       <button
-        className="absolute top-4 right-4 text-gray-600 dark:text-white hover:text-black"
+        className="absolute top-4 right-4 dark:text-white hover:text-black"
         onClick={onClose}
       >
         <X size={24} />
