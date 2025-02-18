@@ -2,7 +2,7 @@ import { FC, Fragment, useState } from "react";
 import { MoviesAndSeriesTableProps } from "../watchlist-types";
 import RecommendationCardAlert from "./RecommendationCardAlert";
 import { MovieSeriesRecommendation } from "../../../types_common";
-import FilterSidebar from "./FilterSidebar"; // Import the filter component
+import FilterSidebar from "./FilterSidebar";
 
 const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
   data,
@@ -13,17 +13,47 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
 }) => {
   const [selectedItem, setSelectedItem] = useState<MovieSeriesRecommendation | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [filteredData, setFilteredData] = useState(data);
 
   const handleMovieClick = (item: MovieSeriesRecommendation) => setSelectedItem(item);
 
   const getTranslatedType = (type: string) => (type === "movie" ? "Филм" : type === "series" ? "Сериал" : type);
 
-  const applyFilters = () => {
-    setFilteredData(
-      data.filter((item) => selectedGenres.length === 0 || selectedGenres.includes(item.genre_bg))
-    );
+  const handleApplyFilters = (filters: {
+    genres: string[];
+    runtime: string[];
+    type: string[];
+    year: string[];
+  }) => {
+    const filtered = data.filter((item) => {
+      const matchesGenre = filters.genres.length === 0 || filters.genres.includes(item.genre_bg);
+
+      // Convert runtime to a number for comparison
+      const runtime = parseInt(item.runtime, 10);
+      const matchesRuntime = filters.runtime.length === 0 || filters.runtime.some((r) => {
+        if (r === "Под 60 минути") return runtime < 60;
+        if (r === "60 до 120 минути") return runtime >= 60 && runtime <= 120;
+        if (r === "120 до 180 минути") return runtime > 120 && runtime <= 180;
+        if (r === "Повече от 180 минути") return runtime > 180;
+        return true;
+      });
+
+      const matchesType = filters.type.length === 0 || filters.type.includes(getTranslatedType(item.type));
+
+      // Convert year to a number for comparison
+      const year = parseInt(item.year, 10);
+      const matchesYear = filters.year.length === 0 || filters.year.some((y) => {
+        if (y === "Преди 2000") return year < 2000;
+        if (y === "2000 до 2010") return year >= 2000 && year <= 2010;
+        if (y === "2010 до 2020") return year > 2010 && year <= 2020;
+        if (y === "След 2020") return year > 2020;
+        return true;
+      });
+
+      return matchesGenre && matchesRuntime && matchesType && matchesYear;
+    });
+
+    setFilteredData(filtered);
   };
 
   return (
@@ -34,7 +64,11 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
           onClick={() => setIsFilterOpen(false)}
         />
       )}
-      <FilterSidebar isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
+      <FilterSidebar
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        onApplyFilters={handleApplyFilters}
+      />
       <RecommendationCardAlert
         selectedItem={selectedItem}
         onClose={() => setSelectedItem(null)}

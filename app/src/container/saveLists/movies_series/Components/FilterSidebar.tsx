@@ -5,20 +5,63 @@ import { moviesSeriesGenreOptions } from "../../../data_common";
 interface FilterSidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  onApplyFilters: (filters: {
+    genres: string[];
+    runtime: string[];
+    type: string[];
+    year: string[];
+  }) => void;
 }
 
-const FilterSidebar: FC<FilterSidebarProps> = ({ isOpen, onClose }) => {
-  // State for managing visibility of dropdowns
+const FilterSidebar: FC<FilterSidebarProps> = ({ isOpen, onClose, onApplyFilters }) => {
   const [isGenreVisible, setIsGenreVisible] = useState(false);
   const [isRuntimeVisible, setIsRuntimeVisible] = useState(false);
   const [isTypeVisible, setIsTypeVisible] = useState(false);
   const [isYearVisible, setIsYearVisible] = useState(false);
 
-  // Toggle functions for each dropdown
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [selectedRuntime, setSelectedRuntime] = useState<string[]>([]);
+  const [selectedType, setSelectedType] = useState<string[]>([]);
+  const [selectedYear, setSelectedYear] = useState<string[]>([]);
+
   const toggleGenreVisibility = () => setIsGenreVisible(!isGenreVisible);
   const toggleRuntimeVisibility = () => setIsRuntimeVisible(!isRuntimeVisible);
   const toggleTypeVisibility = () => setIsTypeVisible(!isTypeVisible);
   const toggleYearVisibility = () => setIsYearVisible(!isYearVisible);
+
+  const handleGenreChange = (genre: string) => {
+    setSelectedGenres((prev) =>
+      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
+    );
+  };
+
+  const handleRuntimeChange = (runtime: string) => {
+    setSelectedRuntime((prev) =>
+      prev.includes(runtime) ? prev.filter((r) => r !== runtime) : [...prev, runtime]
+    );
+  };
+
+  const handleTypeChange = (type: string) => {
+    setSelectedType((prev) =>
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+    );
+  };
+
+  const handleYearChange = (year: string) => {
+    setSelectedYear((prev) =>
+      prev.includes(year) ? prev.filter((y) => y !== year) : [...prev, year]
+    );
+  };
+
+  const handleApplyFilters = () => {
+    onApplyFilters({
+      genres: selectedGenres,
+      runtime: selectedRuntime,
+      type: selectedType,
+      year: selectedYear,
+    });
+    onClose();
+  };
 
   return (
     <div
@@ -48,6 +91,8 @@ const FilterSidebar: FC<FilterSidebarProps> = ({ isOpen, onClose }) => {
                 <div key={bg} className="flex items-center gap-2">
                   <input
                     type="checkbox"
+                    checked={selectedGenres.includes(bg)}
+                    onChange={() => handleGenreChange(bg)}
                     className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
                   />
                   <span className="opsilion text-sm">{bg}</span>
@@ -72,6 +117,8 @@ const FilterSidebar: FC<FilterSidebarProps> = ({ isOpen, onClose }) => {
                   <div key={option} className="flex items-center gap-2">
                     <input
                       type="checkbox"
+                      checked={selectedRuntime.includes(option)}
+                      onChange={() => handleRuntimeChange(option)}
                       className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
                     />
                     <span className="opsilion text-sm">{option}</span>
@@ -96,6 +143,8 @@ const FilterSidebar: FC<FilterSidebarProps> = ({ isOpen, onClose }) => {
                 <div key={option} className="flex items-center gap-2">
                   <input
                     type="checkbox"
+                    checked={selectedType.includes(option)}
+                    onChange={() => handleTypeChange(option)}
                     className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
                   />
                   <span className="opsilion text-sm">{option}</span>
@@ -119,6 +168,8 @@ const FilterSidebar: FC<FilterSidebarProps> = ({ isOpen, onClose }) => {
                 <div key={option} className="flex items-center gap-2">
                   <input
                     type="checkbox"
+                    checked={selectedYear.includes(option)}
+                    onChange={() => handleYearChange(option)}
                     className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
                   />
                   <span className="opsilion text-sm">{option}</span>
@@ -129,7 +180,10 @@ const FilterSidebar: FC<FilterSidebarProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Apply Button */}
-        <button className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition w-full mt-4">
+        <button
+          className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition w-full mt-4"
+          onClick={handleApplyFilters}
+        >
           Приложи
         </button>
       </div>
