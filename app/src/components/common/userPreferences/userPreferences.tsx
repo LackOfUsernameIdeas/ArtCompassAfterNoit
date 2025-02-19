@@ -121,7 +121,7 @@ export default function UserPreferences({
           {preferenceItems.map((item, index) => (
             <div
               key={index}
-              className="bg-white border border-transparent hover:border-2 dark:hover:border-primary hover:border-black/25 dark:bg-bodybg2 p-3 rounded-md flex items-center max-w-[69rem] transition-all duration-300"
+              className="bg-white outline outline-transparent hover:outline-1 dark:hover:outline-primary hover:outline-black/25 dark:bg-bodybg2 p-3 rounded-md flex items-center max-w-[69rem] transition-all duration-300"
             >
               <div className="flex items-center w-1/3">
                 {item.icon}
