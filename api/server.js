@@ -1250,6 +1250,44 @@ app.get("/get-goodreads-json-object-for-a-book", (req, res) => {
   });
 });
 
+// Достъпване на конретен AI модел
+app.get("/get-model-response", (req, res) => {
+  // Spawn the Python process
+  const pythonProcess = spawn(pythonPathLocal, [
+    "./scraping/fetch_ai_response.py"
+  ]);
+
+  let response = "";
+
+  // Capture output from stdout
+  pythonProcess.stdout.on("data", (data) => {
+    response += data.toString();
+    console.log("Received data from Python:", data.toString()); // Log data from Python
+  });
+
+  // Capture error output from stderr (for debugging)
+  pythonProcess.stderr.on("data", (data) => {
+    console.error("Python script stderr:", data.toString());
+  });
+
+  // Handle the closing of the Python process
+  pythonProcess.on("close", (code) => {
+    console.log(`Python process exited with code ${code}`);
+    if (code === 0) {
+      try {
+        const jsonResponse = JSON.parse(response.trim());
+        console.log("Parsed JSON response:", jsonResponse);
+        res.status(200).json(jsonResponse); // Return JSON to the client
+      } catch (e) {
+        console.error("Error parsing JSON response:", e);
+        res.status(500).send("Error parsing response from Python");
+      }
+    } else {
+      res.status(500).send("Error: Python script execution failed");
+    }
+  });
+});
+
 // Проверка дали даден филм/сериал е подходящ за конкретните потребителски предпочитания
 app.post("/check-relevance", (req, res) => {
   const { userPreferences, recommendations } = req.body;
