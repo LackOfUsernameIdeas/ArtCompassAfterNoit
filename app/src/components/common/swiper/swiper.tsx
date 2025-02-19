@@ -1,0 +1,64 @@
+// Импортиране на необходимите модули за Swiper
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Autoplay, Navigation } from "swiper/modules";
+import logo from "../../../assets/images/brand-logos/logo-large.png";
+import logoPink from "../../../assets/images/brand-logos/logo-large-pink.png";
+
+// Импортиране на стиловете за Swiper
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+
+const SwiperComponent: React.FC = () => {
+  return (
+    <div className="xxl:col-span-5 xl:col-span-5 lg:col-span-5 col-span-12 xl:block hidden px-0">
+      <div className="authentication-cover">
+        <div className="aunthentication-cover-content rounded">
+          <div className="swiper keyboard-control">
+            <Swiper
+              spaceBetween={30}
+              navigation={true}
+              centeredSlides={true}
+              autoplay={{ delay: 2500, disableOnInteraction: false }}
+              pagination={{ clickable: true }}
+              modules={[Pagination, Autoplay, Navigation]}
+              className="mySwiper"
+            >
+              <SwiperSlide>
+                <div className="text-white text-center p-[3rem] flex items-center justify-center flex-col lg:space-y-8 md:space-y-4 sm:space-y-2 space-y-2">
+                  <div>
+                    <div className="mb-[6rem] dark:hidden">
+                      <img
+                        src={logo}
+                        className="authentication-image"
+                        alt="Logo"
+                        style={{ width: "100%", height: "auto" }}
+                      />
+                    </div>
+                    <div className="mb-[4rem] hidden dark:block">
+                      <img
+                        src={logoPink}
+                        className="authentication-image"
+                        alt="Logo"
+                        style={{ width: "100%", height: "auto" }}
+                      />
+                    </div>
+                    <p className="font-normal text-[0.875rem] opacity-[0.7] lg:mt-6 sm:text-[1rem]">
+                      Това е вашият гид за откриване на филми, сериали и книги
+                      за всяко настроение, анализирайки вашите предпочитания и
+                      предлагайки персонализирани препоръки с помощта на
+                      изкуствен интелект, чиято точност можете да оцените чрез
+                      метрики като Precision, Recall и F1 Score!
+                    </p>
+                  </div>
+                </div>
+              </SwiperSlide>
+            </Swiper>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SwiperComponent;
