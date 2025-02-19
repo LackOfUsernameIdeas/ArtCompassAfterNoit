@@ -32,7 +32,6 @@ const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
     window.addEventListener("resize", menuResizeFn);
   }, []);
 
-  // const location = useLocation();
   const location = useLocation();
 
   function Onhover() {

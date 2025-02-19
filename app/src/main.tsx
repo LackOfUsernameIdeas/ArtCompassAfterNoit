@@ -49,6 +49,14 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             {/* Default route */}
             <Route path="recommendations" element={<ChooseRecommendations />} />
             <Route
+              path="recommendations/movies_series"
+              element={<MoviesSeriesRecommendations />}
+            />
+            <Route
+              path="recommendations/books"
+              element={<BooksRecommendations />}
+            />
+            <Route
               index
               path="platformStats/moviesByProsperityBubbleChart"
               element={<MoviesByProsperityBubbleChart />}
@@ -79,14 +87,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               element={<TopCountries />}
             />
             <Route index path="aiAnalysator" element={<AIAnalysator />} />
-            <Route
-              path="recommendations/movies_series"
-              element={<MoviesSeriesRecommendations />}
-            />
-            <Route
-              path="recommendations/books"
-              element={<BooksRecommendations />}
-            />
             <Route
               path="individualStats/movies_series"
               element={<MoviesSeriesIndividualStats />}
