@@ -15,7 +15,7 @@ api_gemini_key = os.getenv("VITE_GEMINI_API_KEY")
 
 # Initialize OpenAI model with GPT-4o chat endpoint
 llmOpenAI = ChatOpenAI(model="gpt-4o", api_key=api_openai_key)
-llmGemini = ChatGoogleGenerativeAI(model="gemini-pro", api_key=api_gemini_key)
+llmGemini = ChatGoogleGenerativeAI(model="gemini-1.5-pro", api_key=api_gemini_key)
 
 def fetch_openai_response(messages, provider):    
     try:       
@@ -23,25 +23,22 @@ def fetch_openai_response(messages, provider):
         if not isinstance(messages, list):
             return {"error": "Invalid input. Expected a list of messages."}
 
-
-        # Gemini does not support system messages; remove or modify them
         if provider == "gemini":
-            formatted_messages = []
+
+            gemini_messages = [] # Convert OpenAI-style messages to Gemini format
+
             for msg in messages:
                 if msg["role"] == "system":
-                    # Gemini does not support system messages, so we remove or prepend them
-                    formatted_messages.insert(0, {"role": "user", "content": msg["content"]}) 
-                else:
-                    formatted_messages.append(msg)
-        else:
-            formatted_messages = messages
-
+                    gemini_messages.append(("system", msg["content"]))
+                elif msg["role"] == "user":
+                    gemini_messages.append(("human", msg["content"]))
+            
+            # Call Gemini with system instruction + messages
+            response = llmGemini.invoke(gemini_messages)
 
         # Use the correct method to make a chat-based completion request
-        if provider == "openai" and llmOpenAI:
-            response = llmOpenAI.invoke(formatted_messages)
-        elif provider == "gemini" and llmGemini:
-            response = llmGemini.invoke(formatted_messages)
+        elif provider == "openai" and llmOpenAI:
+            response = llmOpenAI.invoke(messages) # Keep standard OpenAI format
         else:
             return {"error": f"Invalid provider '{provider}' or missing API key."}
 
