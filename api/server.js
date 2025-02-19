@@ -1251,7 +1251,15 @@ app.get("/get-goodreads-json-object-for-a-book", (req, res) => {
 });
 
 // Достъпване на конретен AI модел
-app.get("/get-model-response", (req, res) => {
+app.post("/get-model-response", (req, res) => {
+  const messages = req.body.messages; // Get messages array from request body
+
+  if (!messages || !Array.isArray(messages)) {
+    return res
+      .status(400)
+      .json({ error: "Invalid request. 'messages' must be an array." });
+  }
+
   // Spawn the Python process
   const pythonProcess = spawn(pythonPathLocal, [
     "./scraping/fetch_ai_response.py"
@@ -1259,10 +1267,13 @@ app.get("/get-model-response", (req, res) => {
 
   let response = "";
 
+  // Send messages as JSON to Python via stdin
+  pythonProcess.stdin.write(JSON.stringify({ messages }));
+  pythonProcess.stdin.end(); // Close the input stream
+
   // Capture output from stdout
   pythonProcess.stdout.on("data", (data) => {
     response += data.toString();
-    console.log("Received data from Python:", data.toString()); // Log data from Python
   });
 
   // Capture error output from stderr (for debugging)
@@ -1272,11 +1283,9 @@ app.get("/get-model-response", (req, res) => {
 
   // Handle the closing of the Python process
   pythonProcess.on("close", (code) => {
-    console.log(`Python process exited with code ${code}`);
     if (code === 0) {
       try {
         const jsonResponse = JSON.parse(response.trim());
-        console.log("Parsed JSON response:", jsonResponse);
         res.status(200).json(jsonResponse); // Return JSON to the client
       } catch (e) {
         console.error("Error parsing JSON response:", e);
