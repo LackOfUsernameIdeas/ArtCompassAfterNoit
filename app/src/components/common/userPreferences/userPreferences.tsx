@@ -121,15 +121,15 @@ export default function UserPreferences({
           {preferenceItems.map((item, index) => (
             <div
               key={index}
-              className="bg-white outline outline-transparent hover:outline-1 dark:hover:outline-primary hover:outline-black/25 dark:bg-bodybg2 p-3 rounded-md flex items-center max-w-[69rem] transition-all duration-300"
+              className="bg-white outline outline-transparent hover:outline-1 dark:hover:outline-primary hover:outline-black/25 dark:bg-bodybg2 p-3 rounded-md flex items-center transition-all duration-300"
             >
-              <div className="flex items-center w-1/3">
+              <div className="flex items-center w-1/3 max-w-[30%]">
                 {item.icon}
                 <span className="ml-2 font-semibold text-sm">{item.label}</span>
               </div>
               <div
                 title={item.value || "Не е зададено"}
-                className="w-2/3 text-sm text-defaulttextcolor dark:text-white/80 truncate"
+                className="w-2/3 max-w-[65%] text-sm text-defaulttextcolor dark:text-white/80 break-words overflow-hidden text-ellipsis"
               >
                 {item.value || "Не е зададено"}
               </div>
