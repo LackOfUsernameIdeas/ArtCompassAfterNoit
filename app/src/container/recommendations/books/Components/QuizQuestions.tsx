@@ -313,6 +313,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                     }}
                     rows={4}
                     maxLength={200}
+                    disabled={currentQuestion.value === "Нямам предпочитания"}
                   />
                   <div className="flex justify-between mx-2">
                     <label className="flex items-center cursor-pointer hover:text-secondary">
@@ -353,6 +354,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
                         setSelectedAnswer([e.target.value]);
                       }
                     }}
+                    disabled={currentQuestion.value === "Нямам предпочитания"}
                     required
                   />
                   <div className="flex items-center text-white">
@@ -453,7 +455,6 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
               })}
             </div>
           )}
-
           <div>
             <div
               onClick={handleClick}
