@@ -35,7 +35,7 @@ const SwiperComponent: React.FC = () => {
                         style={{ width: "100%", height: "auto" }}
                       />
                     </div>
-                    <div className="mb-[4rem] hidden dark:block">
+                    <div className="mb-[6rem] hidden dark:block">
                       <img
                         src={logoPink}
                         className="authentication-image"
@@ -46,9 +46,10 @@ const SwiperComponent: React.FC = () => {
                     <p className="font-normal text-[0.875rem] opacity-[0.7] lg:mt-6 sm:text-[1rem]">
                       Това е вашият гид за откриване на филми, сериали и книги
                       за всяко настроение, анализирайки вашите предпочитания и
-                      предлагайки персонализирани препоръки с помощта на
-                      изкуствен интелект, чиято точност можете да оцените чрез
-                      метрики като Precision, Recall и F1 Score!
+                      предлагайки <strong>персонализирани препоръки</strong> с
+                      помощта на изкуствен интелект, чиято точност можете да
+                      оцените чрез метрики като <strong>Precision</strong>,{" "}
+                      <strong>Recall</strong> и <strong>F1 Score</strong>!
                     </p>
                   </div>
                 </div>
