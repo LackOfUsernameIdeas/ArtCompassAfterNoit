@@ -10,7 +10,7 @@ const MainMetricsWidget: FC<{
   className?: string;
 }> = ({ icon, title, value, description, progress, className }) => (
   <div
-    className={`bg-white dark:bg-bodybg2 dark:text-defaulttextcolor/70 p-4 rounded-lg transition-all duration-300 hover:shadow-md flex flex-col h-full hover:shadow-md dark:hover:shadow-primary ${className}`}
+    className={`bg-white dark:bg-bodybg2 dark:text-defaulttextcolor/70 p-4 rounded-lg transition-all duration-300 flex flex-col h-full hover:shadow-md dark:hover:shadow-primary ${className}`}
   >
     <div className="flex items-center mb-2">
       {icon}
