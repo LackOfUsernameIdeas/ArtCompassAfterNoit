@@ -1252,7 +1252,7 @@ app.get("/get-goodreads-json-object-for-a-book", (req, res) => {
 
 // Достъпване на конретен AI модел
 app.post("/get-model-response", (req, res) => {
-  const messages = req.body.messages; // Get messages array from request body
+  const { messages, provider = "openai" } = req.body;
 
   if (!messages || !Array.isArray(messages)) {
     return res
@@ -1268,7 +1268,7 @@ app.post("/get-model-response", (req, res) => {
   let response = "";
 
   // Send messages as JSON to Python via stdin
-  pythonProcess.stdin.write(JSON.stringify({ messages }));
+  pythonProcess.stdin.write(JSON.stringify({ provider, messages }));
   pythonProcess.stdin.end(); // Close the input stream
 
   // Capture output from stdout
