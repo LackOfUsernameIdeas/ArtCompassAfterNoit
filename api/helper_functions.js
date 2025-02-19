@@ -1,90 +1,24 @@
-// const translate = async (entry) => {
-//   // Изграждане на URL за заявка към Google Translate API
-//   const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bg&dt=t&q=${encodeURIComponent(
-//     entry
-//   )}`;
-
-//   try {
-//     // Изпращане на заявката към API-то
-//     const response = await fetch(url);
-//     const data = await response.json();
-
-//     // Обединяване на преведените части в един низ
-//     const flattenedTranslation = data[0].map((item) => item[0]).join(" ");
-
-//     // Премахване на излишните интервали
-//     const mergedTranslation = flattenedTranslation.replace(/\s+/g, " ").trim();
-//     return mergedTranslation;
-//   } catch (error) {
-//     // Обработка на грешка при превод
-//     console.error(`Error translating entry: ${entry}`, error);
-//     return entry;
-//   }
-// };
-
-const translate = async () => {
-  const url = "https://www2.deepl.com/jsonrpc?method=LMT_handle_jobs";
-
-  // Define the request body
-  const body = {
-    jsonrpc: "2.0",
-    method: "LMT_handle_jobs",
-    params: {
-      jobs: [
-        {
-          kind: "default",
-          sentences: [{ text: "business", id: 1, prefix: "" }],
-          raw_en_context_before: [],
-          raw_en_context_after: [],
-          preferred_num_beams: 4
-        }
-      ],
-      lang: {
-        target_lang: "BG",
-        preference: { weight: {}, default: "default" },
-        source_lang_computed: "EN"
-      },
-      priority: 1,
-      commonJobParams: {
-        quality: "normal",
-        mode: "translate",
-        browserType: 1,
-        textType: "plaintext"
-      },
-      timestamp: 1739905767318
-    },
-    id: 94060005
-  };
+const translate = async (entry) => {
+  // Изграждане на URL за заявка към Google Translate API
+  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bg&dt=t&q=${encodeURIComponent(
+    entry
+  )}`;
 
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Host: "www2.deepl.com"
-      },
-      body: JSON.stringify(body) // Convert the body to a JSON string
-    });
-
-    // Check if the response is okay (status 200-299)
-    if (!response.ok) {
-      console.log("Error response:", response);
-      const errorText = await response.text();
-      console.log("Error details:", errorText);
-      return "error"; // You may return a custom error message here
-    }
-
+    // Изпращане на заявката към API-то
+    const response = await fetch(url);
     const data = await response.json();
 
-    // Extract the translation result
-    const translation = data.result;
+    // Обединяване на преведените части в един низ
+    const flattenedTranslation = data[0].map((item) => item[0]).join(" ");
 
-    // Return the translated text
-    return translation || "error";
+    // Премахване на излишните интервали
+    const mergedTranslation = flattenedTranslation.replace(/\s+/g, " ").trim();
+    return mergedTranslation;
   } catch (error) {
-    // Handle the error
-    console.error("Error fetching translation:", error);
-    return "error";
+    // Обработка на грешка при превод
+    console.error(`Error translating entry: ${entry}`, error);
+    return entry;
   }
 };
 
