@@ -109,7 +109,7 @@ export default function UserPreferences({
     <Card className="w-full mx-auto my-4 bg-bodybg dark:border-black/10 shadow-lg dark:shadow-xl">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 py-3">
         <CardTitle className="text-2xl font-bold text-defaulttextcolor dark:text-white/80">
-          Последни предпочитания
+          Последно регистрирани предпочитания
         </CardTitle>
         <div className="flex items-center text-xs text-muted-foreground">
           <Calendar className="h-3 w-3 mr-1" />
