@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
 
+sys.stdout.reconfigure(encoding='utf-8')
+
 # Load environment variables from .env file
 env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.env"))
 load_dotenv(env_path)
@@ -35,7 +37,6 @@ def fetch_openai_response(messages, provider):
             
             # Call Gemini with system instruction + messages
             response = llmGemini.invoke(gemini_messages)
-
         # Use the correct method to make a chat-based completion request
         elif provider == "openai" and llmOpenAI:
             response = llmOpenAI.invoke(messages) # Keep standard OpenAI format
