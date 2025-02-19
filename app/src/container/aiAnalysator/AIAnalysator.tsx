@@ -24,6 +24,7 @@ import {
   AccordionContent
 } from "@/components/ui/accordion";
 import UserPreferences from "@/components/common/userPreferences/userPreferences";
+import { MovieSeriesUserPreferencesAfterSaving } from "../types_common";
 
 const AIAnalysator: FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -42,6 +43,8 @@ const AIAnalysator: FC = () => {
       precisionPercentage: 0,
       relevantRecommendations: []
     });
+  const [userPreferences, setUserPreferences] =
+    useState<MovieSeriesUserPreferencesAfterSaving | null>(null);
   const [showError, setShowError] = useState<boolean>(false);
 
   useEffect(() => {
@@ -60,6 +63,8 @@ const AIAnalysator: FC = () => {
           relevanceResults,
           lastSavedUserPreferences
         } = lastSavedRecommendationsAndPreferences;
+
+        setUserPreferences(lastSavedUserPreferences);
 
         if (
           lastSavedRecommendations.length > 0 &&
@@ -320,7 +325,9 @@ const AIAnalysator: FC = () => {
                 f1ScoreData={f1ScoreData}
               />
             )}
-            <UserPreferences preferences={preferences} />
+            {userPreferences && (
+              <UserPreferences preferences={userPreferences} />
+            )}
             {renderRecommendationsAnalysis && (
               <RecommendationsAnalysesWidgets
                 recommendationsAnalysis={recommendationsAnalysis}

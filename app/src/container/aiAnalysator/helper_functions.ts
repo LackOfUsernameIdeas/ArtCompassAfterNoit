@@ -1,9 +1,9 @@
+import { MovieSeriesUserPreferencesAfterSaving } from "../types_common";
 import {
   F1ScoreData,
   PrecisionData,
   RecallData,
-  RelevanceResponse,
-  UserPreferences
+  RelevanceResponse
 } from "./aiAnalysator-types";
 
 /**
@@ -58,7 +58,7 @@ export const checkRelevanceForLastSavedRecommendations = async (
  */
 export const getPrecisionTotal = async (
   token: string,
-  userPreferences: UserPreferences
+  userPreferences: MovieSeriesUserPreferencesAfterSaving
 ): Promise<PrecisionData> => {
   try {
     const response = await fetch(
@@ -92,7 +92,7 @@ export const getPrecisionTotal = async (
  */
 export const getRecallTotal = async (
   token: string,
-  userPreferences: UserPreferences
+  userPreferences: MovieSeriesUserPreferencesAfterSaving
 ): Promise<RecallData> => {
   try {
     const response = await fetch(

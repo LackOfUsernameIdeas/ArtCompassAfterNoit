@@ -7,6 +7,7 @@ import {
   Brain,
   Globe,
   Calendar,
+  Clock2,
   Smile,
   Clapperboard,
   Pen,
@@ -14,6 +15,7 @@ import {
   MessageSquareHeart,
   List
 } from "lucide-react";
+import { MovieSeriesUserPreferencesAfterSaving } from "@/container/types_common";
 
 interface Preference {
   label: string;
@@ -21,26 +23,10 @@ interface Preference {
   icon: React.ReactNode;
 }
 
-interface UserPreferences {
-  preferred_genres_bg: string;
-  mood: string;
-  timeAvailability: string;
-  preferred_age: string;
-  preferred_type: string;
-  preferred_actors: string;
-  preferred_directors: string;
-  preferred_countries: string;
-  preferred_pacing: string;
-  preferred_depth: string;
-  preferred_target_group: string;
-  interests: string | null;
-  date: string;
-}
-
 export default function UserPreferences({
   preferences
 }: {
-  preferences: UserPreferences;
+  preferences: MovieSeriesUserPreferencesAfterSaving;
 }) {
   const preferenceItems: Preference[] = [
     {
@@ -111,9 +97,15 @@ export default function UserPreferences({
         <CardTitle className="text-2xl font-bold text-defaulttextcolor dark:text-white/80">
           Последно регистрирани предпочитания
         </CardTitle>
-        <div className="flex items-center text-xs text-muted-foreground">
-          <Calendar className="h-3 w-3 mr-1" />
-          {new Date(preferences.date).toLocaleString("bg-BG")}
+        <div className="flex items-center text-xs text-muted-foreground gap-2">
+          <div className="flex items-center gap-1">
+            <Calendar className="h-3 w-3" />
+            {new Date(preferences.date).toLocaleDateString("bg-BG")}
+          </div>
+          <div className="flex items-center gap-1">
+            <Clock2 className="h-3 w-3" />
+            {new Date(preferences.date).toLocaleTimeString("bg-BG")}
+          </div>
         </div>
       </CardHeader>
       <CardContent className="pt-0">

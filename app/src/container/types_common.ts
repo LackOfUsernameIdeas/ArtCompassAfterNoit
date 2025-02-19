@@ -180,8 +180,65 @@ export interface CriteriaScores {
   targetGroup: number; // целевата аудитория
 }
 
-// Интерфейс за жанр с английско и българско име.
+// Интерфейс за жанр с английско и българско име
 export interface Genre {
   en: string; // Английско име на жанра
   bg: string; // Българско име на жанра
+}
+
+// Интерфейс за потребителските предпочитания за филми и сериали в базата данни
+export interface MovieSeriesUserPreferencesAfterSaving {
+  id: number; // Уникален идентификатор на предпочитанията
+  user_id: number; // Идентификатор на потребителя, към когото се отнасят предпочитанията
+  preferred_genres_en: string; // Предпочитани жанрове на английски език (разделени със запетая)
+  preferred_genres_bg: string; // Предпочитани жанрове на български език (разделени със запетая)
+  mood: string; // Настроение, което потребителят предпочита за гледане на филми/сериали
+  timeAvailability: string; // Наличност на време за гледане (например: кратко, средно, дълго)
+  preferred_age: string; // Предпочитана възрастова категория на съдържанието
+  preferred_type: string; // Предпочитан тип съдържание (филм, сериал и др.)
+  preferred_actors: string; // Предпочитани актьори (разделени със запетая)
+  preferred_directors: string; // Предпочитани режисьори (разделени със запетая)
+  preferred_countries: string; // Предпочитани държави за продукцията (разделени със запетая)
+  preferred_pacing: string; // Предпочитан ритъм на филма/сериала (бърз, умерен и т.н.)
+  preferred_depth: string; // Дълбочина на сюжета (повърхностен, среден, задълбочен)
+  preferred_target_group: string; // Целева аудитория на съдържанието (възрастни, тийнейджъри и т.н.)
+  interests: string; // Интереси на потребителя, свързани с тематиката на филмите/сериалите
+  date: Date; // Дата на регистрация на тези предпочитания
+}
+
+// Интерфейс за филм с всички основни данни за филма или сериала.
+export interface MovieSeriesRecommendationAfterSaving {
+  id?: string; // ID на филма или сериала
+  user_id?: string; // ID на потребителя, свързан с филма или сериала
+  imdbID: string; // IMDb идентификатор
+  title: string; // Английско заглавие на филма или сериала
+  bgName: string; // Българско заглавие на филма или сериала
+  genre: string; // Жанрове на английски
+  reason: string; // Причина за препоръката на филма или сериала
+  description: string; // Описание на филма или сериала
+  year: string; // Година на издаване
+  rated: string; // Възрастова оценка
+  released: string; // Дата на излизане
+  runtime: string; // Времетраене в минути
+  runtimeGoogle: string; // Времетраене, директно от Гугъл
+  director: string; // Име на режисьора
+  writer: string; // Име на сценариста
+  actors: string; // Списък с актьори
+  plot: string; // Сюжет на филма или сериала
+  language: string; // Езици на филма или сериала
+  country: string; // Страни, участващи в производството
+  awards: string; // Награди, спечелени от филма или сериала
+  poster: string; // URL на постера
+  ratings: { Source: string; Value: string }[]; // Масив с рейтингови източници и стойности
+  metascore: string; // Метаскор стойност
+  imdbRating: string; // IMDb рейтинг
+  imdbRatingGoogle: string; // IMDb рейтинг от Гугъл
+  imdbVotes: string; // Брой IMDb гласове
+  type: string; // Вид (например, филм)
+  DVD: string; // Информация за DVD издание (ако е налично)
+  boxOffice: string; // Приходи от бокс офиса
+  production: string; // Продуцентско студио (ако е налично)
+  website: string; // Официален уебсайт (ако е наличен)
+  totalSeasons?: string | null; // Общо сезони (за сериали)
+  date?: string; // Дата на въвеждане на данните
 }
