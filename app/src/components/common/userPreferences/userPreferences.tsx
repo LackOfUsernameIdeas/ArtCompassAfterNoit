@@ -97,14 +97,18 @@ export default function UserPreferences({
         <CardTitle className="text-2xl font-bold text-defaulttextcolor dark:text-white/80">
           Последно регистрирани предпочитания
         </CardTitle>
-        <div className="flex items-center text-xs text-muted-foreground gap-2">
+        <div className="flex flex-wrap text-xs text-muted-foreground gap-x-1 gap-y-1">
           <div className="flex items-center gap-1">
-            <Calendar className="h-3 w-3" />
-            {new Date(preferences.date).toLocaleDateString("bg-BG")}
+            <Calendar className="w-3" />
+            <span>
+              {new Date(preferences.date).toLocaleDateString("bg-BG")}
+            </span>
           </div>
           <div className="flex items-center gap-1">
-            <Clock2 className="h-3 w-3" />
-            {new Date(preferences.date).toLocaleTimeString("bg-BG")}
+            <Clock2 className="w-3" />
+            <span>
+              {new Date(preferences.date).toLocaleTimeString("bg-BG")}
+            </span>
           </div>
         </div>
       </CardHeader>
