@@ -38,8 +38,8 @@ const RecommendationsAnalysesWidgets: React.FC<
         </h2>
         <p className="text-sm text-gray-600">
           {newGeneration
-            ? "Искате да видите по-подробен анализ? "
-            : "Искате да видите анализ за други препоръки? "}
+            ? "Искате да разгледате по-подробен анализ? "
+            : "Искате да разгледате още анализи? "}
           <button
             onClick={() =>
               navigate(

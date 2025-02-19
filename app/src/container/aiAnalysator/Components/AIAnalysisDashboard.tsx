@@ -9,7 +9,7 @@ const AIAnalysisDashboard: FC<AIAnalysisDashboardProps> = ({
   f1ScoreData
 }) => {
   return (
-    <div className="bg-bodybg mt-4 p-6 rounded-xl shadow-lg space-y-6">
+    <div className="bg-bodybg p-6 rounded-xl shadow-lg space-y-4">
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <MainMetricsWidget
           icon={<i className="ti ti-percentage-60 text-2xl"></i>}

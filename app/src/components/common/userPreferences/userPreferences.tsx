@@ -1,20 +1,18 @@
+import type React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger
-} from "@/components/ui/accordion";
 import {
   Clock,
-  Film,
   Users,
   Zap,
   Brain,
   Globe,
-  User,
-  Calendar
+  Calendar,
+  Smile,
+  Clapperboard,
+  Pen,
+  Target,
+  MessageSquareHeart,
+  List
 } from "lucide-react";
 
 interface Preference {
@@ -24,7 +22,6 @@ interface Preference {
 }
 
 interface UserPreferences {
-  preferred_genres_en: string;
   preferred_genres_bg: string;
   mood: string;
   timeAvailability: string;
@@ -49,108 +46,95 @@ export default function UserPreferences({
     {
       label: "Жанрове",
       value: preferences.preferred_genres_bg,
-      icon: <Film className="h-5 w-5" />
+      icon: <List className="h-4 w-4" />
     },
     {
-      label: "Време",
+      label: "Настроение",
+      value: preferences.mood,
+      icon: <Smile className="h-4 w-4" />
+    },
+    {
+      label: "Време за гледане",
       value: preferences.timeAvailability,
-      icon: <Clock className="h-5 w-5" />
+      icon: <Clock className="h-4 w-4" />
+    },
+    {
+      label: "Време на създаване",
+      value: preferences.preferred_age,
+      icon: <Pen className="h-4 w-4" />
     },
     {
       label: "Тип",
       value: preferences.preferred_type,
-      icon: <Film className="h-5 w-5" />
+      icon: <Clapperboard className="h-4 w-4" />
     },
-    {
-      label: "Целева група",
-      value: preferences.preferred_target_group,
-      icon: <User className="h-5 w-5" />
-    }
-  ];
-
-  const additionalPreferences: Preference[] = [
     {
       label: "Актьори",
       value: preferences.preferred_actors,
-      icon: <Users className="h-5 w-5" />
+      icon: <Users className="h-4 w-4" />
     },
     {
       label: "Режисьори",
       value: preferences.preferred_directors,
-      icon: <Users className="h-5 w-5" />
+      icon: <Users className="h-4 w-4" />
     },
     {
       label: "Държави",
       value: preferences.preferred_countries,
-      icon: <Globe className="h-5 w-5" />
+      icon: <Globe className="h-4 w-4" />
     },
     {
-      label: "Темпо",
+      label: "Темпо на развитие на сюжета",
       value: preferences.preferred_pacing,
-      icon: <Zap className="h-5 w-5" />
+      icon: <Zap className="h-4 w-4" />
     },
     {
-      label: "Дълбочина",
+      label: "Ниво на задълбочаване",
       value: preferences.preferred_depth,
-      icon: <Brain className="h-5 w-5" />
+      icon: <Brain className="h-4 w-4" />
+    },
+    {
+      label: "Целева група",
+      value: preferences.preferred_target_group,
+      icon: <Target className="h-4 w-4" />
+    },
+    {
+      label: "Интереси",
+      value: preferences.interests || "Не е зададено",
+      icon: <MessageSquareHeart className="h-4 w-4" />
     }
   ];
 
   return (
-    <Card className="w-full mx-auto mb-4 bg-bodybg dark:border-black/10 shadow-lg dark:shadow-xl">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-3xl font-bold opsilion text-defaulttextcolor dark:text-white/80">
+    <Card className="w-full mx-auto my-4 bg-bodybg dark:border-black/10 shadow-lg dark:shadow-xl">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 py-3">
+        <CardTitle className="text-2xl font-bold text-defaulttextcolor dark:text-white/80">
           Последни предпочитания
         </CardTitle>
-        <div className="flex items-center text-sm text-muted-foreground">
-          <Calendar className="h-4 w-4 mr-1" />
+        <div className="flex items-center text-xs text-muted-foreground">
+          <Calendar className="h-3 w-3 mr-1" />
           {new Date(preferences.date).toLocaleString("bg-BG")}
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <CardContent className="pt-0">
+        <div className="grid gap-2">
           {preferenceItems.map((item, index) => (
             <div
               key={index}
-              className="bg-white dark:bg-bodybg2 p-4 rounded-lg shadow"
+              className="bg-white dark:bg-bodybg2 p-3 rounded-md shadow-sm flex items-center max-w-[69rem]"
             >
-              <div className="flex items-center mb-2">
+              <div className="flex items-center w-1/3">
                 {item.icon}
-                <span className="ml-2 font-semibold">{item.label}</span>
+                <span className="ml-2 font-semibold text-sm">{item.label}</span>
               </div>
-              <div className="text-lg text-defaulttextcolor dark:text-white/80">
+              <div
+                title={item.value || "Не е зададено"}
+                className="w-2/3 text-sm text-defaulttextcolor dark:text-white/80 truncate"
+              >
                 {item.value || "Не е зададено"}
               </div>
             </div>
           ))}
-        </div>
-        <Accordion type="single" collapsible className="space-y-4">
-          <AccordionItem value="additional-preferences">
-            <AccordionTrigger className="text-xl font-semibold opsilion">
-              Допълнителни предпочитания
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                {additionalPreferences.map((item, index) => (
-                  <div key={index} className="flex items-center space-x-2">
-                    {item.icon}
-                    <span className="font-semibold">{item.label}:</span>
-                    <span>{item.value || "Не е зададено"}</span>
-                  </div>
-                ))}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-        <div className="mt-6">
-          <span className="font-semibold mr-2 text-lg">Жанрове (EN):</span>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {preferences.preferred_genres_en.split(", ").map((genre, index) => (
-              <Badge key={index} variant="default" className="text-sm">
-                {genre}
-              </Badge>
-            ))}
-          </div>
         </div>
       </CardContent>
     </Card>

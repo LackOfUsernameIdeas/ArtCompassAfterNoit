@@ -140,7 +140,8 @@ const AIAnalysator: FC = () => {
     id: 37,
     user_id: 1,
     preferred_genres_en: "Romance, Horror, Crime",
-    preferred_genres_bg: "Романтичен, Ужаси, Криминален",
+    preferred_genres_bg:
+      "Романтичен, Ужаси, Криминален, Романтичен, Ужаси, Криминален, Романтичен, Ужаси, Криминален, Романтичен, Ужаси, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален, Криминален",
     mood: "",
     timeAvailability: "1 час",
     preferred_age: "",
@@ -159,8 +160,7 @@ const AIAnalysator: FC = () => {
       {!showError ? (
         <div className="p-[1.5rem]">
           <div className="z-10 max-w-6xl w-full mx-auto font-mono text-sm">
-            <UserPreferences preferences={preferences} />
-            <div className="text-center !text-lg box p-6 flex flex-col gap-6 !rounded-xl justify-center items-center">
+            <div className="text-center !text-lg box p-6 flex flex-col gap-4 !rounded-xl justify-center items-center">
               <Card className="bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto">
                 <h2 className="text-4xl opsilion text-defaulttextcolor dark:text-white/80">
                   Искате ли да знаете колко добре се е справил AI-ът с
@@ -320,6 +320,7 @@ const AIAnalysator: FC = () => {
                 f1ScoreData={f1ScoreData}
               />
             )}
+            <UserPreferences preferences={preferences} />
             {renderRecommendationsAnalysis && (
               <RecommendationsAnalysesWidgets
                 recommendationsAnalysis={recommendationsAnalysis}
