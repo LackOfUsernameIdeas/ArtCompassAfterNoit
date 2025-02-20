@@ -7,6 +7,7 @@ interface InfoboxModalProps {
   title: string | JSX.Element;
   description: string | JSX.Element;
 }
+
 export const InfoboxModal: FC<InfoboxModalProps> = ({
   onClick,
   isModalOpen,
@@ -42,9 +43,11 @@ export const InfoboxModal: FC<InfoboxModalProps> = ({
             transition: "opacity 300ms, transform 300ms"
           }}
         >
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <p className="text-sm">{description}</p>
-          <div className="flex justify-end">
+          <div className="max-h-[40rem] overflow-y-auto p-2">
+            <h2 className="text-lg font-semibold">{title}</h2>
+            <p className="text-sm">{description}</p>
+          </div>
+          <div className="flex justify-end p-2">
             <button
               onClick={onClick}
               className="bg-primary hover:bg-primary/90 text-white font-medium rounded-lg px-5 py-2.5 text-center transition-all duration-200 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
