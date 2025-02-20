@@ -44,7 +44,7 @@ const AwardsSection: FC<GenresProps> = ({ recommendation }) => {
           recommendation.literary_awards.split(", ").map((award, index) => (
             <span
               key={index}
-              className="inline-block text-[#FFCC33] bg-[#bf9413]/70 dark:bg-[#FFCC33]/25 px-3 py-1 rounded-md text-sm"
+              className="inline-block text-white dark:text-[#FFCC33] bg-[#bf9413]/70 dark:bg-[#FFCC33]/25 px-3 py-1 rounded-md text-sm"
             >
               {award}
             </span>

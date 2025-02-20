@@ -22,7 +22,7 @@ const Genres: FC<GenresProps> = ({ genres, source }) => {
                 >
                   {/*Главна категория*/}
                   <div className="bg-primary/70 dark:bg-primary/25 rounded-md px-2 py-1 shadow-md inline-block transition-transform duration-200 transform group-hover:scale-105">
-                    <span className="flex items-center text-base text-primary dark:text-primary/90">
+                    <span className="flex items-center text-base text-white dark:text-primary">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="w-4 h-4 mr-1 transition-transform duration-200 transform group-hover:rotate-90"
@@ -69,7 +69,7 @@ const Genres: FC<GenresProps> = ({ genres, source }) => {
                           {subGenres.split(", ").map((subGenre, subIndex) => (
                             <li
                               key={subIndex}
-                              className="bg-primary/50 dark:bg-primary/40 px-3 py-1 rounded-md text-sm text-secondary dark:text-secondary/90 shadow-md transform hover:scale-105 transition-transform duration-150 cursor-pointer"
+                              className="bg-primary/50 dark:bg-primary/40 px-3 py-1 rounded-md text-sm text-white dark:text-secondary/90 shadow-md transform hover:scale-105 transition-transform duration-150 cursor-pointer"
                             >
                               {subGenre}
                             </li>
@@ -88,7 +88,7 @@ const Genres: FC<GenresProps> = ({ genres, source }) => {
             {genres.map((genre, index) => (
               <span
                 key={index}
-                className="inline-block text-primary bg-primary/70 dark:bg-primary/25 px-3 py-1 rounded-md text-sm"
+                className="inline-block text-white dark:text-primary bg-primary/80 dark:bg-primary/25 px-3 py-1 rounded-md text-sm"
               >
                 {genre}
               </span>

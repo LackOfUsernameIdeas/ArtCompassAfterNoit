@@ -364,7 +364,9 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
                   )}
                   {isGoodreads && (
                     <li>
-                      <strong className="text-primary">Местообстановка:</strong>{" "}
+                      <strong className="text-primary">
+                        Място на развитие на действието:
+                      </strong>{" "}
                       {selectedItem.setting || "Неизвестна"}
                     </li>
                   )}
