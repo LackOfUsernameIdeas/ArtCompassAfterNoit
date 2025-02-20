@@ -22,7 +22,7 @@ const MoviesByProsperityComponent: FC<MoviesByProsperityComponentProps> = ({
         <div className="flex flex-col md:flex-row gap-8 box p-6 rounded-lg shadow-lg dark:text-gray-300 text-[#333335] justify-center items-center">
           {/* Лява част */}
           <Card className="bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed md:w-1/2 mx-auto">
-            <h2 className="text-2xl font-Equilibrist text-defaulttextcolor dark:text-white/80">
+            <h2 className="text-sm text-defaulttextcolor dark:text-white/80">
               Тук може да видите най-успешните филми според{" "}
               <span className="font-bold text-primary">IMDb рейтинг</span> и
               приходи от{" "}
@@ -42,7 +42,7 @@ const MoviesByProsperityComponent: FC<MoviesByProsperityComponentProps> = ({
             </h2>
           </Card>
           {/* Дясна част*/}
-          <div className="md:w-1/2 text-sm">
+          <div className="md:w-1/2">
             <Accordion type="single" collapsible className="space-y-4">
               {/* IMDb */}
               <AccordionItem value="imdb">
