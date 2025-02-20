@@ -1,6 +1,12 @@
 import { FC, useState, useEffect } from "react";
 import { X, ChevronUp, ChevronDown } from "lucide-react";
 import { moviesSeriesGenreOptions } from "../../../data_common";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from "@/components/ui/accordion";
 
 interface FilterSidebarProps {
   isOpen: boolean;
@@ -13,7 +19,11 @@ interface FilterSidebarProps {
   }) => void;
 }
 
-const FilterSidebar: FC<FilterSidebarProps> = ({ isOpen, onClose, onApplyFilters }) => {
+const FilterSidebar: FC<FilterSidebarProps> = ({
+  isOpen,
+  onClose,
+  onApplyFilters
+}) => {
   const [isGenreVisible, setIsGenreVisible] = useState(false);
   const [isRuntimeVisible, setIsRuntimeVisible] = useState(false);
   const [isTypeVisible, setIsTypeVisible] = useState(false);
@@ -50,7 +60,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({ isOpen, onClose, onApplyFilters
       genres: [],
       runtime: [],
       type: [],
-      year: [],
+      year: []
     });
   };
 
@@ -67,7 +77,9 @@ const FilterSidebar: FC<FilterSidebarProps> = ({ isOpen, onClose, onApplyFilters
 
   const handleRuntimeChange = (runtime: string) => {
     setSelectedRuntime((prev) =>
-      prev.includes(runtime) ? prev.filter((r) => r !== runtime) : [...prev, runtime]
+      prev.includes(runtime)
+        ? prev.filter((r) => r !== runtime)
+        : [...prev, runtime]
     );
   };
 
@@ -88,7 +100,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({ isOpen, onClose, onApplyFilters
       genres: selectedGenres,
       runtime: selectedRuntime,
       type: selectedType,
-      year: selectedYear,
+      year: selectedYear
     });
     onClose();
   };
@@ -96,7 +108,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({ isOpen, onClose, onApplyFilters
   return (
     <div
       className={`fixed top-0 right-0 h-full w-full md:w-96 bg-bodybg dark:bg-bodybg shadow-lg transition-transform transform ${
-        isOpen ? "translate-x-0" : "translate-x-full"
+        isOpen ? "translate-x-0" : "translate-x-[40rem]"
       } z-50 p-4 overflow-y-auto`}
     >
       <button
@@ -108,42 +120,49 @@ const FilterSidebar: FC<FilterSidebarProps> = ({ isOpen, onClose, onApplyFilters
       <h3 className="text-lg font-bold opsilion mb-4">Филтриране</h3>
       <div className="space-y-4">
         {/* Жанр Section */}
-        <div>
-          <button
-            className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md"
-            onClick={toggleGenreVisibility}
-          >
-            Жанр {isGenreVisible ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-          </button>
-          {isGenreVisible && (
-            <div className="mt-2 space-y-2">
-              {moviesSeriesGenreOptions.map(({ bg }) => (
-                <div key={bg} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={selectedGenres.includes(bg)}
-                    onChange={() => handleGenreChange(bg)}
-                    className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
-                  />
-                  <span className="opsilion text-sm">{bg}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <Accordion type="single" collapsible>
+          <AccordionItem value="genre">
+            <AccordionTrigger
+              className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md"
+              onClick={toggleGenreVisibility}
+            >
+              Жанр
+            </AccordionTrigger>
+            <AccordionContent className="pl-4">
+              <div className="mt-2 space-y-2">
+                {moviesSeriesGenreOptions.map(({ bg }) => (
+                  <div key={bg} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedGenres.includes(bg)}
+                      onChange={() => handleGenreChange(bg)}
+                      className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
+                    />
+                    <span className="opsilion text-sm">{bg}</span>
+                  </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
 
         {/* Runtime Section */}
-        <div>
-          <button
-            className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md"
-            onClick={toggleRuntimeVisibility}
-          >
-            Продължителност {isRuntimeVisible ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-          </button>
-          {isRuntimeVisible && (
-            <div className="mt-2 space-y-2">
-              {["Под 60 минути", "60 до 120 минути", "120 до 180 минути", "Повече от 180 минути"].map(
-                (option) => (
+        <Accordion type="single" collapsible>
+          <AccordionItem value="runtime">
+            <AccordionTrigger
+              className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md"
+              onClick={toggleRuntimeVisibility}
+            >
+              Продължителност
+            </AccordionTrigger>
+            <AccordionContent className="pl-4">
+              <div className="mt-2 space-y-2">
+                {[
+                  "Под 60 минути",
+                  "60 до 120 минути",
+                  "120 до 180 минути",
+                  "Повече от 180 минути"
+                ].map((option) => (
                   <div key={option} className="flex items-center gap-2">
                     <input
                       type="checkbox"
@@ -153,72 +172,81 @@ const FilterSidebar: FC<FilterSidebarProps> = ({ isOpen, onClose, onApplyFilters
                     />
                     <span className="opsilion text-sm">{option}</span>
                   </div>
-                )
-              )}
-            </div>
-          )}
-        </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
 
         {/* Type Section */}
-        <div>
-          <button
-            className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md"
-            onClick={toggleTypeVisibility}
-          >
-            Вид {isTypeVisible ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-          </button>
-          {isTypeVisible && (
-            <div className="mt-2 space-y-2">
-              {["Филм", "Сериал"].map((option) => (
-                <div key={option} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={selectedType.includes(option)}
-                    onChange={() => handleTypeChange(option)}
-                    className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
-                  />
-                  <span className="opsilion text-sm">{option}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <Accordion type="single" collapsible>
+          <AccordionItem value="type">
+            <AccordionTrigger
+              className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md"
+              onClick={toggleTypeVisibility}
+            >
+              Вид
+            </AccordionTrigger>
+            <AccordionContent className="pl-4">
+              <div className="mt-2 space-y-2">
+                {["Филм", "Сериал"].map((option) => (
+                  <div key={option} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedType.includes(option)}
+                      onChange={() => handleTypeChange(option)}
+                      className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
+                    />
+                    <span className="opsilion text-sm">{option}</span>
+                  </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
 
         {/* Year of Release Section */}
-        <div>
-          <button
-            className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md"
-            onClick={toggleYearVisibility}
-          >
-            Година на излизане {isYearVisible ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-          </button>
-          {isYearVisible && (
-            <div className="mt-2 space-y-2">
-              {["Преди 2000", "2000 до 2010", "2010 до 2020", "След 2020"].map((option) => (
-                <div key={option} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={selectedYear.includes(option)}
-                    onChange={() => handleYearChange(option)}
-                    className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
-                  />
-                  <span className="opsilion text-sm">{option}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <Accordion type="single" collapsible>
+          <AccordionItem value="year">
+            <AccordionTrigger
+              className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md"
+              onClick={toggleTypeVisibility}
+            >
+              Година на излизане
+            </AccordionTrigger>
+            <AccordionContent className="pl-4">
+              <div className="mt-2 space-y-2">
+                {[
+                  "Преди 2000",
+                  "2000 до 2010",
+                  "2010 до 2020",
+                  "След 2020"
+                ].map((option) => (
+                  <div key={option} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedYear.includes(option)}
+                      onChange={() => handleYearChange(option)}
+                      className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
+                    />
+                    <span className="opsilion text-sm">{option}</span>
+                  </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
 
         {/* Reset and Apply Buttons */}
         <div className="flex flex-col gap-2">
           <button
-            className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400 transition w-full"
+            className="bg-gray-300 hover:bg-gray-300/75 text-gray-800 px-4 py-2 rounded-md transition w-full"
             onClick={handleResetFilters}
           >
             Нулиране на филтрите
           </button>
           <button
-            className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition w-full"
+            className="bg-primary hover:bg-primary/75 text-white px-4 py-2 rounded-md transition w-full"
             onClick={handleApplyFilters}
           >
             Приложи

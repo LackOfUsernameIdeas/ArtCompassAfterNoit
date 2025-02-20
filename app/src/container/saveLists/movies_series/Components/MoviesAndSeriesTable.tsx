@@ -3,6 +3,8 @@ import { MoviesAndSeriesTableProps } from "../watchlist-types";
 import RecommendationCardAlert from "./RecommendationCardAlert";
 import { MovieSeriesRecommendation } from "../../../types_common";
 import FilterSidebar from "./FilterSidebar";
+import { ChevronDownIcon } from "lucide-react";
+import { useMediaQuery } from "react-responsive";
 
 // Custom CSS for the dropdown arrow
 const customStyles = `
@@ -25,17 +27,20 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
   bookmarkedMovies,
   setBookmarkedMovies,
   setCurrentBookmarkStatus,
-  setAlertVisible,
+  setAlertVisible
 }) => {
-  const [selectedItem, setSelectedItem] = useState<MovieSeriesRecommendation | null>(null);
+  const [selectedItem, setSelectedItem] =
+    useState<MovieSeriesRecommendation | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filteredData, setFilteredData] = useState(data);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12); // Default items per page
+  const [isSelectOpen, setIsSelectOpen] = useState(false);
+  const handleMovieClick = (item: MovieSeriesRecommendation) =>
+    setSelectedItem(item);
 
-  const handleMovieClick = (item: MovieSeriesRecommendation) => setSelectedItem(item);
-
-  const getTranslatedType = (type: string) => (type === "movie" ? "Филм" : type === "series" ? "Сериал" : type);
+  const getTranslatedType = (type: string) =>
+    type === "movie" ? "Филм" : type === "series" ? "Сериал" : type;
 
   const handleApplyFilters = (filters: {
     genres: string[];
@@ -47,27 +52,35 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
       const movieGenres = item.genre_bg.split(",").map((genre) => genre.trim());
       const matchesGenre =
         filters.genres.length === 0 ||
-        filters.genres.some((selectedGenre) => movieGenres.includes(selectedGenre));
+        filters.genres.some((selectedGenre) =>
+          movieGenres.includes(selectedGenre)
+        );
 
       const runtime = parseInt(item.runtime.replace(/\D/g, ""), 10);
-      const matchesRuntime = filters.runtime.length === 0 || filters.runtime.some((r) => {
-        if (r === "Под 60 минути") return runtime < 60;
-        if (r === "60 до 120 минути") return runtime >= 60 && runtime <= 120;
-        if (r === "120 до 180 минути") return runtime > 120 && runtime <= 180;
-        if (r === "Повече от 180 минути") return runtime > 180;
-        return true;
-      });
+      const matchesRuntime =
+        filters.runtime.length === 0 ||
+        filters.runtime.some((r) => {
+          if (r === "Под 60 минути") return runtime < 60;
+          if (r === "60 до 120 минути") return runtime >= 60 && runtime <= 120;
+          if (r === "120 до 180 минути") return runtime > 120 && runtime <= 180;
+          if (r === "Повече от 180 минути") return runtime > 180;
+          return true;
+        });
 
-      const matchesType = filters.type.length === 0 || filters.type.includes(getTranslatedType(item.type));
+      const matchesType =
+        filters.type.length === 0 ||
+        filters.type.includes(getTranslatedType(item.type));
 
       const year = parseInt(item.year, 10);
-      const matchesYear = filters.year.length === 0 || filters.year.some((y) => {
-        if (y === "Преди 2000") return year < 2000;
-        if (y === "2000 до 2010") return year >= 2000 && year <= 2010;
-        if (y === "2010 до 2020") return year > 2010 && year <= 2020;
-        if (y === "След 2020") return year > 2020;
-        return true;
-      });
+      const matchesYear =
+        filters.year.length === 0 ||
+        filters.year.some((y) => {
+          if (y === "Преди 2000") return year < 2000;
+          if (y === "2000 до 2010") return year >= 2000 && year <= 2010;
+          if (y === "2010 до 2020") return year > 2010 && year <= 2020;
+          if (y === "След 2020") return year > 2020;
+          return true;
+        });
 
       return matchesGenre && matchesRuntime && matchesType && matchesYear;
     });
@@ -97,11 +110,14 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
     }
   };
 
-  const handleItemsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleItemsPerPageChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     setItemsPerPage(Number(event.target.value));
     setCurrentPage(1); // Reset to the first page when items per page changes
   };
 
+  const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
   return (
     <Fragment>
       {/* Inject custom styles for the dropdown arrow */}
@@ -129,22 +145,74 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
         <div className="box custom-card">
           <div className="box-header justify-between flex items-center">
-            <div className="box-title flex items-center gap-4">
-              Списък За Гледане
-              <select
-                className="custom-select bg-transparent text-primary border border-primary rounded-md px-3 py-1.5 text-sm focus:outline-none hover:bg-primary hover:text-white transition"
-                value={itemsPerPage}
-                onChange={handleItemsPerPageChange}
-              >
-                <option value={6}>6 елемента на страница</option>
-                <option value={12}>12 елемента на страница</option>
-                <option value={24}>24 елемента на страница</option>
-                <option value={36}>36 елемента на страница</option>
-                <option value={48}>48 елемента на страница</option>
-              </select>
+            <div className="flex items-center gap-4">
+              <p className="box-title">Списък За Гледане</p>
+              <div className="relative inline-block text-left">
+                <div>
+                  <button
+                    type="button"
+                    className="inline-flex justify-between items-center w-full px-3 py-1.5 text-sm font-medium text-primary bg-primary/10 border border-primary rounded-md shadow-sm hover:bg-primary hover:text-white focus:bg-primary focus:text-white transition-all duration-300 ease-in-out"
+                    onClick={() => setIsSelectOpen(!isSelectOpen)}
+                  >
+                    {itemsPerPage} елемента на страница
+                    <ChevronDownIcon
+                      className={`w-5 h-5 ml-2 -mr-1 transition-transform duration-300 ${
+                        isSelectOpen ? "transform rotate-180" : ""
+                      }`}
+                      aria-hidden="true"
+                    />
+                  </button>
+                </div>
+
+                {isSelectOpen && (
+                  <div className="origin-top-right absolute w-full right-0 mt-2 rounded-md shadow-lg bg-white dark:bg-bodybg border border-primary z-10 animate-dropdown">
+                    <div
+                      role="menu"
+                      aria-orientation="vertical"
+                      aria-labelledby="options-menu"
+                    >
+                      {[6, 12, 24, 36, 48].map((value) => (
+                        <button
+                          key={value}
+                          className={`
+                            group flex items-center w-full px-4 py-2 text-sm bg-primary/10
+                            ${
+                              itemsPerPage === value
+                                ? "text-white !bg-primary font-medium"
+                                : "text-defaulttextcolor dark:text-white/80"
+                            }
+                            hover:bg-primary/50 rounded-sm
+                            transition-all duration-300 ease-in-out
+                          `}
+                          role="menuitem"
+                          onClick={() => {
+                            setItemsPerPage(value);
+                            setIsSelectOpen(false);
+                          }}
+                        >
+                          {value} елемента на страница
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <select
+                  className="sr-only"
+                  value={itemsPerPage}
+                  onChange={handleItemsPerPageChange}
+                  aria-label="Select number of items per page"
+                >
+                  <option value={6}>6 елемента на страница</option>
+                  <option value={12}>12 елемента на страница</option>
+                  <option value={24}>24 елемента на страница</option>
+                  <option value={36}>36 елемента на страница</option>
+                  <option value={48}>48 елемента на страница</option>
+                </select>
+              </div>
             </div>
             <button
-              className="bg-transparent text-primary border border-primary rounded-md px-3 py-1.5 text-sm focus:outline-none hover:bg-primary hover:text-white transition"
+              className="bg-primary/10 text-primary border border-primary rounded-md px-3 py-1.5 text-sm focus:outline-none hover:bg-primary hover:text-white transition"
               onClick={() => setIsFilterOpen(true)}
             >
               Филтриране
@@ -154,7 +222,7 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
             {currentData.map((item, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-bodybg2/50 shadow-lg rounded-lg p-4 cursor-pointer hover:bg-primary dark:hover:bg-primary hover:text-white transition flex flex-col items-center"
+                className="bg-white dark:bg-bodybg2/50 shadow-lg rounded-lg p-4 cursor-pointer hover:bg-primary dark:hover:bg-primary hover:text-white transition duration-300 flex flex-col items-center"
                 onClick={() => handleMovieClick(item)}
               >
                 <div className="flex items-center gap-4 w-full">
@@ -168,13 +236,18 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
                       Жанр: <p className="font-Equilibrist">{item.genre_bg}</p>
                     </span>
                     <span className="opsilion">
-                      Продължителност: <p className="font-Equilibrist">{item.runtime}</p>
+                      Продължителност:{" "}
+                      <p className="font-Equilibrist">{item.runtime}</p>
                     </span>
                     <span className="opsilion">
-                      Вид: <p className="font-Equilibrist">{getTranslatedType(item.type)}</p>
+                      Вид:{" "}
+                      <p className="font-Equilibrist">
+                        {getTranslatedType(item.type)}
+                      </p>
                     </span>
                     <span className="opsilion">
-                      Година на излизане: <p className="font-Equilibrist">{item.year}</p>
+                      Година на излизане:{" "}
+                      <p className="font-Equilibrist">{item.year}</p>
                     </span>
                   </div>
                 </div>
@@ -187,25 +260,101 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
             ))}
           </div>
           {/* Pagination Controls */}
-          <div className="flex justify-center items-center gap-4 mt-4">
-            <button
+          {totalPages > 1 && (
+            <div className="box-footer flex justify-center items-center gap-4">
+              {/* <button
               className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition"
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
             >
               Предишна
-            </button>
-            <span className="text-defaulttextcolor dark:text-white/80">
-              Страница {currentPage} от {totalPages}
-            </span>
-            <button
+            </button> */}
+              <span className="text-defaulttextcolor dark:text-white/80">
+                Страница {currentPage} от {totalPages}
+              </span>
+              <div className="flex justify-center">
+                <nav
+                  aria-label="Page navigation"
+                  className="pagination-style-4"
+                >
+                  <ul className="ti-pagination mb-0 gap-3">
+                    {/* Бутон за предишна страница */}
+                    <li
+                      className={`page-item ${
+                        currentPage === 1 ? "disabled" : ""
+                      }`}
+                    >
+                      <button
+                        className="bg-primary/10 hover:bg-primary/50 border border-primary text-primary px-5 py-3 rounded-lg transition"
+                        onClick={handlePreviousPage}
+                        style={{
+                          padding: is1546 ? "0.4rem 0.6rem" : "0.35rem 0.7rem",
+                          fontSize: is1546 ? "0.75rem" : "0.85rem",
+                          lineHeight: "1.4"
+                        }}
+                      >
+                        Предишна
+                      </button>
+                    </li>
+
+                    {/* Индекси на страниците */}
+                    {[...Array(totalPages)].map((_, index) => (
+                      <li
+                        key={index}
+                        className={`page-item ${
+                          currentPage === index + 1 ? "active" : ""
+                        }`}
+                      >
+                        <button
+                          className="page-link "
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setCurrentPage(index + 1);
+                          }}
+                          style={{
+                            padding: is1546
+                              ? "0.4rem 0.6rem"
+                              : "0.35rem 0.7rem",
+                            fontSize: is1546 ? "0.75rem" : "0.85rem",
+                            lineHeight: "1.4"
+                          }}
+                        >
+                          {index + 1}
+                        </button>
+                      </li>
+                    ))}
+
+                    {/* Бутон за следваща страница */}
+                    <li
+                      className={`page-item ${
+                        currentPage === totalPages ? "disabled" : ""
+                      }`}
+                    >
+                      <button
+                        className="bg-primary/10 hover:bg-primary/50 border border-primary text-primary px-5 py-3 rounded-lg transition"
+                        onClick={handleNextPage}
+                        style={{
+                          padding: is1546 ? "0.4rem 0.6rem" : "0.35rem 0.7rem",
+                          fontSize: is1546 ? "0.75rem" : "0.85rem",
+                          lineHeight: "1.4"
+                        }}
+                      >
+                        Следваща
+                      </button>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+
+              {/* <button
               className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition"
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
             >
               Следваща
-            </button>
-          </div>
+            </button> */}
+            </div>
+          )}
         </div>
       </div>
     </Fragment>

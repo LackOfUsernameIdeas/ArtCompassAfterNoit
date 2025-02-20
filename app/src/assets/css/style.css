@@ -3055,12 +3055,12 @@ Background Image
 }
 
 .page-item.active .page-link {
-  @apply text-white bg-primary dark:bg-primary border-primary;
+  @apply text-white bg-primary dark:bg-primary border-primary hover:bg-primary/10;
 }
 
 .disabled > .page-link,
 .page-link.disabled {
-  @apply text-defaulttextcolor bg-white dark:bg-bodybg dark:border-defaultborder/10 border-defaultborder opacity-[0.7];
+  @apply text-defaulttextcolor bg-primary/10 dark:border-defaultborder/10 border-defaultborder opacity-[0.7];
 }
 
 .popular-blog-content {
@@ -16102,11 +16102,11 @@ body {
 }
 
 .box-header {
-  @apply font-medium border-b border-b-defaultborder md:flex items-center gap-[0.25rem] rounded-t-sm px-[1.25rem] py-4 dark:border-white/10 flex-wrap;
+  @apply font-medium border-b border-black/10 md:flex items-center gap-[0.25rem] rounded-t-sm px-[1.25rem] py-4 dark:border-white/10 flex-wrap;
 }
 
 .custom-box-header {
-  @apply font-medium border-b border-b-defaultborder md:flex items-center gap-[0.25rem] rounded-t-sm px-[1.25rem] py-4 dark:border-white/10 flex-wrap;
+  @apply font-medium border-b border-black/10 md:flex items-center gap-[0.25rem] rounded-t-sm px-[1.25rem] py-4 dark:border-white/10 flex-wrap;
   min-height: 70px;
   display: flex;
   align-items: center;
@@ -16137,7 +16137,7 @@ body {
 }
 
 .box-footer {
-  @apply border-t rounded-b-sm py-4 px-[1.25rem] text-defaultsize text-defaulttextcolor md:py-4 md:px-5 dark:border-white/10;
+  @apply border-t rounded-b-sm py-4 px-[1.25rem] text-defaultsize text-defaulttextcolor md:py-4 md:px-5 border-black/10 dark:border-white/10;
 }
 
 .display-1 {
@@ -20095,6 +20095,21 @@ option.selectionList {
 
 .animate-bounce-horizontal {
   animation: bounce-horizontal 1s infinite;
+}
+
+@keyframes dropdownOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-dropdown {
+  animation: dropdownOpen 0.3s ease-out;
 }
 
 /*# sourceMappingURL=style.css.map */
