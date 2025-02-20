@@ -142,9 +142,9 @@ const Watchlist: FC = () => {
       )}
       <Fragment>
         <div className="mt-[1.5rem]">
-          <div className="text-center !text-lg box p-6 flex flex-col md:flex-row gap-6 justify-center items-center">
-            <Card className="bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed md:w-1/2 mx-auto">
-              <h2 className="text-2xl font-Equilibrist text-defaulttextcolor dark:text-white/80">
+          <div className="text-center !text-lg box p-6 flex flex-col md:flex-row gap-6 justify-center items-stretch">
+            <Card className="bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed md:w-1/2 mx-auto flex-grow flex items-center justify-center">
+              <h2 className="text-lg font-Equilibrist text-defaulttextcolor dark:text-white/80">
                 В тази страница можете да разгледате подробна информация за
                 добавените от вас филми и сериали в{" "}
                 <span className="font-bold text-primary">
