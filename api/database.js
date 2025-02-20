@@ -3570,8 +3570,6 @@ const savePrecision = (userId, statsType, data, callback) => {
         data.total_recommendations_count || null
       ];
 
-      console.log(values);
-
       db.query(saveQuery, values, callback);
     } else {
       callback(null, { message: "No new Precision data to save." });
@@ -3677,8 +3675,6 @@ const saveF1Score = (userId, statsType, data, callback) => {
         data.f1_score_percentage || null
       ];
 
-      console.log(values);
-
       db.query(saveQuery, values, callback);
     } else {
       callback(null, { message: "No new F1 Score data to save." });
@@ -3762,6 +3758,32 @@ const calculateAverageMetrics = (callback) => {
   });
 };
 
+const countBookAdaptations = (callback) => {
+  const query = "SELECT adaptations FROM books_recommendations";
+
+  db.query(query, (error, results) => {
+    if (error) {
+      return callback(error, null);
+    }
+
+    let movieCount = 0;
+    let seriesCount = 0;
+
+    results.forEach((row) => {
+      if (row.adaptations) {
+        if (/Филм|Movie|film/i.test(row.adaptations)) {
+          movieCount++;
+        }
+        if (/Сериал|Series|TV|Телевизионен сериал/i.test(row.adaptations)) {
+          seriesCount++;
+        }
+      }
+    });
+
+    callback(null, { movies: movieCount, series: seriesCount });
+  });
+};
+
 module.exports = {
   checkEmailExists,
   createUser,
@@ -3816,5 +3838,6 @@ module.exports = {
   saveRecall,
   saveF1Score,
   saveAnalysis,
-  calculateAverageMetrics
+  calculateAverageMetrics,
+  countBookAdaptations
 };

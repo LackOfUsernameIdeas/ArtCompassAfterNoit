@@ -624,12 +624,12 @@ app.post("/check-for-recommendation-in-list", (req, res) => {
 
 // Вземане на данни за общ брой на потребители в платформата
 app.get("/stats/platform/users-count", (req, res) => {
-  console.log("--Нови Препоръки--");
+  console.log("--Landing--");
   db.getUsersCount((err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching users count" });
     }
-    console.log("--Нови Препоръки--");
+    console.log("--Landing--");
     res.json(result);
   });
 });
@@ -1405,7 +1405,6 @@ app.get("/stats/ai/average-metrics", (req, res) => {
       return res
         .status(500)
         .json({ error: "Грешка при изчисляването на метриките." });
-
     // Връщане на резултата като JSON отговор
     res.status(200).json(result);
   });
@@ -1414,6 +1413,7 @@ app.get("/stats/ai/average-metrics", (req, res) => {
 // Изчисляване на Precision на база всички препоръки, правени някога за даден потребител
 app.post("/stats/ai/precision-total", (req, res) => {
   const { token, userPreferences } = req.body;
+  console.log("AI Анализатор");
 
   // Проверка дали липсва обектът с предпочитания на потребителя
   if (!userPreferences) {
@@ -1486,6 +1486,7 @@ app.post("/stats/ai/precision-total", (req, res) => {
               .json({ error: "Error saving AI precision stats" });
           }
 
+          console.log("AI Анализатор");
           // Връщане на резултатите като JSON
           res.json({
             precision_exact,
@@ -1663,6 +1664,16 @@ app.post("/stats/ai/f1-score", (req, res) => {
         });
       }
     );
+  });
+});
+
+// Извличане на броя книги с филмови и сериални адаптации
+app.get("/stats/platform/adaptations", (req, res) => {
+  db.getUsersCount((err, result) => {
+    if (err) {
+      return res.status(500).json({ error: "Error fetching users count" });
+    }
+    res.json(result);
   });
 });
 
