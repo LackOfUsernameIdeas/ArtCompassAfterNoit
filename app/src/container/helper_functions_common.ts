@@ -106,9 +106,7 @@ export const validateToken = async (
  * @throws {Error} - Хвърля грешка, ако не успее да преведе текста.
  */
 export async function translate(entry: string): Promise<string> {
-  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bg&dt=t&q=${encodeURIComponent(
-    entry
-  )}`;
+  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=bg&dt=t&q=${entry}`;
 
   try {
     const response = await fetch(url);

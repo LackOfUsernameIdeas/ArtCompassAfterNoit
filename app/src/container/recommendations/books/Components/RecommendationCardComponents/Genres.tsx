@@ -90,7 +90,7 @@ const Genres: FC<GenresProps> = ({ genres }) => {
             {genres.map((genre, index) => (
               <span
                 key={index}
-                className="inline-block text-primary bg-primary/70 dark:bg-primary/25 px-3 py-1 rounded-md text-sm"
+                className="inline-block text-white dark:text-primary bg-primary/80 dark:bg-primary/25 px-3 py-1 rounded-md text-sm"
               >
                 {genre}
               </span>
