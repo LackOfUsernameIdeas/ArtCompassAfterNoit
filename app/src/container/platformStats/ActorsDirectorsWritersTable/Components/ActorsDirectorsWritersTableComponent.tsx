@@ -90,10 +90,10 @@ const ActorsDirectorsWritersTableComponent: FC<
   return (
     <Fragment>
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
-        <div className="flex flex-col md:flex-row gap-8 box p-6 rounded-lg shadow-lg dark:text-gray-300 text-[#333335] justify-center items-center">
+        <div className="flex flex-col md:flex-row gap-8 box p-6 rounded-lg shadow-lg dark:text-gray-300 text-[#333335] justify-center items-stretch">
           {/* Лява част */}
-          <Card className="bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed md:w-1/2 mx-auto">
-            <h2 className="text-xl font-Equilibrist text-defaulttextcolor dark:text-white/80">
+          <Card className="bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed md:w-1/2 mx-auto flex items-center justify-center">
+            <h2 className="text-sm text-defaulttextcolor dark:text-white/80">
               Тук може да видите класация на режисьори, актьори и сценаристи
               според техния{" "}
               <span className="font-bold text-primary">
@@ -103,9 +103,7 @@ const ActorsDirectorsWritersTableComponent: FC<
               <ul className="text-left coollist pl-7 pt-5">
                 <li>
                   Среден{" "}
-                  <span className="font-bold text-primary">
-                    IMDb рейтинг
-                  </span>{" "}
+                  <span className="font-bold text-primary">IMDb рейтинг</span>{" "}
                   на филмите
                 </li>
                 <li>
@@ -123,20 +121,20 @@ const ActorsDirectorsWritersTableComponent: FC<
                   <span className="font-bold text-primary">боксофиса</span>
                 </li>
                 <li>
-                  <span className="font-bold text-primary">Брой</span>{" "}
-                  филми, препоръчвани в платформата
+                  <span className="font-bold text-primary">Брой</span> филми,
+                  препоръчвани в платформата
                 </li>
                 <li>
-                  <span className="font-bold text-primary">Брой</span> пъти,
-                  в които са препоръчвани техни филми
+                  <span className="font-bold text-primary">Брой</span> пъти, в
+                  които са препоръчвани техни филми
                 </li>
                 <li>
                   Спечелени{" "}
                   <span className="font-bold text-primary">награди</span>
                 </li>
                 <li>
-                  <span className="font-bold text-primary">Номинации</span>{" "}
-                  за награди
+                  <span className="font-bold text-primary">Номинации</span> за
+                  награди
                 </li>
               </ul>
             </h2>
