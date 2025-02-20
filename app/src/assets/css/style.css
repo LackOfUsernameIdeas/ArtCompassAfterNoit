@@ -1991,7 +1991,7 @@ Background Image
     @apply block !important;
   }
   [data-nav-layout="horizontal"] .landing-body .app-sidebar {
-    @apply bg-primary/10 dark:bg-primary/10 py-4;
+    @apply bg-white dark:bg-primary py-4;
   }
   [data-nav-layout="horizontal"]
     .landing-body
