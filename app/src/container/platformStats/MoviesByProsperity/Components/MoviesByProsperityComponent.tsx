@@ -26,19 +26,19 @@ const MoviesByProsperityComponent: FC<MoviesByProsperityComponentProps> = ({
               Тук може да видите най-успешните филми според{" "}
               <span className="font-bold text-primary">IMDb рейтинг</span> и
               приходи от{" "}
-              <span className="font-bold text-primary">боксофиса</span>.
-              Филмите са разпределени по жанрове, като всеки жанр е отбелязан с{" "}
+              <span className="font-bold text-primary">боксофиса</span>. Филмите
+              са разпределени по жанрове, като всеки жанр е отбелязан с{" "}
               <span className="font-bold text-primary">различен цвят</span>.
-              <span className="font-bold text-primary"> Оста X</span>{" "}
-              представя приходите от боксофиса в милиони долари.
-              <span className="font-bold text-primary"> Оста Y</span>{" "}
-              представя{" "}
+              <span className="font-bold text-primary"> Оста X</span> представя
+              приходите от боксофиса в милиони долари.
               <span className="font-bold text-primary">
-                рейтинга в IMDb
-              </span>
-              . Големината на кръговете отразява{" "}
-              <span className="font-bold text-primary">просперитета</span>{" "}
-              на филма.
+                {" "}
+                Оста Y
+              </span> представя{" "}
+              <span className="font-bold text-primary">рейтинга в IMDb</span>.
+              Големината на кръговете отразява{" "}
+              <span className="font-bold text-primary">просперитета</span> на
+              филма.
             </h2>
           </Card>
           {/* Дясна част*/}
