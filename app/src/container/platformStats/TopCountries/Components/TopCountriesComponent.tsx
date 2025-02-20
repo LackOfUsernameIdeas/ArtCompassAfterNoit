@@ -27,7 +27,7 @@ const TopCountriesComponent: FC<TopCountriesComponentProps> = ({ data }) => {
         <div className="box">
           <div className="box-header justify-between">
             <div className="box-title opsilion">
-              Топ държави с най-много препоръки
+              Топ 10 държави с най-много препоръки
             </div>
           </div>
           <div className="box-body">

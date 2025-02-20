@@ -4,14 +4,7 @@ import {
   MovieData,
   RecommendationData
 } from "../../platformStats-types";
-import {
-  getTotalBarChartPages,
-  handleBarChartPageChange,
-  paginateBarChartData
-} from "../../helper_functions";
-import { useMediaQuery } from "react-responsive";
 import { TopRecommendationsBarChart } from "../../charts";
-import Pagination from "../../../../components/common/pagination/pagination";
 
 interface TopMoviesSeriesComponentProps {
   data: TopRecommendationsDataType;
@@ -24,44 +17,9 @@ const TopMoviesSeriesComponent: FC<TopMoviesSeriesComponentProps> = ({
     (MovieData | RecommendationData)[]
   >([]);
 
-  const pageSize = 5;
-  const [currentChartPage, setCurrentChartPage] = useState(1);
-
-  const totalChartPages = getTotalBarChartPages(
-    data.topRecommendations.length,
-    pageSize
-  );
-
   useEffect(() => {
-    const paginatedDataForTopStats = paginateBarChartData(
-      data.topRecommendations,
-      currentChartPage,
-      pageSize
-    );
-    setSeriesDataForTopStatsChart(paginatedDataForTopStats);
-  }, [currentChartPage, data]);
-
-  const handlePrevChartPage = () => {
-    handleBarChartPageChange(
-      "prev",
-      currentChartPage,
-      pageSize,
-      data.topRecommendations.length,
-      setCurrentChartPage
-    );
-  };
-
-  const handleNextChartPage = () => {
-    handleBarChartPageChange(
-      "next",
-      currentChartPage,
-      pageSize,
-      data.topRecommendations.length,
-      setCurrentChartPage
-    );
-  };
-
-  const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
+    setSeriesDataForTopStatsChart(data.topRecommendations);
+  }, [data]);
 
   return (
     <Fragment>
@@ -70,27 +28,15 @@ const TopMoviesSeriesComponent: FC<TopMoviesSeriesComponentProps> = ({
           <div className="box custom-box">
             <div className="custom-box-header">
               <div className="box-title opsilion">
-                Най-често препоръчвани филми и сериали
+                Топ 10 най-препоръчвани филми и сериали
               </div>
             </div>
-            <div className="box-body h-[22rem]">
+            <div className="box-body">
               <div id="donut-simple">
                 <TopRecommendationsBarChart
                   seriesData={seriesDataForTopStatsChart}
                 />
               </div>
-            </div>
-            <div className="box-footer">
-              <Pagination
-                currentPage={currentChartPage}
-                totalItems={data.topRecommendations.length}
-                itemsPerPage={5}
-                totalTablePages={totalChartPages}
-                isSmallScreen={is1546}
-                handlePrevPage={handlePrevChartPage}
-                handleNextPage={handleNextChartPage}
-                setCurrentPage={setCurrentChartPage}
-              />
             </div>
           </div>
         </div>

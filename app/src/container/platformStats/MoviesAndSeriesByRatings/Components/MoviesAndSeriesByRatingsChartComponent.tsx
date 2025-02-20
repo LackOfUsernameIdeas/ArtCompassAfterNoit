@@ -1,16 +1,8 @@
 import { FC, Fragment, useMemo, useState } from "react";
 import { MoviesAndSeriesByRatingsChart } from "../../charts";
 import { MoviesAndSeriesByRatingsDataType } from "../../platformStats-types";
-import {
-  paginateBarChartData,
-  getTotalBarChartPages,
-  handleBarChartPageChange,
-  handleMoviesAndSeriesSortCategory
-} from "../../helper_functions";
-import { useMediaQuery } from "react-responsive";
+import { handleMoviesAndSeriesSortCategory } from "../../helper_functions";
 import { moviesAndSeriesCategoryDisplayNames } from "../../platformStats-data";
-import { Tooltip } from "react-tooltip";
-import Pagination from "../../../../components/common/pagination/pagination";
 import {
   Accordion,
   AccordionItem,
@@ -26,60 +18,17 @@ interface MoviesAndSeriesByRatingsComponentProps {
 const MoviesAndSeriesByRatingsComponent: FC<
   MoviesAndSeriesByRatingsComponentProps
 > = ({ data }) => {
-  const pageSize = 5; // Размер на страницата (брой елементи на страница)
-  const [currentChartPage, setCurrentChartPage] = useState(1); // Текущата страница на графиката
   const [moviesAndSeriesSortCategory, setMoviesAndSeriesSortCategory] =
     useState("IMDb"); // Категория за сортиране (IMDb, Metascore, RottenTomatoes)
 
   // Меморизиране на данните за сериите за графиката на филмите
   const seriesDataForMoviesAndSeriesByRatingsChart = useMemo(() => {
-    const sortedData =
-      moviesAndSeriesSortCategory === "IMDb"
-        ? data.sortedMoviesAndSeriesByIMDbRating // Ако е избрана IMDb, използвай IMDb рейтинги
-        : moviesAndSeriesSortCategory === "Metascore"
-        ? data.sortedMoviesAndSeriesByMetascore // Ако е избран Metascore, използвай Metascore
-        : data.sortedMoviesAndSeriesByRottenTomatoesRating; // Ако е избран RottenTomatoes, използвай Rotten Tomatoes рейтинг
-
-    // Връщаме данни с пагинация
-    return paginateBarChartData(
-      sortedData,
-      currentChartPage,
-      pageSize,
-      moviesAndSeriesSortCategory
-    );
-  }, [currentChartPage, moviesAndSeriesSortCategory, data]);
-
-  // Меморизиране на общия брой страници на графиката
-  const totalChartPages = useMemo(() => {
-    return getTotalBarChartPages(
-      data.sortedMoviesAndSeriesByIMDbRating.length, // Използваме дължината на IMDb рейтингите
-      pageSize
-    );
-  }, [data.sortedMoviesAndSeriesByIMDbRating.length, pageSize]);
-
-  // Обработчици за пагинация (предишна и следваща страница)
-  const handlePrevChartPage = () => {
-    handleBarChartPageChange(
-      "prev", // Преминаване на предишната страница
-      currentChartPage,
-      pageSize,
-      data.sortedMoviesAndSeriesByIMDbRating.length,
-      setCurrentChartPage
-    );
-  };
-
-  const handleNextChartPage = () => {
-    handleBarChartPageChange(
-      "next", // Преминаване на следващата страница
-      currentChartPage,
-      pageSize,
-      data.sortedMoviesAndSeriesByIMDbRating.length,
-      setCurrentChartPage
-    );
-  };
-
-  // Отзивчиви точки за прекъсване
-  const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
+    return moviesAndSeriesSortCategory === "IMDb"
+      ? data.sortedMoviesAndSeriesByIMDbRating
+      : moviesAndSeriesSortCategory === "Metascore"
+      ? data.sortedMoviesAndSeriesByMetascore
+      : data.sortedMoviesAndSeriesByRottenTomatoesRating;
+  }, [moviesAndSeriesSortCategory, data]);
 
   return (
     <Fragment>
@@ -152,13 +101,12 @@ const MoviesAndSeriesByRatingsComponent: FC<
         <div className="box custom-box">
           <div className="custom-box-header justify-between">
             <div className={`box-title opsilion`}>
-              {`Филми и сериали по ${
+              {`Топ 10 филми и сериали по ${
                 moviesAndSeriesCategoryDisplayNames[
                   moviesAndSeriesSortCategory as keyof typeof moviesAndSeriesCategoryDisplayNames
                 ]
               }`}
             </div>
-
             <div className="flex flex-wrap gap-2">
               <div
                 className="inline-flex rounded-md shadow-sm"
@@ -199,26 +147,13 @@ const MoviesAndSeriesByRatingsComponent: FC<
               </div>
             </div>
           </div>
-
-          <div className="box-body h-[21.75rem]">
+          <div className="box-body h-[21.75rem] mb-5">
             <div id="bar-basic">
               <MoviesAndSeriesByRatingsChart
                 seriesData={seriesDataForMoviesAndSeriesByRatingsChart}
                 category={moviesAndSeriesSortCategory}
               />
             </div>
-          </div>
-          <div className="box-footer">
-            <Pagination
-              currentPage={currentChartPage}
-              totalItems={data.sortedMoviesAndSeriesByIMDbRating.length}
-              itemsPerPage={5}
-              totalTablePages={totalChartPages}
-              isSmallScreen={is1546}
-              handlePrevPage={handlePrevChartPage}
-              handleNextPage={handleNextChartPage}
-              setCurrentPage={setCurrentChartPage}
-            />
           </div>
         </div>
       </div>

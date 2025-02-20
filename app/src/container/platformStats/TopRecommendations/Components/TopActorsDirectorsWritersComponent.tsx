@@ -37,10 +37,10 @@ const TopActorsDirectorsWritersComponent: FC<
   return (
     <Fragment>
       <div className="xl:col-span-6 col-span-12">
-        <div className="box custom-box h-[30rem]">
+        <div className="box custom-box">
           <div className="box-header justify-between">
             <div className="box-title opsilion">
-              Най-често препоръчвани{" "}
+              Топ 10 най-препоръчвани{" "}
               {
                 tableCategoryDisplayNames[
                   topStatsSortCategory as keyof typeof tableCategoryDisplayNames

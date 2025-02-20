@@ -368,8 +368,7 @@ interface TopCountriesProps {
 
 // Функционален компонент за визуализация на препоръките по държави
 export const TopCountriesChart: React.FC<TopCountriesProps> = ({
-  topCountries,
-  is1546
+  topCountries
 }) => {
   // Състояние за първичния (основния) цвят на темата
   const [primaryColor, setPrimaryColor] = useState<string>("#ffffff");
@@ -418,32 +417,6 @@ export const TopCountriesChart: React.FC<TopCountriesProps> = ({
     .domain([0, topCountries.length - 1])
     .colors(topCountries.length);
 
-  // Пагинация: броя на елементи на страница
-  const itemsPerPage = 5;
-  const [currentPage, setCurrentPage] = useState(1);
-
-  // Изчисляване на елементи за текущата страница
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentCountries = topCountries.slice(startIndex, endIndex);
-
-  // Общо страници за пагинацията
-  const totalPages = Math.ceil(topCountries.length / itemsPerPage);
-
-  // Функция за преминаване към предишната страница
-  const handlePrevChartPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  // Функция за преминаване към следващата страница
-  const handleNextChartPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
   return (
     <div>
       {/* Хоризонтален бар за визуализация на държавите */}
@@ -455,7 +428,7 @@ export const TopCountriesChart: React.FC<TopCountriesProps> = ({
           return (
             <div
               key={country.country_en}
-              className="flex flex-col justify-center overflow-hidden "
+              className="flex flex-col justify-center overflow-hidden"
               style={{
                 width: `${widthPercentage}%`,
                 backgroundColor: color
@@ -479,9 +452,8 @@ export const TopCountriesChart: React.FC<TopCountriesProps> = ({
 
       {/* Външна легенда */}
       <ul className="list-none mb-6 pt-2 crm-deals-status flex flex-col">
-        {currentCountries.map((country, index) => {
-          const color =
-            currentPage === 1 ? colorScale[index] : colorScale[index + 5];
+        {topCountries.map((country, index) => {
+          const color = colorScale[index];
 
           return (
             <li
@@ -508,79 +480,6 @@ export const TopCountriesChart: React.FC<TopCountriesProps> = ({
           );
         })}
       </ul>
-
-      {/* Пагинация */}
-      {totalPages > 1 && (
-        <div className="flex justify-center">
-          <nav aria-label="Page navigation" className="pagination-style-4">
-            <ul className="ti-pagination mb-0">
-              {/* Бутон за предишна страница */}
-              <li
-                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
-              >
-                <Link
-                  className="page-link"
-                  to="#"
-                  onClick={handlePrevChartPage}
-                  style={{
-                    padding: is1546 ? "0.25rem 0.35rem" : "0.2rem 0.45rem",
-                    fontSize: is1546 ? "0.6rem" : "0.7rem",
-                    lineHeight: "1.25"
-                  }}
-                >
-                  Предишна
-                </Link>
-              </li>
-
-              {/* Индекси на страниците */}
-              {[...Array(totalPages)].map((_, index) => (
-                <li
-                  key={index}
-                  className={`page-item ${
-                    currentPage === index + 1 ? "active" : ""
-                  }`}
-                >
-                  <Link
-                    className="page-link"
-                    to="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setCurrentPage(index + 1);
-                    }}
-                    style={{
-                      padding: is1546 ? "0.25rem 0.35rem" : "0.2rem 0.45rem",
-                      fontSize: is1546 ? "0.6rem" : "0.7rem",
-                      lineHeight: "1.25"
-                    }}
-                  >
-                    {index + 1}
-                  </Link>
-                </li>
-              ))}
-
-              {/* Бутон за следваща страница */}
-              <li
-                className={`page-item ${
-                  currentPage === totalPages ? "disabled" : ""
-                }`}
-              >
-                <Link
-                  className="page-link"
-                  to="#"
-                  onClick={handleNextChartPage}
-                  style={{
-                    padding: is1546 ? "0.25rem 0.35rem" : "0.2rem 0.45rem",
-                    fontSize: is1546 ? "0.6rem" : "0.7rem",
-                    lineHeight: "1.25"
-                  }}
-                >
-                  Следваща
-                </Link>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      )}
     </div>
   );
 };
@@ -1158,7 +1057,7 @@ export class TopRecommendationsBarChart extends Component<
               options={this.state.options} // Опции за диаграмата
               series={this.state.series} // Данни за диаграмата
               type="bar"
-              height={320}
+              height={330}
             />
           </div>
         ) : (
