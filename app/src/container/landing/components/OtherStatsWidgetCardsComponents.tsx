@@ -90,7 +90,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
     <Fragment>
       {/* Карта 1: Общ брой потребители */}
       <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
-        <div className="box custom-box">
+        <div className="landing-box custom-box">
           <div className="box-body h-[5.5rem]">
             <div className="flex items-center justify-between">
               {/* Лява секция, показваща общия брой потребители */}
@@ -130,7 +130,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
 
       {/* Карта 2: Най-препоръчван жанр */}
       <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
-        <div className="box custom-box">
+        <div className="landing-box custom-box">
           <div className="box-body h-[5.5rem]">
             <div className="flex items-center justify-between">
               <div className="flex-grow">
@@ -168,7 +168,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
 
       {/* Карта 3: Среден боксофис */}
       <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
-        <div className="box custom-box">
+        <div className="landing-box custom-box">
           <div className="box-body h-[5.5rem]">
             <div className="flex items-center justify-between">
               <div className="flex-grow">
@@ -287,7 +287,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
 
       {/* Карта 4: Награди */}
       <div className="xxl:col-span-3 xl:col-span-3 col-span-12">
-        <div className="box custom-box">
+        <div className="landing-box custom-box">
           <div className="box-body h-[5.5rem]">
             <div className="flex items-center justify-between">
               <div className="flex-grow">

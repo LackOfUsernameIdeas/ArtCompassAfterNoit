@@ -118,7 +118,6 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
           <body className="landing-body jobs-landing"></body>
         </Helmet>
       </HelmetProvider>
-      <div id="responsive-overlay" onClick={() => menuClose()}></div>
       <aside className="app-sidebar sticky !topacity-0 sticky-pin" id="sidebar">
         <div className="container-xl xl:!p-0">
           <div className="main-sidebar mx-0">
@@ -193,7 +192,7 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
           </div>
         </section>
         <section
-          className="section bg-light dark:!bg-black/10 text-defaulttextcolor"
+          className="section bg-black/5 dark:!bg-black/10 text-defaulttextcolor"
           id="description"
         >
           <div className="container text-center">
@@ -210,12 +209,12 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
             </div>
             <div className="grid grid-cols-12 gap-6 text-start">
               <div className="md:col-span-4 col-span-12">
-                <div className="box border dark:border-defaultborder/10 flex flex-col h-full">
+                <div className="box bg-light border dark:border-defaultborder/10 flex flex-col h-full">
                   <div className="box-body rounded flex flex-col flex-grow">
                     <div className="mb-4 ms-1">
                       <div className="icon-style">
                         <span className="avatar avatar-lg avatar-rounded bg-primary svg-white">
-                          <i className="ti ti-file-invoice"></i>
+                          <i className="ti ti-user-plus"></i>
                         </span>
                       </div>
                     </div>
@@ -238,12 +237,12 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                 </div>
               </div>
               <div className="md:col-span-4 col-span-12">
-                <div className="box border dark:border-defaultborder/10 flex flex-col h-full">
+                <div className="box bg-light border dark:border-defaultborder/10 flex flex-col h-full">
                   <div className="box-body rounded flex flex-col flex-grow">
                     <div className="mb-4 ms-1">
                       <div className="icon-style">
                         <span className="avatar avatar-lg avatar-rounded bg-primary svg-white">
-                          <i className="ti ti-briefcase"></i>
+                          <i className="ti ti-report-analytics"></i>
                         </span>
                       </div>
                     </div>
@@ -267,12 +266,12 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                 </div>
               </div>
               <div className="md:col-span-4 col-span-12">
-                <div className="box border dark:border-defaultborder/10 flex flex-col h-full">
+                <div className="box bg-light border dark:border-defaultborder/10 flex flex-col h-full">
                   <div className="box-body rounded flex flex-col flex-grow">
                     <div className="mb-4 ms-1">
                       <div className="icon-style">
                         <span className="avatar avatar-lg avatar-rounded bg-primary svg-white">
-                          <i className="ti ti-user-plus"></i>
+                          <i className="ti ti-movie"></i>
                         </span>
                       </div>
                     </div>
@@ -537,7 +536,7 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
           </div>
         </section>
         <section
-          className="section section-bg text-defaultsize text-defaulttextcolor mb-[15rem]"
+          className="section text-defaultsize text-defaulttextcolor mb-[15rem]"
           id="additionalStats"
         >
           <div className="container">

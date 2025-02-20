@@ -2524,7 +2524,7 @@ Background Image
     .slide-right {
     @apply hidden;
   }
-  [data-nav-layout="horizontal"] .landing-body .main-content {
+  [data-nav-layout="horizontal"] .landing-body .landing-main-content {
     @apply p-0;
   }
   [data-nav-layout="horizontal"]
@@ -2708,7 +2708,7 @@ Background Image
   }
 }
 @media (max-width: 991.98px) {
-  [data-nav-layout="horizontal"] .landing-body .main-content {
+  [data-nav-layout="horizontal"] .landing-body .landing-main-content {
     @apply pt-[3.75rem] !important;
   }
   [data-nav-layout="horizontal"] .landing-main-image {
@@ -2742,12 +2742,12 @@ Background Image
 }
 
 .feature-style .feature-style-icon {
-  @apply relative w-[4rem] h-[4rem] leading-[4rem] text-[1.25rem] items-center justify-center inline-flex rounded-full font-medium !important;
+  @apply relative w-[3rem] h-[3rem] leading-[4rem] text-[1.25rem] items-center justify-center inline-flex rounded-full font-medium !important;
 }
 
 .feature-style .feature-style-icon img,
 .feature-style .feature-style-icon svg {
-  @apply w-[2.5rem] h-[2.5rem];
+  @apply w-[2rem] h-[2rem];
 }
 
 .feature-style {
@@ -16053,7 +16053,7 @@ body {
 
 .custom-box-header {
   @apply font-medium border-b border-b-defaultborder md:flex items-center gap-[0.25rem] rounded-t-sm px-[1.25rem] py-4 dark:border-white/10 flex-wrap;
-  min-height: 70px; /* Ensures consistent header height across charts */
+  min-height: 70px; 
   display: flex;
   align-items: center;
 }
@@ -16072,6 +16072,10 @@ body {
 
 .custom-box .custom-box-header .box-title::before {
   @apply absolute h-4 w-[0.2rem] top-[0.15rem] -start-[0.65rem] bg-gradient-to-b from-primary/50 to-[#2c0700] rounded-md;
+}
+
+.landing-box {
+  @apply flex flex-col shadow-sm rounded-md text-defaulttextcolor dark:text-defaulttextcolor/70 bg-white dark:bg-bodybg text-[0.813rem] mb-6 relative;
 }
 
 .box-body {
@@ -16483,6 +16487,14 @@ code {
 
 .content {
   @apply lg:ms-60 mt-[60px] transition-all ms-0;
+}
+
+.landing-main-content {
+  @apply px-0;
+}
+
+.landing-content {
+  @apply mt-[60px] transition-all ms-0;
 }
 
 pre {
