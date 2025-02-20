@@ -1669,10 +1669,14 @@ app.post("/stats/ai/f1-score", (req, res) => {
 
 // Извличане на броя книги с филмови и сериални адаптации
 app.get("/stats/platform/adaptations", (req, res) => {
-  db.getUsersCount((err, result) => {
+  db.countBookAdaptations((err, result) => {
     if (err) {
-      return res.status(500).json({ error: "Error fetching users count" });
+      return res
+        .status(500)
+        .json({ error: "Error fetching book adaptations count" });
     }
+
+    // Връщане на резултата като JSON
     res.json(result);
   });
 });
