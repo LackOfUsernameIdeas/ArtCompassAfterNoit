@@ -63,7 +63,8 @@ const matchMoodWithGenres = (mood, genres) => {
       "Sport",
       "Thriller",
       "War",
-      "Western"
+      "Western",
+      "Reality-TV"
     ],
     "Любопитен/-на": [
       "Mystery",
@@ -75,7 +76,8 @@ const matchMoodWithGenres = (mood, genres) => {
       "Film-Noir",
       "Horror",
       "Sport",
-      "Western"
+      "Western",
+      "Reality-TV"
     ],
     "Тъжен/-на": ["Drama", "Romance", "Film-Noir"],
     "Щастлив/-а": [
@@ -86,7 +88,8 @@ const matchMoodWithGenres = (mood, genres) => {
       "Horror",
       "Sport",
       "Thriller",
-      "Western"
+      "Western",
+      "Reality-TV"
     ],
     "Спокоен/-йна": [
       "Family",
@@ -96,7 +99,8 @@ const matchMoodWithGenres = (mood, genres) => {
       "Sci-Fi",
       "Thriller",
       "War",
-      "Western"
+      "Western",
+      "Reality-TV"
     ],
     "Разочарован/-на": ["Drama", "Horror", "Romance"],
     "Уморен/-на": [
@@ -105,12 +109,34 @@ const matchMoodWithGenres = (mood, genres) => {
       "Drama",
       "Animation",
       "Crime",
-      "Western"
+      "Western",
+      "Reality-TV"
     ],
-    "Нервен/-на": ["Thriller", "Mystery", "Action", "Horror", "War"],
-    "Разгневен/-на": ["Action", "Crime", "Horror", "Mystery"],
-    "Стресиран/-на": ["Thriller", "Horror", "Drama", "Comedy", "Western"],
-    "Носталгичен/-на": ["Drama", "History", "Animation", "Romance", "Western"],
+    "Нервен/-на": [
+      "Thriller",
+      "Mystery",
+      "Action",
+      "Horror",
+      "War",
+      "Reality-TV"
+    ],
+    "Разгневен/-на": ["Action", "Crime", "Horror", "Mystery", "Reality-TV"],
+    "Стресиран/-на": [
+      "Thriller",
+      "Horror",
+      "Drama",
+      "Comedy",
+      "Western",
+      "Reality-TV"
+    ],
+    "Носталгичен/-на": [
+      "Drama",
+      "History",
+      "Animation",
+      "Romance",
+      "Western",
+      "Reality-TV"
+    ],
     "Безразличен/-на": [
       "Action",
       "Adventure",
@@ -132,7 +158,8 @@ const matchMoodWithGenres = (mood, genres) => {
       "Sport",
       "Thriller",
       "War",
-      "Western"
+      "Western",
+      "Reality-TV"
     ],
     "Оптимистичен/-на": [
       "Comedy",
@@ -142,9 +169,10 @@ const matchMoodWithGenres = (mood, genres) => {
       "Mystery",
       "Sci-Fi",
       "Sport",
-      "Western"
+      "Western",
+      "Reality-TV"
     ],
-    "Песимистичен/-на": ["Drama", "War", "Film-Noir", "Thriller"],
+    "Песимистичен/-на": ["Drama", "War", "Film-Noir", "Thriller", "Reality-TV"],
     "Весел/-а": [
       "Comedy",
       "Musical",
@@ -156,9 +184,10 @@ const matchMoodWithGenres = (mood, genres) => {
       "Mystery",
       "Sci-Fi",
       "Sport",
-      "Western"
+      "Western",
+      "Reality-TV"
     ],
-    "Смутен/-на": ["Romance", "Drama", "Horror", "War"],
+    "Смутен/-на": ["Romance", "Drama", "Horror", "War", "Reality-TV"],
     "Озадачен/-на": [
       "Mystery",
       "Sci-Fi",
@@ -167,9 +196,17 @@ const matchMoodWithGenres = (mood, genres) => {
       "Film-Noir",
       "Romance",
       "Sport",
-      "Western"
+      "Western",
+      "Reality-TV"
     ],
-    "Разтревожен/-на": ["Thriller", "Horror", "Romance", "War", "Sport"],
+    "Разтревожен/-на": [
+      "Thriller",
+      "Horror",
+      "Romance",
+      "War",
+      "Sport",
+      "Reality-TV"
+    ],
     "Вдъхновен/-на": [
       "Biography",
       "History",
@@ -181,7 +218,8 @@ const matchMoodWithGenres = (mood, genres) => {
       "Mystery",
       "Sci-Fi",
       "Sport",
-      "Western"
+      "Western",
+      "Reality-TV"
     ]
   };
 
@@ -354,8 +392,17 @@ const checkRelevance = (userPreferences, recommendation) => {
   /** ✅ 6. Съответствие на целевата аудитория */
   if (userPreferences.preferred_target_group && recommendation.rated) {
     const targetMappings = {
-      Деца: ["G", "PG", "TV-Y", "TV-Y7", "TV-Y7-FV", "Approved", "Passed"],
-      Тийнейджъри: ["PG-13", "TV-14", "Not Rated", "Approved"],
+      Деца: [
+        "G",
+        "PG",
+        "TV-Y",
+        "TV-Y7",
+        "TV-Y7-FV",
+        "Approved",
+        "Passed",
+        "N/A"
+      ],
+      Тийнейджъри: ["PG-13", "TV-14", "Not Rated", "Approved", "N/A"],
       Възрастни: [
         "PG-13",
         "R",
@@ -363,7 +410,8 @@ const checkRelevance = (userPreferences, recommendation) => {
         "TV-14",
         "NC-17",
         "Not Rated",
-        "Approved"
+        "Approved",
+        "N/A"
       ],
       Семейни: [
         "G",
@@ -374,7 +422,8 @@ const checkRelevance = (userPreferences, recommendation) => {
         "TV-Y7",
         "Not Rated",
         "Approved",
-        "Passed"
+        "Passed",
+        "N/A"
       ],
       "Семейство и деца": [
         "G",
@@ -383,7 +432,8 @@ const checkRelevance = (userPreferences, recommendation) => {
         "TV-Y7",
         "Not Rated",
         "Approved",
-        "Passed"
+        "Passed",
+        "N/A"
       ],
       "Възрастни над 65": [
         "PG-13",
@@ -391,7 +441,8 @@ const checkRelevance = (userPreferences, recommendation) => {
         "TV-MA",
         "TV-14",
         "Not Rated",
-        "Approved"
+        "Approved",
+        "N/A"
       ]
     };
 

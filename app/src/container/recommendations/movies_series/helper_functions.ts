@@ -256,112 +256,126 @@ export const generateMoviesSeriesRecommendations = async (
     for (const movieTitle in recommendations) {
       const imdbData = await fetchIMDbIDWithFailover(movieTitle);
 
-      if (Array.isArray(imdbData.items)) {
-        const imdbItem = imdbData.items.find((item: { link: string }) =>
-          item.link.includes("imdb.com/title/")
+      console.log("Movies and series results: ", imdbData);
+      if (!Array.isArray(imdbData.items)) {
+        console.warn(
+          `No items found for movie or series: ${movieTitle} in Google Custom Search Engine.`
+        );
+        continue; // Skip to the next movie or series
+      }
+
+      const imdbItem = imdbData.items.find((item: { link: string }) =>
+        item.link.includes("imdb.com/title/")
+      );
+
+      console.log(`imdbItem: ${imdbItem}`);
+
+      if (!imdbItem) {
+        console.warn(`No valid movie or series item found for: ${imdbItem}`);
+        continue; // Skip to the next movie or series
+      }
+
+      const imdbUrl = imdbItem.link;
+      const imdbId = imdbUrl.match(/title\/(tt\d+)\//)?.[1];
+
+      if (!imdbId) {
+        console.warn(`No valid imdb ID found for: ${movieTitle}`);
+        continue; // Skip to the next movie or series
+      }
+
+      const imdbRating = imdbItem.pagemap.metatags
+        ? imdbItem.pagemap.metatags[0]["twitter:title"]?.match(
+            /⭐ ([\d.]+)/
+          )?.[1]
+        : null;
+      const runtime = imdbItem.pagemap.metatags
+        ? imdbItem.pagemap.metatags[0]["og:description"]?.match(
+            /(\d{1,2}h \d{1,2}m|\d{1,2}h|\d{1,3}m)/
+          )?.[1]
+        : null;
+
+      const translatedRuntime = runtime
+        ? runtime.replace(/h/g, "ч").replace(/m/g, "м").replace(/s/g, "с")
+        : null;
+
+      const omdbResponse = await fetch(
+        `https://www.omdbapi.com/?apikey=89cbf31c&i=${imdbId}&plot=full`
+      );
+
+      if (!omdbResponse.ok) {
+        console.error(
+          `Failed to fetch OMDb data for ${movieTitle}. Status: ${omdbResponse.status}`
+        );
+        continue; // Skip to the next movie or series
+      }
+
+      const omdbData = await omdbResponse.json();
+
+      console.log(
+        `OMDb data for ${movieTitle}: ${JSON.stringify(omdbData, null, 2)}`
+      );
+
+      const recommendationData = {
+        title: omdbData.Title,
+        bgName: recommendations[movieTitle].bgName,
+        description: recommendations[movieTitle].description,
+        reason: recommendations[movieTitle].reason,
+        year: omdbData.Year,
+        rated: omdbData.Rated,
+        released: omdbData.Released,
+        runtime: omdbData.Runtime,
+        runtimeGoogle: translatedRuntime,
+        genre: omdbData.Genre,
+        director: omdbData.Director,
+        writer: omdbData.Writer,
+        actors: omdbData.Actors,
+        plot: omdbData.Plot,
+        language: omdbData.Language,
+        country: omdbData.Country,
+        awards: omdbData.Awards,
+        poster: omdbData.Poster,
+        ratings: omdbData.Ratings,
+        metascore: omdbData.Metascore,
+        imdbRating: omdbData.imdbRating,
+        imdbRatingGoogle: imdbRating,
+        imdbVotes: omdbData.imdbVotes,
+        imdbID: omdbData.imdbID,
+        type: omdbData.Type,
+        DVD: omdbData.DVD,
+        boxOffice: omdbData.BoxOffice,
+        production: omdbData.Production,
+        website: omdbData.Website,
+        totalSeasons: omdbData.totalSeasons
+      };
+
+      // Първо, задаваме списъка с препоръки
+      setRecommendationList((prevRecommendations) => [
+        ...prevRecommendations,
+        recommendationData
+      ]);
+
+      // След това изпълняваме проверката и записа паралелно, използвайки self-invoking функцията
+      (async () => {
+        // Проверяваме дали филмът съществува в таблицата за watchlist
+        const existsInWatchlist = await checkRecommendationExistsInWatchlist(
+          imdbId,
+          token
         );
 
-        if (imdbItem) {
-          const imdbUrl = imdbItem.link;
-          const imdbId = imdbUrl.match(/title\/(tt\d+)\//)?.[1];
-
-          const imdbRating = imdbItem.pagemap.metatags
-            ? imdbItem.pagemap.metatags[0]["twitter:title"]?.match(
-                /⭐ ([\d.]+)/
-              )?.[1]
-            : null;
-          const runtime = imdbItem.pagemap.metatags
-            ? imdbItem.pagemap.metatags[0]["og:description"]?.match(
-                /(\d{1,2}h \d{1,2}m|\d{1,2}h|\d{1,3}m)/
-              )?.[1]
-            : null;
-
-          const translatedRuntime = runtime
-            ? runtime.replace(/h/g, "ч").replace(/m/g, "м").replace(/s/g, "с")
-            : null;
-
-          if (imdbId) {
-            const omdbResponse = await fetch(
-              `https://www.omdbapi.com/?apikey=89cbf31c&i=${imdbId}&plot=full`
-            );
-            const omdbData = await omdbResponse.json();
-
-            console.log(
-              `OMDb data for ${movieTitle}: ${JSON.stringify(
-                omdbData,
-                null,
-                2
-              )}`
-            );
-
-            const recommendationData = {
-              title: omdbData.Title,
-              bgName: recommendations[movieTitle].bgName,
-              description: recommendations[movieTitle].description,
-              reason: recommendations[movieTitle].reason,
-              year: omdbData.Year,
-              rated: omdbData.Rated,
-              released: omdbData.Released,
-              runtime: omdbData.Runtime,
-              runtimeGoogle: translatedRuntime,
-              genre: omdbData.Genre,
-              director: omdbData.Director,
-              writer: omdbData.Writer,
-              actors: omdbData.Actors,
-              plot: omdbData.Plot,
-              language: omdbData.Language,
-              country: omdbData.Country,
-              awards: omdbData.Awards,
-              poster: omdbData.Poster,
-              ratings: omdbData.Ratings,
-              metascore: omdbData.Metascore,
-              imdbRating: omdbData.imdbRating,
-              imdbRatingGoogle: imdbRating,
-              imdbVotes: omdbData.imdbVotes,
-              imdbID: omdbData.imdbID,
-              type: omdbData.Type,
-              DVD: omdbData.DVD,
-              boxOffice: omdbData.BoxOffice,
-              production: omdbData.Production,
-              website: omdbData.Website,
-              totalSeasons: omdbData.totalSeasons
+        // Ако филмът не съществува в watchlist, добавяме го към "bookmarkedMovies" с информация за ID и статус
+        if (existsInWatchlist) {
+          setBookmarkedMovies((prevMovies) => {
+            return {
+              ...prevMovies,
+              [recommendationData.imdbID]: recommendationData
             };
-
-            // Първо, задаваме списъка с препоръки
-            setRecommendationList((prevRecommendations) => [
-              ...prevRecommendations,
-              recommendationData
-            ]);
-
-            // След това изпълняваме проверката и записа паралелно, използвайки self-invoking функцията
-            (async () => {
-              // Проверяваме дали филмът съществува в таблицата за watchlist
-              const existsInWatchlist =
-                await checkRecommendationExistsInWatchlist(imdbId, token);
-
-              // Ако филмът не съществува в watchlist, добавяме го към "bookmarkedMovies" с информация за ID и статус
-              if (existsInWatchlist) {
-                setBookmarkedMovies((prevMovies) => {
-                  return {
-                    ...prevMovies,
-                    [recommendationData.imdbID]: recommendationData
-                  };
-                });
-              }
-              // Записваме препоръката в базата данни
-              await saveMoviesSeriesRecommendation(
-                recommendationData,
-                date,
-                token
-              );
-            })();
-
-            recommendationsToAnalyze.push(recommendationData);
-          } else {
-            console.log(`IMDb ID not found for ${movieTitle}`);
-          }
+          });
         }
-      }
+        // Записваме препоръката в базата данни
+        await saveMoviesSeriesRecommendation(recommendationData, date, token);
+      })();
+
+      recommendationsToAnalyze.push(recommendationData);
     }
 
     await analyzeRecommendations(

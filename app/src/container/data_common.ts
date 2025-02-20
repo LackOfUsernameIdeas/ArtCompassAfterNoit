@@ -9,6 +9,7 @@ export const moviesSeriesGenreOptions: Array<{ en: string; bg: string }> = [
   { en: "Animation", bg: "Анимация" },
   { en: "Biography", bg: "Биография" },
   { en: "Comedy", bg: "Комедия" },
+  { en: "Reality-TV", bg: "Реалити предавания" },
   { en: "Crime", bg: "Криминален" },
   { en: "Documentary", bg: "Документален" },
   { en: "Drama", bg: "Драма" },
