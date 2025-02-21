@@ -319,9 +319,9 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
           <div className="container">
             <div className="justify-center text-center mb-12">
               <div className="xl:col-span-6 col-span-12">
-                <h3 className="font-semibold mb-2">Книжни адаптации</h3>
+                <h3 className="font-semibold mb-2">Адаптации на книги</h3>
                 <span className="text-[#8c9097] dark:text-white/50 text-[0.9375rem] font-normal block">
-                  Вижте колко книги са адаптирани за филми и сериали
+                  Вижте колко книги са адаптирани във филми и сериали
                 </span>
               </div>
             </div>
