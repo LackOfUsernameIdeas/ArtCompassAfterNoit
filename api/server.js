@@ -1398,7 +1398,7 @@ app.post("/save-analysis", (req, res) => {
 });
 
 // Ендпоинт за изчисляване на средните метрики
-app.get("/stats/ai/average-metrics", (req, res) => {
+app.get("/stats/platform/ai/average-metrics", (req, res) => {
   // Изчисляване на средните стойности за precision, recall и F1 score
   db.calculateAverageMetrics((err, result) => {
     if (err)
@@ -1411,7 +1411,7 @@ app.get("/stats/ai/average-metrics", (req, res) => {
 });
 
 // Ендпоинт за изчисляване на средните метрики по дни
-app.get("/stats/ai/historical-average-metrics", (req, res) => {
+app.get("/stats/platform/ai/historical-average-metrics", (req, res) => {
   // Изчисляване на средните стойности за precision, recall и F1 score по дни
   db.getHistoricalAverageMetrics((err, result) => {
     if (err)
@@ -1423,8 +1423,27 @@ app.get("/stats/ai/historical-average-metrics", (req, res) => {
   });
 });
 
+// Ендпоинт за изчисляване на средните метрики по дни за специфичен потребител
+app.post("/stats/individual/ai/historical-average-metrics", (req, res) => {
+  const { token } = req.body;
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+    // Изчисляване на средните стойности за precision, recall и F1 score по дни за специфичен потребител
+    db.getHistoricalAverageMetricsForUser(userId, (err, result) => {
+      if (err)
+        return res
+          .status(500)
+          .json({ error: "Грешка при изчисляването на метриките по дни." });
+      // Връщане на резултата като JSON отговор
+      res.status(200).json(result);
+    });
+  });
+});
+
 // Изчисляване на Precision на база всички препоръки, правени някога за даден потребител
-app.post("/stats/ai/precision-total", (req, res) => {
+app.post("/stats/individual/ai/precision-total", (req, res) => {
   const { token, userPreferences } = req.body;
   console.log("AI Анализатор");
 
@@ -1515,7 +1534,7 @@ app.post("/stats/ai/precision-total", (req, res) => {
 });
 
 // Изчисляване на Recall на база всички препоръки, правени някога в платформата
-app.post("/stats/ai/recall-total", (req, res) => {
+app.post("/stats/individual/ai/recall-total", (req, res) => {
   const { token, userPreferences } = req.body;
 
   // Проверка дали липсва обектът с предпочитания на потребителя
@@ -1625,7 +1644,7 @@ app.post("/stats/ai/recall-total", (req, res) => {
 });
 
 // Изчисляване на F1-score на база Precision и Recall
-app.post("/stats/ai/f1-score", (req, res) => {
+app.post("/stats/individual/ai/f1-score", (req, res) => {
   const { token, precision_exact, recall_exact } = req.body;
 
   // Проверка на валидността на токена
