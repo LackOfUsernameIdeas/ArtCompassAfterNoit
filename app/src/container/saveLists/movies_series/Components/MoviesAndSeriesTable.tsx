@@ -236,8 +236,10 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
                       Жанр: <p className="font-Equilibrist">{item.genre_bg}</p>
                     </span>
                     <span className="opsilion">
-                      Продължителност:{" "}
-                      <p className="font-Equilibrist">{item.runtime}</p>
+                      {item.type === "movie"
+                        ? "Продължителност"
+                        : "Средна продължителност"}
+                      : <p className="font-Equilibrist">{item.runtime}</p>
                     </span>
                     <span className="opsilion">
                       Вид:{" "}
