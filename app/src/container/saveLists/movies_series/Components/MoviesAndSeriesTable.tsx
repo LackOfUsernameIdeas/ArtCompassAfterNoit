@@ -264,13 +264,6 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
           {/* Pagination Controls */}
           {totalPages > 1 && (
             <div className="box-footer flex justify-center items-center gap-4">
-              {/* <button
-              className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition"
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-            >
-              Предишна
-            </button> */}
               <span className="text-defaulttextcolor dark:text-white/80">
                 Страница {currentPage} от {totalPages}
               </span>
@@ -347,14 +340,6 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
                   </ul>
                 </nav>
               </div>
-
-              {/* <button
-              className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition"
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-            >
-              Следваща
-            </button> */}
             </div>
           )}
         </div>
