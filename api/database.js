@@ -3759,50 +3759,47 @@ const calculateAverageMetrics = (callback) => {
 };
 
 const getHistoricalAverageMetrics = (callback) => {
-  // Запитване за получаване на средни стойности на прецизност, припомняне и F1 скор за всеки ден
+  // Query to get cumulative average precision, recall, and F1 score up to each date
   const queryMetrics = `
     SELECT 
-      DATE_FORMAT(DATE(date), '%d-%m-%Y') AS record_date,  -- Формат на дата променен на "DD-MM-YYYY"
-      AVG(precision_exact) AS avg_precision, 
-      AVG(recall_exact) AS avg_recall, 
-      AVG(f1_score_exact) AS avg_f1_score
-    FROM movies_series_recommendations_metrics
+      DATE_FORMAT(DATE(date), '%d-%m-%Y') AS record_date,  -- Date format changed to "DD-MM-YYYY"
+      (SELECT AVG(precision_exact) FROM movies_series_recommendations_metrics WHERE DATE(date) <= DATE(m.date)) AS avg_precision, 
+      (SELECT AVG(recall_exact) FROM movies_series_recommendations_metrics WHERE DATE(date) <= DATE(m.date)) AS avg_recall, 
+      (SELECT AVG(f1_score_exact) FROM movies_series_recommendations_metrics WHERE DATE(date) <= DATE(m.date)) AS avg_f1_score
+    FROM movies_series_recommendations_metrics m
     GROUP BY record_date
     ORDER BY record_date ASC;
   `;
 
-  // Запитване за получаване на средна стойност на прецизност за последния кръг от movies_series_analysis
+  // Query to get cumulative average precision from movies_series_analysis up to each date
   const queryAnalysis = `
     SELECT 
-      DATE_FORMAT(DATE(date), '%d-%m-%Y') AS record_date,  -- Формат на дата променен на "DD-MM-YYYY"
-      AVG(precision_value) AS avg_precision_last_round
-    FROM movies_series_analysis
+      DATE_FORMAT(DATE(date), '%d-%m-%Y') AS record_date,  -- Date format changed to "DD-MM-YYYY"
+      (SELECT AVG(precision_value) FROM movies_series_analysis WHERE DATE(date) <= DATE(a.date)) AS avg_precision_last_round
+    FROM movies_series_analysis a
     GROUP BY record_date
     ORDER BY record_date ASC;
   `;
 
   db.query(queryMetrics, (err, metricsResults) => {
     if (err) {
-      console.error(
-        "Грешка при извличане на историческите средни стойности:",
-        err
-      );
+      console.error("Error fetching historical average metrics:", err);
       return callback(err);
     }
 
     db.query(queryAnalysis, (err, analysisResults) => {
       if (err) {
         console.error(
-          "Грешка при извличане на историческата прецизност от анализа:",
+          "Error fetching historical precision from analysis:",
           err
         );
         return callback(err);
       }
 
-      // Обединяваме резултатите от двете запитвания, базирани на датата
+      // Merge results from both queries based on the date
       const historyMap = new Map();
 
-      // Съхраняваме резултатите от metrics в map (дата -> стойности)
+      // Store metrics results in map (date -> values)
       metricsResults.forEach(
         ({ record_date, avg_precision, avg_recall, avg_f1_score }) => {
           historyMap.set(record_date, {
@@ -3821,7 +3818,7 @@ const getHistoricalAverageMetrics = (callback) => {
         }
       );
 
-      // Съхраняваме стойностите на прецизността от movies_series_analysis в map
+      // Store precision from movies_series_analysis in map
       analysisResults.forEach(({ record_date, avg_precision_last_round }) => {
         if (historyMap.has(record_date)) {
           historyMap.get(record_date).average_precision_last_round =
@@ -3845,7 +3842,7 @@ const getHistoricalAverageMetrics = (callback) => {
         }
       });
 
-      // Преобразуваме map в масив и го връщаме
+      // Convert map to array and return it
       callback(null, Array.from(historyMap.values()));
     });
   });
