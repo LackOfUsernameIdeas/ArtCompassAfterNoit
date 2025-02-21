@@ -17,6 +17,7 @@ import AIStatsWidgetCardsComponent from "./components/AIStatsWidgetCardsComponen
 import { getAverageMetrics } from "../helper_functions_common";
 import logo from "../../assets/images/brand-logos/logo-large.png";
 import logoPink from "../../assets/images/brand-logos/logo-large-pink.png";
+import BookAdaptations from "./components/BookAdaptations";
 
 interface LandingProps {}
 
@@ -306,6 +307,22 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                 секцията с разяснения на термините отдолу:
               </h2>
             </Card>
+          </div>
+        </section>
+        <section
+          className="section bg-white dark:bg-black/20 text-defaultsize text-defaulttextcolor"
+          id="bookAdaptations"
+        >
+          <div className="container">
+            <div className="justify-center text-center mb-12">
+              <div className="xl:col-span-6 col-span-12">
+                <h3 className="font-semibold mb-2">Книжни адаптации</h3>
+                <span className="text-[#8c9097] dark:text-white/50 text-[0.9375rem] font-normal block">
+                  Вижте колко книги са адаптирани за филми и сериали
+                </span>
+              </div>
+            </div>
+            <BookAdaptations movieAdaptations={125} seriesAdaptations={78} />
           </div>
         </section>
         <section
