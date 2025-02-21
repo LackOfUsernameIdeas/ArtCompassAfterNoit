@@ -70,7 +70,10 @@ export default {
         bodybg2: "rgb(var(--dark-bg))",
         primary: "rgb(var(--primary))",
         primaryrgb: "rgb(var(--primary-rgb))",
+        secondaryrgb: "rgb(var(--secondary-rgb))",
         secondary: "rgb(var(--secondary))",
+        tertiaryrgb: "rgb(var(--tertiary-rgb))",
+        tertiary: "rgb(var(--tertiary))",
         success: "rgb(var(--success))",
         info: "rgb(var(--info))",
         warning: "rgb(var(--warning))",
@@ -137,6 +140,7 @@ export default {
       gradientColorStops: {
         primary: "rgb(var(--primary))",
         secondary: "rgb(var(--secondary))",
+        tertiary: "rgb(var(--tertiary))",
         success: "rgb(var(--success))",
         warning: "rgb(var(--warning))",
         pink: "rgb(var(--pink))",
