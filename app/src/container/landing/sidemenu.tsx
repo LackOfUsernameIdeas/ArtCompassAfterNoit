@@ -67,7 +67,7 @@ const Navbar2 = () => {
     <>
       <ul className="main-menu">
         <li className="slide">
-          <a className="side-menu__item" href="#home">
+          <a className="side-menu__item active" href="#home">
             <span className="side-menu__label active">Начало</span>{" "}
           </a>
         </li>
