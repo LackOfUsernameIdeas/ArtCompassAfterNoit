@@ -3851,6 +3851,110 @@ const getHistoricalAverageMetrics = (callback) => {
   });
 };
 
+const getHistoricalAverageMetricsForUser = (userId, callback) => {
+  // Заявка за получаване на кумулативни средни стойности за precision, recall и F1 score за конкретен потребител до всяка дата
+  const queryMetrics = `
+    SELECT 
+      DATE_FORMAT(DATE(date), '%d-%m-%Y') AS record_date,  -- Формат на датата променен на "DD-MM-YYYY"
+      (SELECT AVG(precision_exact) FROM movies_series_recommendations_metrics WHERE DATE(date) <= DATE(m.date) AND user_id = ?) AS avg_precision, 
+      (SELECT AVG(recall_exact) FROM movies_series_recommendations_metrics WHERE DATE(date) <= DATE(m.date) AND user_id = ?) AS avg_recall, 
+      (SELECT AVG(f1_score_exact) FROM movies_series_recommendations_metrics WHERE DATE(date) <= DATE(m.date) AND user_id = ?) AS avg_f1_score
+    FROM movies_series_recommendations_metrics m
+    WHERE m.user_id = ?
+    GROUP BY record_date
+    ORDER BY record_date ASC;
+  `;
+
+  // Заявка за получаване на кумулативни средни стойности за precision от movies_series_analysis за конкретен потребител до всяка дата
+  const queryAnalysis = `
+    SELECT 
+      DATE_FORMAT(DATE(date), '%d-%m-%Y') AS record_date,  -- Формат на датата променен на "DD-MM-YYYY"
+      (SELECT AVG(precision_value) FROM movies_series_analysis WHERE DATE(date) <= DATE(a.date) AND user_id = ?) AS avg_precision_last_round
+    FROM movies_series_analysis a
+    WHERE a.user_id = ?
+    GROUP BY record_date
+    ORDER BY record_date ASC;
+  `;
+
+  db.query(
+    queryMetrics,
+    [userId, userId, userId, userId],
+    (err, metricsResults) => {
+      if (err) {
+        console.error(
+          "Грешка при извличането на историческите средни стойности:",
+          err
+        );
+        return callback(err);
+      }
+
+      db.query(queryAnalysis, [userId, userId], (err, analysisResults) => {
+        if (err) {
+          console.error(
+            "Грешка при извличането на историческите стойности за precision от анализа:",
+            err
+          );
+          return callback(err);
+        }
+
+        // Обединяваме резултатите от двете заявки според датата
+        const historyMap = new Map();
+
+        // Записваме резултатите за метриките в map (дата -> стойности)
+        metricsResults.forEach(
+          ({ record_date, avg_precision, avg_recall, avg_f1_score }) => {
+            historyMap.set(record_date, {
+              record_date,
+              average_precision: avg_precision || 0,
+              average_precision_percentage: (
+                (avg_precision || 0) * 100
+              ).toFixed(2),
+              average_recall: avg_recall || 0,
+              average_recall_percentage: ((avg_recall || 0) * 100).toFixed(2),
+              average_f1_score: avg_f1_score || 0,
+              average_f1_score_percentage: ((avg_f1_score || 0) * 100).toFixed(
+                2
+              ),
+              average_precision_last_round: 0,
+              average_precision_last_round_percentage: "0.00"
+            });
+          }
+        );
+
+        // Записваме precision от movies_series_analysis в map
+        analysisResults.forEach(({ record_date, avg_precision_last_round }) => {
+          if (historyMap.has(record_date)) {
+            historyMap.get(record_date).average_precision_last_round =
+              avg_precision_last_round || 0;
+            historyMap.get(
+              record_date
+            ).average_precision_last_round_percentage = (
+              (avg_precision_last_round || 0) * 100
+            ).toFixed(2);
+          } else {
+            historyMap.set(record_date, {
+              record_date,
+              average_precision: 0,
+              average_precision_percentage: "0.00",
+              average_recall: 0,
+              average_recall_percentage: "0.00",
+              average_f1_score: 0,
+              average_f1_score_percentage: "0.00",
+              average_precision_last_round: avg_precision_last_round || 0,
+              average_precision_last_round_percentage: (
+                (avg_precision_last_round || 0) * 100
+              ).toFixed(2)
+            });
+          }
+        });
+
+        // Преобразуваме map в масив и го връщаме
+        callback(null, Array.from(historyMap.values()));
+      });
+    }
+  );
+};
+
 const countBookAdaptations = (callback) => {
   const query = "SELECT adaptations FROM books_recommendations";
 
@@ -3937,5 +4041,6 @@ module.exports = {
   saveAnalysis,
   calculateAverageMetrics,
   getHistoricalAverageMetrics,
+  getHistoricalAverageMetricsForUser,
   countBookAdaptations
 };

@@ -62,7 +62,9 @@ export const getPrecisionTotal = async (
 ): Promise<PrecisionData> => {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/stats/ai/precision-total`,
+      `${
+        import.meta.env.VITE_API_BASE_URL
+      }/stats/individual/ai/precision-total`,
       {
         method: "POST",
         headers: {
@@ -96,7 +98,7 @@ export const getRecallTotal = async (
 ): Promise<RecallData> => {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/stats/ai/recall-total`,
+      `${import.meta.env.VITE_API_BASE_URL}/stats/individual/ai/recall-total`,
       {
         method: "POST",
         headers: {
@@ -132,7 +134,7 @@ export const getF1Score = async (
 ): Promise<F1ScoreData> => {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/stats/ai/f1-score`,
+      `${import.meta.env.VITE_API_BASE_URL}/stats/individual/ai/f1-score`,
       {
         method: "POST",
         headers: {

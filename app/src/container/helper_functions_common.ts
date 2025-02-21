@@ -990,7 +990,7 @@ const saveAnalysisToDatabase = async (analysisData: {
 export const getAverageMetrics = async (): Promise<any> => {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/stats/ai/average-metrics`,
+      `${import.meta.env.VITE_API_BASE_URL}/stats/platform/ai/average-metrics`,
       {
         method: "GET",
         headers: {
