@@ -1,14 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Clapperboard, Tv } from "lucide-react";
+import { Adaptations } from "../landing-types";
 
 interface BookAdaptationsProps {
-  movieAdaptations: number;
-  seriesAdaptations: number;
+  booksAdaptationsCount: Adaptations;
 }
 
 export default function BookAdaptations({
-  movieAdaptations,
-  seriesAdaptations
+  booksAdaptationsCount
 }: BookAdaptationsProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mx-auto">
@@ -26,7 +25,7 @@ export default function BookAdaptations({
             Брой книги, адаптирани във филми
           </p>
           <p className="text-5xl font-bold text-defaulttextcolor dark:text-white font-mono">
-            {movieAdaptations}
+            {booksAdaptationsCount.movies}
           </p>
         </CardContent>
       </Card>
@@ -45,7 +44,7 @@ export default function BookAdaptations({
             Брой книги, адаптирани в сериали
           </p>
           <p className="text-5xl font-bold text-defaulttextcolor dark:text-white font-mono">
-            {seriesAdaptations}
+            {booksAdaptationsCount.series}
           </p>
         </CardContent>
       </Card>
@@ -64,7 +63,7 @@ export default function BookAdaptations({
             Общ брой адаптации
           </p>
           <p className="text-5xl font-bold text-defaulttextcolor dark:text-white font-mono">
-            {movieAdaptations + seriesAdaptations}
+            {booksAdaptationsCount.all}
           </p>
         </CardContent>
       </Card>

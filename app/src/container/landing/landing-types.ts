@@ -3,6 +3,13 @@ export type UsersCountData = {
   user_count: number; // Брой потребители
 };
 
+// Данни за брой на адаптациите
+export type Adaptations = {
+  movies: number; // Брой адаптации за филми
+  series: number; // Брой адаптации за сериали
+  all: number; // Общ брой адаптации
+};
+
 // Обобщени данни за платформата (топ препоръки, жанрове и др.)
 export type DataType = {
   usersCount: UsersCountData[]; // Брой потребители
@@ -13,7 +20,7 @@ export type DataType = {
   averagePrecisionLastRoundPercentage: string; // Средна прецизност за последния кръг в проценти
   averageRecallPercentage: string; // Среден Recall в проценти
   averageF1ScorePercentage: string; // Среден F1 резултат в проценти
-  booksAdaptationsCount: {}; // Брой адаптации на книги (филми и сериали)
+  booksAdaptationsCount: Adaptations; // Брой адаптации на книги (филми и сериали)
 };
 
 export interface UserData {

@@ -32,7 +32,7 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
     averagePrecisionLastRoundPercentage: "", // Средна прецизност за последния кръг в проценти
     averageRecallPercentage: "", // Среден Recall в проценти
     averageF1ScorePercentage: "", // Среден F1 резултат в проценти
-    booksAdaptationsCount: {} // Брой адаптации на книги (филми и сериали)
+    booksAdaptationsCount: { movies: 0, series: 0, all: 0 } // Брой адаптации на книги (филми и сериали)
   });
 
   // useEffect за извличане на данни, когато компонентът се зареди за първи път
@@ -325,7 +325,9 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                 </span>
               </div>
             </div>
-            <BookAdaptations movieAdaptations={125} seriesAdaptations={78} />
+            <BookAdaptations
+              booksAdaptationsCount={data.booksAdaptationsCount}
+            />
           </div>
         </section>
         <section
