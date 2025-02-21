@@ -8,10 +8,6 @@ import store from "../redux/store";
 import { Provider } from "react-redux";
 import { Outlet } from "react-router-dom";
 
-import "../../src/assets/fonts/EquilibristRegular.ttf";
-import "../../src/assets/fonts/EquilibristBold.ttf";
-import "../../src/assets/fonts/Opsilon.ttf";
-
 function App() {
   const [MyclassName, setMyClass] = useState("");
 
