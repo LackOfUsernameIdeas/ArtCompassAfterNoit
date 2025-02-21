@@ -51,7 +51,9 @@ const AwardsSection: FC<GenresProps> = ({ recommendation }) => {
           ))
         ) : (
           // Ако няма награди, показва съобщение
-          <span className="text-gray-500">Няма награди</span>
+          <span className="text-defaulttextcolor/70 text-opacity-80 italic">
+            Няма награди
+          </span>
         )}
       </div>
     </div>
