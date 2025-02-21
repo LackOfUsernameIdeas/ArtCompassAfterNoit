@@ -36,7 +36,8 @@ export const fetchData = async (
       {
         key: "averageBoxOfficeAndScores",
         endpoint: "/stats/platform/average-scores"
-      }
+      },
+      { key: "booksAdaptationsCount", endpoint: "/stats/platform/adaptations" }
     ];
 
     // Loop over each endpoint, fetch data, and update state independently

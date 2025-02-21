@@ -31,7 +31,8 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
     averagePrecisionPercentage: "", // Средна прецизност в проценти
     averagePrecisionLastRoundPercentage: "", // Средна прецизност за последния кръг в проценти
     averageRecallPercentage: "", // Среден Recall в проценти
-    averageF1ScorePercentage: "" // Среден F1 резултат в проценти
+    averageF1ScorePercentage: "", // Среден F1 резултат в проценти
+    booksAdaptationsCount: {} // Брой адаптации на книги (филми и сериали)
   });
 
   // useEffect за извличане на данни, когато компонентът се зареди за първи път
@@ -111,6 +112,8 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
       overlayElement.classList.remove("active");
     }
   }
+
+  console.log(data);
 
   return (
     <Fragment>

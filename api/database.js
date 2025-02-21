@@ -3780,7 +3780,11 @@ const countBookAdaptations = (callback) => {
       }
     });
 
-    callback(null, { movies: movieCount, series: seriesCount });
+    callback(null, {
+      movies: movieCount,
+      series: seriesCount,
+      all: movieCount + seriesCount
+    });
   });
 };
 

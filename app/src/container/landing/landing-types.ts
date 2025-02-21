@@ -13,6 +13,7 @@ export type DataType = {
   averagePrecisionLastRoundPercentage: string; // Средна прецизност за последния кръг в проценти
   averageRecallPercentage: string; // Среден Recall в проценти
   averageF1ScorePercentage: string; // Среден F1 резултат в проценти
+  booksAdaptationsCount: {}; // Брой адаптации на книги (филми и сериали)
 };
 
 export interface UserData {
