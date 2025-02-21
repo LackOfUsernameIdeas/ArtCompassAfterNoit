@@ -4,7 +4,6 @@ import { CSSTransition } from "react-transition-group";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
 import Loader from "../../../components/common/loader/Loader";
 import { DataType } from "./choose-types";
-import { fetchData } from "./helper_functions";
 import { getAverageMetrics } from "../../helper_functions_common";
 import { Card } from "@/components/ui/card";
 import MainMetricsWidget from "@/container/aiAnalysator/Components/MainMetricsWidget";
