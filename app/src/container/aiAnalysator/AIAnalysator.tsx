@@ -2,6 +2,7 @@ import { FC, useEffect, useState, useCallback } from "react";
 import AIAnalysisDashboard from "./Components/AIAnalysisDashboard";
 import {
   F1ScoreData,
+  Metrics,
   PrecisionData,
   RecallData,
   RecommendationsAnalysis
@@ -12,6 +13,8 @@ import FadeInWrapper from "@/components/common/loader/fadeinwrapper";
 import {
   checkRelevanceForLastSavedRecommendations,
   getF1Score,
+  getHistoricalAverageMetrics,
+  getHistoricalAverageMetricsForUser,
   getPrecisionTotal,
   getRecallTotal
 } from "./helper_functions";
@@ -35,6 +38,12 @@ const AIAnalysator: FC = () => {
   );
   const [recallData, setRecallData] = useState<RecallData | null>(null);
   const [f1ScoreData, setF1ScoreData] = useState<F1ScoreData | null>(null);
+  const [historicalMetrics, setHistoricalMetrics] = useState<Metrics[] | null>(
+    null
+  );
+  const [historicalUserMetrics, setHistoricalUserMetrics] = useState<
+    Metrics[] | null
+  >(null);
   const [recommendationsAnalysis, setRecommendationsAnalysis] =
     useState<RecommendationsAnalysis>({
       relevantCount: 0,
@@ -82,9 +91,17 @@ const AIAnalysator: FC = () => {
             recallObject.recall_exact
           );
 
+          // Fetch historical average metrics
+          const historicalMetrics = await getHistoricalAverageMetrics();
+          const historicalUserMetrics =
+            await getHistoricalAverageMetricsForUser(token);
+
+          // Set state for new data
           setPrecisionData(precisionObject);
           setRecallData(recallObject);
           setF1ScoreData(f1ScoreObject);
+          setHistoricalMetrics(historicalMetrics);
+          setHistoricalUserMetrics(historicalUserMetrics);
 
           if (relevanceResults) {
             await analyzeRecommendations(

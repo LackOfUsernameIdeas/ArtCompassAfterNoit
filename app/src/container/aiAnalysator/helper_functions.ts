@@ -154,3 +154,72 @@ export const getF1Score = async (
     throw error;
   }
 };
+
+/**
+ * Изпраща заявка към сървъра за изчисляване на средните метрики по дни за всички потребители.
+ *
+ * @returns {Promise<Object>} Промис, който връща JSON с резултатите за средните метрики.
+ */
+export const getHistoricalAverageMetrics = async () => {
+  try {
+    const response = await fetch(
+      `${
+        import.meta.env.VITE_API_BASE_URL
+      }/stats/platform/ai/historical-average-metrics`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Грешка при заявката: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    console.log("result: ", result);
+    return result; // Връща JSON с резултати за средните метрики
+  } catch (error) {
+    console.error("Грешка при изчисляването на метриките:", error);
+    throw error;
+  }
+};
+
+/**
+ * Изпраща заявка към сървъра за изчисляване на средните метрики по дни за специфичен потребител.
+ *
+ * @param {string} token - Токен за удостоверяване.
+ * @returns {Promise<Object>} Промис, който връща JSON с резултатите за средните метрики на потребителя.
+ */
+export const getHistoricalAverageMetricsForUser = async (token: string) => {
+  try {
+    const response = await fetch(
+      `${
+        import.meta.env.VITE_API_BASE_URL
+      }/stats/individual/ai/historical-average-metrics`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ token }) // Изпраща токена в body-то на заявката
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Грешка при заявката: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    console.log("result2: ", result);
+    return result; // Връща JSON с резултати за средните метрики на потребителя
+  } catch (error) {
+    console.error(
+      "Грешка при изчисляването на метриките за потребителя:",
+      error
+    );
+    throw error;
+  }
+};

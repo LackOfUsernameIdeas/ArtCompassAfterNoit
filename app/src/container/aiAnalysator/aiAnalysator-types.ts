@@ -30,6 +30,19 @@ export type F1ScoreData = {
   f1_score_percentage: number; // F1-оценка в проценти
 };
 
+// Тип за данните за всички показатели за оценка на машинното обучение (Precision, Recall, F1 Score)
+export type Metrics = {
+  record_date: string; // Дата на запис
+  average_precision: string; // Средна точност
+  average_precision_percentage: string; // Среден процент на точност
+  average_recall: string; // Среден припомняне
+  average_recall_percentage: string; // Среден процент на припомняне
+  average_f1_score: string; // Среден F1 резултат
+  average_f1_score_percentage: string; // Среден процент на F1 резултат
+  average_precision_last_round: string; // Средна точност за последния кръг
+  average_precision_last_round_percentage: string; // Среден процент на точност за последния кръг
+};
+
 // Интерфейс за свойствата на таблото за анализ на изкуствения интелект
 export interface AIAnalysisDashboardProps {
   precisionData: PrecisionData; // Данни за прецизност

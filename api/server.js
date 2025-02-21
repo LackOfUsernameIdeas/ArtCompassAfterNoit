@@ -1397,7 +1397,7 @@ app.post("/save-analysis", (req, res) => {
   });
 });
 
-// Ендпоинт за изчисляване на средните метрики
+// Изчисляване на средните метрики
 app.get("/stats/platform/ai/average-metrics", (req, res) => {
   // Изчисляване на средните стойности за precision, recall и F1 score
   db.calculateAverageMetrics((err, result) => {
@@ -1410,7 +1410,7 @@ app.get("/stats/platform/ai/average-metrics", (req, res) => {
   });
 });
 
-// Ендпоинт за изчисляване на средните метрики по дни
+// Изчисляване на средните метрики по дни
 app.get("/stats/platform/ai/historical-average-metrics", (req, res) => {
   // Изчисляване на средните стойности за precision, recall и F1 score по дни
   db.getHistoricalAverageMetrics((err, result) => {
@@ -1423,7 +1423,7 @@ app.get("/stats/platform/ai/historical-average-metrics", (req, res) => {
   });
 });
 
-// Ендпоинт за изчисляване на средните метрики по дни за специфичен потребител
+// Изчисляване на средните метрики по дни за специфичен потребител
 app.post("/stats/individual/ai/historical-average-metrics", (req, res) => {
   const { token } = req.body;
 
