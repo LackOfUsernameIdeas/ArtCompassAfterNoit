@@ -177,10 +177,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                     className={`flex items-center space-x-${is1856 ? 2 : 1}`}
                   >
                     <p
-                      className={`mb-0 text-[#8c9097] dark:text-white/50 ${
-                        is1966 &&
-                        "truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs"
-                      }`}
+                      className={`mb-0 text-[#8c9097] dark:text-white/50 truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs`}
                     >
                       {displayedNameAverages}
                     </p>
@@ -198,7 +195,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                         <i
                           className={`ri-arrow-${
                             isAveragesMenuOpen ? "up" : "down"
-                          }-s-line ${!is1532 && "ml-0.5"} text-sm`}
+                          }-s-line text-sm`}
                         ></i>
                       </Link>
                       <ul
@@ -293,10 +290,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
               <div className="flex-grow">
                 <div className={`flex items-center space-x-${is1966 ? 2 : 1}`}>
                   <p
-                    className={`mb-0 text-[#8c9097] dark:text-white/50 ${
-                      is1966 &&
-                      "truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs"
-                    }`}
+                    className={`mb-0 text-[#8c9097] dark:text-white/50 truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs text-ellipsis`}
                   >
                     {displayedNameAwards}
                   </p>
@@ -304,7 +298,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                     <Link
                       to="#"
                       className={`flex items-center ${
-                        is1966
+                        is1856
                           ? "px-1 py-0.5 text-[0.70rem]"
                           : "px-0.5 py-0.25 text-[0.70rem]"
                       } font-medium text-primary border border-primary rounded-sm hover:bg-primary/10 transition-all max-h-[1.125rem]`}
@@ -314,7 +308,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                       <i
                         className={`ri-arrow-${
                           isAwardsMenuOpen ? "up" : "down"
-                        }-s-line ${!is1532 && "ml-0.5"} text-sm`}
+                        }-s-line text-sm`}
                       ></i>
                     </Link>
                     <ul
