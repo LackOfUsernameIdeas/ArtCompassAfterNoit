@@ -11,41 +11,60 @@ export default function BookAdaptations({
   seriesAdaptations
 }: BookAdaptationsProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mx-auto">
       <Card className="overflow-hidden border-2 !border-primary">
-        <CardContent className="p-6 bg-gradient-to-br from-primary/5 to-primary/25">
+        <CardContent className="p-6 bg-gradient-to-br dark:from-primary/5 dark:to-primary/25 from-primary/10 to-primary/30">
           <div className="flex items-center mb-4">
-            <div className="bg-primary/20 dark:bg-primary/40 p-3 rounded-full mr-4">
-              <Clapperboard className="h-6 w-6 text-primary dark:text-primary-foreground" />
+            <div className="bg-primary p-3 rounded-full mr-4">
+              <Clapperboard className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-lg font-semibold text-primary dark:text-primary-foreground">
+            <h3 className="text-lg font-semibold text-defaulttextcolor dark:text-white">
               Филмови адаптации
             </h3>
           </div>
-          <p className="text-sm text-primary/70 dark:text-primary-foreground/70 mb-2">
+          <p className="text-sm text-defaulttextcolor/70 dark:text-white/70 mb-2">
             Брой книги, адаптирани във филми
           </p>
-          <p className="text-5xl font-bold text-primary dark:text-primary-foreground font-mono">
+          <p className="text-5xl font-bold text-defaulttextcolor dark:text-white font-mono">
             {movieAdaptations}
           </p>
         </CardContent>
       </Card>
 
       <Card className="overflow-hidden border-2 !border-secondary">
-        <CardContent className="p-6 bg-gradient-to-br from-secondary/5 to-secondary/25">
+        <CardContent className="p-6 bg-gradient-to-br dark:from-secondary/5 dark:to-secondary/25 from-secondary/10 to-secondary/30">
           <div className="flex items-center mb-4">
-            <div className="bg-secondary/20 dark:bg-secondary/40 p-3 rounded-full mr-4">
-              <Tv className="h-6 w-6 text-secondary dark:text-secondary-foreground" />
+            <div className="bg-secondary p-3 rounded-full mr-4">
+              <Tv className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-lg font-semibold text-secondary dark:text-secondary-foreground">
+            <h3 className="text-lg font-semibold text-defaulttextcolor dark:text-white">
               Сериални адаптации
             </h3>
           </div>
-          <p className="text-sm text-secondary/70 dark:text-secondary-foreground/70 mb-2">
+          <p className="text-sm text-defaulttextcolor/70 dark:text-white/70 mb-2">
             Брой книги, адаптирани в сериали
           </p>
-          <p className="text-5xl font-bold text-secondary dark:text-secondary-foreground font-mono">
+          <p className="text-5xl font-bold text-defaulttextcolor dark:text-white font-mono">
             {seriesAdaptations}
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card className="overflow-hidden border-2 !border-tertiary">
+        <CardContent className="p-6 bg-gradient-to-br dark:from-tertiary/5 dark:to-tertiary/25 from-tertiary/10 to-tertiary/30">
+          <div className="flex items-center mb-4">
+            <div className="bg-tertiary p-3 rounded-full mr-4">
+              <Clapperboard className="h-6 w-6 text-white" />
+            </div>
+            <h3 className="text-lg font-semibold text-defaulttextcolor dark:text-white">
+              Всички адаптации
+            </h3>
+          </div>
+          <p className="text-sm text-defaulttextcolor/70 dark:text-white/70 mb-2">
+            Общ брой адаптации
+          </p>
+          <p className="text-5xl font-bold text-defaulttextcolor dark:text-white font-mono">
+            {movieAdaptations + seriesAdaptations}
           </p>
         </CardContent>
       </Card>
