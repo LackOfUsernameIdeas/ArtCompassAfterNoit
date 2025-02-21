@@ -16768,7 +16768,7 @@ select {
 }
 
 .ti-dropdown-item {
-  @apply py-2 px-[0.9375rem] text-[0.8125rem] font-medium block   text-gray-800 hover:bg-primary/[0.05] hover:text-primary focus:ring-0 focus:ring-primary dark:text-white/70 dark:hover:bg-primary/5 dark:hover:text-primary;
+  @apply py-2 px-[0.9375rem] text-[0.8125rem] font-medium block text-defaulttextcolor hover:bg-primary/[0.05] hover:text-primary focus:ring-0 focus:ring-primary dark:text-white/80 dark:hover:bg-primary/5 dark:hover:text-primary;
 }
 .ti-dropdown-item.active {
   @apply bg-primary text-white !important;
