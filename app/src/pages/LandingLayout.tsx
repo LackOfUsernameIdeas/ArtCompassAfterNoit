@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "../redux/store";
@@ -6,6 +6,10 @@ import Landingswitcher from "../components/common/switcher/landingswitcher";
 import Footer from "@/components/common/footer/footer";
 
 function Landinglayout() {
+  useEffect(() => {
+    import("preline");
+  }, []);
+
   const Bodyclickk = () => {
     if (window.innerWidth > 992) {
       let html = document.documentElement;
