@@ -127,12 +127,12 @@ export interface BookRecommendation {
   title_en: string; // Английско заглавие на книгата
   title_bg: string; // Българско заглавие на книгата
   real_edition_title: string; // Реално заглавие на изданието
-  author: string | Promise<string>; // Име на автора (може да е обещание)
+  author: string; // Име на автора (може да е обещание)
   publisher: string; // Издателство
-  genre_en: string | Promise<string>; // Жанрове на английски (може да е обещание)
-  genre_bg: string | Promise<string>; // Жанрове на български (може да е обещание)
-  description: string | Promise<string>; // Описание на книгата (може да е обещание)
-  language: string | Promise<string>; // Езици на книгата (може да е обещание)
+  genre_en: string; // Жанрове на английски (може да е обещание)
+  genre_bg: string; // Жанрове на български (може да е обещание)
+  description: string; // Описание на книгата (може да е обещание)
+  language: string; // Езици на книгата (може да е обещание)
   origin: string; // Страна на произход
   literary_awards: string; // Награди на книгата
   setting: string; // Мястото, в което се развива сюжета

@@ -134,9 +134,15 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
     // Функция за разрешаване на жанра на книгата
     const resolveGenres = async () => {
       try {
-        let resolvedGenres = selectedItem?.genre_bg; // Извличаме жанровете на базата на езика bg
-        if (resolvedGenres instanceof Promise) {
-          resolvedGenres = await resolvedGenres; // Ако жанровете са обещание, изчакваме да се разрешат
+        let resolvedGenres: string | undefined = selectedItem?.genre_bg; // Извличаме жанровете на базата на езика bg
+
+        // Проверяваме дали `resolvedGenres` е Promise, като гледаме дали има `.then`
+        if (
+          resolvedGenres &&
+          typeof resolvedGenres === "object" &&
+          "then" in resolvedGenres
+        ) {
+          resolvedGenres = await resolvedGenres; // Ако жанровете са Promise, изчакваме да се разрешат
         }
 
         // Обработка на жанровете в зависимост от източника (Goodreads или Google Books)
@@ -147,8 +153,8 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
           processGenresForGoogleBooks(resolvedGenres, setGenres); // Обработваме жанровете за Google Books
         }
       } catch (error) {
-        console.error("Error resolving genre_bg:", error); // Обработваме грешка при разрешаване на жанра
-        setGenres([]); // Ако има грешка, задаваме празен списък за жанровете
+        console.error("Грешка при разрешаване на жанровете:", error);
+        setGenres([]); // Ако има грешка, задаваме празен списък
       }
     };
 
