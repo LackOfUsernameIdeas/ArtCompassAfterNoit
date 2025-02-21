@@ -1410,6 +1410,19 @@ app.get("/stats/ai/average-metrics", (req, res) => {
   });
 });
 
+// Ендпоинт за изчисляване на средните метрики по дни
+app.get("/stats/ai/historical-average-metrics", (req, res) => {
+  // Изчисляване на средните стойности за precision, recall и F1 score по дни
+  db.getHistoricalAverageMetrics((err, result) => {
+    if (err)
+      return res
+        .status(500)
+        .json({ error: "Грешка при изчисляването на метриките по дни." });
+    // Връщане на резултата като JSON отговор
+    res.status(200).json(result);
+  });
+});
+
 // Изчисляване на Precision на база всички препоръки, правени някога за даден потребител
 app.post("/stats/ai/precision-total", (req, res) => {
   const { token, userPreferences } = req.body;
