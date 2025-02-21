@@ -23,8 +23,10 @@ const AIStatsWidgetCardsComponent: React.FC<AIStatsWidgetCardProps> = ({
               Среден Precision
             </h5>
             <p className="text-[#8c9097] dark:text-white/50 mb-4">
-              Средна стойност спрямо всички потребители (отнася се за последно
-              генерираните от тях препоръки)
+              Средна стойност спрямо всички потребители{" "}
+              <strong>
+                (отнася се за последно генерираните от тях препоръки)
+              </strong>
             </p>
             <div className="flex-grow">
               <p className="text-2xl font-bold">{`${data.averagePrecisionLastRoundPercentage}%`}</p>
@@ -43,8 +45,10 @@ const AIStatsWidgetCardsComponent: React.FC<AIStatsWidgetCardProps> = ({
               Среден Precision
             </h5>
             <p className="text-[#8c9097] dark:text-white/50 mb-4">
-              Средна стойност спрямо всички потребители (отнася се за всички
-              препоръки в платформата - като цяло)
+              Средна стойност спрямо всички потребители{" "}
+              <strong>
+                (отнася се за всички препоръки в платформата - като цяло)
+              </strong>
             </p>
             <div className="flex-grow">
               <p className="text-2xl font-bold">{`${data.averagePrecisionPercentage}%`}</p>
@@ -63,8 +67,10 @@ const AIStatsWidgetCardsComponent: React.FC<AIStatsWidgetCardProps> = ({
               Среден Recall
             </h5>
             <p className="text-[#8c9097] dark:text-white/50 mb-4">
-              Средна стойност спрямо всички потребители (отнася се за всички
-              препоръки в платформата - като цяло)
+              Средна стойност спрямо всички потребители{" "}
+              <strong>
+                (отнася се за всички препоръки в платформата - като цяло)
+              </strong>
             </p>
             <div className="flex-grow">
               <p className="text-2xl font-bold">{`${data.averageRecallPercentage}%`}</p>
@@ -83,8 +89,10 @@ const AIStatsWidgetCardsComponent: React.FC<AIStatsWidgetCardProps> = ({
               Среден F1 Score
             </h5>
             <p className="text-[#8c9097] dark:text-white/50 mb-4">
-              Средна стойност спрямо всички потребители (отнася се за всички
-              препоръки в платформата - като цяло)
+              Средна стойност спрямо всички потребители{" "}
+              <strong>
+                (отнася се за всички препоръки в платформата - като цяло)
+              </strong>
             </p>
             <div className="flex-grow">
               <p className="text-2xl font-bold">{`${data.averageF1ScorePercentage}%`}</p>
