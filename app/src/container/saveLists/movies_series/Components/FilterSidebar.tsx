@@ -24,17 +24,19 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
   onClose,
   onApplyFilters
 }) => {
+  // Държи състоянието на видимост за различните филтри
   const [isGenreVisible, setIsGenreVisible] = useState(false);
   const [isRuntimeVisible, setIsRuntimeVisible] = useState(false);
   const [isTypeVisible, setIsTypeVisible] = useState(false);
   const [isYearVisible, setIsYearVisible] = useState(false);
 
+  // Държи избраните стойности за всеки от филтрите
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [selectedRuntime, setSelectedRuntime] = useState<string[]>([]);
   const [selectedType, setSelectedType] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState<string[]>([]);
 
-  // Disable page scroll when the sidebar is open
+  // Забранява скролването на страницата, когато страничната лента е отворена
   useEffect(() => {
     if (isOpen) {
       document.body.classList.add("overflow-hidden");
@@ -42,20 +44,20 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
       document.body.classList.remove("overflow-hidden");
     }
 
-    // Cleanup function to remove the class when the component unmounts
+    // Функция за почистване, която премахва класа при демонтиране на компонента
     return () => {
       document.body.classList.remove("overflow-hidden");
     };
   }, [isOpen]);
 
-  // Reset all filters
+  // Нулира всички филтри
   const handleResetFilters = () => {
     setSelectedGenres([]);
     setSelectedRuntime([]);
     setSelectedType([]);
     setSelectedYear([]);
 
-    // Apply the reset filters immediately
+    // Прилага нулираните филтри веднага
     onApplyFilters({
       genres: [],
       runtime: [],
@@ -64,11 +66,13 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
     });
   };
 
+  // Функции за превключване на видимостта на филтрите
   const toggleGenreVisibility = () => setIsGenreVisible(!isGenreVisible);
   const toggleRuntimeVisibility = () => setIsRuntimeVisible(!isRuntimeVisible);
   const toggleTypeVisibility = () => setIsTypeVisible(!isTypeVisible);
   const toggleYearVisibility = () => setIsYearVisible(!isYearVisible);
 
+  // Функции за промяна на избраните стойности за всеки филтър
   const handleGenreChange = (genre: string) => {
     setSelectedGenres((prev) =>
       prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
@@ -95,6 +99,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
     );
   };
 
+  // Прилага избраните филтри и затваря страничната лента
   const handleApplyFilters = () => {
     onApplyFilters({
       genres: selectedGenres,

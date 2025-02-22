@@ -38,6 +38,7 @@ export class Categorybar extends Component<CategorybarProps, State> {
   constructor(props: CategorybarProps) {
     super(props);
 
+    // Трансформиране на входните данни в категории и стойности
     const { categories, values } = this.transformData(props.data);
 
     console.log(
@@ -47,6 +48,8 @@ export class Categorybar extends Component<CategorybarProps, State> {
       categories,
       values
     );
+
+    // Инициализиране на състоянието с данните за графиката
     this.state = {
       series: [
         {
@@ -59,12 +62,14 @@ export class Categorybar extends Component<CategorybarProps, State> {
   }
 
   componentDidUpdate(prevProps: CategorybarProps) {
+    // Проверка дали входните данни са се променили
     if (prevProps.data !== this.props.data) {
       this.updateChart();
     }
   }
 
   componentDidMount() {
+    // Създаване на наблюдател за промени в класовете на документа (за тъмна/светла тема)
     this.observer = new MutationObserver(() => {
       this.updateChartColors();
     });
@@ -76,18 +81,21 @@ export class Categorybar extends Component<CategorybarProps, State> {
   }
 
   componentWillUnmount() {
+    // Спиране на наблюдателя при демонтиране на компонента
     if (this.observer) {
       this.observer.disconnect();
     }
   }
 
   transformData(data: TopGenres) {
+    // Преобразуване на масива с жанрове в отделни масиви за категории и стойности
     const categories = data.map((genre) => genre.genre_bg);
     const values = data.map((genre) => genre.count);
     return { categories, values };
   }
 
   generateOptions(categories: string[], _values: number[]) {
+    // Определяне на основния цвят и създаване на цветова скала за графиката
     const primaryHex = updatePrimaryColor();
     const colorScale = chroma
       .scale([
@@ -101,39 +109,39 @@ export class Categorybar extends Component<CategorybarProps, State> {
     return {
       chart: {
         toolbar: {
-          show: false
+          show: false // Скриване на тулбара на графиката
         },
         height: 320,
         type: "bar",
         events: {
           mounted: (chart: any) => {
-            chart.windowResizeHandler();
+            chart.windowResizeHandler(); // Обновяване на графиката при промяна на размера на прозореца
           }
         }
       },
       grid: {
-        borderColor: "#f2f5f7"
+        borderColor: "#f2f5f7" // Цвят на мрежата в графиката
       },
       plotOptions: {
         bar: {
-          borderRadius: 10,
+          borderRadius: 10, // Закръглени ъгли на колоните
           dataLabels: {
-            position: "top"
+            position: "top" // Позиция на етикетите върху колоните
           }
         }
       },
       dataLabels: {
         enabled: true,
-        formatter: (val: number) => `${val}`,
+        formatter: (val: number) => `${val}`, // Форматиране на стойностите
         offsetY: -20,
         style: {
           fontSize: "12px",
           colors: ["#8c9097"]
         }
       },
-      colors: colorScale,
+      colors: colorScale, // Задаване на цветовата схема
       xaxis: {
-        categories,
+        categories, // Категориите на X оста (жанровете)
         position: "top",
         axisBorder: {
           show: false
@@ -193,6 +201,7 @@ export class Categorybar extends Component<CategorybarProps, State> {
         y: {
           title: {
             formatter: (_val: any, opts: any) => {
+              // Показване на жанра в tooltip-а
               const genre = categories[opts.dataPointIndex];
               return `${genre}:`;
             }
@@ -200,12 +209,13 @@ export class Categorybar extends Component<CategorybarProps, State> {
         }
       },
       legend: {
-        show: false
+        show: false // Скриване на легендата
       }
     };
   }
 
   updateChart() {
+    // Обновяване на графиката при промяна на входните данни
     const { categories, values } = this.transformData(this.props.data);
 
     this.setState({
@@ -220,6 +230,7 @@ export class Categorybar extends Component<CategorybarProps, State> {
   }
 
   updateChartColors() {
+    // Обновяване на цветовата схема при промяна на темата (тъмен/светъл режим)
     const { categories } = this.transformData(this.props.data);
 
     const primaryHex = updatePrimaryColor();

@@ -63,6 +63,7 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
   );
 
   const handleVerification = async () => {
+    // Обединяване на въведените цифри от полетата в един код
     const verificationCode =
       inputRefs.one.current.value +
       inputRefs.two.current.value +
@@ -72,6 +73,7 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
       inputRefs.six.current.value;
 
     try {
+      // Изпращане на заявка за верификация на имейла
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/verify-email`,
         {
@@ -84,12 +86,15 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
       );
 
       if (!response.ok) {
+        // Ако верификацията е неуспешна, хвърляне на грешка
         const errorData = await response.json();
         throw new Error(errorData.error || "Неуспешна верификация!");
       }
 
+      // Извличане на отговора от сървъра
       const data = await response.json();
 
+      // Показване на съобщение за успешна верификация
       setAlerts([
         {
           message: data.message,
@@ -98,10 +103,12 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
         }
       ]);
 
+      // Пренасочване към страницата за вход след кратко изчакване
       setTimeout(() => {
         navigate(`${import.meta.env.BASE_URL}signin`);
       }, 1000);
     } catch (error: any) {
+      // Обработка на грешки и показване на съобщение
       setAlerts([
         {
           message: error.message,

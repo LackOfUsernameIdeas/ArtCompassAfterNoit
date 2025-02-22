@@ -5,10 +5,6 @@ import {
   FilteredTableData,
   DataType
 } from "./moviesSeriesIndividualStats-types";
-import {
-  removeFromWatchlist,
-  saveToWatchlist
-} from "../../helper_functions_common";
 // ==============================
 // Функции за работа с данни
 // ==============================

@@ -179,7 +179,7 @@ export const getHistoricalAverageMetrics = async () => {
     }
 
     const result = await response.json();
-    console.log("result: ", result);
+    console.log("HistoricalAverageMetrics: ", result);
     return result; // Връща JSON с резултати за средните метрики
   } catch (error) {
     console.error("Грешка при изчисляването на метриките:", error);
@@ -213,7 +213,7 @@ export const getHistoricalAverageMetricsForUser = async (token: string) => {
     }
 
     const result = await response.json();
-    console.log("result2: ", result);
+    console.log("HistoricalAverageMetricsForUser: ", result);
     return result; // Връща JSON с резултати за средните метрики на потребителя
   } catch (error) {
     console.error(

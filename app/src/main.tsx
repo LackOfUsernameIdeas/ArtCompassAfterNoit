@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import App from "./pages/App.tsx";
 import Signincover from "./container/authentication/signin/Signin.tsx";
 import Authenticationlayout from "./pages/AuthenticationRoute.tsx";
@@ -34,7 +34,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <React.Suspense fallback={<div>Зареждане...</div>}>
         <Routes>
-          {/* <Route path="/" element={<Navigate to="/signin" />} /> */}
           <Route path="/" element={<LandingLayout />}>
             <Route path="/" element={<Landing />} />
           </Route>

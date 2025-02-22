@@ -58,12 +58,14 @@ const AIAnalysator: FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      // Вземане на токена от локалното или сесийното хранилище
       const token =
         localStorage.getItem("authToken") ||
         sessionStorage.getItem("authToken");
       if (!token) return;
 
       try {
+        // Проверка на релевантността на последно запазените препоръки
         const lastSavedRecommendationsAndPreferences =
           await checkRelevanceForLastSavedRecommendations(token, setShowError);
 
@@ -73,36 +75,41 @@ const AIAnalysator: FC = () => {
           lastSavedUserPreferences
         } = lastSavedRecommendationsAndPreferences;
 
+        // Запазване на потребителските предпочитания в състоянието
         setUserPreferences(lastSavedUserPreferences);
 
+        // Проверка дали има налични данни за анализ
         if (
           lastSavedRecommendations.length > 0 &&
           relevanceResults.length > 0 &&
           lastSavedUserPreferences
         ) {
+          // Изчисляване на точност (Precision) и пълнота (Recall)
           const [precisionObject, recallObject] = await Promise.all([
             getPrecisionTotal(token, lastSavedUserPreferences),
             getRecallTotal(token, lastSavedUserPreferences)
           ]);
 
+          // Изчисляване на F1-оценка (F1 Score)
           const f1ScoreObject = await getF1Score(
             token,
             precisionObject.precision_exact,
             recallObject.recall_exact
           );
 
-          // Fetch historical average metrics
+          // Извличане на исторически средни метрики
           const historicalMetrics = await getHistoricalAverageMetrics();
           const historicalUserMetrics =
             await getHistoricalAverageMetricsForUser(token);
 
-          // Set state for new data
+          // Запазване на новите данни в състоянието
           setPrecisionData(precisionObject);
           setRecallData(recallObject);
           setF1ScoreData(f1ScoreObject);
           setHistoricalMetrics(historicalMetrics);
           setHistoricalUserMetrics(historicalUserMetrics);
 
+          // Анализ на препоръките, ако има релевантни резултати
           if (relevanceResults) {
             await analyzeRecommendations(
               lastSavedUserPreferences,
@@ -112,10 +119,10 @@ const AIAnalysator: FC = () => {
             );
           }
         } else {
-          setShowError(true);
+          setShowError(true); // Показване на грешка, ако няма достатъчно данни
         }
       } catch (error) {
-        console.error("Error fetching AI analysis data:", error);
+        console.error("Грешка при извличане на данните за AI анализ:", error);
       }
     };
 

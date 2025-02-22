@@ -3,11 +3,11 @@ import {
   MovieSeriesUserPreferencesAfterSaving
 } from "../types_common";
 
-// Тип за данните за прецизност
+// Тип за данните за Precision
 export type PrecisionData = {
-  precision_exact: number; // Точна прецизност
-  precision_fixed: number; // Коригирана прецизност
-  precision_percentage: number; // Прецизност в проценти
+  precision_exact: number; // Точен Precision
+  precision_fixed: number; // Коригиран Precision
+  precision_percentage: number; // Precision в проценти
   relevant_recommendations_count: number; // Брой релевантни препоръки
   total_recommendations_count: number; // Общо препоръки
 };
@@ -45,7 +45,7 @@ export type Metrics = {
 
 // Интерфейс за свойствата на таблото за анализ на изкуствения интелект
 export interface AIAnalysisDashboardProps {
-  precisionData: PrecisionData; // Данни за прецизност
+  precisionData: PrecisionData; // Данни за Precision
   recallData: RecallData; // Данни за възвръщаемост
   f1ScoreData: F1ScoreData; // Данни за F1-оценка
 }
@@ -88,8 +88,8 @@ export interface Analysis {
 export type RecommendationsAnalysis = {
   relevantCount: number; // Брой релевантни препоръки
   totalCount: number; // Общ брой препоръки
-  precisionValue: number; // Стойност на прецизността
-  precisionPercentage: number; // Процентна стойност на прецизността
+  precisionValue: number; // Стойност на Precision
+  precisionPercentage: number; // Процентна стойност на Precision
   relevantRecommendations: Analysis[]; // Списък с релевантни препоръки (imdbID)
 };
 

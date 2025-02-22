@@ -6,7 +6,7 @@ import FilterSidebar from "./FilterSidebar";
 import { ChevronDownIcon } from "lucide-react";
 import { useMediaQuery } from "react-responsive";
 
-// Custom CSS for the dropdown arrow
+// Персонализиран CSS за стрелката на падащото меню
 const customStyles = `
   .custom-select {
     appearance: none;

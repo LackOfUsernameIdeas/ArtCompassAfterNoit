@@ -55,8 +55,9 @@ const Signupcover: FC<SignupcoverProps> = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Предотвратяване на презареждането на страницата при изпращане на формата
 
+    // Проверка дали някое от полетата е празно
     const emptyFirstName = !formData.firstName;
     const emptyLastName = !formData.lastName;
     const emptyEmail = !formData.email;
@@ -70,6 +71,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
       emptyPassword ||
       emptyConfirmPassword
     ) {
+      // Запазване на състоянието за празните полета
       setEmptyFields({
         firstName: emptyFirstName,
         lastName: emptyLastName,
@@ -78,6 +80,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
         confirmPassword: emptyConfirmPassword
       });
 
+      // Показване на предупреждение, че всички полета са задължителни
       setAlerts([
         {
           message: "Всички полета са задължителни!",
@@ -88,6 +91,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
       return;
     }
 
+    // Проверка за валиден формат на имейла
     if (!EmailValidator.validate(formData.email)) {
       setAlerts([
         {
@@ -99,6 +103,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
       return;
     }
 
+    // Проверка дали паролите съвпадат
     if (formData.password !== formData.confirmPassword) {
       setAlerts([
         {
@@ -110,6 +115,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
       return;
     }
 
+    // Проверка за сила на паролата - трябва да съдържа малки и главни букви, цифри и специален символ, и да е поне 8 символа
     const passwordStrengthRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
     if (!passwordStrengthRegex.test(formData.password)) {
@@ -124,6 +130,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
       return;
     }
 
+    // Показване на съобщение за изчакване при изпращане на заявката
     setAlerts([
       {
         message: "Моля, изчакайте...",
@@ -133,6 +140,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
     ]);
 
     try {
+      // Изпращане на заявка за регистрация
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/signup`,
         {
@@ -145,15 +153,19 @@ const Signupcover: FC<SignupcoverProps> = () => {
       );
 
       if (!response.ok) {
+        // Ако отговорът не е успешен, обработване на грешката
         const errorData = await response.json();
         throw new Error(errorData.error || "Нещо се обърка! :(");
       }
 
+      // При успешна регистрация, пренасочване към страницата за двустепенна верификация
       navigate(`${import.meta.env.BASE_URL}twostepverification`, {
         state: { email: formData.email }
       });
     } catch (error: any) {
       let errorMessage = "";
+
+      // Обработка на специфични грешки, като например дублиране на имейл
       switch (true) {
         case error.message.includes("Duplicate entry"):
           errorMessage = "Потребител с този имейл адрес вече съществува!";
@@ -162,6 +174,8 @@ const Signupcover: FC<SignupcoverProps> = () => {
           errorMessage = error.message;
           break;
       }
+
+      // Показване на съобщение за грешка
       setAlerts([
         {
           message: errorMessage,

@@ -12,7 +12,6 @@ import {
   RoleData,
   WriterData
 } from "./platformStats-types";
-import { Link } from "react-router-dom";
 
 // Генерира данни за heatmap диаграмата
 export function generateData(count: any, yrange: any) {
@@ -74,12 +73,14 @@ export class GenrePopularityOverTime extends Component<
   constructor(props: GenrePopularityOverTimeProps) {
     super(props);
 
+    // Инициализиране на състоянието с актуализирани опции за диаграмата
     this.state = {
       options: this.getUpdatedOptions()
     };
   }
 
   componentDidMount() {
+    // Създаване на наблюдател за промяна в цветовата схема на страницата
     this.observer = new MutationObserver(this.updateColorRange);
     this.observer.observe(document.documentElement, {
       attributes: true,
@@ -88,13 +89,16 @@ export class GenrePopularityOverTime extends Component<
   }
 
   componentWillUnmount() {
+    // Спиране на наблюдателя при унищожаване на компонента
     this.observer?.disconnect();
   }
 
+  // Актуализира цветовата скала при промяна на цветовата тема
   updateColorRange = () => {
     this.setState({ options: this.getUpdatedOptions() });
   };
 
+  // Генерира и връща актуализирани опции за диаграмата
   getUpdatedOptions() {
     const primaryHex = updatePrimaryColor();
     const colorScale = chroma

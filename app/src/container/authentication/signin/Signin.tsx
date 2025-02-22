@@ -87,17 +87,20 @@ const Signincover: FC<SignincoverProps> = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Предотвратяване на презареждането на страницата
 
+    // Проверка дали полетата за имейл и парола са празни
     const emptyEmail = !formData.email;
     const emptyPassword = !formData.password;
 
     if (emptyEmail || emptyPassword) {
+      // Запазване на състоянието за празните полета
       setEmptyFields({
         email: emptyEmail,
         password: emptyPassword
       });
 
+      // Показване на предупреждение, че всички полета са задължителни
       setAlerts([
         {
           message: "Всички полета са задължителни!",
@@ -109,6 +112,7 @@ const Signincover: FC<SignincoverProps> = () => {
     }
 
     try {
+      // Изпращане на заявка за вход в системата
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/signin`,
         {
@@ -116,17 +120,21 @@ const Signincover: FC<SignincoverProps> = () => {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ ...formData, rememberMe })
+          body: JSON.stringify({ ...formData, rememberMe }) // Изпращане на данните за вход
         }
       );
 
       if (!response.ok) {
+        // Ако отговорът не е успешен, обработване на грешката
         const errorData = await response.json();
         throw new Error(errorData.error || "Нещо се обърка! :(");
       }
 
+      // Ако заявката е успешна, извличане на данните от отговора
       const data = await response.json();
       console.log("response: ", data);
+
+      // Показване на съобщение за успешно влизане
       setAlerts([
         {
           message: "Успешно влизане!",
@@ -135,14 +143,17 @@ const Signincover: FC<SignincoverProps> = () => {
         }
       ]);
 
+      // Запазване на токена в localStorage или sessionStorage в зависимост от избора на потребителя
       if (rememberMe) {
         localStorage.setItem("authToken", data.token);
       } else {
         sessionStorage.setItem("authToken", data.token);
       }
 
+      // Пренасочване към страницата с препоръки
       navigate(`${import.meta.env.BASE_URL}app/recommendations`);
     } catch (error: any) {
+      // Обработка на грешката и показване на съобщение за неуспешен вход
       setAlerts([
         {
           message: error.message,
