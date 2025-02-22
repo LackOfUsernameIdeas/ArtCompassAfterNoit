@@ -1,6 +1,7 @@
 // ==============================
 // Импортиране на типове и интерфейси
 // ==============================
+import { BookRecommendation } from "@/container/types_common";
 import { DataType } from "./readlist-types";
 import { SetStateAction } from "react";
 
@@ -112,4 +113,47 @@ export const processGenresForGoogleBooks = (
     console.warn("Неочакван формат за жанровете на Google Books:", genres);
     setGenres(["Няма жанрове за показване."]);
   }
+};
+
+/**
+ * Форматира жанровете, като обработва JSON или връща жанра с главна буква.
+ * @param {string | null} genre - Жанрът в текстов или JSON формат.
+ * @returns {string} - Форматиран списък с жанрове или съобщение, ако липсва.
+ */
+export const formatGenres = (genre: string | null): string => {
+  if (!genre) return "Няма жанр";
+
+  try {
+    const parsed = JSON.parse(genre);
+    if (typeof parsed === "object" && !Array.isArray(parsed)) {
+      return [...new Set(Object.values(parsed).flat())]
+        .map((g) =>
+          typeof g === "string" ? g.charAt(0).toUpperCase() + g.slice(1) : ""
+        )
+        .join(", ");
+    }
+  } catch {}
+
+  return genre.charAt(0).toUpperCase() + genre.slice(1);
+};
+
+/**
+ * Извлича авторите от подаден обект и ги връща като списък.
+ * @param {any} item - Обект, съдържащ поле `author` със стойности, разделени със запетаи.
+ * @returns {string[]} - Масив от автори, почистени от празни интервали.
+ */
+export const extractAuthors = (item: any): string[] => {
+  return item.author
+    ? item.author.split(",").map((author: string) => author.trim())
+    : [];
+};
+
+/**
+ * Извлича годината от дадена дата.
+ * @param {string} date - Дата във формат ISO или друг валиден формат.
+ * @returns {number | null} - Годината като число или `null`, ако датата не е валидна.
+ */
+export const extractYear = (date: string): number | null => {
+  const parsedDate = new Date(date);
+  return isNaN(parsedDate.getTime()) ? null : parsedDate.getFullYear();
 };

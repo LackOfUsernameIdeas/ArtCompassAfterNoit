@@ -1,5 +1,5 @@
 import { FC, useState, useEffect } from "react";
-import { X, ChevronUp, ChevronDown } from "lucide-react";
+import { X } from "lucide-react";
 import { moviesSeriesGenreOptions } from "../../../data_common";
 import {
   Accordion,
@@ -7,29 +7,13 @@ import {
   AccordionItem,
   AccordionTrigger
 } from "@/components/ui/accordion";
-
-interface FilterSidebarProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onApplyFilters: (filters: {
-    genres: string[];
-    runtime: string[];
-    type: string[];
-    year: string[];
-  }) => void;
-}
+import { FilterSidebarProps } from "../watchlist-types";
 
 const FilterSidebar: FC<FilterSidebarProps> = ({
   isOpen,
   onClose,
   onApplyFilters
 }) => {
-  // Държи състоянието на видимост за различните филтри
-  const [isGenreVisible, setIsGenreVisible] = useState(false);
-  const [isRuntimeVisible, setIsRuntimeVisible] = useState(false);
-  const [isTypeVisible, setIsTypeVisible] = useState(false);
-  const [isYearVisible, setIsYearVisible] = useState(false);
-
   // Държи избраните стойности за всеки от филтрите
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [selectedRuntime, setSelectedRuntime] = useState<string[]>([]);
@@ -65,12 +49,6 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
       year: []
     });
   };
-
-  // Функции за превключване на видимостта на филтрите
-  const toggleGenreVisibility = () => setIsGenreVisible(!isGenreVisible);
-  const toggleRuntimeVisibility = () => setIsRuntimeVisible(!isRuntimeVisible);
-  const toggleTypeVisibility = () => setIsTypeVisible(!isTypeVisible);
-  const toggleYearVisibility = () => setIsYearVisible(!isYearVisible);
 
   // Функции за промяна на избраните стойности за всеки филтър
   const handleGenreChange = (genre: string) => {
@@ -124,13 +102,10 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
       </button>
       <h3 className="text-lg font-bold opsilion mb-4">Филтриране</h3>
       <div className="space-y-4">
-        {/* Жанр Section */}
+        {/* Филтрация за жанр */}
         <Accordion type="single" collapsible>
           <AccordionItem value="genre">
-            <AccordionTrigger
-              className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md"
-              onClick={toggleGenreVisibility}
-            >
+            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
               Жанр
             </AccordionTrigger>
             <AccordionContent className="pl-4">
@@ -151,13 +126,10 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
           </AccordionItem>
         </Accordion>
 
-        {/* Runtime Section */}
+        {/* Филтрация за продължителност */}
         <Accordion type="single" collapsible>
           <AccordionItem value="runtime">
-            <AccordionTrigger
-              className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md"
-              onClick={toggleRuntimeVisibility}
-            >
+            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
               Продължителност
             </AccordionTrigger>
             <AccordionContent className="pl-4">
@@ -183,13 +155,10 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
           </AccordionItem>
         </Accordion>
 
-        {/* Type Section */}
+        {/* Филтрация за вид */}
         <Accordion type="single" collapsible>
           <AccordionItem value="type">
-            <AccordionTrigger
-              className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md"
-              onClick={toggleTypeVisibility}
-            >
+            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
               Вид
             </AccordionTrigger>
             <AccordionContent className="pl-4">
@@ -210,13 +179,10 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
           </AccordionItem>
         </Accordion>
 
-        {/* Year of Release Section */}
+        {/* Филтрация за година на излизане */}
         <Accordion type="single" collapsible>
           <AccordionItem value="year">
-            <AccordionTrigger
-              className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md"
-              onClick={toggleTypeVisibility}
-            >
+            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
               Година на излизане
             </AccordionTrigger>
             <AccordionContent className="pl-4">
@@ -242,7 +208,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
           </AccordionItem>
         </Accordion>
 
-        {/* Reset and Apply Buttons */}
+        {/* Бутони за прилагане и нулиране на филтрация */}
         <div className="flex flex-col gap-2">
           <button
             className="bg-gray-400 hover:bg-gray-400/75 text-gray-800 px-4 py-2 rounded-md transition w-full"

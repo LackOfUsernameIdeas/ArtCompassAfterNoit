@@ -1,26 +1,11 @@
-import { FC, Fragment, useState } from "react";
+import { FC, Fragment, useEffect, useState } from "react";
 import { BooksTableProps } from "../readlist-types";
 import RecommendationCardAlert from "./RecommendationCardAlert/RecommendationCardAlert";
 import { BookRecommendation } from "../../../types_common";
 import FilterSidebar from "./FilterSidebar";
 import { ChevronDownIcon } from "lucide-react";
 import { useMediaQuery } from "react-responsive";
-
-// Custom CSS for the dropdown arrow
-const customStyles = `
-  .custom-select {
-    appearance: none;
-    background: transparent;
-    padding-right: 2rem; /* Space for the arrow */
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b7280'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 0.5rem center;
-    background-size: 1.5em;
-  }
-  .custom-select:hover {
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-  }
-`;
+import { extractAuthors, extractYear, formatGenres } from "../helper_functions";
 
 const BooksTable: FC<BooksTableProps> = ({
   data,
@@ -29,16 +14,40 @@ const BooksTable: FC<BooksTableProps> = ({
   setCurrentBookmarkStatus,
   setAlertVisible
 }) => {
+  // Държи избраната книга или null, ако няма избрана книга.
   const [selectedItem, setSelectedItem] = useState<BookRecommendation | null>(
     null
   );
+  // Съхранява списък с автори, използван в приложението.
+  const [authors, setAuthors] = useState<string[]>([]);
+  // Управлява състоянието на панела с филтри (отворен/затворен).
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  // Държи филтрираните данни според избраните критерии.
   const [filteredData, setFilteredData] = useState(data);
+  // Следи текущата страница при пагинация.
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(12); // Default items per page
+  // Определя броя на елементите, които да се показват на страница.
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+  // Управлява състоянието на селект менюто (отворено/затворено).
   const [isSelectOpen, setIsSelectOpen] = useState(false);
+  // Задава избраната книга при клик върху нея.
   const handleBookClick = (item: BookRecommendation) => setSelectedItem(item);
 
+  /**
+   * Филтрира данните според подадените критерии за жанрове, брой страници, автори и година на писане.
+   *
+   * @param {Object} filters - Обект с филтри, които ще се приложат към данните.
+   * @param {string[]} filters.genres - Списък с избрани жанрове, по които да се филтрират книгите.
+   * @param {string[]} filters.pages - Списък с диапазони за броя страници (напр. "Под 100 страници").
+   * @param {string[]} filters.author - Списък с автори, чиито книги да бъдат показани.
+   * @param {string[]} filters.year - Списък с времеви интервали за годината на писане (напр. "След 2010").
+   *
+   * Функцията обработва масив от книги, като проверява дали всяка книга отговаря на избраните критерии.
+   * Ако даден филтър е празен, той не ограничава резултатите. Книгите се сравняват по жанр,
+   * брой страници, автор и година на писане.
+   *
+   * @returns {void} - Актуализира състоянието на филтрираните данни и нулира страницата на резултатите.
+   */
   const handleApplyFilters = (filters: {
     genres: string[];
     pages: string[];
@@ -46,35 +55,55 @@ const BooksTable: FC<BooksTableProps> = ({
     year: string[];
   }) => {
     const filtered = data.filter((item) => {
-      const BookGenres = item.genre_bg.split(",").map((genre) => genre.trim());
+      const authors = extractAuthors(item);
+      const bookGenres = formatGenres(item.genre_bg)
+        .split(",")
+        .map((genre) => genre.trim());
+
       const matchesGenre =
         filters.genres.length === 0 ||
         filters.genres.some((selectedGenre) =>
-          BookGenres.includes(selectedGenre)
+          bookGenres.some((bookGenre) =>
+            bookGenre.toLowerCase().includes(selectedGenre.toLowerCase())
+          )
         );
 
-      const pages = parseInt(item.page_count.replace(/\D/g, ""), 10);
       const matchesPages =
         filters.pages.length === 0 ||
-        filters.pages.some((r) => {
-          if (r === "Под 60 минути") return pages < 60;
-          if (r === "60 до 120 минути") return pages >= 60 && pages <= 120;
-          if (r === "120 до 180 минути") return pages > 120 && pages <= 180;
-          if (r === "Повече от 180 минути") return pages > 180;
+        filters.pages.some((p) => {
+          if (p === "Под 100 страници") return item.page_count < 100;
+          if (p === "100 до 200 страници")
+            return item.page_count >= 100 && item.page_count <= 200;
+          if (p === "200 до 300 страници")
+            return item.page_count > 200 && item.page_count <= 300;
+          if (p === "300 до 400 страници")
+            return item.page_count > 300 && item.page_count <= 400;
+          if (p === "400 до 500 страници")
+            return item.page_count > 400 && item.page_count <= 500;
+          if (p === "Повече от 500 страници") return item.page_count > 500;
           return true;
         });
 
       const matchesAuthor =
-        filters.author.length === 0 || filters.author.includes(item.author);
+        filters.author.length === 0 ||
+        filters.author.some((selectedAuthor) =>
+          authors.some((bookAuthor) =>
+            bookAuthor.toLowerCase().includes(selectedAuthor.toLowerCase())
+          )
+        );
 
-      const year = parseInt(item.date_of_issue, 10);
+      const year = extractYear(item.date_of_issue);
+
       const matchesYear =
         filters.year.length === 0 ||
         filters.year.some((y) => {
-          if (y === "Преди 2000") return year < 2000;
-          if (y === "2000 до 2010") return year >= 2000 && year <= 2010;
-          if (y === "2010 до 2020") return year > 2010 && year <= 2020;
-          if (y === "След 2020") return year > 2020;
+          if (year === null) return false;
+          if (y === "Преди 1900") return year < 1900;
+          if (y === "1900 до 1950") return year >= 1900 && year <= 1950;
+          if (y === "1950 до 1980") return year > 1950 && year <= 1980;
+          if (y === "1980 до 2000") return year > 1980 && year <= 2000;
+          if (y === "2000 до 2010") return year > 2000 && year <= 2010;
+          if (y === "След 2010") return year > 2010;
           return true;
         });
 
@@ -82,43 +111,55 @@ const BooksTable: FC<BooksTableProps> = ({
     });
 
     setFilteredData(filtered);
-    setCurrentPage(1); // Reset to the first page when filters are applied
+    setCurrentPage(1);
   };
 
-  // Calculate the total number of pages
+  // Изчислява общия брой страници, необходими за показване на всички филтрирани данни.
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-  // Get the current page's data
+  // Извлича текущите данни, които трябва да се покажат на страницата, в зависимост от избрания номер на страница.
   const currentData = filteredData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
+  // Преминава към следващата страница, ако все още не е достигната последната.
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
 
+  // Връща се към предишната страница, ако текущата страница не е първата.
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
   };
 
+  // Променя броя на елементите на страница и връща на първа страница след промяната.
   const handleItemsPerPageChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setItemsPerPage(Number(event.target.value));
-    setCurrentPage(1); // Reset to the first page when items per page changes
+    setCurrentPage(1);
   };
 
+  // При всяка промяна в `data` извлича авторите от книгите и обновява състоянието.
+  useEffect(() => {
+    const newAuthors: string[] = [];
+    for (let i = 0; i < data.length; i++) {
+      const authors = extractAuthors(data[i]);
+      newAuthors.push(...authors);
+      console.log(data[i].date_of_issue); // Отпечатва датата на издаване за дебъгване
+    }
+    setAuthors(newAuthors);
+  }, [data]);
+
+  // Проверява дали екранната ширина е 1546px или по-малка.
   const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
   return (
     <Fragment>
-      {/* Inject custom styles for the dropdown arrow */}
-      <style>{customStyles}</style>
-
       {isFilterOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -129,6 +170,7 @@ const BooksTable: FC<BooksTableProps> = ({
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
         onApplyFilters={handleApplyFilters}
+        authors={authors}
       />
       <RecommendationCardAlert
         selectedItem={selectedItem}
@@ -221,7 +263,7 @@ const BooksTable: FC<BooksTableProps> = ({
                 className="bg-white dark:bg-bodybg2/50 shadow-lg rounded-lg p-4 cursor-pointer hover:bg-primary dark:hover:bg-primary hover:text-white transition duration-300 flex flex-col items-center"
                 onClick={() => handleBookClick(item)}
               >
-                <div className="flex items-center gap-4 w-full">
+                <div className="flex items-center gap-4 w-full mb-4">
                   <img
                     src={item.imageLink}
                     alt={`${item.title_bg || "Book"} Cover`}
@@ -229,22 +271,27 @@ const BooksTable: FC<BooksTableProps> = ({
                   />
                   <div className="flex flex-col items-start">
                     <span className="opsilion">
-                      Автор: <p className="font-Equilibrist">{item.author}</p>
-                    </span>
-                    <span className="opsilion">
-                      Жанр: <p className="font-Equilibrist">{item.genre_bg}</p>
+                      Жанр:{" "}
+                      <p className="font-Equilibrist">
+                        {formatGenres(item.genre_bg)}
+                      </p>
                     </span>
                     <span className="opsilion">
                       Страници:{" "}
                       <p className="font-Equilibrist">{item.page_count}</p>
                     </span>
                     <span className="opsilion">
-                      Година на излизане:{" "}
-                      <p className="font-Equilibrist">{item.date_of_issue}</p>
+                      Автор: <p className="font-Equilibrist">{item.author}</p>
+                    </span>
+                    <span className="opsilion">
+                      Година на писане:{" "}
+                      <p className="font-Equilibrist">
+                        {extractYear(item.date_of_issue)}
+                      </p>
                     </span>
                   </div>
                 </div>
-                <div className="w-full bg-white bg-bodybg/50 dark:bg-bodybg2/50 dark:border-black/10 rounded-md shadow-lg dark:shadow-xl text-center mt-4">
+                <div className="w-full bg-white bg-bodybg/50 dark:bg-bodybg2/50 dark:border-black/10 rounded-md shadow-lg dark:shadow-xl text-center mt-auto">
                   <h5 className="opsilion text-xl text-defaulttextcolor dark:text-white/80">
                     {item.title_en}/{item.title_bg}
                   </h5>
@@ -252,7 +299,7 @@ const BooksTable: FC<BooksTableProps> = ({
               </div>
             ))}
           </div>
-          {/* Pagination Controls */}
+          {/* Пагинация */}
           {totalPages > 1 && (
             <div className="box-footer flex justify-center items-center gap-4">
               <span className="text-defaulttextcolor dark:text-white/80">

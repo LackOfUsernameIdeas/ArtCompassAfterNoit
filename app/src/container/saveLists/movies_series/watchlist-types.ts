@@ -118,3 +118,15 @@ export interface BookmarkAlertProps {
   isBookmarked: boolean;
   onDismiss: () => void;
 }
+
+// Интерфейс за пропс на филтриращото меню
+export interface FilterSidebarProps {
+  isOpen: boolean; // Дали менюто е отворено
+  onClose: () => void; // Функция за затваряне на менюто
+  onApplyFilters: (filters: {
+    genres: string[]; // Филтър по жанрове
+    runtime: string[]; // Филтър по продължителност
+    type: string[]; // Филтър по вид
+    year: string[]; // Филтър по година на издаване
+  }) => void;
+}

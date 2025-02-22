@@ -112,3 +112,16 @@ export interface RecommendationCardProps {
   setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
   bookmarkedBooks: { [key: string]: BookRecommendation }; // Обект със списък на маркирани книги
 }
+
+// Интерфейс за пропс на филтриращото меню
+export interface FilterSidebarProps {
+  isOpen: boolean; // Дали менюто е отворено
+  onClose: () => void; // Функция за затваряне на менюто
+  onApplyFilters: (filters: {
+    genres: string[]; // Филтър по жанрове
+    pages: string[]; // Филтър по брой страници
+    author: string[]; // Филтър по автори
+    year: string[]; // Филтър по година на писане
+  }) => void;
+  authors: string[]; // Списък с налични автори за избор
+}

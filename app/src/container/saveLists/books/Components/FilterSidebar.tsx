@@ -1,40 +1,45 @@
 import { FC, useState, useEffect } from "react";
-import { X, ChevronUp, ChevronDown } from "lucide-react";
-import { moviesSeriesGenreOptions } from "../../../data_common";
+import { X } from "lucide-react";
+import {
+  googleBooksGenreOptions,
+  goodreadsGenreOptions
+} from "../../../data_common";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger
 } from "@/components/ui/accordion";
-
-interface FilterSidebarProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onApplyFilters: (filters: {
-    genres: string[];
-    pages: string[];
-    author: string[];
-    year: string[];
-  }) => void;
-}
+import { FilterSidebarProps } from "../readlist-types";
 
 const FilterSidebar: FC<FilterSidebarProps> = ({
   isOpen,
   onClose,
-  onApplyFilters
+  onApplyFilters,
+  authors
 }) => {
-  const [isGenreVisible, setIsGenreVisible] = useState(false);
-  const [isRuntimeVisible, setIsRuntimeVisible] = useState(false);
-  const [isTypeVisible, setIsTypeVisible] = useState(false);
-  const [isYearVisible, setIsYearVisible] = useState(false);
+  // Държи избраните стойности за всеки от филтрите
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]); // Избрани жанрове
+  const [selectedPages, setSelectedPages] = useState<string[]>([]); // Филтър по брой страници
+  const [selectedAuthor, setSelectedAuthor] = useState<string[]>([]); // Филтър по автор
+  const [selectedYear, setSelectedYear] = useState<string[]>([]); // Филтър по година
 
-  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
-  const [selectedRuntime, setSelectedRuntime] = useState<string[]>([]);
-  const [selectedType, setSelectedType] = useState<string[]>([]);
-  const [selectedYear, setSelectedYear] = useState<string[]>([]);
+  // Подреждане на авторите по азбучен ред
+  const sortedAuthors = authors.sort((a, b) => a.localeCompare(b));
 
-  // Disable page scroll when the sidebar is open
+  // Създаване на уникален списък с жанрове от Goodreads и Google Books
+  const goodreadsGenresSet = new Set(
+    goodreadsGenreOptions.map((genre) => genre.bg)
+  );
+  const uniqueGoogleBooksGenres = googleBooksGenreOptions.filter(
+    (genre) => !goodreadsGenresSet.has(genre.bg)
+  );
+  const updatedGenreOptions = [
+    ...goodreadsGenreOptions,
+    ...uniqueGoogleBooksGenres
+  ].sort((a, b) => a.bg.localeCompare(b.bg)); // Сортиране на жанровете по име
+
+  // Забранява скролването на страницата, когато страничната лента е отворена
   useEffect(() => {
     if (isOpen) {
       document.body.classList.add("overflow-hidden");
@@ -42,20 +47,20 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
       document.body.classList.remove("overflow-hidden");
     }
 
-    // Cleanup function to remove the class when the component unmounts
+    // Функция за почистване, която премахва класа при демонтиране на компонента
     return () => {
       document.body.classList.remove("overflow-hidden");
     };
   }, [isOpen]);
 
-  // Reset all filters
+  // Нулира всички филтри
   const handleResetFilters = () => {
     setSelectedGenres([]);
-    setSelectedRuntime([]);
-    setSelectedType([]);
+    setSelectedPages([]);
+    setSelectedAuthor([]);
     setSelectedYear([]);
 
-    // Apply the reset filters immediately
+    // Прилага нулираните филтри веднага
     onApplyFilters({
       genres: [],
       pages: [],
@@ -64,42 +69,36 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
     });
   };
 
-  const toggleGenreVisibility = () => setIsGenreVisible(!isGenreVisible);
-  const toggleRuntimeVisibility = () => setIsRuntimeVisible(!isRuntimeVisible);
-  const toggleTypeVisibility = () => setIsTypeVisible(!isTypeVisible);
-  const toggleYearVisibility = () => setIsYearVisible(!isYearVisible);
-
+  // Функции за промяна на избраните стойности за всеки филтър
   const handleGenreChange = (genre: string) => {
     setSelectedGenres((prev) =>
       prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
     );
   };
-
-  const handleRuntimeChange = (runtime: string) => {
-    setSelectedRuntime((prev) =>
-      prev.includes(runtime)
-        ? prev.filter((r) => r !== runtime)
-        : [...prev, runtime]
+  const handlePagesChange = (pages: string) => {
+    setSelectedPages((prev) =>
+      prev.includes(pages) ? prev.filter((p) => p !== pages) : [...prev, pages]
     );
   };
-
-  const handleTypeChange = (type: string) => {
-    setSelectedType((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+  const handleAuthorChange = (author: string) => {
+    setSelectedAuthor((prev) =>
+      prev.includes(author)
+        ? prev.filter((t) => t !== author)
+        : [...prev, author]
     );
   };
-
   const handleYearChange = (year: string) => {
     setSelectedYear((prev) =>
       prev.includes(year) ? prev.filter((y) => y !== year) : [...prev, year]
     );
   };
 
+  // Прилага избраните филтри и затваря страничната лента
   const handleApplyFilters = () => {
     onApplyFilters({
       genres: selectedGenres,
-      pages: selectedRuntime,
-      author: selectedType,
+      pages: selectedPages,
+      author: selectedAuthor,
       year: selectedYear
     });
     onClose();
@@ -119,55 +118,53 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
       </button>
       <h3 className="text-lg font-bold opsilion mb-4">Филтриране</h3>
       <div className="space-y-4">
-        {/* Жанр Section */}
+        {/* Филтрация за жанр */}
         <Accordion type="single" collapsible>
           <AccordionItem value="genre">
-            <AccordionTrigger
-              className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md"
-              onClick={toggleGenreVisibility}
-            >
+            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
               Жанр
             </AccordionTrigger>
             <AccordionContent className="pl-4">
               <div className="mt-2 space-y-2">
-                {moviesSeriesGenreOptions.map(({ bg }) => (
-                  <div key={bg} className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedGenres.includes(bg)}
-                      onChange={() => handleGenreChange(bg)}
-                      className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
-                    />
-                    <span className="opsilion text-sm">{bg}</span>
-                  </div>
-                ))}
+                <div className="mt-2 space-y-2">
+                  {updatedGenreOptions.map(({ bg }) => (
+                    <div key={bg} className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={selectedGenres.includes(bg)}
+                        onChange={() => handleGenreChange(bg)}
+                        className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
+                      />
+                      <span className="opsilion text-sm">{bg}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </AccordionContent>
           </AccordionItem>
         </Accordion>
 
-        {/* Runtime Section */}
+        {/* Филтрация за страници */}
         <Accordion type="single" collapsible>
-          <AccordionItem value="runtime">
-            <AccordionTrigger
-              className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md"
-              onClick={toggleRuntimeVisibility}
-            >
-              Продължителност
+          <AccordionItem value="pages">
+            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
+              Страници
             </AccordionTrigger>
             <AccordionContent className="pl-4">
               <div className="mt-2 space-y-2">
                 {[
-                  "Под 60 минути",
-                  "60 до 120 минути",
-                  "120 до 180 минути",
-                  "Повече от 180 минути"
+                  "Под 100 страници",
+                  "100 до 200 страници",
+                  "200 до 300 страници",
+                  "300 до 400 страници",
+                  "400 до 500 страници",
+                  "Повече от 500 страници"
                 ].map((option) => (
                   <div key={option} className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      checked={selectedRuntime.includes(option)}
-                      onChange={() => handleRuntimeChange(option)}
+                      checked={selectedPages.includes(option)}
+                      onChange={() => handlePagesChange(option)}
                       className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
                     />
                     <span className="opsilion text-sm">{option}</span>
@@ -178,26 +175,23 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
           </AccordionItem>
         </Accordion>
 
-        {/* Type Section */}
+        {/* Филтрация за автори */}
         <Accordion type="single" collapsible>
-          <AccordionItem value="type">
-            <AccordionTrigger
-              className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md"
-              onClick={toggleTypeVisibility}
-            >
-              Вид
+          <AccordionItem value="author">
+            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
+              Автори
             </AccordionTrigger>
             <AccordionContent className="pl-4">
               <div className="mt-2 space-y-2">
-                {["Филм", "Сериал"].map((option) => (
-                  <div key={option} className="flex items-center gap-2">
+                {sortedAuthors.map((author) => (
+                  <div key={author} className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      checked={selectedType.includes(option)}
-                      onChange={() => handleTypeChange(option)}
+                      checked={selectedAuthor.includes(author)}
+                      onChange={() => handleAuthorChange(author)}
                       className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
                     />
-                    <span className="opsilion text-sm">{option}</span>
+                    <span className="opsilion text-sm">{author}</span>
                   </div>
                 ))}
               </div>
@@ -205,22 +199,21 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
           </AccordionItem>
         </Accordion>
 
-        {/* Year of Release Section */}
+        {/* Филтрация за година на писане */}
         <Accordion type="single" collapsible>
           <AccordionItem value="year">
-            <AccordionTrigger
-              className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md"
-              onClick={toggleTypeVisibility}
-            >
-              Година на излизане
+            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
+              Година на писане
             </AccordionTrigger>
             <AccordionContent className="pl-4">
               <div className="mt-2 space-y-2">
                 {[
-                  "Преди 2000",
+                  "Преди 1900",
+                  "1900 до 1950",
+                  "1950 до 1980",
+                  "1980 до 2000",
                   "2000 до 2010",
-                  "2010 до 2020",
-                  "След 2020"
+                  "След 2010"
                 ].map((option) => (
                   <div key={option} className="flex items-center gap-2">
                     <input
@@ -237,7 +230,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
           </AccordionItem>
         </Accordion>
 
-        {/* Reset and Apply Buttons */}
+        {/* Вутони за прилагане и нулиране на филтрация */}
         <div className="flex flex-col gap-2">
           <button
             className="bg-gray-400 hover:bg-gray-400/75 text-gray-800 px-4 py-2 rounded-md transition w-full"

@@ -147,7 +147,7 @@ export interface BookRecommendation {
   adaptations: string; // Адаптации на книгата
   ISBN_10: string; // ISBN-10
   ISBN_13: string; // ISBN-13
-  page_count: string; // Брой страници
+  page_count: number; // Брой страници
   book_format: string; // Вид на книгата (тип корица, е-книги)
   imageLink: string; // Линк към изображение на книгата
   source: string; // Източник (напр. Google Books)

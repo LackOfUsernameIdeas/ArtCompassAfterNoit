@@ -6,22 +6,6 @@ import FilterSidebar from "./FilterSidebar";
 import { ChevronDownIcon } from "lucide-react";
 import { useMediaQuery } from "react-responsive";
 
-// Персонализиран CSS за стрелката на падащото меню
-const customStyles = `
-  .custom-select {
-    appearance: none;
-    background: transparent;
-    padding-right: 2rem; /* Space for the arrow */
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236b7280'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 0.5rem center;
-    background-size: 1.5em;
-  }
-  .custom-select:hover {
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-  }
-`;
-
 const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
   data,
   bookmarkedMovies,
@@ -29,19 +13,41 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
   setCurrentBookmarkStatus,
   setAlertVisible
 }) => {
+  // Държи избрания филм или сериал, или null, ако няма избран елемент.
   const [selectedItem, setSelectedItem] =
     useState<MovieSeriesRecommendation | null>(null);
+  // Управлява състоянието на панела с филтри (отворен/затворен).
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  // Държи филтрираните данни според избраните критерии.
   const [filteredData, setFilteredData] = useState(data);
+  // Следи текущата страница при пагинация.
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(12); // Default items per page
+  // Определя броя на елементите, които да се показват на страница (по подразбиране 12).
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+  // Управлява състоянието на селект менюто (отворено/затворено).
   const [isSelectOpen, setIsSelectOpen] = useState(false);
+  // Задава избрания филм или сериал при клик върху него.
   const handleMovieClick = (item: MovieSeriesRecommendation) =>
     setSelectedItem(item);
-
+  // Превежда типа на филма или сериала на български.
   const getTranslatedType = (type: string) =>
     type === "movie" ? "Филм" : type === "series" ? "Сериал" : type;
 
+  /**
+   * Филтрира данните според подадените критерии за жанрове, продължителност, вид и година на издаване.
+   *
+   * @param {Object} filters - Обект с филтри, които ще се приложат към данните.
+   * @param {string[]} filters.genres - Списък с избрани жанрове, по които да се филтрират книгите.
+   * @param {string[]} filters.runtime - Списък с диапазони за продължителността (напр. "Под 60 минути").
+   * @param {string[]} filters.type - Видът - филм или сериал.
+   * @param {string[]} filters.year - Списък с времеви интервали за годината на издаване (напр. "След 2020").
+   *
+   * Функцията обработва масив от филми и сериали, като проверява дали те отговарят на избраните критерии.
+   * Ако даден филтър е празен, той не ограничава резултатите. Филмите и сериалите се сравняват по жанр,
+   * продължителност, вид и година на издаване.
+   *
+   * @returns {void} - Актуализира състоянието на филтрираните данни и нулира страницата на резултатите.
+   */
   const handleApplyFilters = (filters: {
     genres: string[];
     runtime: string[];
@@ -86,43 +92,44 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
     });
 
     setFilteredData(filtered);
-    setCurrentPage(1); // Reset to the first page when filters are applied
+    setCurrentPage(1);
   };
 
-  // Calculate the total number of pages
+  // Изчислява общия брой страници на база дължината на филтрираните данни и броя елементи на страница.
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-  // Get the current page's data
+  // Определя текущите данни за показване в зависимост от активната страница.
   const currentData = filteredData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
+  // Отива на следващата страница, ако текущата не е последната.
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
 
+  // Отива на предишната страница, ако текущата не е първата.
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
   };
 
+  // Променя броя на елементите на страница и връща на първа страница след промяната.
   const handleItemsPerPageChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setItemsPerPage(Number(event.target.value));
-    setCurrentPage(1); // Reset to the first page when items per page changes
+    setCurrentPage(1);
   };
 
+  // Проверява дали екранната ширина е 1546px или по-малка.
   const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
   return (
     <Fragment>
-      {/* Inject custom styles for the dropdown arrow */}
-      <style>{customStyles}</style>
-
       {isFilterOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -261,7 +268,7 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
               </div>
             ))}
           </div>
-          {/* Pagination Controls */}
+          {/* Пагинация */}
           {totalPages > 1 && (
             <div className="box-footer flex justify-center items-center gap-4">
               <span className="text-defaulttextcolor dark:text-white/80">
