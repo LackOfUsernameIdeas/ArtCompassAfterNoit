@@ -9,6 +9,7 @@ from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 # Пренастройваме кодировката на стандартния изход (stdout) на UTF-8
+sys.stdin.reconfigure(encoding='utf-8')
 sys.stdout.reconfigure(encoding='utf-8')
 
 def fetch_openai_response(messages, provider, modelOpenAI, api_key=None):
