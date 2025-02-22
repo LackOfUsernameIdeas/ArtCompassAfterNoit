@@ -8,7 +8,7 @@ import sys
 from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-# Пренастройваме кодировката на стандартния изход (stdout) на UTF-8
+# Пренастройваме кодировката на стандартния вход и изход (stdout) на UTF-8
 sys.stdin.reconfigure(encoding='utf-8')
 sys.stdout.reconfigure(encoding='utf-8')
 
@@ -24,7 +24,6 @@ def fetch_openai_response(messages, provider, modelOpenAI, api_key=None):
             # Инициализиране на Gemini с предоставения API ключ
             llmGemini = ChatGoogleGenerativeAI(model="gemini-1.5-pro", api_key=api_key)
             response = llmGemini.invoke(messages)
-
 
         # Ако доставчикът е OpenAI, извикваме OpenAI
         elif provider == "openai":
