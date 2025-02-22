@@ -21,11 +21,12 @@ load_dotenv(env_path)
 api_openai_key = os.getenv("VITE_OPENAI_API_KEY")
 api_gemini_key = os.getenv("VITE_GEMINI_API_KEY")
 
-# Инициализиране на OpenAI и Gemini модели с предоставените API ключове
-llmOpenAI = ChatOpenAI(model="gpt-4-turbo", api_key=api_openai_key)
-llmGemini = ChatGoogleGenerativeAI(model="gemini-1.5-pro", api_key=api_gemini_key)
+def fetch_openai_response(messages, provider, modelOpenAI):
+    
+    # Инициализиране на OpenAI и Gemini модели с предоставените API ключове
+    llmOpenAI = ChatOpenAI(model=modelOpenAI, api_key=api_openai_key)
+    llmGemini = ChatGoogleGenerativeAI(model="gemini-1.5-pro", api_key=api_gemini_key)
 
-def fetch_openai_response(messages, provider):
     try:
         # Проверка дали съобщенията са в правилния формат (списък)
         if not isinstance(messages, list):
@@ -66,12 +67,18 @@ if __name__ == "__main__":
         # Извличаме съобщенията и доставчика от входните данни
         messages = parsed_data.get("messages", [])
         provider = parsed_data.get("provider", "openai").lower()  # По подразбиране използваме OpenAI
+        modelOpenAI = parsed_data.get("modelOpenAI", "gpt-4o").lower()  # Моделът може да бъде променен чрез параметъра
 
         # Извличаме отговор от избрания доставчик (OpenAI или Gemini)
-        response = fetch_openai_response(messages, provider)
+        response = fetch_openai_response(messages, provider, modelOpenAI)
+
+        # Подготвяме отговора с условие за включване на модела само ако доставчикът е OpenAI
+        response_data = {"provider": provider, "response": response}
+        if provider == "openai":
+            response_data["modelOpenAI"] = modelOpenAI
 
         # Отпечатваме отговора като JSON в стандартния изход, като използваме UTF-8 кодиране
-        print(json.dumps({"provider": provider, "response": response}, ensure_ascii=False))
+        print(json.dumps(response_data, ensure_ascii=False))
 
     except Exception as e:
         # Ако има грешка, отпечатваме грешка в JSON формат
