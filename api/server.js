@@ -14,7 +14,6 @@ const pythonPathLocal = require("./config.js").pythonPathLocal;
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
-require("dotenv").config();
 
 const whitelist = [
   "http://localhost:5174",
