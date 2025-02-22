@@ -5,21 +5,11 @@
 
 import json
 import sys
-# import os
-from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 # Пренастройваме кодировката на стандартния изход (stdout) на UTF-8
 sys.stdout.reconfigure(encoding='utf-8')
-
-# # Зареждаме променливите на околната среда от .env файла
-# env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.env"))
-# load_dotenv(env_path)
-
-# # Извличаме API ключовете от .env файла
-# api_openai_key = os.getenv("VITE_OPENAI_API_KEY")
-# api_gemini_key = os.getenv("VITE_GEMINI_API_KEY")
 
 def fetch_openai_response(messages, provider, modelOpenAI, api_key=None):
     
