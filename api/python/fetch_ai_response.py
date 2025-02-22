@@ -22,7 +22,7 @@ api_openai_key = os.getenv("VITE_OPENAI_API_KEY")
 api_gemini_key = os.getenv("VITE_GEMINI_API_KEY")
 
 # Инициализиране на OpenAI и Gemini модели с предоставените API ключове
-llmOpenAI = ChatOpenAI(model="gpt-4o", api_key=api_openai_key)
+llmOpenAI = ChatOpenAI(model="gpt-4-turbo", api_key=api_openai_key)
 llmGemini = ChatGoogleGenerativeAI(model="gemini-1.5-pro", api_key=api_gemini_key)
 
 def fetch_openai_response(messages, provider):
