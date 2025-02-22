@@ -1255,7 +1255,8 @@ app.post("/get-model-response", (req, res) => {
   const {
     messages,
     provider = "openai",
-    modelOpenAI = "gpt-4-turbo"
+    modelOpenAI = "gpt-4o",
+    api_key
   } = req.body;
 
   if (!messages || !Array.isArray(messages)) {
@@ -1273,7 +1274,7 @@ app.post("/get-model-response", (req, res) => {
 
   // Send messages as JSON to Python via stdin
   pythonProcess.stdin.write(
-    JSON.stringify({ provider, messages, modelOpenAI })
+    JSON.stringify({ provider, messages, modelOpenAI, api_key })
   );
   pythonProcess.stdin.end(); // Close the input stream
 
