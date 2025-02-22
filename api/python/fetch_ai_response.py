@@ -32,22 +32,13 @@ def fetch_openai_response(messages, provider, modelOpenAI):
         if not isinstance(messages, list):
             return {"error": "Invalid input. Expected a list of messages."}
 
-        # Обработка на съобщенията, ако доставчикът е Gemini
+        # Ако доставчикът е Gemini, извикваме Gemini
         if provider == "gemini":
-            gemini_messages = []  # Преобразуваме съобщенията от OpenAI формат в Gemini формат
+            response = llmGemini.invoke(messages)
 
-            for msg in messages:
-                if msg["role"] == "system":
-                    gemini_messages.append(("system", msg["content"]))
-                elif msg["role"] == "user":
-                    gemini_messages.append(("human", msg["content"]))
-
-            # Извикваме Gemini API с преобразуваните съобщения
-            response = llmGemini.invoke(gemini_messages)
-
-        # Ако доставчикът е OpenAI, използваме стандартния OpenAI формат за съобщения
+        # Ако доставчикът е OpenAI, извикваме OpenAI
         elif provider == "openai" and llmOpenAI:
-            response = llmOpenAI.invoke(messages)  # Извикваме OpenAI API с посочените съобщения
+            response = llmOpenAI.invoke(messages)
 
         else:
             return {"error": f"Invalid provider '{provider}' or missing API key."}
