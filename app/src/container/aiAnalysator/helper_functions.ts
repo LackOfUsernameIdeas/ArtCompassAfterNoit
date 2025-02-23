@@ -158,7 +158,7 @@ export const getF1Score = async (
 /**
  * Изпраща заявка към сървъра за изчисляване на средните метрики по дни за всички потребители.
  *
- * @returns {Promise<Object>} Промис, който връща JSON с резултатите за средните метрики.
+ * @returns {Promise<Object>} Промис, който връща JSON с резултатите за средните метрики в платформата измежду всички потребители.
  */
 export const getHistoricalAverageMetrics = async () => {
   try {
