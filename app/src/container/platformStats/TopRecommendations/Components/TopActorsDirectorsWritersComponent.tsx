@@ -4,7 +4,7 @@ import {
   TopRecommendationsDataType
 } from "../../platformStats-types";
 import { handleTopStatsSortCategory } from "../../helper_functions";
-import { Treemap } from "../../charts";
+import { Treemap } from "../../a";
 interface TopActorsDirectorsWritersComponentProps {
   data: TopRecommendationsDataType;
 }

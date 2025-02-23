@@ -1,6 +1,6 @@
 import { FC, Fragment } from "react";
 import { MoviesByProsperityDataType } from "../../platformStats-types";
-import { MoviesByProsperityBubbleChart } from "../../charts";
+import { MoviesByProsperityBubbleChart } from "../../a";
 import {
   Accordion,
   AccordionItem,
