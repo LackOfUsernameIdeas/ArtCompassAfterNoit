@@ -7,6 +7,14 @@ import { ChevronDownIcon } from "lucide-react";
 import { useMediaQuery } from "react-responsive";
 import { extractItemFromStringList } from "../helper_functions";
 import { translate } from "@/container/helper_functions_common";
+import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
+import Infobox from "@/components/common/infobox/infobox";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent
+} from "@/components/ui/accordion";
 
 const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
   data,
@@ -42,6 +50,8 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
   const [isSelectOpen, setIsSelectOpen] = useState(false);
   // Query-то, въведено в менюто за търсене.
   const [searchQuery, setSearchQuery] = useState<string>("");
+  // State за отваряне/затваряне на InfoBox
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   // Задава избрания филм или сериал при клик върху него.
   const handleMovieClick = (item: MovieSeriesRecommendation) =>
     setSelectedItem(item);
@@ -334,6 +344,11 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
   //   fetchAndSetData();
   // }, [filteredData]);
 
+  // Отваря/затваря InfoBox
+  const handleInfoButtonClick = () => {
+    setIsModalOpen((prev) => !prev);
+  };
+
   // Проверява дали екранната ширина е 1546px или по-малка.
   const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
   return (
@@ -363,15 +378,16 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
           <div className="box-header justify-between flex items-center">
             <div className="flex items-center gap-4">
               <p className="box-title">Списък За Гледане</p>
-              <div className="xl:col-span-4 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12">
+              <div className="flex items-center gap-4 xl:col-span-4 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12">
                 <input
                   type="search"
                   className="form-control search-input"
                   id="input-search"
-                  placeholder="Search"
+                  placeholder="Потърсете тук..."
                   value={searchQuery}
                   onChange={handleSearchChange}
                 />
+                <Infobox onClick={handleInfoButtonClick} />
               </div>
             </div>
             <div className="flex gap-4 items-center">
@@ -571,6 +587,65 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
           )}
         </div>
       </div>
+      <InfoboxModal
+        onClick={handleInfoButtonClick}
+        isModalOpen={isModalOpen}
+        title="Търсачка"
+        description={
+          <>
+            <p>
+              <span className="font-semibold">Търсачката</span> е инструмент,
+              който Ви позволява да търсите за{" "}
+              <span className="font-semibold">
+                конкретни препоръки, които искате да намерите.{" "}
+              </span>
+              Тя взима въведения в нея текст и го сравнява със{" "}
+              <span className="font-semibold">следните категории:</span>
+            </p>
+            <Accordion type="single" collapsible className="space-y-4 pt-5">
+              <AccordionItem value="title">
+                <AccordionTrigger>🎬 Заглавие</AccordionTrigger>
+                <AccordionContent>
+                  Заглавието на филма или сериала, както на български, така и на
+                  английски език.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="genre">
+                <AccordionTrigger>🎬 Жанр</AccordionTrigger>
+                <AccordionContent>
+                  Основните жанрове на филма или сериала (екшън, драма и т.н.).
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="crew">
+                <AccordionTrigger>
+                  🎭 Актьори, режисьори и сценаристи
+                </AccordionTrigger>
+                <AccordionContent>
+                  Основните лица, участващи в разработката на филма или сериала.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="year">
+                <AccordionTrigger>📅 Година на излизане</AccordionTrigger>
+                <AccordionContent>
+                  Годината на премиерата на филма или сериала.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="runtime">
+                <AccordionTrigger>⏱️ Продължителност</AccordionTrigger>
+                <AccordionContent>
+                  Продължителността на филма или сериала в часове и минути.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="id">
+                <AccordionTrigger>🔍 ID</AccordionTrigger>
+                <AccordionContent>
+                  Уникалният идентификатор на филма или сериала в IMDb.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </>
+        }
+      />
     </Fragment>
   );
 };

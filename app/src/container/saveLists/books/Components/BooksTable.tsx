@@ -11,6 +11,14 @@ import {
   formatGenres,
   getRelatedGenres
 } from "../helper_functions";
+import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
+import Infobox from "@/components/common/infobox/infobox";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent
+} from "@/components/ui/accordion";
 
 const BooksTable: FC<BooksTableProps> = ({
   data,
@@ -40,6 +48,8 @@ const BooksTable: FC<BooksTableProps> = ({
   const [isSelectOpen, setIsSelectOpen] = useState(false);
   // Query-то, въведено в менюто за търсене.
   const [searchQuery, setSearchQuery] = useState<string>("");
+  // State за отваряне/затваряне на InfoBox
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   // Задава избраната книга при клик върху нея.
   const handleBookClick = (item: BookRecommendation) => setSelectedItem(item);
 
@@ -237,6 +247,11 @@ const BooksTable: FC<BooksTableProps> = ({
     });
   }, [data]);
 
+  // Отваря/затваря InfoBox
+  const handleInfoButtonClick = () => {
+    setIsModalOpen((prev) => !prev);
+  };
+
   // Проверява дали екранната ширина е 1546px или по-малка.
   const is1546 = useMediaQuery({ query: "(max-width: 1546px)" });
   return (
@@ -266,15 +281,16 @@ const BooksTable: FC<BooksTableProps> = ({
           <div className="box-header justify-between flex items-center">
             <div className="flex items-center gap-4">
               <p className="box-title">Списък За Четене</p>
-              <div className="xl:col-span-4 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12">
+              <div className="flex items-center gap-4 xl:col-span-4 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12">
                 <input
                   type="search"
                   className="form-control search-input"
                   id="input-search"
-                  placeholder="Search"
+                  placeholder="Потърсете тук..."
                   value={searchQuery}
                   onChange={handleSearchChange}
                 />
+                <Infobox onClick={handleInfoButtonClick} />
               </div>
             </div>
             <div className="flex gap-4 items-center">
@@ -474,6 +490,71 @@ const BooksTable: FC<BooksTableProps> = ({
           )}
         </div>
       </div>
+      <InfoboxModal
+        onClick={handleInfoButtonClick}
+        isModalOpen={isModalOpen}
+        title="Търсачка"
+        description={
+          <>
+            <p>
+              <span className="font-semibold">Търсачката</span> е инструмент,
+              който Ви позволява да търсите за{" "}
+              <span className="font-semibold">
+                конкретни препоръки, които искате да намерите.{" "}
+              </span>
+              Тя взима въведения в нея текст и го сравнява със{" "}
+              <span className="font-semibold">следните категории:</span>
+            </p>
+            <Accordion type="single" collapsible className="space-y-4 pt-5">
+              <AccordionItem value="title">
+                <AccordionTrigger>📖 Заглавие</AccordionTrigger>
+                <AccordionContent>
+                  Заглавието на книгата, както на български, така и на английски
+                  език.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="genre">
+                <AccordionTrigger>📖 Жанр</AccordionTrigger>
+                <AccordionContent>
+                  Основните жанрове на книгата (екшън, драма и т.н.).
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="author">
+                <AccordionTrigger>✍️ Автор</AccordionTrigger>
+                <AccordionContent>
+                  Писателя, който е написал книгата.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="year">
+                <AccordionTrigger>📅 Година на писане</AccordionTrigger>
+                <AccordionContent>
+                  Годината на писането на книгата. Това важи както и за
+                  препоръчаното издание, така и за оригиналното издание (ако са
+                  различни).
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="isbn">
+                <AccordionTrigger>🔢 ISBN/ASIN</AccordionTrigger>
+                <AccordionContent>
+                  Стандартизираният номер, съответстващ на книгата. Може да се
+                  намери спрямо ISBN 10, ISBN 13 и ASIN.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="id">
+                <AccordionTrigger>🔍 ID</AccordionTrigger>
+                <AccordionContent>
+                  Уникалният идентификатор на книгата, както в Goodreads, така и
+                  в Google Books.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="publisher">
+                <AccordionTrigger>🏢 Издател</AccordionTrigger>
+                <AccordionContent>Издателят на книгата.</AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </>
+        }
+      />
     </Fragment>
   );
 };
