@@ -13,7 +13,7 @@ const TopCountriesComponent: FC<TopCountriesComponentProps> = ({ data }) => {
   return (
     <Fragment>
       <div className="xxl:col-span-12 xl:col-span-6 col-span-12">
-        <div className="text-center !text-lg box p-6 flex flex-col">
+        <div className="text-center font-semibold !text-lg box p-6 flex flex-col">
           <h2 className="text-lg text-defaulttextcolor dark:text-white/80">
             Тук може да видите колко пъти са препоръчвани различните{" "}
             <span className="font-bold text-primary">жанрове </span>

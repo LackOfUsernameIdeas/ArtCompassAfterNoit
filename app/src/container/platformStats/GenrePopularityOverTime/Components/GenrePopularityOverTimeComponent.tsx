@@ -17,7 +17,7 @@ const GenrePopularityOverTimeComponent: FC<
   return (
     <Fragment>
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
-        <div className="text-center !text-lg box p-6 flex flex-col">
+        <div className="text-center font-semibold !text-lg box p-6 flex flex-col">
           <h2 className="text-lg text-defaulttextcolor dark:text-white/80">
             Тук може да видите колко{" "}
             <span className="font-semibold text-primary">пъти</span> са{" "}

@@ -63,7 +63,7 @@ const TopRecommendations: FC<TopRecommendationsProps> = () => {
         />
       )}
       <Fragment>
-        <div className="text-center !text-lg box p-6 flex flex-col mt-[1.5rem]">
+        <div className="text-center font-semibold !text-lg box p-6 flex flex-col mt-[1.5rem]">
           <h2 className="text-lg text-defaulttextcolor dark:text-white/80">
             Тук може да видите кои са най-често препоръчваните{" "}
             <span className="font-bold text-primary">
