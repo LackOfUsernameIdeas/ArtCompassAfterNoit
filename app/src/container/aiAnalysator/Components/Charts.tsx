@@ -2,91 +2,70 @@ import { Component } from "react";
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 
-// Генерира данни за heatmap диаграмата
-export function generateData(count: any, yrange: any) {
-  let i = 0;
-  const series = [];
-  while (i < count) {
-    const x = "w" + (i + 1).toString();
-    const y =
-      Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
-
-    series.push({
-      x: x,
-      y: y
-    });
-    i++;
-  }
-  return series;
-}
-
-// Преобразува RGB цвят в HEX формат
-const rgbToHex = (rgb: string): string => {
-  // Уверява се, че входният цвят е във формат "rgb(r, g, b)"
-  const result = rgb.match(/\d+/g);
-  if (!result || result.length !== 3) {
-    throw new Error("Невалиден RGB формат на цвета");
-  }
-
-  return `#${result
-    .map((x) => parseInt(x).toString(16).padStart(2, "0")) // Преобразува всяка стойност на RGB в HEX
-    .join("")}`;
-};
-
-// Обновява основния цвят на базата на CSS променливи
-const updatePrimaryColor = () => {
-  const rootStyles = getComputedStyle(document.documentElement);
-  const primary = rootStyles.getPropertyValue("--primary").trim();
-  const primaryWithCommas = primary.split(" ").join(",");
-  const primaryHex = rgbToHex(primaryWithCommas);
-
-  return primaryHex;
-};
-
 // Интерфейс за свойствата на компонента
-interface GenrePopularityOverTimeProps {
-  seriesData: ApexAxisChartSeries;
+interface AverageMetricsTrendProps {
+  seriesData: {
+    record_date: string;
+    average_precision_percentage: string;
+    average_recall_percentage: string;
+    average_f1_score_percentage: string;
+  }[];
 }
 
 // Интерфейс за състоянието на компонента
-interface GenrePopularityOverTimeState {
+interface AverageMetricsTrendState {
   options: ApexOptions;
   series: ApexAxisChartSeries;
 }
 
-// Компонент за визуализация на данни като линейна диаграма
-export class GenrePopularityOverTime extends Component<
-  GenrePopularityOverTimeProps,
-  GenrePopularityOverTimeState
+// Компонент за визуализация на метриките
+export class AverageMetricsTrend extends Component<
+  AverageMetricsTrendProps,
+  AverageMetricsTrendState
 > {
-  private observer?: MutationObserver;
-
-  constructor(props: GenrePopularityOverTimeProps) {
+  constructor(props: AverageMetricsTrendProps) {
     super(props);
     this.state = {
       options: this.getUpdatedOptions(),
-      series: props.seriesData
+      series: this.transformData(props.seriesData)
     };
   }
 
-  componentDidMount() {
-    this.observer = new MutationObserver(this.updateColorRange);
-    this.observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"]
-    });
+  componentDidUpdate(prevProps: AverageMetricsTrendProps) {
+    if (prevProps.seriesData !== this.props.seriesData) {
+      this.setState({ series: this.transformData(this.props.seriesData) });
+    }
   }
 
-  componentWillUnmount() {
-    this.observer?.disconnect();
+  // Преобразуване на входните данни към подходящ формат за ApexCharts
+  transformData(data: AverageMetricsTrendProps["seriesData"]) {
+    return [
+      {
+        name: "Precision (%)",
+        data: data.map((entry) => ({
+          x: entry.record_date,
+          y: parseFloat(entry.average_precision_percentage)
+        }))
+      },
+      {
+        name: "Recall (%)",
+        data: data.map((entry) => ({
+          x: entry.record_date,
+          y: parseFloat(entry.average_recall_percentage)
+        }))
+      },
+      {
+        name: "F1 Score (%)",
+        data: data.map((entry) => ({
+          x: entry.record_date,
+          y: parseFloat(entry.average_f1_score_percentage)
+        }))
+      }
+    ];
   }
 
-  updateColorRange = () => {
-    this.setState({ options: this.getUpdatedOptions() });
-  };
-
+  // Опции за графиката
   getUpdatedOptions(): ApexOptions {
-    const primaryHex = updatePrimaryColor();
     return {
       chart: {
         type: "line",
@@ -97,12 +76,11 @@ export class GenrePopularityOverTime extends Component<
         width: 2
       },
       markers: {
-        size: 4,
-        colors: [primaryHex],
-        strokeWidth: 2
+        size: 4
       },
-      colors: [primaryHex],
+      colors: ["#FF4560", "#00E396", "#008FFB"],
       xaxis: {
+        type: "category",
         labels: { show: true }
       },
       yaxis: {

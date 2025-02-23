@@ -84,6 +84,12 @@ export interface Analysis {
   criteriaScores: CriteriaScores; // Подробен резултат по отделни критерии
 }
 
+// Интерфейс за пропсовете на MetricCharts
+export interface MetricChartsProps {
+  historicalMetrics: Metrics[] | null; // Исторически данни за метрики (глобални)
+  historicalUserMetrics: Metrics[] | null; // Исторически данни за метрики на конкретен потребител
+}
+
 // Тип за анализа на препоръките
 export type RecommendationsAnalysis = {
   relevantCount: number; // Брой релевантни препоръки
@@ -93,6 +99,7 @@ export type RecommendationsAnalysis = {
   relevantRecommendations: Analysis[]; // Списък с релевантни препоръки (imdbID)
 };
 
+// Тип, който описва отговора на заявката за релевантност на последно генерираните препоръките
 export type RelevanceResponse = {
   lastSavedUserPreferences: MovieSeriesUserPreferencesAfterSaving; // Предпочитания на потребителя (по избор)
   lastSavedRecommendations: MovieSeriesRecommendationAfterSaving[]; // Списък с последно генерирани препоръки

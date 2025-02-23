@@ -331,7 +331,10 @@ const AIAnalysator: FC = () => {
                   recallData={recallData}
                   f1ScoreData={f1ScoreData}
                 />
-                <MetricCharts />
+                <MetricCharts
+                  historicalMetrics={historicalMetrics}
+                  historicalUserMetrics={historicalUserMetrics}
+                />
               </>
             )}
 
