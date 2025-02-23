@@ -1,5 +1,5 @@
 import { FC, Fragment, useMemo, useState } from "react";
-import { MoviesAndSeriesByRatingsChart } from "../../a";
+import { MoviesAndSeriesByRatingsChart } from "../../Charts";
 import { MoviesAndSeriesByRatingsDataType } from "../../platformStats-types";
 import { handleMoviesAndSeriesSortCategory } from "../../helper_functions";
 import { moviesAndSeriesCategoryDisplayNames } from "../../platformStats-data";

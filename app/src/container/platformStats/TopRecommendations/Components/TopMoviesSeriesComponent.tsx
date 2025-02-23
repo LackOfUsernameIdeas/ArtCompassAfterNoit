@@ -4,7 +4,7 @@ import {
   MovieData,
   RecommendationData
 } from "../../platformStats-types";
-import { TopRecommendationsBarChart } from "../../a";
+import { TopRecommendationsBarChart } from "../../Charts";
 
 interface TopMoviesSeriesComponentProps {
   data: TopRecommendationsDataType;

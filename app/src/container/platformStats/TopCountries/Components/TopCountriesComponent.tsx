@@ -1,7 +1,7 @@
 import { FC, Fragment } from "react";
 import { TopCountriesDataType } from "../../platformStats-types";
 
-import { TopCountriesChart } from "../../a";
+import { TopCountriesChart } from "../../Charts";
 import { useMediaQuery } from "react-responsive";
 interface TopCountriesComponentProps {
   data: TopCountriesDataType;
