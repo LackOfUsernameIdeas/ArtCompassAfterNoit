@@ -14,7 +14,7 @@ const CountWidgets: FC<CountWidgetsProps> = ({
     <Fragment>
       <div className="box custom-box">
         <div className="box-header justify-between">
-          <div className="box-title">
+          <div className="box-title opsilion">
             {type == "recommendations" ? "Брой Препоръчвани" : "Брой Запазвани"}
             :
           </div>

@@ -41,14 +41,6 @@ export class Categorybar extends Component<CategorybarProps, State> {
     // Трансформиране на данните за използване в графиката
     const { categories, values } = this.transformData(props.data);
 
-    console.log(
-      "topGenres: ",
-      props.data,
-      "categories, values: ",
-      categories,
-      values
-    );
-
     // Инициализиране на състоянието
     this.state = {
       series: [
