@@ -87,7 +87,26 @@ export class AverageMetricsTrend extends Component<
         labels: { show: true }
       },
       tooltip: {
-        theme: "dark"
+        theme: "dark",
+        custom: ({ seriesIndex, dataPointIndex, w }) => {
+          const seriesName = w.config.series[seriesIndex].name;
+          const value = w.config.series[seriesIndex].data[dataPointIndex].y;
+          return `
+            <div style="padding: 1rem;">
+              <div class="opsilion" style="font-weight: bold;">${seriesName}</div>
+              <div class="font-Equilibrist" style="font-family: 'Equilibrist', sans-serif;">${value}%</div>
+            </div>
+          `;
+        }
+      },
+      legend: {
+        position: "top", // Move the legend above the chart
+        horizontalAlign: "center", // Center the legend horizontally
+        floating: false, // Make the legend float
+        fontSize: "12rem", // Set font size for the legend
+        labels: {
+          useSeriesColors: true // Use the series colors for the legend labels
+        }
       }
     };
   }
