@@ -23,6 +23,8 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
   setCurrentBookmarkStatus,
   setAlertVisible
 }) => {
+  // State за зареждане на Filter Sidebar
+  const [loading, setLoading] = useState(true);
   // Държи избрания филм или сериал, или null, ако няма избран елемент.
   const [selectedItem, setSelectedItem] =
     useState<MovieSeriesRecommendation | null>(null);
@@ -33,10 +35,10 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
     writer: string[];
     language: string[];
   }>({
-    actor: [""],
-    director: [""],
-    writer: [""],
-    language: [""]
+    actor: [],
+    director: [],
+    writer: [],
+    language: []
   });
   // Управлява състоянието на панела с филтри (отворен/затворен).
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -282,14 +284,10 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
         const { actors, directors, writers, languages } =
           extractItemFromStringList(data[i]);
 
-        const translatedLanguages = await Promise.all(
-          languages.map((language) => translate(language))
-        );
-
         actors.forEach((actor) => newActors.add(actor));
         directors.forEach((director) => newDirectors.add(director));
         writers.forEach((writer) => newWriters.add(writer));
-        translatedLanguages.forEach((language) => newLanguages.add(language));
+        languages.forEach((language) => newLanguages.add(language));
       }
 
       setListData({
@@ -298,51 +296,30 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
         writer: Array.from(newWriters),
         language: Array.from(newLanguages)
       });
+
+      const translatedActors = await Promise.all(
+        Array.from(newActors).map((actor) => translate(actor))
+      );
+      const translatedDirectors = await Promise.all(
+        Array.from(newDirectors).map((director) => translate(director))
+      );
+      const translatedWriters = await Promise.all(
+        Array.from(newWriters).map((writer) => translate(writer))
+      );
+      const translatedLanguages = await Promise.all(
+        Array.from(newLanguages).map((language) => translate(language))
+      );
+
+      setListData({
+        actor: translatedActors,
+        director: translatedDirectors,
+        writer: translatedWriters,
+        language: translatedLanguages
+      });
     };
 
     fetchAndSetData();
   }, [filteredData]);
-
-  // useEffect(() => {
-  //   const fetchAndSetData = async () => {
-  //     const newActors = new Set<string>();
-  //     const newDirectors = new Set<string>();
-  //     const newWriters = new Set<string>();
-  //     const newLanguages = new Set<string>();
-
-  //     for (let i = 0; i < filteredData.length; i++) {
-  //       const { actors, directors, writers, languages } =
-  //         extractItemFromStringList(filteredData[i]);
-
-  //       const translatedActors = await Promise.all(
-  //         actors.map((actor) => translate(actor))
-  //       );
-  //       const translatedDirectors = await Promise.all(
-  //         directors.map((director) => translate(director))
-  //       );
-  //       const translatedWriters = await Promise.all(
-  //         writers.map((writer) => translate(writer))
-  //       );
-  //       const translatedLanguages = await Promise.all(
-  //         languages.map((language) => translate(language))
-  //       );
-  //       //
-  //       translatedActors.forEach((actor) => newActors.add(actor));
-  //       translatedDirectors.forEach((director) => newDirectors.add(director));
-  //       translatedWriters.forEach((writer) => newWriters.add(writer));
-  //       translatedLanguages.forEach((language) => newLanguages.add(language));
-  //     }
-
-  //     setListData({
-  //       actor: Array.from(newActors),
-  //       director: Array.from(newDirectors),
-  //       writer: Array.from(newWriters),
-  //       language: Array.from(newLanguages)
-  //     });
-  //   };
-
-  //   fetchAndSetData();
-  // }, [filteredData]);
 
   // Отваря/затваря InfoBox
   const handleInfoButtonClick = () => {
@@ -606,14 +583,31 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
               <AccordionItem value="title">
                 <AccordionTrigger>🎬 Заглавие</AccordionTrigger>
                 <AccordionContent>
-                  Заглавието на филма или сериала, както на български, така и на
-                  английски език.
+                  Можете да намерите търсеният от Вас филм или сериал,
+                  въвеждайки заглавието му, както на български, така и на
+                  английски език
+                  <ul className="list-disc pl-6 mt-4">
+                    <li>
+                      <strong>Пример за заглавие на български:</strong>{" "}
+                      Наследствено
+                    </li>
+                    <li>
+                      <strong>Пример за заглавие на английски:</strong>{" "}
+                      Hereditary
+                    </li>
+                  </ul>
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="genre">
                 <AccordionTrigger>🎬 Жанр</AccordionTrigger>
                 <AccordionContent>
-                  Основните жанрове на филма или сериала (екшън, драма и т.н.).
+                  Можете да намерите търсеният от Вас филм или сериал,
+                  въвеждайки жанровете му
+                  <ul className="list-disc pl-6 mt-4">
+                    <li>
+                      <strong>Пример за жанр:</strong> Екшън, Драма и т.н.
+                    </li>
+                  </ul>
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="crew">
@@ -621,25 +615,64 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
                   🎭 Актьори, режисьори и сценаристи
                 </AccordionTrigger>
                 <AccordionContent>
-                  Основните лица, участващи в разработката на филма или сериала.
+                  Можете да намерите търсеният от Вас филм или сериал,
+                  въвеждайки имената на основните лица, участващи в разработката
+                  му.
+                  <ul className="list-disc pl-6 mt-4">
+                    <li>
+                      <strong>Пример за актьор:</strong> Тони Колет
+                    </li>
+                    <li>
+                      <strong>Пример за режисьор:</strong> Ари Астър
+                    </li>
+                    <li>
+                      <strong>Пример за сценарист:</strong> Алисън Шрьодер
+                    </li>
+                  </ul>
                 </AccordionContent>
               </AccordionItem>
+
               <AccordionItem value="year">
                 <AccordionTrigger>📅 Година на излизане</AccordionTrigger>
                 <AccordionContent>
-                  Годината на премиерата на филма или сериала.
+                  Можете да намерите търсеният от Вас филм или сериал,
+                  въвеждайки годината на премиерата му.
+                  <ul className="list-disc pl-6 mt-4">
+                    <li>
+                      <strong>Пример за година:</strong> 2018
+                    </li>
+                  </ul>
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="runtime">
                 <AccordionTrigger>⏱️ Продължителност</AccordionTrigger>
                 <AccordionContent>
-                  Продължителността на филма или сериала в часове и минути.
+                  Можете да намерите търсеният от Вас филм или сериал,
+                  въвеждайки продължителността му. За сериал, въведете неговата
+                  средната продължителност
+                  <ul className="list-disc pl-6 mt-4">
+                    <li>
+                      <strong>Пример за продължителност на филм:</strong> 2ч 7м
+                    </li>
+                    <li>
+                      <strong>
+                        Пример за средна продължителност на сериал:
+                      </strong>{" "}
+                      30м
+                    </li>
+                  </ul>
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="id">
                 <AccordionTrigger>🔍 ID</AccordionTrigger>
                 <AccordionContent>
-                  Уникалният идентификатор на филма или сериала в IMDb.
+                  Можете да намерите търсеният от Вас филм или сериал,
+                  въвеждайки уникалният му идентификатор в IMDb.
+                  <ul className="list-disc pl-6 mt-4">
+                    <li>
+                      <strong>Пример за IMDb ID:</strong> tt7784604
+                    </li>
+                  </ul>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>

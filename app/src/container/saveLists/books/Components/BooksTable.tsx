@@ -509,47 +509,101 @@ const BooksTable: FC<BooksTableProps> = ({
               <AccordionItem value="title">
                 <AccordionTrigger>📖 Заглавие</AccordionTrigger>
                 <AccordionContent>
-                  Заглавието на книгата, както на български, така и на английски
-                  език.
+                  Можете да намерите търсената от Вас книга, въвеждайки нейното
+                  заглавие, както на български, така и на английски език
+                  <ul className="list-disc pl-6 mt-4">
+                    <li>
+                      <strong>Пример за заглавие на български:</strong> Нимона
+                    </li>
+                    <li>
+                      <strong>Пример за заглавие на английски:</strong> Nimona
+                    </li>
+                  </ul>
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="genre">
                 <AccordionTrigger>📖 Жанр</AccordionTrigger>
                 <AccordionContent>
-                  Основните жанрове на книгата (екшън, драма и т.н.).
+                  Можете да намерите търсената от Вас книга, въвеждайки нейните
+                  жанрове
+                  <ul className="list-disc pl-6 mt-4">
+                    <li>
+                      <strong>Пример за жанр:</strong> Екшън, Драма и т.н.
+                    </li>
+                  </ul>
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="author">
                 <AccordionTrigger>✍️ Автор</AccordionTrigger>
                 <AccordionContent>
-                  Писателя, който е написал книгата.
+                  Можете да намерите търсената от Вас книга, въвеждайки името на
+                  създателя
+                  <ul className="list-disc pl-6 mt-4">
+                    <li>
+                      <strong>Пример за aвтор:</strong> Джак Керуак
+                    </li>
+                  </ul>
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="year">
-                <AccordionTrigger>📅 Година на писане</AccordionTrigger>
+                <AccordionTrigger>📅 Година на създаване</AccordionTrigger>
                 <AccordionContent>
-                  Годината на писането на книгата. Това важи както и за
-                  препоръчаното издание, така и за оригиналното издание (ако са
-                  различни).
+                  Годината на създаване на книгата. Можете да въведете както и
+                  годината на създаване на конкретното издание, така и на
+                  първото издание за същата книга
+                  <ul className="list-disc pl-6 mt-4">
+                    <li>
+                      <strong>Пример за година:</strong> 1972
+                    </li>
+                  </ul>
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="isbn">
                 <AccordionTrigger>🔢 ISBN/ASIN</AccordionTrigger>
                 <AccordionContent>
-                  Стандартизираният номер, съответстващ на книгата. Може да се
-                  намери спрямо ISBN 10, ISBN 13 и ASIN.
+                  Стандартизираният номер, съответстващ на книгата. Можете да
+                  въведете номери на ISBN 10, на ISBN 13 и на ASIN и така да
+                  намерите търсената книга
+                  <ul className="list-disc pl-6 mt-4">
+                    <li>
+                      <strong>Пример за ISBN 10:</strong> 0062278223
+                    </li>
+                    <li>
+                      <strong>Пример за ISBN 13:</strong> 9780062278227
+                    </li>
+                    <li>
+                      <strong>Пример за ASIN:</strong> B01ETXE0DG
+                    </li>
+                  </ul>
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="id">
                 <AccordionTrigger>🔍 ID</AccordionTrigger>
                 <AccordionContent>
-                  Уникалният идентификатор на книгата, както в Goodreads, така и
-                  в Google Books.
+                  Можете да намерите търсената от Вас книга, спрямо уникалният
+                  идентификатор на книгата, както в Goodreads, така и в Google
+                  Books
+                  <ul className="list-disc pl-6 mt-4">
+                    <li>
+                      <strong>Пример за Goodreads ID:</strong> 8520610
+                    </li>
+                    <li>
+                      <strong>Пример за Google Books ID:</strong> d_nzjwEACAAJ
+                    </li>
+                  </ul>
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="publisher">
                 <AccordionTrigger>🏢 Издател</AccordionTrigger>
-                <AccordionContent>Издателят на книгата.</AccordionContent>
+                <AccordionContent>
+                  Можете да намерите търсената от Вас книга, въвеждайки името на
+                  издателя на книгата
+                  <ul className="list-disc pl-6 mt-4">
+                    <li>
+                      <strong>Пример за издател:</strong> HarperCollins
+                    </li>
+                  </ul>
+                </AccordionContent>
               </AccordionItem>
             </Accordion>
           </>
