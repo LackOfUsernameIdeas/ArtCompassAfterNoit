@@ -20113,4 +20113,8 @@ option.selectionList {
   animation: dropdownOpen 0.3s ease-out;
 }
 
+.search-input::-webkit-search-cancel-button {
+  @apply text-primary /* Tailwind theme usage */;
+}
+
 /*# sourceMappingURL=style.css.map */

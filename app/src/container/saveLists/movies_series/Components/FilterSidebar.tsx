@@ -12,14 +12,30 @@ import { FilterSidebarProps } from "../watchlist-types";
 const FilterSidebar: FC<FilterSidebarProps> = ({
   isOpen,
   onClose,
-  onApplyFilters
+  onApplyFilters,
+  listData
 }) => {
   // Държи избраните стойности за всеки от филтрите
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [selectedRuntime, setSelectedRuntime] = useState<string[]>([]);
   const [selectedType, setSelectedType] = useState<string[]>([]);
+  const [selectedActor, setSelectedActor] = useState<string[]>([]);
+  const [selectedDirector, setSelectedDirector] = useState<string[]>([]);
+  const [selectedWriter, setSelectedWriter] = useState<string[]>([]);
+  const [selectedLanguage, setSelectedLanguage] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState<string[]>([]);
+  const [selectedImdbRating, setSelectedImdbRating] = useState<string[]>([]);
+  const [selectedMetascore, setSelectedMetascore] = useState<string[]>([]);
+  const [selectedBoxOffice, setSelectedBoxOffice] = useState<string[]>([]);
 
+  // Подреждане на авторите по азбучен ред
+  const sortedActors = listData.actor.sort((a, b) => a.localeCompare(b));
+  // Подреждане на авторите по азбучен ред
+  const sortedDirectors = listData.director.sort((a, b) => a.localeCompare(b));
+  // Подреждане на авторите по азбучен ред
+  const sortedWriters = listData.writer.sort((a, b) => a.localeCompare(b));
+  // Подреждане на авторите по азбучен ред
+  const sortedLanguages = listData.language.sort((a, b) => a.localeCompare(b));
   // Забранява скролването на страницата, когато страничната лента е отворена
   useEffect(() => {
     if (isOpen) {
@@ -39,14 +55,28 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
     setSelectedGenres([]);
     setSelectedRuntime([]);
     setSelectedType([]);
+    setSelectedActor([]);
+    setSelectedDirector([]);
+    setSelectedWriter([]);
+    setSelectedLanguage([]);
     setSelectedYear([]);
+    setSelectedImdbRating([]);
+    setSelectedMetascore([]);
+    setSelectedBoxOffice([]);
 
     // Прилага нулираните филтри веднага
     onApplyFilters({
       genres: [],
       runtime: [],
       type: [],
-      year: []
+      actor: [],
+      director: [],
+      writer: [],
+      language: [],
+      year: [],
+      imdbRating: [],
+      metascore: [],
+      boxOffice: []
     });
   };
 
@@ -76,6 +106,53 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
       prev.includes(year) ? prev.filter((y) => y !== year) : [...prev, year]
     );
   };
+  const handleActorChange = (actor: string) => {
+    setSelectedActor((prev) =>
+      prev.includes(actor) ? prev.filter((a) => a !== actor) : [...prev, actor]
+    );
+  };
+  const handleDirectorChange = (director: string) => {
+    setSelectedDirector((prev) =>
+      prev.includes(director)
+        ? prev.filter((d) => d !== director)
+        : [...prev, director]
+    );
+  };
+  const handleWriterChange = (selectedWriter: string) => {
+    setSelectedWriter((prev) =>
+      prev.includes(selectedWriter)
+        ? prev.filter((w) => w !== selectedWriter)
+        : [...prev, selectedWriter]
+    );
+  };
+  const handleLanguageChange = (language: string) => {
+    setSelectedLanguage((prev) =>
+      prev.includes(language)
+        ? prev.filter((l) => l !== language)
+        : [...prev, language]
+    );
+  };
+  const handleImdbRatingChange = (imdbRating: string) => {
+    setSelectedImdbRating((prev) =>
+      prev.includes(imdbRating)
+        ? prev.filter((l) => l !== imdbRating)
+        : [...prev, imdbRating]
+    );
+  };
+  const handleMetascoreChange = (metascore: string) => {
+    setSelectedMetascore((prev) =>
+      prev.includes(metascore)
+        ? prev.filter((l) => l !== metascore)
+        : [...prev, metascore]
+    );
+  };
+  const handleBoxOfficeChange = (boxOffice: string) => {
+    setSelectedBoxOffice((prev) =>
+      prev.includes(boxOffice)
+        ? prev.filter((l) => l !== boxOffice)
+        : [...prev, boxOffice]
+    );
+  };
 
   // Прилага избраните филтри и затваря страничната лента
   const handleApplyFilters = () => {
@@ -83,7 +160,14 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
       genres: selectedGenres,
       runtime: selectedRuntime,
       type: selectedType,
-      year: selectedYear
+      actor: selectedActor,
+      director: selectedDirector,
+      writer: selectedWriter,
+      language: selectedLanguage,
+      year: selectedYear,
+      imdbRating: selectedImdbRating,
+      metascore: selectedMetascore,
+      boxOffice: selectedBoxOffice
     });
     onClose();
   };
@@ -110,17 +194,19 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
             </AccordionTrigger>
             <AccordionContent className="pl-4">
               <div className="mt-2 space-y-2">
-                {moviesSeriesGenreOptions.map(({ bg }) => (
-                  <div key={bg} className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedGenres.includes(bg)}
-                      onChange={() => handleGenreChange(bg)}
-                      className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
-                    />
-                    <span className="opsilion text-sm">{bg}</span>
-                  </div>
-                ))}
+                {moviesSeriesGenreOptions
+                  .sort((a, b) => a.bg.localeCompare(b.bg))
+                  .map(({ bg }) => (
+                    <div key={bg} className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={selectedGenres.includes(bg)}
+                        onChange={() => handleGenreChange(bg)}
+                        className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
+                      />
+                      <span className="opsilion text-sm">{bg}</span>
+                    </div>
+                  ))}
               </div>
             </AccordionContent>
           </AccordionItem>
@@ -169,6 +255,188 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
                       type="checkbox"
                       checked={selectedType.includes(option)}
                       onChange={() => handleTypeChange(option)}
+                      className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
+                    />
+                    <span className="opsilion text-sm">{option}</span>
+                  </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
+        {/* Филтрация за актьори */}
+        <Accordion type="single" collapsible>
+          <AccordionItem value="actor">
+            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
+              Актьори
+            </AccordionTrigger>
+            <AccordionContent className="pl-4">
+              <div className="mt-2 space-y-2">
+                {sortedActors.map((actor) => (
+                  <div key={actor} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedActor.includes(actor)}
+                      onChange={() => handleActorChange(actor)}
+                      className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
+                    />
+                    <span className="opsilion text-sm">{actor}</span>
+                  </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
+        {/* Филтрация за режисьори */}
+        <Accordion type="single" collapsible>
+          <AccordionItem value="director">
+            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
+              Режисьори
+            </AccordionTrigger>
+            <AccordionContent className="pl-4">
+              <div className="mt-2 space-y-2">
+                {sortedDirectors.map((director) => (
+                  <div key={director} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedDirector.includes(director)}
+                      onChange={() => handleDirectorChange(director)}
+                      className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
+                    />
+                    <span className="opsilion text-sm">{director}</span>
+                  </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
+        {/* Филтрация за сценаристи */}
+        <Accordion type="single" collapsible>
+          <AccordionItem value="writer">
+            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
+              Сценаристи
+            </AccordionTrigger>
+            <AccordionContent className="pl-4">
+              <div className="mt-2 space-y-2">
+                {sortedWriters.map((writer) => (
+                  <div key={writer} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedWriter.includes(writer)}
+                      onChange={() => handleWriterChange(writer)}
+                      className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
+                    />
+                    <span className="opsilion text-sm">{writer}</span>
+                  </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
+        {/* Филтрация за езици */}
+        <Accordion type="single" collapsible>
+          <AccordionItem value="language">
+            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
+              Езици
+            </AccordionTrigger>
+            <AccordionContent className="pl-4">
+              <div className="mt-2 space-y-2">
+                {sortedLanguages.map((language) => (
+                  <div key={language} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedLanguage.includes(language)}
+                      onChange={() => handleLanguageChange(language)}
+                      className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
+                    />
+                    <span className="opsilion text-sm">{language}</span>
+                  </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
+        {/* Филтрация за IMDb Рейтинг */}
+        <Accordion type="single" collapsible>
+          <AccordionItem value="imdbRating">
+            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
+              Imdb Рейтинг
+            </AccordionTrigger>
+            <AccordionContent className="pl-4">
+              <div className="mt-2 space-y-2">
+                {[
+                  "Под 5.0",
+                  "5.0 до 7.0",
+                  "7.0 до 8.5",
+                  "8.5 до 9.5",
+                  "Над 9.5"
+                ].map((option) => (
+                  <div key={option} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedImdbRating.includes(option)}
+                      onChange={() => handleImdbRatingChange(option)}
+                      className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
+                    />
+                    <span className="opsilion text-sm">{option}</span>
+                  </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
+        {/* Филтрация за метаскор */}
+        <Accordion type="single" collapsible>
+          <AccordionItem value="metascore">
+            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
+              Метаскор
+            </AccordionTrigger>
+            <AccordionContent className="pl-4">
+              <div className="mt-2 space-y-2">
+                {["Под 35", "35 до 50", "50 до 75", "75 до 95", "Над 95"].map(
+                  (option) => (
+                    <div key={option} className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={selectedMetascore.includes(option)}
+                        onChange={() => handleMetascoreChange(option)}
+                        className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
+                      />
+                      <span className="opsilion text-sm">{option}</span>
+                    </div>
+                  )
+                )}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
+        {/* Филтрация за боксофис */}
+        <Accordion type="single" collapsible>
+          <AccordionItem value="boxOffice">
+            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
+              Боксофис
+            </AccordionTrigger>
+            <AccordionContent className="pl-4">
+              <div className="mt-2 space-y-2">
+                {[
+                  "Без приходи",
+                  "Под 50 млн.",
+                  "50 до 150 млн.",
+                  "150 до 300 млн.",
+                  "Над 300 млн."
+                ].map((option) => (
+                  <div key={option} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedBoxOffice.includes(option)}
+                      onChange={() => handleBoxOfficeChange(option)}
                       className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
                     />
                     <span className="opsilion text-sm">{option}</span>

@@ -5,7 +5,12 @@ import { BookRecommendation } from "../../../types_common";
 import FilterSidebar from "./FilterSidebar";
 import { ChevronDownIcon } from "lucide-react";
 import { useMediaQuery } from "react-responsive";
-import { extractAuthors, extractYear, formatGenres } from "../helper_functions";
+import {
+  extractItemFromStringList,
+  extractYear,
+  formatGenres,
+  getRelatedGenres
+} from "../helper_functions";
 
 const BooksTable: FC<BooksTableProps> = ({
   data,
@@ -18,8 +23,11 @@ const BooksTable: FC<BooksTableProps> = ({
   const [selectedItem, setSelectedItem] = useState<BookRecommendation | null>(
     null
   );
-  // Съхранява списък с автори, използван в приложението.
-  const [authors, setAuthors] = useState<string[]>([]);
+  // Съхранява списък с автори и издатели, запазени в списъка.
+  const [listData, setListData] = useState<{
+    authors: string[];
+    publishers: string[];
+  }>({ authors: [""], publishers: [""] });
   // Управлява състоянието на панела с филтри (отворен/затворен).
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   // Държи филтрираните данни според избраните критерии.
@@ -30,6 +38,8 @@ const BooksTable: FC<BooksTableProps> = ({
   const [itemsPerPage, setItemsPerPage] = useState(12);
   // Управлява състоянието на селект менюто (отворено/затворено).
   const [isSelectOpen, setIsSelectOpen] = useState(false);
+  // Query-то, въведено в менюто за търсене.
+  const [searchQuery, setSearchQuery] = useState<string>("");
   // Задава избраната книга при клик върху нея.
   const handleBookClick = (item: BookRecommendation) => setSelectedItem(item);
 
@@ -49,13 +59,15 @@ const BooksTable: FC<BooksTableProps> = ({
    * @returns {void} - Актуализира състоянието на филтрираните данни и нулира страницата на резултатите.
    */
   const handleApplyFilters = (filters: {
-    genres: string[];
-    pages: string[];
-    author: string[];
-    year: string[];
+    genres: string[]; // Филтър по жанрове
+    pages: string[]; // Филтър по брой страници
+    author: string[]; // Филтър по автори
+    publisher: string[]; // Филтър по издатели
+    goodreadsRatings: string[]; // Филтър по рейтинг в goodreads
+    year: string[]; // Филтър по година на писане
   }) => {
     const filtered = data.filter((item) => {
-      const authors = extractAuthors(item);
+      const { authors, publishers } = extractItemFromStringList(item);
       const bookGenres = formatGenres(item.genre_bg)
         .split(",")
         .map((genre) => genre.trim());
@@ -64,7 +76,9 @@ const BooksTable: FC<BooksTableProps> = ({
         filters.genres.length === 0 ||
         filters.genres.some((selectedGenre) =>
           bookGenres.some((bookGenre) =>
-            bookGenre.toLowerCase().includes(selectedGenre.toLowerCase())
+            getRelatedGenres(selectedGenre).some((relatedGenre) =>
+              bookGenre.toLowerCase().includes(relatedGenre.toLowerCase())
+            )
           )
         );
 
@@ -91,9 +105,37 @@ const BooksTable: FC<BooksTableProps> = ({
             bookAuthor.toLowerCase().includes(selectedAuthor.toLowerCase())
           )
         );
+      const matchesPublisher =
+        filters.publisher.length === 0 ||
+        filters.publisher.some((selectedPublisher) =>
+          publishers.some((bookPublisher) =>
+            bookPublisher
+              .toLowerCase()
+              .includes(selectedPublisher.toLowerCase())
+          )
+        );
+      const matchesGoodreadsRating =
+        filters.goodreadsRatings.length === 0 ||
+        filters.goodreadsRatings.some((range) => {
+          const rating = item.goodreads_rating
+            ? item.goodreads_rating.toString().trim()
+            : "";
+          const numericRating = parseFloat(rating); // Това е безопасно, защото 'rating' вече е string
+          if (isNaN(numericRating)) return false;
+
+          if (range === "Под 3.0") return numericRating < 3.0;
+          if (range === "3.0 до 3.5")
+            return numericRating >= 3.0 && numericRating < 3.5;
+          if (range === "3.5 до 4.0")
+            return numericRating >= 3.5 && numericRating < 4.0;
+          if (range === "4.0 до 4.5")
+            return numericRating >= 4.0 && numericRating < 4.5;
+          if (range === "Над 4.5") return numericRating >= 4.5;
+
+          return true;
+        });
 
       const year = extractYear(item.date_of_issue);
-
       const matchesYear =
         filters.year.length === 0 ||
         filters.year.some((y) => {
@@ -107,18 +149,50 @@ const BooksTable: FC<BooksTableProps> = ({
           return true;
         });
 
-      return matchesGenre && matchesPages && matchesAuthor && matchesYear;
+      return (
+        matchesGenre &&
+        matchesPages &&
+        matchesAuthor &&
+        matchesPublisher &&
+        matchesGoodreadsRating &&
+        matchesYear
+      );
     });
 
     setFilteredData(filtered);
     setCurrentPage(1);
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+  };
+
+  const searchData = filteredData.filter((book) =>
+    [
+      book.title_bg,
+      book.title_en,
+      book.genre_bg,
+      book.author,
+      book.date_of_issue,
+      book.date_of_first_issue,
+      book.ISBN_10,
+      book.ISBN_13,
+      book.goodreads_id,
+      book.google_books_id,
+      book.publisher
+    ].some((field) =>
+      field
+        ? field.toString().toLowerCase().includes(searchQuery.toLowerCase())
+        : false
+    )
+  );
+
   // Изчислява общия брой страници, необходими за показване на всички филтрирани данни.
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const totalPages = Math.ceil(searchData.length / itemsPerPage);
 
   // Извлича текущите данни, които трябва да се покажат на страницата, в зависимост от избрания номер на страница.
-  const currentData = filteredData.slice(
+  const currentData = searchData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -148,12 +222,19 @@ const BooksTable: FC<BooksTableProps> = ({
   // При всяка промяна в `data` извлича авторите от книгите и обновява състоянието.
   useEffect(() => {
     const newAuthors: string[] = [];
+    const newPublishers: string[] = [];
+
     for (let i = 0; i < data.length; i++) {
-      const authors = extractAuthors(data[i]);
+      const { authors, publishers } = extractItemFromStringList(searchData[i]);
+
       newAuthors.push(...authors);
-      console.log(data[i].date_of_issue); // Отпечатва датата на издаване за дебъгване
+      newPublishers.push(...publishers);
     }
-    setAuthors(newAuthors);
+
+    setListData({
+      authors: newAuthors,
+      publishers: newPublishers
+    });
   }, [data]);
 
   // Проверява дали екранната ширина е 1546px или по-малка.
@@ -170,7 +251,7 @@ const BooksTable: FC<BooksTableProps> = ({
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
         onApplyFilters={handleApplyFilters}
-        authors={authors}
+        listData={listData}
       />
       <RecommendationCardAlert
         selectedItem={selectedItem}
@@ -184,17 +265,29 @@ const BooksTable: FC<BooksTableProps> = ({
         <div className="box custom-card">
           <div className="box-header justify-between flex items-center">
             <div className="flex items-center gap-4">
-              <p className="box-title">Списък За Гледане</p>
+              <p className="box-title">Списък За Четене</p>
+              <div className="xl:col-span-4 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12">
+                <input
+                  type="search"
+                  className="form-control search-input"
+                  id="input-search"
+                  placeholder="Search"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                />
+              </div>
+            </div>
+            <div className="flex gap-4 items-center">
               <div className="relative inline-block text-left">
                 <div>
                   <button
                     type="button"
-                    className="inline-flex justify-between items-center w-full px-3 py-1.5 text-sm font-medium text-primary bg-primary/10 border border-primary rounded-md shadow-sm hover:bg-primary hover:text-white focus:bg-primary focus:text-white transition-all duration-300 ease-in-out"
+                    className="inline-flex justify-between items-center w-full px-3 py-1.5 text-sm font-medium bg-primary hover:bg-primary/75 text-white dark:text-white/80 rounded-md shadow-sm focus:bg-primary focus:text-white transition-all duration-300 ease-in-out"
                     onClick={() => setIsSelectOpen(!isSelectOpen)}
                   >
                     {itemsPerPage} елемента на страница
                     <ChevronDownIcon
-                      className={`w-5 h-5 ml-2 -mr-1 transition-transform duration-300 ${
+                      className={`w-5 h-5 ml-2 mr-1 transition-transform duration-300 ${
                         isSelectOpen ? "transform rotate-180" : ""
                       }`}
                       aria-hidden="true"
@@ -212,16 +305,11 @@ const BooksTable: FC<BooksTableProps> = ({
                       {[6, 12, 24, 36, 48].map((value) => (
                         <button
                           key={value}
-                          className={`
-                            group flex items-center w-full px-4 py-2 text-sm bg-primary/10
-                            ${
-                              itemsPerPage === value
-                                ? "text-white !bg-primary font-medium"
-                                : "text-defaulttextcolor dark:text-white/80"
-                            }
-                            hover:bg-primary/50 rounded-sm
-                            transition-all duration-300 ease-in-out
-                          `}
+                          className={`group flex items-center w-full px-4 py-2 text-sm bg-primary/10 ${
+                            itemsPerPage === value
+                              ? "text-white !bg-primary font-medium"
+                              : "text-defaulttextcolor dark:text-white/80"
+                          } hover:bg-primary/50 rounded-sm transition-all duration-300 ease-in-out`}
                           role="menuitem"
                           onClick={() => {
                             setItemsPerPage(value);
@@ -239,7 +327,7 @@ const BooksTable: FC<BooksTableProps> = ({
                   className="sr-only"
                   value={itemsPerPage}
                   onChange={handleItemsPerPageChange}
-                  aria-label="Select number of items per page"
+                  aria-label="Изберете брой елемента на страница"
                 >
                   <option value={6}>6 елемента на страница</option>
                   <option value={12}>12 елемента на страница</option>
@@ -248,13 +336,17 @@ const BooksTable: FC<BooksTableProps> = ({
                   <option value={48}>48 елемента на страница</option>
                 </select>
               </div>
+              <button
+                className="inline-flex justify-between items-center px-3 py-1.5 text-sm font-medium bg-primary hover:bg-primary/75 text-white dark:text-white/80 rounded-md shadow-sm focus:bg-primary focus:text-white transition-all duration-300 ease-in-out"
+                onClick={() => setIsFilterOpen(true)}
+              >
+                <i
+                  className="bx bx-sort-up text-lg w-5 h-5 mr-2"
+                  aria-hidden="true"
+                ></i>
+                Филтриране
+              </button>
             </div>
-            <button
-              className="bg-primary/10 text-primary border border-primary rounded-md px-3 py-1.5 text-sm focus:outline-none hover:bg-primary hover:text-white transition"
-              onClick={() => setIsFilterOpen(true)}
-            >
-              Филтриране
-            </button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
             {currentData.map((item, index) => (

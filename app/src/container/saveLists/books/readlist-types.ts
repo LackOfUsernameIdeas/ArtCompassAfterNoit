@@ -121,7 +121,12 @@ export interface FilterSidebarProps {
     genres: string[]; // Филтър по жанрове
     pages: string[]; // Филтър по брой страници
     author: string[]; // Филтър по автори
+    publisher: string[]; // Филтър по издатели
+    goodreadsRatings: string[]; // Филтър по рейтинг в goodreads
     year: string[]; // Филтър по година на писане
   }) => void;
-  authors: string[]; // Списък с налични автори за избор
+  listData: {
+    authors: string[];
+    publishers: string[];
+  }; // Списък с налични автори за избор
 }

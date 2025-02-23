@@ -110,13 +110,15 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
     // Функция за разрешаване на езика на книгата
     const resolveLanguage = async () => {
       if (selectedItem?.language) {
+        console.log("a", selectedItem.language);
         try {
           // Ако езикът е string, задаваме го директно
           const resolvedLanguage =
             typeof selectedItem.language === "string"
               ? selectedItem.language
               : await selectedItem.language; // Ако е обещание, изчакваме да се разреши
-          setLanguage(resolvedLanguage); // Задаваме езика
+          setLanguage(resolvedLanguage);
+          console.log("b", resolvedLanguage); // Задаваме езика
         } catch (error) {
           console.error("Error resolving language:", error); // Обработваме грешка при разрешаване на езика
           setLanguage(null); // Ако има грешка, задаваме null

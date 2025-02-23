@@ -11,33 +11,47 @@ import {
   AccordionTrigger
 } from "@/components/ui/accordion";
 import { FilterSidebarProps } from "../readlist-types";
+import { processGenres } from "../helper_functions";
 
 const FilterSidebar: FC<FilterSidebarProps> = ({
   isOpen,
   onClose,
   onApplyFilters,
-  authors
+  listData
 }) => {
   // Държи избраните стойности за всеки от филтрите
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]); // Избрани жанрове
   const [selectedPages, setSelectedPages] = useState<string[]>([]); // Филтър по брой страници
   const [selectedAuthor, setSelectedAuthor] = useState<string[]>([]); // Филтър по автор
+  const [selectedPublisher, setSelectedPublisher] = useState<string[]>([]); // Филтър по издател
+  const [selectedGoodreadsRating, setSelectedGoodreadsRating] = useState<
+    string[]
+  >([]); // Филтър по рейтинг в Goodreads
   const [selectedYear, setSelectedYear] = useState<string[]>([]); // Филтър по година
 
   // Подреждане на авторите по азбучен ред
-  const sortedAuthors = authors.sort((a, b) => a.localeCompare(b));
+  const sortedAuthors = listData.authors.sort((a, b) => a.localeCompare(b));
+  // Подреждане на издателите по азбучен ред
+  const sortedPublishers = listData.publishers.sort((a, b) =>
+    a.localeCompare(b)
+  );
 
   // Създаване на уникален списък с жанрове от Goodreads и Google Books
   const goodreadsGenresSet = new Set(
     goodreadsGenreOptions.map((genre) => genre.bg)
   );
+
   const uniqueGoogleBooksGenres = googleBooksGenreOptions.filter(
     (genre) => !goodreadsGenresSet.has(genre.bg)
   );
+
+  // Combine the goodreads and Google Books genres
   const updatedGenreOptions = [
-    ...goodreadsGenreOptions,
-    ...uniqueGoogleBooksGenres
-  ].sort((a, b) => a.bg.localeCompare(b.bg)); // Сортиране на жанровете по име
+    ...processGenres(goodreadsGenreOptions),
+    ...processGenres(uniqueGoogleBooksGenres)
+  ].sort((a, b) => a.bg.localeCompare(b.bg)); // Sort genres by name
+
+  console.log(updatedGenreOptions);
 
   // Забранява скролването на страницата, когато страничната лента е отворена
   useEffect(() => {
@@ -58,6 +72,8 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
     setSelectedGenres([]);
     setSelectedPages([]);
     setSelectedAuthor([]);
+    setSelectedPublisher([]);
+    setSelectedGoodreadsRating([]);
     setSelectedYear([]);
 
     // Прилага нулираните филтри веднага
@@ -65,6 +81,8 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
       genres: [],
       pages: [],
       author: [],
+      publisher: [],
+      goodreadsRatings: [],
       year: []
     });
   };
@@ -92,6 +110,20 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
       prev.includes(year) ? prev.filter((y) => y !== year) : [...prev, year]
     );
   };
+  const handlePublisherChange = (publisher: string) => {
+    setSelectedPublisher((prev) =>
+      prev.includes(publisher)
+        ? prev.filter((y) => y !== publisher)
+        : [...prev, publisher]
+    );
+  };
+  const handleGoodreadsRatingChange = (goodreadsRating: string) => {
+    setSelectedGoodreadsRating((prev) =>
+      prev.includes(goodreadsRating)
+        ? prev.filter((y) => y !== goodreadsRating)
+        : [...prev, goodreadsRating]
+    );
+  };
 
   // Прилага избраните филтри и затваря страничната лента
   const handleApplyFilters = () => {
@@ -99,6 +131,8 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
       genres: selectedGenres,
       pages: selectedPages,
       author: selectedAuthor,
+      publisher: selectedPublisher,
+      goodreadsRatings: selectedGoodreadsRating,
       year: selectedYear
     });
     onClose();
@@ -192,6 +226,60 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
                       className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
                     />
                     <span className="opsilion text-sm">{author}</span>
+                  </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
+        {/* Филтрация за издатели */}
+        <Accordion type="single" collapsible>
+          <AccordionItem value="publisher">
+            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
+              Издатели
+            </AccordionTrigger>
+            <AccordionContent className="pl-4">
+              <div className="mt-2 space-y-2">
+                {sortedPublishers.map((publisher) => (
+                  <div key={publisher} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedPublisher.includes(publisher)}
+                      onChange={() => handlePublisherChange(publisher)}
+                      className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
+                    />
+                    <span className="opsilion text-sm">{publisher}</span>
+                  </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
+        {/* Филтрация за рейтинг в Goodreads */}
+        <Accordion type="single" collapsible>
+          <AccordionItem value="goodreadsRating">
+            <AccordionTrigger className="opsilion text-sm flex items-center justify-between w-full bg-white dark:bg-bodybg2 px-4 py-2 rounded-md shadow-md">
+              Рейтинг в Goodreads
+            </AccordionTrigger>
+            <AccordionContent className="pl-4">
+              <div className="mt-2 space-y-2">
+                {[
+                  "Под 3.0",
+                  "3.0 до 3.5",
+                  "3.5 до 4.0",
+                  "4.0 до 4.5",
+                  "Над 4.5"
+                ].map((option) => (
+                  <div key={option} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedGoodreadsRating.includes(option)}
+                      onChange={() => handleGoodreadsRatingChange(option)}
+                      className="cursor-pointer bg-white dark:bg-bodybg2 border border-gray-300 dark:border-gray-600 rounded-md"
+                    />
+                    <span className="opsilion text-sm">{option}</span>
                   </div>
                 ))}
               </div>

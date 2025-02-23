@@ -64,3 +64,33 @@ export const fetchData = async (
     throw error;
   }
 };
+
+/**
+ * Извлича автори, режисьори, сценаристи и езици от подадения обект, като премахва дублиращите се стойности.
+ *
+ * @param {Object} item - Обектът, съдържащ информация за книгата или филма.
+ * @param {string} [item.actors] - Списък с актьори, разделени със запетая.
+ * @param {string} [item.director] - Списък с режисьори, разделени със запетая.
+ * @param {string} [item.writer] - Списък с сценаристи, разделени със запетая.
+ * @param {string} [item.language] - Списък с езици, разделени със запетая.
+ * @returns {Object} - Обект със свойства `actors`, `directors`, `writers` и `languages`, всеки от които е масив от уникални низове.
+ */
+export const extractItemFromStringList = (
+  item: any
+): {
+  actors: string[];
+  directors: string[];
+  writers: string[];
+  languages: string[];
+} => {
+  const uniqueValues = (str?: string): string[] => {
+    return str ? [...new Set(str.split(",").map((value) => value.trim()))] : [];
+  };
+
+  return {
+    actors: uniqueValues(item.actors),
+    directors: uniqueValues(item.director),
+    writers: uniqueValues(item.writer),
+    languages: uniqueValues(item.language)
+  };
+};
