@@ -28,14 +28,30 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
   const [selectedMetascore, setSelectedMetascore] = useState<string[]>([]);
   const [selectedBoxOffice, setSelectedBoxOffice] = useState<string[]>([]);
 
-  // Подреждане на авторите по азбучен ред
-  const sortedActors = listData.actor.sort((a, b) => a.localeCompare(b));
-  // Подреждане на авторите по азбучен ред
-  const sortedDirectors = listData.director.sort((a, b) => a.localeCompare(b));
-  // Подреждане на авторите по азбучен ред
-  const sortedWriters = listData.writer.sort((a, b) => a.localeCompare(b));
-  // Подреждане на авторите по азбучен ред
-  const sortedLanguages = listData.language.sort((a, b) => a.localeCompare(b));
+  // Функция, която проверява дали стринг е латиница
+  const isLatin = (str: string) => /[a-zA-Z]/.test(str);
+
+  // Функция за подреждане на стрингове
+  const sortNames = (a: string, b: string) => {
+    const isALatin = isLatin(a);
+    const isBLatin = isLatin(b);
+
+    if (isALatin === isBLatin) {
+      return a.localeCompare(b);
+    }
+
+    return isALatin ? 1 : -1;
+  };
+
+  // Подреждане на актьорите по азбучен ред
+  const sortedActors = listData.actor.sort(sortNames);
+  // Подреждане на режисьорите по азбучен ред
+  const sortedDirectors = listData.director.sort(sortNames);
+  // Подреждане на сценаристите по азбучен ред
+  const sortedWriters = listData.writer.sort(sortNames);
+  // Подреждане на езиците по азбучен ред
+  const sortedLanguages = listData.language.sort(sortNames);
+
   // Забранява скролването на страницата, когато страничната лента е отворена
   useEffect(() => {
     if (isOpen) {
