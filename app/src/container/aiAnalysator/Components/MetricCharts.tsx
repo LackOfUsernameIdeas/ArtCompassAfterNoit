@@ -1,4 +1,4 @@
-import { GenrePopularityOverTime } from "./charts";
+import { GenrePopularityOverTime } from "./Charts";
 
 export default function MetricCharts() {
   return (
