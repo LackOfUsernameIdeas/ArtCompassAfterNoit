@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/accordion";
 import UserPreferences from "@/components/common/userPreferences/userPreferences";
 import { MovieSeriesUserPreferencesAfterSaving } from "../types_common";
+import MetricCharts from "./Components/MetricCharts";
 
 const AIAnalysator: FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -200,9 +201,9 @@ const AIAnalysator: FC = () => {
                         гледане
                       </span>{" "}
                       и други се съобразяват с{" "}
-                      <span className="font-semibold">ВАШИТЕ </span>{" "}
-                      индивидуални потребителски предпочитания. Всичко това се
-                      случва с помощта на{" "}
+                      <span className="font-semibold">ВАШИТЕ </span> последно
+                      регистрирани индивидуални потребителски предпочитания.
+                      Всичко това се случва с помощта на{" "}
                       <span className="font-semibold">
                         Алгоритъма за релевантност
                       </span>
@@ -324,12 +325,16 @@ const AIAnalysator: FC = () => {
             </div>
 
             {precisionData && recallData && f1ScoreData && (
-              <AIAnalysisDashboard
-                precisionData={precisionData}
-                recallData={recallData}
-                f1ScoreData={f1ScoreData}
-              />
+              <>
+                <AIAnalysisDashboard
+                  precisionData={precisionData}
+                  recallData={recallData}
+                  f1ScoreData={f1ScoreData}
+                />
+                <MetricCharts />
+              </>
             )}
+
             {userPreferences && (
               <UserPreferences preferences={userPreferences} />
             )}

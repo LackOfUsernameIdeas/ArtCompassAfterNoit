@@ -36,7 +36,7 @@ const AIAnalysisDashboard: FC<AIAnalysisDashboardProps> = ({
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
         <Widget
           icon={<i className="ti ti-list-numbers text-3xl" />}
-          title="Брой на генерираните от вас препоръки"
+          title="Брой на генерирани от вас препоръки"
           value={precisionData.total_recommendations_count}
         />
         <Widget

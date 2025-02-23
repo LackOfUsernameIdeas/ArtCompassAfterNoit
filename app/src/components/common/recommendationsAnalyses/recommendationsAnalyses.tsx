@@ -32,11 +32,11 @@ const RecommendationsAnalysesWidgets: React.FC<
   return (
     <Fragment>
       <Card className="dark:border-black/10 bg-bodybg font-semibold text-xl max-w-7xl p-4 rounded-lg shadow-lg dark:shadow-xl text-center mt-4">
-        <h2 className="!text-3xl font-bold">
+        <h2 className="!text-4xl opsilion font-bold">
           Анализ на {isSwitching ? "последно генерираните" : "текущите"}{" "}
           препоръки:
         </h2>
-        <p className="text-sm text-gray-600">
+        <p className="text-base text-gray-600">
           {newGeneration
             ? "Искате да разгледате по-подробен анализ? "
             : "Искате да разгледате още анализи? "}

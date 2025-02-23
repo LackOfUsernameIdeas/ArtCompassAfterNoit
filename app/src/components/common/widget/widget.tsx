@@ -11,7 +11,7 @@ const Widget: FC<{
   >
     <div className="flex items-center mb-2">
       {icon}
-      <h3 className="ml-2 text-sm font-semibold">{title}</h3>
+      <h3 className="ml-2 text-base opsilion font-semibold">{title}</h3>
     </div>
     <div className="flex-grow" />
     <p className="text-2xl font-bold text-left">{value}</p>
