@@ -99,7 +99,7 @@ const ResetRequest: FC<ResetRequestProps> = () => {
           <div className="flex justify-center items-center h-full">
             <div className="p-[3rem]">
               {/* Заглавие и описание на страницата */}
-              <p className="h5 font-semibold mb-2">
+              <p className="h5 font-semibold opsilion !text-3xl mb-2">
                 Забравили сте паролата си?
               </p>
               <p className="mb-4 text-[#8c9097] dark:text-white/50 opacity-[0.7] font-normal">
@@ -144,7 +144,7 @@ const ResetRequest: FC<ResetRequestProps> = () => {
                 <div className="xl:col-span-12 col-span-12 mt-0">
                   <label
                     htmlFor="reset-email"
-                    className="form-label text-default"
+                    className="form-label text-default opsilion"
                   >
                     Имейл
                   </label>
@@ -163,7 +163,7 @@ const ResetRequest: FC<ResetRequestProps> = () => {
                 {/* Бутон за изпращане на заявка за смяна на парола */}
                 <div className="xl:col-span-12 col-span-12 grid mt-2">
                   <button
-                    className="ti-btn ti-btn-primary w-full py-2"
+                    className="ti-btn ti-btn-primary w-full py-2 !text-lg opsilion"
                     onClick={handlePasswordResetRequest}
                     disabled={isSubmitting}
                   >
@@ -180,7 +180,7 @@ const ResetRequest: FC<ResetRequestProps> = () => {
                     to={`${import.meta.env.BASE_URL}signin/`}
                     className="text-primary"
                   >
-                    Върни се към формата за влизане
+                    Върнете се към формата за влизане
                   </Link>
                 </p>
               </div>

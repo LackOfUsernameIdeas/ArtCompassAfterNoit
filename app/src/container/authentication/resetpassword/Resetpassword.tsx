@@ -150,7 +150,9 @@ const Resetcover: FC<ResetcoverProps> = () => {
         <div className="xxl:col-span-7 xl:col-span-7 lg:col-span-12 col-span-12">
           <div className="flex justify-center items-center h-full">
             <div className="p-[3rem]">
-              <p className="h5 font-semibold mb-2">Смяна на паролата</p>
+              <p className="h5 font-semibold opsilion !text-3xl mb-2">
+                Смяна на паролата
+              </p>
               <p className="mb-4 text-[#8c9097] dark:text-white/50 opacity-[0.7] font-normal">
                 Сменете своята парола тук!
               </p>
@@ -188,7 +190,7 @@ const Resetcover: FC<ResetcoverProps> = () => {
                 <div className="xl:col-span-12 col-span-12 mt-0">
                   <label
                     htmlFor="reset-newpassword"
-                    className="form-label text-default"
+                    className="form-label text-default opsilion"
                   >
                     Нова парола
                   </label>
@@ -219,7 +221,7 @@ const Resetcover: FC<ResetcoverProps> = () => {
                 <div className="xl:col-span-12 col-span-12 mt-0">
                   <label
                     htmlFor="reset-confirmpassword"
-                    className="form-label text-default"
+                    className="form-label text-default opsilion"
                   >
                     Потвърждаване на паролата
                   </label>
@@ -251,7 +253,7 @@ const Resetcover: FC<ResetcoverProps> = () => {
                   <button
                     onClick={handlePasswordReset}
                     disabled={isSubmitting}
-                    className={`ti-btn w-full bg-primary hover:bg-primarydark text-white rounded-[0.25rem] text-default w-full h-11 font-semibold mt-3`}
+                    className={`ti-btn w-full bg-primary hover:bg-primarydark text-white !text-lg opsilion rounded-[0.25rem] text-default w-full h-11 font-semibold mt-3`}
                   >
                     {isSubmitting ? "Моля, изчакайте..." : "Смяна на парола"}
                   </button>
@@ -264,7 +266,7 @@ const Resetcover: FC<ResetcoverProps> = () => {
                     to={`${import.meta.env.BASE_URL}signin/`}
                     className="text-primary"
                   >
-                    Върни се към формата за влизане
+                    Върнете се към формата за влизане
                   </Link>
                 </p>
               </div>

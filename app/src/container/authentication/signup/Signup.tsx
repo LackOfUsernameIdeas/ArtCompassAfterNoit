@@ -204,7 +204,9 @@ const Signupcover: FC<SignupcoverProps> = () => {
                 </Link>
               </p>
               <div className="p-[3rem]">
-                <p className="h5 font-semibold mb-2">Създаване на профил</p>
+                <p className="h5 font-semibold opsilion !text-3xl mb-2">
+                  Създаване на профил
+                </p>
                 <p className="mb-4 text-[#8c9097] dark:text-white/50 opacity-[0.7] font-normal">
                   Присъединете се към (име на проекта) и създайте профил!
                 </p>
@@ -244,7 +246,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
                       <div className="xl:col-span-12 col-span-12 mt-0">
                         <label
                           htmlFor="signup-firstname"
-                          className="form-label text-default"
+                          className="form-label text-default opsilion"
                         >
                           Име
                         </label>
@@ -262,7 +264,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
                       <div className="xl:col-span-12 col-span-12">
                         <label
                           htmlFor="signup-lastname"
-                          className="form-label text-default"
+                          className="form-label text-default opsilion"
                         >
                           Фамилия
                         </label>
@@ -280,7 +282,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
                       <div className="xl:col-span-12 col-span-12">
                         <label
                           htmlFor="signup-email"
-                          className="form-label text-default"
+                          className="form-label text-default opsilion"
                         >
                           Имейл
                         </label>
@@ -298,7 +300,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
                       <div className="xl:col-span-12 col-span-12">
                         <label
                           htmlFor="signup-password"
-                          className="form-label text-default"
+                          className="form-label text-default opsilion"
                         >
                           Парола
                         </label>
@@ -333,7 +335,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
                       <div className="xl:col-span-12 col-span-12 mb-4">
                         <label
                           htmlFor="signup-confirmpassword"
-                          className="form-label text-default"
+                          className="form-label text-default opsilion"
                         >
                           Потвърждаване на паролата
                         </label>
@@ -368,7 +370,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
                       <div className="xl:col-span-12 col-span-12 grid mt-2">
                         <button
                           type="submit"
-                          className="ti-btn ti-btn-lg bg-primary text-white !font-medium dark:border-defaultborder/10"
+                          className="ti-btn ti-btn-lg bg-primary text-white !text-lg opsilion !font-medium dark:border-defaultborder/10"
                         >
                           Създай профил
                         </button>
@@ -383,7 +385,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
                       to={`${import.meta.env.BASE_URL}signin/`}
                       className="text-primary"
                     >
-                      Влезнете в профила си!
+                      Влезте в профила си!
                     </Link>
                   </p>
                 </div>

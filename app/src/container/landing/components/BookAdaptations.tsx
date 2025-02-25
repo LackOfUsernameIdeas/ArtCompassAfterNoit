@@ -11,8 +11,8 @@ export default function BookAdaptations({
 }: BookAdaptationsProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mx-auto">
-      <Card className="overflow-hidden border-2 !border-primary">
-        <CardContent className="p-6 bg-gradient-to-br dark:from-primary/5 dark:to-primary/25 from-primary/10 to-primary/30">
+      <Card className="overflow-hidden border-2 !border-primary flex flex-col">
+        <CardContent className="p-6 bg-gradient-to-br dark:from-primary/5 dark:to-primary/25 from-primary/10 to-primary/30 flex-grow">
           <div className="flex items-center mb-4">
             <div className="bg-primary p-3 rounded-full mr-4">
               <Clapperboard className="h-6 w-6 text-white" />
@@ -30,8 +30,8 @@ export default function BookAdaptations({
         </CardContent>
       </Card>
 
-      <Card className="overflow-hidden border-2 !border-secondary">
-        <CardContent className="p-6 bg-gradient-to-br dark:from-secondary/5 dark:to-secondary/25 from-secondary/10 to-secondary/30">
+      <Card className="overflow-hidden border-2 !border-secondary flex flex-col">
+        <CardContent className="p-6 bg-gradient-to-br dark:from-secondary/5 dark:to-secondary/25 from-secondary/10 to-secondary/30 flex-grow">
           <div className="flex items-center mb-4">
             <div className="bg-secondary p-3 rounded-full mr-4">
               <Tv className="h-6 w-6 text-white" />
@@ -49,8 +49,8 @@ export default function BookAdaptations({
         </CardContent>
       </Card>
 
-      <Card className="overflow-hidden border-2 !border-tertiary">
-        <CardContent className="p-6 bg-gradient-to-br dark:from-tertiary/5 dark:to-tertiary/25 from-tertiary/10 to-tertiary/30">
+      <Card className="overflow-hidden border-2 !border-tertiary flex flex-col">
+        <CardContent className="p-6 bg-gradient-to-br dark:from-tertiary/5 dark:to-tertiary/25 from-tertiary/10 to-tertiary/30 flex-grow">
           <div className="flex items-center mb-4">
             <div className="bg-tertiary p-3 rounded-full mr-4">
               <Clapperboard className="h-6 w-6 text-white" />

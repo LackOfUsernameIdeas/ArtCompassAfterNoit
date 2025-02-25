@@ -188,7 +188,9 @@ const Signincover: FC<SignincoverProps> = () => {
               </p>
               <div className="p-[3rem]">
                 {/* Заглавие за вход */}
-                <p className="h5 font-semibold mb-2">Имате профил?</p>
+                <p className="h5 font-semibold opsilion !text-3xl mb-2">
+                  Имате профил?
+                </p>
                 {/* Инструкция за попълване на данни */}
                 <p className="mb-4 text-[#8c9097] dark:text-white/50 opacity-[0.7] font-normal">
                   Попълнете Вашите имейл и парола, за да влезете в профила си!
@@ -236,7 +238,7 @@ const Signincover: FC<SignincoverProps> = () => {
                       <div className="xl:col-span-12 col-span-12 mt-0">
                         <label
                           htmlFor="signin-email"
-                          className="form-label text-default"
+                          className="form-label text-default opsilion"
                         >
                           Имейл
                         </label>
@@ -256,13 +258,13 @@ const Signincover: FC<SignincoverProps> = () => {
                       <div className="xl:col-span-12 col-span-12 mb-4">
                         <label
                           htmlFor="signin-password"
-                          className="form-label text-default block"
+                          className="form-label text-default block opsilion"
                         >
                           Парола
                           {/* Линк за забравена парола */}
                           <Link
                             to={`${import.meta.env.BASE_URL}resetpassword`}
-                            className="ltr:float-right rtl:float-left text-danger"
+                            className="ltr:float-right rtl:float-left text-danger font-Equilibrist"
                           >
                             Забравена парола
                           </Link>
@@ -318,7 +320,7 @@ const Signincover: FC<SignincoverProps> = () => {
                       <div className="xl:col-span-12 col-span-12 grid mt-2">
                         <button
                           type="submit"
-                          className="ti-btn ti-btn-lg bg-primary text-white !font-medium dark:border-defaultborder/10"
+                          className="ti-btn ti-btn-lg bg-primary text-white !text-lg opsilion !font-medium dark:border-defaultborder/10"
                         >
                           Влезте
                         </button>

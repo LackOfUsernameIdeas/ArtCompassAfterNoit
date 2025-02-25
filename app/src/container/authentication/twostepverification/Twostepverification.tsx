@@ -188,7 +188,7 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
                     <div>{alert.message}</div>
                   </div>
                 ))}
-                <p className="font-semibold mb-2 text-xl">
+                <p className="font-semibold opsilion !text-3xl mb-2">
                   Потвърдете профила си!
                 </p>
                 <p className="mb-4 text-[#8c9097] dark:text-white/50 opacity-[0.7] font-normal">
@@ -289,7 +289,7 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
                             onClick={handleResendCode}
                             className="text-primary ms-2 inline-block"
                           >
-                            Изпращане отново
+                            Повторно изпращане
                           </button>
                         )}
                       </label>
@@ -298,7 +298,7 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
                   <div className="xl:col-span-12 col-span-12 grid">
                     <button
                       onClick={handleVerification}
-                      className="ti-btn ti-btn-lg bg-primary text-white !font-medium dark:border-defaultborder/10"
+                      className="ti-btn ti-btn-lg bg-primary text-white !text-lg opsilion !font-medium dark:border-defaultborder/10"
                     >
                       Потвърди
                     </button>
