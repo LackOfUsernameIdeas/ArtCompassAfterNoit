@@ -10,7 +10,7 @@ const Infobox: FC<InfoboxProps> = ({ onClick, width = 22, height = 22 }) => {
   return (
     <div
       onClick={onClick}
-      className={`dark:text-defaulttextcolor/70 cursor-pointer transition-transform duration-200 hover:scale-110 rounded-full`}
+      className={`dark:text-defaulttextcolor/70 cursor-pointer transition-transform duration-200 hover:scale-110 rounded-full z-10`}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
