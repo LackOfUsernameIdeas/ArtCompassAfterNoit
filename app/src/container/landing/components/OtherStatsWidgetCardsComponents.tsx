@@ -98,16 +98,12 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                 <p
                   className={`mb-0 text-[#8c9097] dark:text-white/50 ${
                     is1856 && "text-xs"
-                  }`}
+                  } opsilion`}
                 >
                   Общ брой потребители {/* "Total Users" label */}
                 </p>
-                <div className="flex items-center">
-                  <span
-                    className={`text-[${
-                      is1856 ? "1.25rem" : "1.125rem"
-                    }] opsilion`}
-                  >
+                <div className="flex items-center mt-1">
+                  <span className={`text-[${is1856 ? "1.25rem" : "1.125rem"}]`}>
                     {data.usersCount?.[0]?.user_count || 0}{" "}
                     {/* Показва общия брой потребители или 0 */}
                   </span>
@@ -137,16 +133,12 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                 <p
                   className={`mb-0 text-[#8c9097] dark:text-white/50 ${
                     is1856 && "text-xs"
-                  }`}
+                  } opsilion`}
                 >
                   Най-препоръчван жанр {/* "Top Recommended Genre" label */}
                 </p>
-                <div className="flex items-center">
-                  <span
-                    className={`text-[${
-                      is1856 ? "1.25rem" : "1.125rem"
-                    }] opsilion`}
-                  >
+                <div className="flex items-center mt-1">
+                  <span className={`text-[${is1856 ? "1.25rem" : "1.125rem"}]`}>
                     {data.topGenres[0]?.genre_bg}{" "}
                     {/* Показва най-препоръчвания жанр на български */}
                   </span>
@@ -177,7 +169,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                     className={`flex items-center space-x-${is1856 ? 2 : 1}`}
                   >
                     <p
-                      className={`mb-0 text-[#8c9097] dark:text-white/50 truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs`}
+                      className={`mb-0 text-[#8c9097] dark:text-white/50 truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs opsilion`}
                     >
                       {displayedNameAverages}
                     </p>
@@ -232,12 +224,8 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center space-x-1">
-                  <span
-                    className={`text-[${
-                      is1856 ? "1.25rem" : "1.125rem"
-                    }] opsilion`}
-                  >
+                <div className="flex items-center space-x-1 mt-1">
+                  <span className={`text-[${is1856 ? "1.25rem" : "1.125rem"}]`}>
                     <div className="flex flex-wrap">
                       {displayedValueAverages}
                     </div>
@@ -290,7 +278,7 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
               <div className="flex-grow">
                 <div className={`flex items-center space-x-${is1966 ? 2 : 1}`}>
                   <p
-                    className={`mb-0 text-[#8c9097] dark:text-white/50 truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs text-ellipsis`}
+                    className={`mb-0 text-[#8c9097] dark:text-white/50 truncate overflow-hidden max-w-[130px] whitespace-nowrap text-xs text-ellipsis opsilion`}
                   >
                     {displayedNameAwards}
                   </p>
@@ -342,12 +330,8 @@ const WidgetCardsComponent: FC<WidgetCardsComponentProps> = ({ data }) => {
                     </ul>
                   </div>
                 </div>
-                <div className="flex items-center space-x-1">
-                  <span
-                    className={`text-[${
-                      is1966 ? "1.25rem" : "1.125rem"
-                    }] opsilion`}
-                  >
+                <div className="flex items-center space-x-1 mt-1">
+                  <span className={`text-[${is1966 ? "1.25rem" : "1.125rem"}]`}>
                     {displayedValueAwards}
                   </span>
                   <Infobox

@@ -142,7 +142,12 @@ export class GenrePopularityOverTime extends Component<
         custom: ({ seriesIndex, dataPointIndex, w }: any) => {
           const genre = w.config.series[seriesIndex].name;
           const count = w.config.series[seriesIndex].data[dataPointIndex].y;
-          return `<div style="padding: 10px;"><strong>Жанр: ${genre}</strong><br>Брой препоръчвания: ${count}</div>`;
+          return `
+            <div style="padding: 10px;">
+              <strong style="font-family: Opsilon; font-size: 1rem; font-weight: normal;">Жанр: <span style="font-family: Equilibrist;"> ${genre}</span></strong><br>
+              <span style="font-family: Opsilon; font-weight: normal;">Брой препоръчвания: <span style="font-family: Equilibrist;"> ${count}</span></span>
+            </div>
+          `;
         }
       },
       legend: { show: false }
@@ -277,6 +282,24 @@ export class MoviesAndSeriesByRatingsChart extends Component<
             categories: sortedMovies.map(
               (movie) => `${movie.title_bg} (${movie.title_en})`
             )
+          },
+          tooltip: {
+            custom: ({ seriesIndex, dataPointIndex, w }: any) => {
+              const title = w.config.series[seriesIndex].data[dataPointIndex].x;
+              const value = w.config.series[seriesIndex].data[dataPointIndex].y;
+              return `
+                <div style="padding: 10px;">
+                  <span style="font-family: Opsilon; font-size: 1rem; font-weight: normal;"> ${title}</span><br>
+                  <span style="font-family: Equilibrist;">${
+                    sortCategory === "IMDb"
+                      ? "IMDb рейтинг"
+                      : sortCategory === "Metascore"
+                      ? "Метаскор"
+                      : "Rotten Tomatoes рейтинг"
+                  }: <span style="font-family: Equilibrist;"> ${value}</span></span>
+                </div>
+              `;
+            }
           }
         }
       };
@@ -440,7 +463,7 @@ export const TopCountriesChart: React.FC<TopCountriesProps> = ({
               aria-valuenow={widthPercentage}
               aria-valuemin={0}
               aria-valuemax={100}
-              title={`<strong>${country.country_bg}:</strong> ${country.count}`}
+              title={`${country.country_bg}: ${country.count}`}
             ></div>
           );
         })}
@@ -537,7 +560,7 @@ export class MoviesByProsperityBubbleChart extends Component<
             style: {
               fontFamily: "Equilibrist",
               colors: "#8c9097",
-              fontSize: "11px",
+              fontSize: "1rem",
               fontWeight: 600
             }
           },
@@ -546,7 +569,7 @@ export class MoviesByProsperityBubbleChart extends Component<
             style: {
               fontFamily: "Opsilon",
               letterSpacing: "0.07em",
-              fontSize: "12px",
+              fontSize: "1.2rem",
               color: "#8c9097"
             }
           }
@@ -559,7 +582,7 @@ export class MoviesByProsperityBubbleChart extends Component<
             style: {
               fontFamily: "Equilibrist",
               colors: "#8c9097",
-              fontSize: "11px",
+              fontSize: "1rem",
               fontWeight: 600
             }
           },
@@ -568,7 +591,7 @@ export class MoviesByProsperityBubbleChart extends Component<
             style: {
               fontFamily: "Opsilon",
               letterSpacing: "0.04rem",
-              fontSize: "12px",
+              fontSize: "1.2rem",
               color: "#8c9097"
             }
           }
@@ -606,10 +629,10 @@ export class MoviesByProsperityBubbleChart extends Component<
                 boxOffice !== "N/A" ? `$${boxOffice.toLocaleString()}` : "N/A";
 
               return `
-                <div style="padding: 10px; font-family: Opsilon; letter-spacing: 0.05em;">
+                <div style="padding: 0.8rem; font-family: Opsilon; font-size: 1rem; letter-spacing: 0.05em; font-weight: normal;">
                   ${movieTitleBg} (${movieTitleEn})<br />
                 </div>
-                <div style="padding: 10px; font-family: Equilibrist;">
+                <div style="padding: 0.8rem; font-family: Equilibrist; font-weight: normal;">
                   IMDb рейтинг: ${imdbRating}/10<br />
                   Боксофис: ${formattedBoxOffice}
                 </div>
@@ -758,6 +781,7 @@ export class Treemap extends Component<TreemapProps, TreemapState> {
         tooltip: {
           style: {
             fontFamily: "Opsilon",
+            fontSize: "1rem",
             letterSpacing: "0.07em"
           }
         }
@@ -932,6 +956,18 @@ export class TopRecommendationsBarChart extends Component<
           position: "top", // Разположение на легендата
           labels: {
             colors: ["#000", "#000"] // Цвят на текстовете в легендата
+          }
+        },
+        tooltip: {
+          custom: ({ seriesIndex, dataPointIndex, w }: any) => {
+            const title = w.config.series[seriesIndex].data[dataPointIndex].x;
+            const count = w.config.series[seriesIndex].data[dataPointIndex].y;
+            return `
+              <div style="padding: 10px;">
+                <span style="font-family: Opsilon; font-size: 1rem; font-weight: normal;"> ${title}</span><br>
+                <span style="font-family: Equilibrist;">Брой препоръчвания: <span style="font-family: Equilibrist;"> ${count}</span></span>
+              </div>
+            `;
           }
         }
       }

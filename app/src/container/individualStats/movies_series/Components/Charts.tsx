@@ -122,7 +122,11 @@ export class Categorybar extends Component<CategorybarProps, State> {
         enabled: true,
         formatter: (val: number) => `${val}`,
         offsetY: -20,
-        style: { fontSize: "12px", colors: ["#8c9097"] }
+        style: {
+          fontFamily: "Equilibrist",
+          fontSize: "0.8rem",
+          colors: ["#8c9097"]
+        }
       },
       colors: colorScale,
       xaxis: {
@@ -135,11 +139,14 @@ export class Categorybar extends Component<CategorybarProps, State> {
       yaxis: { labels: { show: false } },
       tooltip: {
         theme: "dark",
+        style: {
+          fontFamily: "Opsilon",
+          fontSize: "0.8rem"
+        },
         y: {
           title: {
-            formatter: (_val: any, opts: any) => {
-              const genre = categories[opts.dataPointIndex];
-              return `${genre}:`;
+            formatter: (_val: any) => {
+              return "Брой:";
             }
           }
         }

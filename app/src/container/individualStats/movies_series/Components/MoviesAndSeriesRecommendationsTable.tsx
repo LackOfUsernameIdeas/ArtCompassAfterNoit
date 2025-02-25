@@ -216,7 +216,7 @@ const MoviesAndSeriesRecommendationsTable: FC<
                         }
                         className={`ti-dropdown-item ${
                           sortBy === value ? "active" : ""
-                        }`}
+                        } opsilion`}
                         to="#"
                       >
                         {label}

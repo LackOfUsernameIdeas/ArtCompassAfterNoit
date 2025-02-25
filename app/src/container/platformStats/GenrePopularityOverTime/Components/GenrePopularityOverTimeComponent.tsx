@@ -14,6 +14,7 @@ const GenrePopularityOverTimeComponent: FC<
     data.genrePopularityOverTime
   );
 
+  console.log("seriesDataForHeatmap: ", seriesDataForHeatmap);
   return (
     <Fragment>
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">

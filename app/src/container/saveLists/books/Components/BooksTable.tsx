@@ -280,13 +280,13 @@ const BooksTable: FC<BooksTableProps> = ({
         <div className="box custom-card">
           <div className="box-header justify-between flex items-center">
             <div className="flex items-center gap-4">
-              <p className="box-title">Списък За Четене</p>
+              <p className="box-title opsilion !text-xl">Списък За Четене</p>
               <div className="flex items-center gap-4 xl:col-span-4 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12">
                 <input
                   type="search"
                   className="form-control search-input"
                   id="input-search"
-                  placeholder="Потърсете тук..."
+                  placeholder="Потърсете по име, жанр..."
                   value={searchQuery}
                   onChange={handleSearchChange}
                 />
@@ -499,10 +499,9 @@ const BooksTable: FC<BooksTableProps> = ({
             <p>
               <span className="font-semibold">Търсачката</span> е инструмент,
               който Ви позволява да търсите за{" "}
-              <span className="font-semibold">
-                конкретни препоръки, които искате да намерите.{" "}
-              </span>
-              Тя взима въведения в нея текст и го сравнява със{" "}
+              <span className="font-semibold">конкретни препоръки</span>, които
+              сте запазвали във вашия списък за четене и искате да намерите. Тя
+              взима въведения в нея текст и го сравнява със{" "}
               <span className="font-semibold">следните категории:</span>
             </p>
             <Accordion type="single" collapsible className="space-y-4 pt-5">

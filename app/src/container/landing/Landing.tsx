@@ -202,7 +202,9 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
           <div className="container text-center">
             <div className="justify-center text-center mb-12">
               <div className="xl:col-span-6 col-span-12">
-                <h3 className="font-semibold mb-2">Как работи АртКомпас?</h3>
+                <h3 className="font-semibold opsilion !text-4xl mb-2">
+                  Как работи АртКомпас?
+                </h3>
                 <span className="text-[#8c9097] dark:text-white/50 text-[0.9375rem] font-normal block">
                   Открийте най-добрите препоръки за вас с помощта на Изкуствен
                   Интелект и станете свидетел на анализ на точността му в три
@@ -222,7 +224,7 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                         </span>
                       </div>
                     </div>
-                    <h5 className="font-semibold text-[1.25rem]">
+                    <h5 className="font-semibold opsilion text-[1.5rem] mb-4">
                       Регистрация
                     </h5>
                     <p className="opacity-[0.8] mb-4">
@@ -250,7 +252,7 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                         </span>
                       </div>
                     </div>
-                    <h5 className="font-semibold text-[1.25rem]">
+                    <h5 className="font-semibold opsilion text-[1.5rem] mb-4">
                       Вашият анализ
                     </h5>
                     <p className="opacity-[0.8] mb-4">
@@ -279,7 +281,7 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                         </span>
                       </div>
                     </div>
-                    <h5 className="font-semibold text-[1.25rem]">
+                    <h5 className="font-semibold opsilion text-[1.5rem] mb-4">
                       Нови препоръки
                     </h5>
                     <p className="opacity-[0.8] mb-4">
@@ -319,7 +321,9 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
           <div className="container">
             <div className="justify-center text-center mb-12">
               <div className="xl:col-span-6 col-span-12">
-                <h3 className="font-semibold mb-2">Адаптации на книги</h3>
+                <h3 className="font-semibold  opsilion !text-4xl mb-2">
+                  Адаптации на книги
+                </h3>
                 <span className="text-[#8c9097] dark:text-white/50 text-[0.9375rem] font-normal block">
                   Вижте колко книги са адаптирани във филми и сериали
                 </span>
@@ -563,7 +567,9 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
         >
           <div className="container">
             <div className="gap-6 mb-[3rem] justify-center text-center">
-              <h3 className="font-semibold mb-2">Други главни статистики:</h3>
+              <h3 className="font-semibold opsilion !text-4xl mb-2">
+                Други главни статистики:
+              </h3>
             </div>
             <div className="grid grid-cols-12 gap-x-6 justify-center">
               <OtherStatsWidgetCardsComponents data={data} />
