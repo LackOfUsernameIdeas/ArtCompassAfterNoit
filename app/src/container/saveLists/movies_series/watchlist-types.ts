@@ -123,19 +123,11 @@ export interface BookmarkAlertProps {
 export interface FilterSidebarProps {
   isOpen: boolean; // Дали менюто е отворено
   onClose: () => void; // Функция за затваряне на менюто
-  onApplyFilters: (filters: {
-    genres: string[]; // Филтър по жанрове
-    runtime: string[]; // Филтър по продължителност
-    type: string[]; // Филтър по вид
-    year: string[]; // Филтър по година на издаване
-    actor: string[]; // Филтър по актьори
-    director: string[]; // Филтър по режисьори
-    writer: string[]; // Филтър по сценаристи
-    language: string[]; // Филтър по език
-    imdbRating: string[]; // Филтър по рейтинг в imdb
-    metascore: string[]; // Филтър по метаскор
-    boxOffice: string[]; // Филтър по боксофис
-  }) => void;
+  data: MovieSeriesRecommendation[]; // Данни за книгите/сериалите
+  setFilteredData: React.Dispatch<
+    React.SetStateAction<MovieSeriesRecommendation[]>
+  >; // Функция за задаване на филтрираните книги/сериали
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>; // Функция за задаване на текуща страница
   listData: {
     actor: string[]; // Филтър по актьори
     director: string[]; // Филтър по режисьори

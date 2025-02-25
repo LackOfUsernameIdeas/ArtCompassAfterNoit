@@ -8,12 +8,15 @@ import {
   AccordionTrigger
 } from "@/components/ui/accordion";
 import { FilterSidebarProps } from "../watchlist-types";
+import { handleApplyFilters } from "../helper_functions";
 
 const FilterSidebar: FC<FilterSidebarProps> = ({
   isOpen,
   onClose,
-  onApplyFilters,
-  listData
+  listData,
+  data,
+  setCurrentPage,
+  setFilteredData
 }) => {
   // Държи избраните стойности за всеки от филтрите
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
@@ -81,19 +84,24 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
     setSelectedBoxOffice([]);
 
     // Прилага нулираните филтри веднага
-    onApplyFilters({
-      genres: [],
-      runtime: [],
-      type: [],
-      actor: [],
-      director: [],
-      writer: [],
-      language: [],
-      year: [],
-      imdbRating: [],
-      metascore: [],
-      boxOffice: []
-    });
+    handleApplyFilters(
+      {
+        genres: [],
+        runtime: [],
+        type: [],
+        actor: [],
+        director: [],
+        writer: [],
+        language: [],
+        year: [],
+        imdbRating: [],
+        metascore: [],
+        boxOffice: []
+      },
+      data,
+      setFilteredData,
+      setCurrentPage
+    );
   };
 
   // Функции за промяна на избраните стойности за всеки филтър
@@ -171,20 +179,25 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
   };
 
   // Прилага избраните филтри и затваря страничната лента
-  const handleApplyFilters = () => {
-    onApplyFilters({
-      genres: selectedGenres,
-      runtime: selectedRuntime,
-      type: selectedType,
-      actor: selectedActor,
-      director: selectedDirector,
-      writer: selectedWriter,
-      language: selectedLanguage,
-      year: selectedYear,
-      imdbRating: selectedImdbRating,
-      metascore: selectedMetascore,
-      boxOffice: selectedBoxOffice
-    });
+  const applyFilters = () => {
+    handleApplyFilters(
+      {
+        genres: selectedGenres,
+        runtime: selectedRuntime,
+        type: selectedType,
+        actor: selectedActor,
+        director: selectedDirector,
+        writer: selectedWriter,
+        language: selectedLanguage,
+        year: selectedYear,
+        imdbRating: selectedImdbRating,
+        metascore: selectedMetascore,
+        boxOffice: selectedBoxOffice
+      },
+      data,
+      setFilteredData,
+      setCurrentPage
+    );
     onClose();
   };
 
@@ -502,7 +515,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
           </button>
           <button
             className="bg-primary hover:bg-primary/75 text-white px-4 py-2 rounded-md transition w-full"
-            onClick={handleApplyFilters}
+            onClick={applyFilters}
           >
             Приложи
           </button>

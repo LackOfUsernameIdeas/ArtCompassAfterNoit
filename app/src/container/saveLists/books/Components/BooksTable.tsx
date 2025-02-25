@@ -8,8 +8,7 @@ import { useMediaQuery } from "react-responsive";
 import {
   extractItemFromStringList,
   extractYear,
-  formatGenres,
-  getRelatedGenres
+  formatGenres
 } from "../helper_functions";
 import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
 import Infobox from "@/components/common/infobox/infobox";
@@ -52,126 +51,6 @@ const BooksTable: FC<BooksTableProps> = ({
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   // Задава избраната книга при клик върху нея.
   const handleBookClick = (item: BookRecommendation) => setSelectedItem(item);
-
-  /**
-   * Филтрира данните според подадените критерии за жанрове, брой страници, автори и година на писане.
-   *
-   * @param {Object} filters - Обект с филтри, които ще се приложат към данните.
-   * @param {string[]} filters.genres - Списък с избрани жанрове, по които да се филтрират книгите.
-   * @param {string[]} filters.pages - Списък с диапазони за броя страници (напр. "Под 100 страници").
-   * @param {string[]} filters.author - Списък с автори, чиито книги да бъдат показани.
-   * @param {string[]} filters.year - Списък с времеви интервали за годината на писане (напр. "След 2010").
-   *
-   * Функцията обработва масив от книги, като проверява дали всяка книга отговаря на избраните критерии.
-   * Ако даден филтър е празен, той не ограничава резултатите. Книгите се сравняват по жанр,
-   * брой страници, автор и година на писане.
-   *
-   * @returns {void} - Актуализира състоянието на филтрираните данни и нулира страницата на резултатите.
-   */
-  const handleApplyFilters = (filters: {
-    genres: string[]; // Филтър по жанрове
-    pages: string[]; // Филтър по брой страници
-    author: string[]; // Филтър по автори
-    publisher: string[]; // Филтър по издатели
-    goodreadsRatings: string[]; // Филтър по рейтинг в goodreads
-    year: string[]; // Филтър по година на писане
-  }) => {
-    const filtered = data.filter((item) => {
-      const { authors, publishers } = extractItemFromStringList(item);
-      const bookGenres = formatGenres(item.genre_bg)
-        .split(",")
-        .map((genre) => genre.trim());
-
-      const matchesGenre =
-        filters.genres.length === 0 ||
-        filters.genres.some((selectedGenre) =>
-          bookGenres.some((bookGenre) =>
-            getRelatedGenres(selectedGenre).some((relatedGenre) =>
-              bookGenre.toLowerCase().includes(relatedGenre.toLowerCase())
-            )
-          )
-        );
-
-      const matchesPages =
-        filters.pages.length === 0 ||
-        filters.pages.some((p) => {
-          if (p === "Под 100 страници") return item.page_count < 100;
-          if (p === "100 до 200 страници")
-            return item.page_count >= 100 && item.page_count <= 200;
-          if (p === "200 до 300 страници")
-            return item.page_count > 200 && item.page_count <= 300;
-          if (p === "300 до 400 страници")
-            return item.page_count > 300 && item.page_count <= 400;
-          if (p === "400 до 500 страници")
-            return item.page_count > 400 && item.page_count <= 500;
-          if (p === "Повече от 500 страници") return item.page_count > 500;
-          return true;
-        });
-
-      const matchesAuthor =
-        filters.author.length === 0 ||
-        filters.author.some((selectedAuthor) =>
-          authors.some((bookAuthor) =>
-            bookAuthor.toLowerCase().includes(selectedAuthor.toLowerCase())
-          )
-        );
-      const matchesPublisher =
-        filters.publisher.length === 0 ||
-        filters.publisher.some((selectedPublisher) =>
-          publishers.some((bookPublisher) =>
-            bookPublisher
-              .toLowerCase()
-              .includes(selectedPublisher.toLowerCase())
-          )
-        );
-      const matchesGoodreadsRating =
-        filters.goodreadsRatings.length === 0 ||
-        filters.goodreadsRatings.some((range) => {
-          const rating = item.goodreads_rating
-            ? item.goodreads_rating.toString().trim()
-            : "";
-          const numericRating = parseFloat(rating); // Това е безопасно, защото 'rating' вече е string
-          if (isNaN(numericRating)) return false;
-
-          if (range === "Под 3.0") return numericRating < 3.0;
-          if (range === "3.0 до 3.5")
-            return numericRating >= 3.0 && numericRating < 3.5;
-          if (range === "3.5 до 4.0")
-            return numericRating >= 3.5 && numericRating < 4.0;
-          if (range === "4.0 до 4.5")
-            return numericRating >= 4.0 && numericRating < 4.5;
-          if (range === "Над 4.5") return numericRating >= 4.5;
-
-          return true;
-        });
-
-      const year = extractYear(item.date_of_issue);
-      const matchesYear =
-        filters.year.length === 0 ||
-        filters.year.some((y) => {
-          if (year === null) return false;
-          if (y === "Преди 1900") return year < 1900;
-          if (y === "1900 до 1950") return year >= 1900 && year <= 1950;
-          if (y === "1950 до 1980") return year > 1950 && year <= 1980;
-          if (y === "1980 до 2000") return year > 1980 && year <= 2000;
-          if (y === "2000 до 2010") return year > 2000 && year <= 2010;
-          if (y === "След 2010") return year > 2010;
-          return true;
-        });
-
-      return (
-        matchesGenre &&
-        matchesPages &&
-        matchesAuthor &&
-        matchesPublisher &&
-        matchesGoodreadsRating &&
-        matchesYear
-      );
-    });
-
-    setFilteredData(filtered);
-    setCurrentPage(1);
-  };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value.toLowerCase();
@@ -265,7 +144,9 @@ const BooksTable: FC<BooksTableProps> = ({
       <FilterSidebar
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
-        onApplyFilters={handleApplyFilters}
+        data={data}
+        setFilteredData={setFilteredData}
+        setCurrentPage={setCurrentPage}
         listData={listData}
       />
       <RecommendationCardAlert

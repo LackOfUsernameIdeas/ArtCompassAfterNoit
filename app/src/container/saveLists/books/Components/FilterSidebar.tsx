@@ -11,13 +11,15 @@ import {
   AccordionTrigger
 } from "@/components/ui/accordion";
 import { FilterSidebarProps } from "../readlist-types";
-import { processGenres } from "../helper_functions";
+import { handleApplyFilters, processGenres } from "../helper_functions";
 
 const FilterSidebar: FC<FilterSidebarProps> = ({
   isOpen,
   onClose,
-  onApplyFilters,
-  listData
+  listData,
+  data,
+  setCurrentPage,
+  setFilteredData
 }) => {
   // Държи избраните стойности за всеки от филтрите
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]); // Избрани жанрове
@@ -77,14 +79,19 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
     setSelectedYear([]);
 
     // Прилага нулираните филтри веднага
-    onApplyFilters({
-      genres: [],
-      pages: [],
-      author: [],
-      publisher: [],
-      goodreadsRatings: [],
-      year: []
-    });
+    handleApplyFilters(
+      {
+        genres: [],
+        pages: [],
+        author: [],
+        publisher: [],
+        goodreadsRatings: [],
+        year: []
+      },
+      data,
+      setFilteredData,
+      setCurrentPage
+    );
   };
 
   // Функции за промяна на избраните стойности за всеки филтър
@@ -126,15 +133,20 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
   };
 
   // Прилага избраните филтри и затваря страничната лента
-  const handleApplyFilters = () => {
-    onApplyFilters({
-      genres: selectedGenres,
-      pages: selectedPages,
-      author: selectedAuthor,
-      publisher: selectedPublisher,
-      goodreadsRatings: selectedGoodreadsRating,
-      year: selectedYear
-    });
+  const applyFilters = () => {
+    handleApplyFilters(
+      {
+        genres: selectedGenres,
+        pages: selectedPages,
+        author: selectedAuthor,
+        publisher: selectedPublisher,
+        goodreadsRatings: selectedGoodreadsRating,
+        year: selectedYear
+      },
+      data,
+      setFilteredData,
+      setCurrentPage
+    );
     onClose();
   };
 
@@ -328,7 +340,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
           </button>
           <button
             className="bg-primary hover:bg-primary/75 text-white px-4 py-2 rounded-md transition w-full"
-            onClick={handleApplyFilters}
+            onClick={applyFilters}
           >
             Приложи
           </button>

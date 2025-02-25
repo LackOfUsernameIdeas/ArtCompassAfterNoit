@@ -5,7 +5,10 @@ import { MovieSeriesRecommendation } from "../../../types_common";
 import FilterSidebar from "./FilterSidebar";
 import { ChevronDownIcon } from "lucide-react";
 import { useMediaQuery } from "react-responsive";
-import { extractItemFromStringList } from "../helper_functions";
+import {
+  extractItemFromStringList,
+  getTranslatedType
+} from "../helper_functions";
 import { translate } from "@/container/helper_functions_common";
 import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
 import Infobox from "@/components/common/infobox/infobox";
@@ -23,8 +26,6 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
   setCurrentBookmarkStatus,
   setAlertVisible
 }) => {
-  // State за зареждане на Filter Sidebar
-  const [loading, setLoading] = useState(true);
   // Държи избрания филм или сериал, или null, ако няма избран елемент.
   const [selectedItem, setSelectedItem] =
     useState<MovieSeriesRecommendation | null>(null);
@@ -57,167 +58,6 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
   // Задава избрания филм или сериал при клик върху него.
   const handleMovieClick = (item: MovieSeriesRecommendation) =>
     setSelectedItem(item);
-  // Превежда типа на филма или сериала на български.
-  const getTranslatedType = (type: string) =>
-    type === "movie" ? "Филм" : type === "series" ? "Сериал" : type;
-
-  /**
-   * Филтрира данните според подадените критерии за жанрове, продължителност, вид и година на издаване.
-   *
-   * @param {Object} filters - Обект с филтри, които ще се приложат към данните.
-   * @param {string[]} filters.genres - Списък с избрани жанрове, по които да се филтрират книгите.
-   * @param {string[]} filters.runtime - Списък с диапазони за продължителността (напр. "Под 60 минути").
-   * @param {string[]} filters.type - Видът - филм или сериал.
-   * @param {string[]} filters.year - Списък с времеви интервали за годината на издаване (напр. "След 2020").
-   *
-   * Функцията обработва масив от филми и сериали, като проверява дали те отговарят на избраните критерии.
-   * Ако даден филтър е празен, той не ограничава резултатите. Филмите и сериалите се сравняват по жанр,
-   * продължителност, вид и година на издаване.
-   *
-   * @returns {void} - Актуализира състоянието на филтрираните данни и нулира страницата на резултатите.
-   */
-  const handleApplyFilters = (filters: {
-    genres: string[];
-    runtime: string[];
-    actor: string[];
-    director: string[];
-    writer: string[];
-    language: string[];
-    type: string[];
-    imdbRating: string[];
-    metascore: string[];
-    boxOffice: string[];
-    year: string[];
-  }) => {
-    const filtered = data.filter((item) => {
-      const { actors, directors, writers, languages } =
-        extractItemFromStringList(item);
-      const movieGenres = item.genre_bg.split(",").map((genre) => genre.trim());
-      const matchesGenre =
-        filters.genres.length === 0 ||
-        filters.genres.some((selectedGenre) =>
-          movieGenres.includes(selectedGenre)
-        );
-
-      const runtime = parseInt(item.runtime.replace(/\D/g, ""), 10);
-      const matchesRuntime =
-        filters.runtime.length === 0 ||
-        filters.runtime.some((r) => {
-          if (r === "Под 60 минути") return runtime < 60;
-          if (r === "60 до 120 минути") return runtime >= 60 && runtime <= 120;
-          if (r === "120 до 180 минути") return runtime > 120 && runtime <= 180;
-          if (r === "Повече от 180 минути") return runtime > 180;
-          return true;
-        });
-
-      const matchesType =
-        filters.type.length === 0 ||
-        filters.type.includes(getTranslatedType(item.type));
-
-      const matchesActors =
-        filters.actor.length === 0 ||
-        filters.actor.some((selectedActor) =>
-          actors.some((actor) =>
-            actor.toLowerCase().includes(selectedActor.toLowerCase())
-          )
-        );
-
-      const matchesDirector =
-        filters.director.length === 0 ||
-        filters.director.some((selectedDirector) =>
-          directors.some((director) =>
-            director.toLowerCase().includes(selectedDirector.toLowerCase())
-          )
-        );
-
-      const matchesWriter =
-        filters.writer.length === 0 ||
-        filters.writer.some((selectedWriter) =>
-          writers.some((writer) =>
-            writer.toLowerCase().includes(selectedWriter.toLowerCase())
-          )
-        );
-
-      const matchesLanguage =
-        filters.language.length === 0 ||
-        filters.language.some((selectedLanguage) =>
-          languages.some((language) =>
-            language.toLowerCase().includes(selectedLanguage.toLowerCase())
-          )
-        );
-
-      const imdbRating = parseInt(item.imdbRating, 10);
-      const matchesImdbRating =
-        filters.imdbRating.length === 0 ||
-        filters.imdbRating.some((r) => {
-          if (r === "Под 5.0") return imdbRating < 5.0;
-          if (r === "5.0 до 7.0") return imdbRating >= 5.0 && imdbRating < 7.0;
-          if (r === "7.0 до 8.5") return imdbRating >= 7.0 && imdbRating < 8.5;
-          if (r === "8.5 до 9.5") return imdbRating >= 8.5 && imdbRating < 9.5;
-          if (r === "Над 9.5") return imdbRating >= 9.5;
-          return true;
-        });
-
-      const metascore = parseInt(item.metascore, 10);
-      const matchesMetascore =
-        filters.metascore.length === 0 ||
-        filters.metascore.some((m) => {
-          if (item.type === "series") return false;
-          if (m === "Под 35") return metascore < 35;
-          if (m === "35 до 50") return metascore >= 35 && metascore < 50;
-          if (m === "50 до 75") return metascore >= 50 && metascore < 75;
-          if (m === "75 до 95") return metascore >= 75 && metascore < 95;
-          if (m === "Над 95") return metascore >= 95;
-          return true;
-        });
-
-      const boxOffice = parseInt(item.boxOffice.replace(/\D/g, ""), 10) || 0;
-      const matchesBoxOffice =
-        filters.boxOffice.length === 0 ||
-        filters.boxOffice.some((b) => {
-          if (item.type === "series") return false;
-
-          if (b === "Без приходи") return boxOffice === 0;
-          if (b === "Под 50 млн.")
-            return boxOffice > 0 && boxOffice < 50_000_000;
-          if (b === "50 до 150 млн.")
-            return boxOffice >= 50_000_000 && boxOffice < 150_000_000;
-          if (b === "150 до 300 млн.")
-            return boxOffice >= 150_000_000 && boxOffice < 300_000_000;
-          if (b === "Над 300 млн.") return boxOffice >= 300_000_000;
-
-          return true;
-        });
-
-      const year = parseInt(item.year, 10);
-      const matchesYear =
-        filters.year.length === 0 ||
-        filters.year.some((y) => {
-          if (y === "Преди 2000") return year < 2000;
-          if (y === "2000 до 2010") return year >= 2000 && year <= 2010;
-          if (y === "2010 до 2020") return year > 2010 && year <= 2020;
-          if (y === "След 2020") return year > 2020;
-          return true;
-        });
-
-      return (
-        matchesGenre &&
-        matchesRuntime &&
-        matchesActors &&
-        matchesDirector &&
-        matchesWriter &&
-        matchesLanguage &&
-        matchesType &&
-        matchesYear &&
-        matchesImdbRating &&
-        matchesMetascore &&
-        matchesBoxOffice
-      );
-    });
-
-    setFilteredData(filtered);
-    setCurrentPage(1);
-  };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value.toLowerCase();
@@ -339,7 +179,9 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
       <FilterSidebar
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
-        onApplyFilters={handleApplyFilters}
+        data={data}
+        setFilteredData={setFilteredData}
+        setCurrentPage={setCurrentPage}
         listData={listData}
       />
       <RecommendationCardAlert

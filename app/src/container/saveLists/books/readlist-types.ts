@@ -117,14 +117,9 @@ export interface RecommendationCardProps {
 export interface FilterSidebarProps {
   isOpen: boolean; // Дали менюто е отворено
   onClose: () => void; // Функция за затваряне на менюто
-  onApplyFilters: (filters: {
-    genres: string[]; // Филтър по жанрове
-    pages: string[]; // Филтър по брой страници
-    author: string[]; // Филтър по автори
-    publisher: string[]; // Филтър по издатели
-    goodreadsRatings: string[]; // Филтър по рейтинг в goodreads
-    year: string[]; // Филтър по година на писане
-  }) => void;
+  data: BookRecommendation[]; // Данни за книгите
+  setFilteredData: React.Dispatch<React.SetStateAction<BookRecommendation[]>>; // Функция за задаване на филтрираните книги
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>; // Функция за задаване на текуща страница
   listData: {
     authors: string[];
     publishers: string[];
