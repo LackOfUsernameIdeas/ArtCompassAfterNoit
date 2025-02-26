@@ -28,13 +28,23 @@ const MetricCharts: FC<MetricChartsProps> = ({
   return (
     <div>
       <div className="bg-bodybg p-6 rounded-xl shadow-lg space-y-4 my-4">
-        <Card className="flex flex-col items-center text-center gap-4 bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl mx-auto">
+        <Card className="flex flex-col items-center text-center gap-4 bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl mx-auto">
           <h2 className="text-3xl opsilion text-defaulttextcolor dark:text-white/80">
             Средни стойности на precision, recall и f1 score през времето
           </h2>
         </Card>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card className="flex flex-col items-center text-center gap-4 bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl mx-auto w-full">
+            <h2 className="text-2xl opsilion text-defaulttextcolor dark:text-white/80">
+              За всички потребители:
+            </h2>
+          </Card>
+          <Card className="flex flex-col items-center text-center gap-4 bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl mx-auto w-full">
+            <h2 className="text-2xl opsilion text-defaulttextcolor dark:text-white/80">
+              За Вас индивидуално:
+            </h2>
+          </Card>
           <div className="bg-white dark:bg-bodybg2 dark:text-white/80 p-6 rounded-lg shadow-md">
             <AverageMetricsTrend
               seriesData={historicalMetrics || []}
@@ -95,7 +105,9 @@ const MetricCharts: FC<MetricChartsProps> = ({
                   </p>
                   <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
                     <div className="flex items-center space-x-2 justify-center items-center">
-                      <span className="font-semibold">Precision =</span>
+                      <span className="font-semibold whitespace-nowrap">
+                        Precision =
+                      </span>
                       <div className="text-center">
                         <p className="text-primary text-sm">
                           всички РЕЛЕВАНТНИ препоръки правени някога НА
@@ -127,7 +139,9 @@ const MetricCharts: FC<MetricChartsProps> = ({
                   </p>
                   <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
                     <div className="flex items-center space-x-2 justify-center items-center">
-                      <span className="font-semibold">Precision =</span>
+                      <span className="font-semibold whitespace-nowrap">
+                        Precision =
+                      </span>
                       <div className="text-center">
                         <p className="text-primary text-sm">
                           всички РЕЛЕВАНТНИ препоръки от последното генериране
@@ -160,7 +174,9 @@ const MetricCharts: FC<MetricChartsProps> = ({
                   </p>
                   <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
                     <div className="flex items-center space-x-2 justify-center items-center">
-                      <span className="font-semibold">Recall =</span>
+                      <span className="font-semibold whitespace-nowrap">
+                        Recall =
+                      </span>
                       <div className="text-center">
                         <p className="text-primary text-sm">
                           всички РЕЛЕВАНТНИ препоръки правени някога НА
@@ -203,7 +219,9 @@ const MetricCharts: FC<MetricChartsProps> = ({
                   </p>
                   <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
                     <div className="flex items-center space-x-2 justify-center items-center">
-                      <span className="font-semibold">F1 Score =</span>
+                      <span className="font-semibold whitespace-nowrap">
+                        F1 Score =
+                      </span>
                       <div className="text-center">
                         <p className="text-primary text-sm">
                           2 x Precision x Recall
@@ -267,7 +285,9 @@ const MetricCharts: FC<MetricChartsProps> = ({
                   </p>
                   <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
                     <div className="flex items-center space-x-2 justify-center items-center">
-                      <span className="font-semibold">Precision =</span>
+                      <span className="font-semibold whitespace-nowrap">
+                        Precision =
+                      </span>
                       <div className="text-center">
                         <p className="text-primary text-sm">
                           всички ваши РЕЛЕВАНТНИ препоръки правени някога
@@ -298,7 +318,9 @@ const MetricCharts: FC<MetricChartsProps> = ({
                   </p>
                   <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
                     <div className="flex items-center space-x-2 justify-center items-center">
-                      <span className="font-semibold">Precision =</span>
+                      <span className="font-semibold whitespace-nowrap">
+                        Precision =
+                      </span>
                       <div className="text-center">
                         <p className="text-primary text-sm">
                           всички ваши РЕЛЕВАНТНИ препоръки от последното
@@ -331,7 +353,9 @@ const MetricCharts: FC<MetricChartsProps> = ({
                   </p>
                   <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
                     <div className="flex items-center space-x-2 justify-center items-center">
-                      <span className="font-semibold">Recall =</span>
+                      <span className="font-semibold whitespace-nowrap">
+                        Recall =
+                      </span>
                       <div className="text-center">
                         <p className="text-primary text-sm">
                           всички ваши РЕЛЕВАНТНИ препоръки правени някога
@@ -373,7 +397,9 @@ const MetricCharts: FC<MetricChartsProps> = ({
                   </p>
                   <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
                     <div className="flex items-center space-x-2 justify-center items-center">
-                      <span className="font-semibold">F1 Score =</span>
+                      <span className="font-semibold whitespace-nowrap">
+                        F1 Score =
+                      </span>
                       <div className="text-center">
                         <p className="text-primary text-sm">
                           2 x Precision x Recall

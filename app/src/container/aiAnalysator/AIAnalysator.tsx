@@ -172,13 +172,13 @@ const AIAnalysator: FC = () => {
         <div className="p-[1.5rem]">
           <div className="z-10 max-w-6xl w-full mx-auto font-mono text-sm">
             <div className="text-center !text-lg box p-6 flex flex-col gap-4 !rounded-xl justify-center items-center">
-              <Card className="bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto">
+              <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto">
                 <h2 className="text-4xl opsilion text-defaulttextcolor dark:text-white/80">
                   Искате ли да знаете колко добре се е справил AI-ът с
                   генерирането на препоръки специално за Вас?
                 </h2>
               </Card>
-              <Card className="bg-white dark:bg-bodybg2/50 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 w-full rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto">
+              <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 w-full rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto">
                 <h2 className="text-xl text-defaulttextcolor dark:text-white/80">
                   За целта е препоръчително първо да се запознаете със следните
                   понятия:
@@ -227,7 +227,9 @@ const AIAnalysator: FC = () => {
                       </p>
                       <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
                         <div className="flex items-center space-x-2 justify-center items-center">
-                          <span className="font-semibold">Precision =</span>
+                          <span className="font-semibold text-sm">
+                            Precision =
+                          </span>
                           <div className="text-center">
                             <p className="text-primary text-sm">
                               всички ваши РЕЛЕВАНТНИ препоръки правени някога
@@ -258,7 +260,9 @@ const AIAnalysator: FC = () => {
                       </p>
                       <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
                         <div className="flex items-center space-x-2 justify-center items-center">
-                          <span className="font-semibold">Precision =</span>
+                          <span className="font-semibold text-sm">
+                            Precision =
+                          </span>
                           <div className="text-center">
                             <p className="text-primary text-sm">
                               всички ваши РЕЛЕВАНТНИ препоръки от последното
@@ -293,7 +297,9 @@ const AIAnalysator: FC = () => {
                       </p>
                       <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
                         <div className="flex items-center space-x-2 justify-center items-center">
-                          <span className="font-semibold">Recall =</span>
+                          <span className="font-semibold text-sm">
+                            Recall =
+                          </span>
                           <div className="text-center">
                             <p className="text-primary text-sm">
                               всички ваши РЕЛЕВАНТНИ препоръки правени някога
@@ -338,7 +344,9 @@ const AIAnalysator: FC = () => {
                       </p>
                       <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
                         <div className="flex items-center space-x-2 justify-center items-center">
-                          <span className="font-semibold">F1 Score =</span>
+                          <span className="font-semibold text-sm">
+                            F1 Score =
+                          </span>
                           <div className="text-center">
                             <p className="text-primary text-sm">
                               2 x Precision x Recall
