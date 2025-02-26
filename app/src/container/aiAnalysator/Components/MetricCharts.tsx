@@ -123,40 +123,6 @@ const MetricCharts: FC<MetricChartsProps> = ({
                   </Card>
                 </AccordionContent>
               </AccordionItem>
-              {/* User Specific Precision */}
-              <AccordionItem value="precision-user">
-                <AccordionTrigger className="opsilion">
-                  ✅ Precision за последното генериране
-                </AccordionTrigger>
-                <AccordionContent>
-                  <p>
-                    Измерва каква част от последните препоръки, са{" "}
-                    <span className="font-semibold">наистина </span> релевантни.
-                    Високата стойност на{" "}
-                    <span className="font-semibold">Precision</span> означава,
-                    че когато системата препоръчва нещо, то вероятно ще бъде
-                    подходящо.
-                  </p>
-                  <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
-                    <div className="flex items-center space-x-2 justify-center items-center">
-                      <span className="font-semibold whitespace-nowrap">
-                        Precision =
-                      </span>
-                      <div className="text-center">
-                        <p className="text-primary text-sm">
-                          всички РЕЛЕВАНТНИ препоръки от последното генериране
-                          НА ПОТРЕБИТЕЛЯ
-                        </p>
-                        <div className="border-b border-gray-400 dark:border-gray-600 my-2"></div>
-                        <p className="text-secondary text-sm">
-                          всички препоръки от последното генериране НА
-                          ПОТРЕБИТЕЛЯ
-                        </p>
-                      </div>
-                    </div>
-                  </Card>
-                </AccordionContent>
-              </AccordionItem>
               {/* Recall */}
               <AccordionItem value="recall">
                 <AccordionTrigger className="opsilion">
@@ -301,41 +267,6 @@ const MetricCharts: FC<MetricChartsProps> = ({
                   </Card>
                 </AccordionContent>
               </AccordionItem>
-
-              {/* User Specific Precision */}
-              <AccordionItem value="precision-user">
-                <AccordionTrigger className="opsilion">
-                  ✅ Precision за последното генериране
-                </AccordionTrigger>
-                <AccordionContent>
-                  <p>
-                    Измерва каква част от последните Ви препоръки, са{" "}
-                    <span className="font-semibold">наистина </span> релевантни.
-                    Високата стойност на{" "}
-                    <span className="font-semibold">Precision</span> означава,
-                    че когато системата препоръчва нещо, то вероятно ще бъде
-                    подходящо за вас.
-                  </p>
-                  <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
-                    <div className="flex items-center space-x-2 justify-center items-center">
-                      <span className="font-semibold whitespace-nowrap">
-                        Precision =
-                      </span>
-                      <div className="text-center">
-                        <p className="text-primary text-sm">
-                          всички ваши РЕЛЕВАНТНИ препоръки от последното
-                          генериране
-                        </p>
-                        <div className="border-b border-gray-400 dark:border-gray-600 my-2"></div>
-                        <p className="text-secondary text-sm">
-                          всички ваши препоръки от последното генериране
-                        </p>
-                      </div>
-                    </div>
-                  </Card>
-                </AccordionContent>
-              </AccordionItem>
-
               {/* Recall */}
               <AccordionItem value="recall">
                 <AccordionTrigger className="opsilion">
