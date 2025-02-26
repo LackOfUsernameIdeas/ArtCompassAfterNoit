@@ -56,16 +56,33 @@ const MetricCharts: FC<MetricChartsProps> = ({
         description={
           <>
             <p className="mb-4">
-              Това са глобалните средни стойности за
-              <span className="font-semibold"> Precision</span>, за
-              <span className="font-semibold"> Recall</span> и за
-              <span className="font-semibold"> F1 Score</span>.
+              Схемата демонстрира промяната на
+              <span className="font-semibold"> общия Precision</span>,
+              <span className="font-semibold">
+                {" "}
+                Precision за последното генериране
+              </span>
+              ,<span className="font-semibold"> общ Recall </span>и
+              <span className="font-semibold"> общ F1 Score </span>
+              през времето на база данни от
+              <span className="font-semibold"> ЦЯЛАТА ПЛАТФОРМА </span>
+              до конкретна дата. При преминаване с курсора върху графиката се
+              показват данни за съответната средна стойност до конкретната дата
+              на оста X. Изчисленията се актуализират с всеки нов запис като
+              новите данни се
+              <span className="font-semibold"> добавят към </span>
+              предходните. Това означава, че стойностите за дадена дата се
+              определят като се изчисли{" "}
+              <span className="font-semibold">средната стойност</span> от
+              конкретната дата и от предходните такива{" "}
+              <span className="font-semibold">взети заедно</span>. Тези
+              стойности се изчисляват поотделно, по следния начин:
             </p>
             <Accordion type="single" collapsible className="space-y-4">
-              {/* Precision */}
-              <AccordionItem value="precision">
+              {/* Platform Precision */}
+              <AccordionItem value="precision-platform">
                 <AccordionTrigger className="opsilion">
-                  ✅ Precision
+                  ✅ Общ Precision
                 </AccordionTrigger>
                 <AccordionContent>
                   <p>
@@ -94,7 +111,38 @@ const MetricCharts: FC<MetricChartsProps> = ({
                   </Card>
                 </AccordionContent>
               </AccordionItem>
-
+              {/* User Specific Precision */}
+              <AccordionItem value="precision-user">
+                <AccordionTrigger className="opsilion">
+                  ✅ Precision за последното генериране
+                </AccordionTrigger>
+                <AccordionContent>
+                  <p>
+                    Измерва каква част от последните препоръки, са{" "}
+                    <span className="font-semibold">наистина </span> релевантни.
+                    Високата стойност на{" "}
+                    <span className="font-semibold">Precision</span> означава,
+                    че когато системата препоръчва нещо, то вероятно ще бъде
+                    подходящо.
+                  </p>
+                  <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
+                    <div className="flex items-center space-x-2 justify-center items-center">
+                      <span className="font-semibold">Precision =</span>
+                      <div className="text-center">
+                        <p className="text-primary text-sm">
+                          всички РЕЛЕВАНТНИ препоръки от последното генериране
+                          НА ПОТРЕБИТЕЛЯ
+                        </p>
+                        <div className="border-b border-gray-400 dark:border-gray-600 my-2"></div>
+                        <p className="text-secondary text-sm">
+                          всички препоръки от последното генериране НА
+                          ПОТРЕБИТЕЛЯ
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
+                </AccordionContent>
+              </AccordionItem>
               {/* Recall */}
               <AccordionItem value="recall">
                 <AccordionTrigger className="opsilion">
@@ -129,7 +177,6 @@ const MetricCharts: FC<MetricChartsProps> = ({
                   </Card>
                 </AccordionContent>
               </AccordionItem>
-
               {/* F1 Score */}
               <AccordionItem value="f1-score">
                 <AccordionTrigger className="opsilion">
@@ -181,20 +228,37 @@ const MetricCharts: FC<MetricChartsProps> = ({
         description={
           <>
             <p className="mb-4">
-              Това са вашите средни стойности за
-              <span className="font-semibold"> Precision</span>, за
-              <span className="font-semibold"> Recall</span> и за
-              <span className="font-semibold"> F1 Score</span>.
+              Схемата демонстрира промяната на
+              <span className="font-semibold"> общия Precision</span>,
+              <span className="font-semibold">
+                {" "}
+                Precision за последното генериране
+              </span>
+              ,<span className="font-semibold"> общ Recall </span>и
+              <span className="font-semibold"> общ F1 Score </span>
+              през времето на база
+              <span className="font-semibold"> ВАШИТЕ ДАННИ </span>, като
+              потребител, до конкретна дата. При преминаване с курсора върху
+              графиката се показват данни за съответната средна стойност до
+              конкретната дата на оста X. Изчисленията се актуализират с всеки
+              нов запис като новите данни се
+              <span className="font-semibold"> добавят към </span>
+              предходните. Това означава, че стойностите за дадена дата се
+              определят като се изчисли{" "}
+              <span className="font-semibold">средната стойност</span> от
+              конкретната дата и от предходните такива{" "}
+              <span className="font-semibold">взети заедно</span>. Тези
+              стойности се изчисляват поотделно, по следния начин:
             </p>
             <Accordion type="single" collapsible className="space-y-4">
-              {/* Precision */}
-              <AccordionItem value="precision">
+              {/* Platform Precision */}
+              <AccordionItem value="precision-platform">
                 <AccordionTrigger className="opsilion">
-                  ✅ Precision
+                  ✅ Общ Precision
                 </AccordionTrigger>
                 <AccordionContent>
                   <p>
-                    Измерва каква част от вашите препоръки, са{" "}
+                    Измерва каква част от препоръките, които сте направили, са{" "}
                     <span className="font-semibold">наистина </span> релевантни.
                     Високата стойност на{" "}
                     <span className="font-semibold">Precision</span> означава,
@@ -206,11 +270,43 @@ const MetricCharts: FC<MetricChartsProps> = ({
                       <span className="font-semibold">Precision =</span>
                       <div className="text-center">
                         <p className="text-primary text-sm">
-                          всички РЕЛЕВАНТНИ препоръки правени някога НА ВАС
+                          всички ваши РЕЛЕВАНТНИ препоръки правени някога
                         </p>
                         <div className="border-b border-gray-400 dark:border-gray-600 my-2"></div>
                         <p className="text-secondary text-sm">
-                          всички препоръки, които някога са правени НА ВАС
+                          всички ваши препоръки, които някога са правени
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
+                </AccordionContent>
+              </AccordionItem>
+
+              {/* User Specific Precision */}
+              <AccordionItem value="precision-user">
+                <AccordionTrigger className="opsilion">
+                  ✅ Precision за последното генериране
+                </AccordionTrigger>
+                <AccordionContent>
+                  <p>
+                    Измерва каква част от последните Ви препоръки, са{" "}
+                    <span className="font-semibold">наистина </span> релевантни.
+                    Високата стойност на{" "}
+                    <span className="font-semibold">Precision</span> означава,
+                    че когато системата препоръчва нещо, то вероятно ще бъде
+                    подходящо за вас.
+                  </p>
+                  <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
+                    <div className="flex items-center space-x-2 justify-center items-center">
+                      <span className="font-semibold">Precision =</span>
+                      <div className="text-center">
+                        <p className="text-primary text-sm">
+                          всички ваши РЕЛЕВАНТНИ препоръки от последното
+                          генериране
+                        </p>
+                        <div className="border-b border-gray-400 dark:border-gray-600 my-2"></div>
+                        <p className="text-secondary text-sm">
+                          всички ваши препоръки от последното генериране
                         </p>
                       </div>
                     </div>
@@ -238,7 +334,7 @@ const MetricCharts: FC<MetricChartsProps> = ({
                       <span className="font-semibold">Recall =</span>
                       <div className="text-center">
                         <p className="text-primary text-sm">
-                          всички РЕЛЕВАНТНИ препоръки правени някога НА ВАС
+                          всички ваши РЕЛЕВАНТНИ препоръки правени някога
                         </p>
                         <div className="border-b border-gray-400 dark:border-gray-600 my-2"></div>
                         <p className="text-secondary text-sm">
