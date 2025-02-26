@@ -276,7 +276,7 @@ app.post("/signin", (req, res) => {
         .json({ error: "Въведената парола е грешна или непълна!" });
 
     const token = jwt.sign({ id: user.id }, SECRET_KEY, {
-      expiresIn: rememberMe ? "7d" : "2h"
+      expiresIn: rememberMe ? "7d" : "7d"
     });
 
     console.log(`
