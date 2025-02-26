@@ -286,23 +286,21 @@ export const generateBooksRecommendations = async (
   token: string | null
 ) => {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/get-model-response`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(
-          import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
-            ? googleBooksPrompt(booksUserPreferences)
-            : goodreadsPrompt(booksUserPreferences)
-        )
-      }
-    );
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${openAIKey}`
+      },
+      body: JSON.stringify(
+        import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
+          ? googleBooksPrompt(booksUserPreferences)
+          : goodreadsPrompt(booksUserPreferences)
+      )
+    });
 
     const responseData = await response.json();
-    const responseJson = responseData.response;
+    const responseJson = responseData.choices[0].message.content;
 
     // --- HARDCODED RESPONSE ЗА ТЕСТВАНЕ ---
     // const responseJson =

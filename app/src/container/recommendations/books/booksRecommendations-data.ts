@@ -44,14 +44,11 @@ export const targetGroupOptions = [
 ];
 
 export const openAIKey = import.meta.env.VITE_OPENAI_API_KEY;
-export const geminiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
 export const googleBooksPrompt = (userPreferences: BooksUserPreferences) => {
   const genres = userPreferences.genres.map((genre) => genre.en).join(", ");
   return {
-    provider: "openai",
-    modelOpenAI: "gpt-4-turbo",
-    api_key: openAIKey,
+    model: "gpt-4-turbo",
     messages: [
       {
         role: "system",
@@ -162,9 +159,7 @@ export const googleBooksExampleResponse = `[
 export const goodreadsPrompt = (userPreferences: BooksUserPreferences) => {
   const genres = userPreferences.genres.map((genre) => genre.en).join(", ");
   return {
-    provider: "openai",
-    modelOpenAI: "gpt-4-turbo",
-    api_key: openAIKey,
+    model: "gpt-4-turbo",
     messages: [
       {
         role: "system",
