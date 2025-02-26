@@ -1,6 +1,7 @@
 import { Component } from "react";
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
+import Infobox from "@/components/common/infobox/infobox";
 
 // Интерфейс за свойствата на компонента
 interface AverageMetricsTrendProps {
@@ -10,6 +11,7 @@ interface AverageMetricsTrendProps {
     average_recall_percentage: string;
     average_f1_score_percentage: string;
   }[];
+  onClick: () => void;
 }
 
 // Интерфейс за състоянието на компонента
@@ -113,13 +115,18 @@ export class AverageMetricsTrend extends Component<
 
   render() {
     return (
-      <ReactApexChart
-        options={this.state.options}
-        series={this.state.series}
-        type="line"
-        height={350}
-        width="100%"
-      />
+      <div className="relative">
+        <div className="absolute top-2 right-2 z-10">
+          <Infobox onClick={this.props.onClick} />
+        </div>
+        <ReactApexChart
+          options={this.state.options}
+          series={this.state.series}
+          type="line"
+          height={350}
+          width="100%"
+        />
+      </div>
     );
   }
 }
