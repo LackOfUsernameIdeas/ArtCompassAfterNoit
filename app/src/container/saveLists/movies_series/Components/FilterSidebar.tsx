@@ -15,6 +15,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
   onClose,
   listData,
   data,
+  nameMappings,
   setCurrentPage,
   setFilteredData
 }) => {
@@ -98,6 +99,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
         metascore: [],
         boxOffice: []
       },
+      nameMappings,
       data,
       setFilteredData,
       setCurrentPage
@@ -194,6 +196,7 @@ const FilterSidebar: FC<FilterSidebarProps> = ({
         metascore: selectedMetascore,
         boxOffice: selectedBoxOffice
       },
+      nameMappings,
       data,
       setFilteredData,
       setCurrentPage

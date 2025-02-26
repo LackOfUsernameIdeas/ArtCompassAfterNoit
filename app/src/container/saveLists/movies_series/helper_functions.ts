@@ -2,7 +2,8 @@
 // Импортиране на типове и интерфейси
 // ==============================
 import { MovieSeriesRecommendation } from "@/container/types_common";
-import { DataType } from "./watchlist-types";
+import { DataType, NameMappings } from "./watchlist-types";
+import { translate } from "@/container/helper_functions_common";
 
 // ==============================
 // Функции за работа с данни
@@ -121,6 +122,7 @@ export const getTranslatedType = (type: string) =>
  * @param {string[]} filters.boxOffice - Списък с диапазони на приходи от боксофиса (напр. "Над 100 млн.").
  * @param {string[]} filters.year - Списък с времеви интервали за годината на издаване (напр. "След 2020").
  *
+ * @param {NameMappings} nameMappings - Мапинг за съответствие между английски и български имена на актьорите, режисьорите, сценаристите и езиците.
  * @param {MovieSeriesRecommendation[]} data - Масив от филми и сериали, които ще бъдат филтрирани.
  * @param {React.Dispatch<React.SetStateAction<MovieSeriesRecommendation[]>>} setFilteredData - Функция за актуализиране на състоянието на филтрираните данни.
  * @param {React.Dispatch<React.SetStateAction<number>>} setCurrentPage - Функция за нулиране на страницата на резултатите след прилагане на филтрите.
@@ -145,6 +147,7 @@ export const handleApplyFilters = (
     boxOffice: string[];
     year: string[];
   },
+  nameMappings: NameMappings,
   data: MovieSeriesRecommendation[],
   setFilteredData: React.Dispatch<
     React.SetStateAction<MovieSeriesRecommendation[]>
@@ -179,32 +182,44 @@ export const handleApplyFilters = (
     const matchesActors =
       filters.actor.length === 0 ||
       filters.actor.some((selectedActor) =>
-        actors.some((actor) =>
-          actor.toLowerCase().includes(selectedActor.toLowerCase())
+        checkPersonMatch(
+          nameMappings,
+          selectedActor.toLowerCase(),
+          actors,
+          "actors"
         )
       );
 
     const matchesDirector =
       filters.director.length === 0 ||
       filters.director.some((selectedDirector) =>
-        directors.some((director) =>
-          director.toLowerCase().includes(selectedDirector.toLowerCase())
+        checkPersonMatch(
+          nameMappings,
+          selectedDirector.toLowerCase(),
+          directors,
+          "directors"
         )
       );
 
     const matchesWriter =
       filters.writer.length === 0 ||
       filters.writer.some((selectedWriter) =>
-        writers.some((writer) =>
-          writer.toLowerCase().includes(selectedWriter.toLowerCase())
+        checkPersonMatch(
+          nameMappings,
+          selectedWriter.toLowerCase(),
+          writers,
+          "writers"
         )
       );
 
     const matchesLanguage =
       filters.language.length === 0 ||
       filters.language.some((selectedLanguage) =>
-        languages.some((language) =>
-          language.toLowerCase().includes(selectedLanguage.toLowerCase())
+        checkPersonMatch(
+          nameMappings,
+          selectedLanguage.toLowerCase(),
+          languages,
+          "languages"
         )
       );
 
@@ -278,4 +293,75 @@ export const handleApplyFilters = (
 
   setFilteredData(filtered);
   setCurrentPage(1);
+};
+
+/**
+ * Обработва дадена категория от елементи, премахва дублиращите се стойности,
+ * превежда ги и създава двупосочна таблица за съответствия.
+ *
+ * @param {string[][]} items - Двумерен масив със стойности, които трябва да се обработят.
+ * @returns {Promise<{ mappings: Map<string, string>, listItems: string[] }>}
+ * Обект, съдържащ двупосочните съответствия и списък с преведените елементи.
+ */
+export const processCategory = async (items: string[][]) => {
+  const uniqueItems = new Set(items.flat());
+  const itemsArray = Array.from(uniqueItems);
+  const translatedItems = await Promise.all(
+    itemsArray.map((item) => translate(item))
+  );
+
+  // Create bidirectional mapping
+  const mappings = new Map();
+  itemsArray.forEach((item, i) => {
+    mappings.set(item, translatedItems[i]);
+    mappings.set(translatedItems[i], item);
+  });
+
+  return {
+    mappings,
+    listItems: translatedItems
+  };
+};
+
+/**
+ * Проверява дали дадено име съвпада със списък от лица, като сравнява
+ * както оригиналното име, така и преведената му версия.
+ *
+ * @param {Object} nameMappings - Обект, съдържащ съответствия между оригинални и преведени имена.
+ * @param {Map<string, string>} nameMappings.actors - Карта с актьори и техните преведени имена.
+ * @param {Map<string, string>} nameMappings.directors - Карта с режисьори и техните преведени имена.
+ * @param {Map<string, string>} nameMappings.writers - Карта със сценаристи и техните преведени имена.
+ * @param {Map<string, string>} nameMappings.languages - Карта с езици и техните преведени имена.
+ * @param {string} query - Търсената стойност (част от име или цяло име).
+ * @param {string[]} personList - Списък с налични лица за проверка.
+ * @param {keyof typeof nameMappings} mappingsKey - Ключът в обекта `nameMappings`, който трябва да се използва.
+ * @returns {boolean} Връща `true`, ако има съвпадение, и `false` в противен случай.
+ */
+export const checkPersonMatch = (
+  nameMappings: {
+    actors: Map<string, string>;
+    directors: Map<string, string>;
+    writers: Map<string, string>;
+    languages: Map<string, string>;
+  },
+  query: string,
+  personList: string[],
+  mappingsKey: keyof typeof nameMappings
+) => {
+  if (!personList?.length) return false;
+
+  return personList.some((person) => {
+    // Check English name
+    if (person.toLowerCase().includes(query)) return true;
+
+    // Check Bulgarian translation
+    const translatedName = nameMappings[mappingsKey].get(person);
+    if (translatedName?.toLowerCase().includes(query)) return true;
+
+    // Check if any Bulgarian name contains the query and matches this person
+    return Array.from(nameMappings[mappingsKey].entries()).some(
+      ([bgName, engName]) =>
+        bgName.toLowerCase().includes(query) && engName === person
+    );
+  });
 };

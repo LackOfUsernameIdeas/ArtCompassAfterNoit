@@ -128,10 +128,22 @@ export interface FilterSidebarProps {
     React.SetStateAction<MovieSeriesRecommendation[]>
   >; // Функция за задаване на филтрираните книги/сериали
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>; // Функция за задаване на текуща страница
-  listData: {
-    actor: string[]; // Филтър по актьори
-    director: string[]; // Филтър по режисьори
-    writer: string[]; // Филтър по сценаристи
-    language: string[]; // Филтър по език
-  };
+  listData: ListData;
+  nameMappings: NameMappings;
+}
+
+// Интерфейс за мапинг (от английски на български и обратно) на езиците и имената на лицата, играещи роля в създаването на даден филм/сериал
+export interface NameMappings {
+  actors: Map<string, string>; // Имена на актьори
+  directors: Map<string, string>; // Имена на режисьори
+  writers: Map<string, string>; // Имена на сценаристи
+  languages: Map<string, string>; // Имена на езици
+}
+
+// Интерфейс за езиците и имената на лицата, играещи роля в създаването на даден филм/сериал, преведени на български.
+export interface ListData {
+  actor: string[]; // Филтър по актьори
+  director: string[]; // Филтър по режисьори
+  writer: string[]; // Филтър по сценаристи
+  language: string[]; // Филтър по език
 }

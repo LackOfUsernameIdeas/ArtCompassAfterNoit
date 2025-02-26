@@ -1,13 +1,19 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import { MoviesAndSeriesTableProps } from "../watchlist-types";
+import {
+  ListData,
+  MoviesAndSeriesTableProps,
+  NameMappings
+} from "../watchlist-types";
 import RecommendationCardAlert from "./RecommendationCardAlert";
 import { MovieSeriesRecommendation } from "../../../types_common";
 import FilterSidebar from "./FilterSidebar";
 import { ChevronDownIcon } from "lucide-react";
 import { useMediaQuery } from "react-responsive";
 import {
+  checkPersonMatch,
   extractItemFromStringList,
-  getTranslatedType
+  getTranslatedType,
+  processCategory
 } from "../helper_functions";
 import { translate } from "@/container/helper_functions_common";
 import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
@@ -29,13 +35,15 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
   // Държи избрания филм или сериал, или null, ако няма избран елемент.
   const [selectedItem, setSelectedItem] =
     useState<MovieSeriesRecommendation | null>(null);
+  // Съхранява мапинг за имената на актьори, режисьори, сценаристи и езици, преведени на български и на английски.
+  const [nameMappings, setNameMappings] = useState<NameMappings>({
+    actors: new Map(),
+    directors: new Map(),
+    writers: new Map(),
+    languages: new Map()
+  });
   // Съхранява списък с актьори, режисьори, сценаристи и езици, запазени в списъка.
-  const [listData, setListData] = useState<{
-    actor: string[];
-    director: string[];
-    writer: string[];
-    language: string[];
-  }>({
+  const [listData, setListData] = useState<ListData>({
     actor: [],
     director: [],
     writer: [],
@@ -64,23 +72,32 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
     setSearchQuery(query);
   };
 
-  const searchData = filteredData.filter((item) =>
-    [
-      item.title_bg,
-      item.title_en,
-      item.genre_bg,
-      item.actors,
-      item.director,
-      item.writer,
-      item.year,
-      item.runtime,
-      item.imdbID
-    ].some((field) =>
-      field
-        ? field.toString().toLowerCase().includes(searchQuery.toLowerCase())
-        : false
-    )
-  );
+  // Резултатът от search query-то
+  const searchData = filteredData.filter((item) => {
+    const query = searchQuery.toLowerCase();
+    if (
+      [
+        item.title_bg,
+        item.title_en,
+        item.genre_bg,
+        item.year,
+        item.runtime,
+        item.imdbID
+      ].some((field) => field?.toString().toLowerCase().includes(query))
+    ) {
+      return true;
+    }
+
+    // Извличане на актьори, режисьори и сценаристи от елемента.
+    const { actors, directors, writers } = extractItemFromStringList(item);
+
+    // Проверка дали търсенето съвпада с някоя от тези категории.
+    return (
+      checkPersonMatch(nameMappings, query, actors, "actors") ||
+      checkPersonMatch(nameMappings, query, directors, "directors") ||
+      checkPersonMatch(nameMappings, query, writers, "writers")
+    );
+  });
 
   // Изчислява общия брой страници на база дължината на филтрираните данни и броя елементи на страница.
   const totalPages = Math.ceil(searchData.length / itemsPerPage);
@@ -113,48 +130,34 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
     setCurrentPage(1);
   };
 
+  // Превежда нужна информация.
   useEffect(() => {
     const fetchAndSetData = async () => {
-      const newActors = new Set<string>();
-      const newDirectors = new Set<string>();
-      const newWriters = new Set<string>();
-      const newLanguages = new Set<string>();
+      const extractedData = data.map((item) => extractItemFromStringList(item));
 
-      for (let i = 0; i < data.length; i++) {
-        const { actors, directors, writers, languages } =
-          extractItemFromStringList(data[i]);
+      const actorsList = extractedData.map((d) => d.actors);
+      const directorsList = extractedData.map((d) => d.directors);
+      const writersList = extractedData.map((d) => d.writers);
+      const languagesList = extractedData.map((d) => d.languages);
 
-        actors.forEach((actor) => newActors.add(actor));
-        directors.forEach((director) => newDirectors.add(director));
-        writers.forEach((writer) => newWriters.add(writer));
-        languages.forEach((language) => newLanguages.add(language));
-      }
+      const [actors, directors, writers, languages] = await Promise.all([
+        processCategory(actorsList),
+        processCategory(directorsList),
+        processCategory(writersList),
+        processCategory(languagesList)
+      ]);
 
-      setListData({
-        actor: Array.from(newActors),
-        director: Array.from(newDirectors),
-        writer: Array.from(newWriters),
-        language: Array.from(newLanguages)
+      setNameMappings({
+        actors: actors.mappings,
+        directors: directors.mappings,
+        writers: writers.mappings,
+        languages: languages.mappings
       });
-
-      const translatedActors = await Promise.all(
-        Array.from(newActors).map((actor) => translate(actor))
-      );
-      const translatedDirectors = await Promise.all(
-        Array.from(newDirectors).map((director) => translate(director))
-      );
-      const translatedWriters = await Promise.all(
-        Array.from(newWriters).map((writer) => translate(writer))
-      );
-      const translatedLanguages = await Promise.all(
-        Array.from(newLanguages).map((language) => translate(language))
-      );
-
       setListData({
-        actor: translatedActors,
-        director: translatedDirectors,
-        writer: translatedWriters,
-        language: translatedLanguages
+        actor: actors.listItems,
+        director: directors.listItems,
+        writer: writers.listItems,
+        language: languages.listItems
       });
     };
 
@@ -183,6 +186,7 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
         setFilteredData={setFilteredData}
         setCurrentPage={setCurrentPage}
         listData={listData}
+        nameMappings={nameMappings}
       />
       <RecommendationCardAlert
         selectedItem={selectedItem}
