@@ -254,8 +254,8 @@ const AIAnalysator: FC = () => {
                         Измерва каква част от последните Ви препоръки, са{" "}
                         <span className="font-semibold">наистина </span>{" "}
                         релевантни. Високата стойност на{" "}
-                        <span className="font-semibold">Precision</span>{" "}
-                        означава, че когато системата препоръчва нещо, то
+                        <span className="font-semibold">Precision</span>,{" "}
+                        означава че когато системата препоръчва нещо, то
                         вероятно ще бъде подходящо за вас.
                       </p>
                       <Card className="bg-white dark:bg-bodybg2 dark:border-black/10 dark:text-defaulttextcolor/70 font-semibold text-xl p-4 rounded-md shadow-lg dark:shadow-xl text-center leading-relaxed mx-auto mt-5">
@@ -336,9 +336,9 @@ const AIAnalysator: FC = () => {
                         <span className="font-semibold">
                           точността на препоръките
                         </span>
-                        , така и на
+                        , така и на{" "}
                         <span className="font-semibold">
-                          покритието спрямо всички възможности
+                          покритието, спрямо всички възможности
                         </span>
                         .
                       </p>

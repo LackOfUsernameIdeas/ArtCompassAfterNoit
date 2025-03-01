@@ -489,10 +489,11 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                   </AccordionTrigger>
                   <AccordionContent>
                     <p>
-                      Измерва каква част от последните Ви препоръки, са{" "}
-                      <span className="font-semibold">наистина </span>{" "}
-                      релевантни. Високата стойност на{" "}
-                      <span className="font-semibold">Precision</span> означава,
+                      Измерва каква част от препоръките при последното Ви
+                      генериране, са{" "}
+                      <span className="font-semibold">наистина </span> подходящи
+                      за вас (релевантни). Високата стойност на{" "}
+                      <span className="font-semibold">Precision</span>, означава
                       че когато системата препоръчва нещо, то вероятно ще бъде
                       подходящо за вас.
                     </p>
@@ -567,9 +568,9 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                       <span className="font-semibold">
                         точността на препоръките
                       </span>
-                      , така и на
+                      , така и на{" "}
                       <span className="font-semibold">
-                        покритието спрямо всички възможности
+                        покритието, спрямо всички възможности
                       </span>
                       .
                     </p>
