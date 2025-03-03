@@ -159,13 +159,15 @@ const BooksTable: FC<BooksTableProps> = ({
       />
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
         <div className="box custom-card">
-          <div className="box-header justify-between flex items-center">
-            <div className="flex items-center gap-4">
-              <p className="box-title opsilion !text-xl">Списък За Четене</p>
-              <div className="flex items-center gap-4 xl:col-span-4 lg:col-span-6 md:col-span-6 sm:col-span-12 col-span-12">
+          <div className="box-header justify-between flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0">
+            <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+              <p className="box-title opsilion !text-xl text-center sm:text-left">
+                Списък За Четене
+              </p>
+              <div className="flex items-center gap-4 w-full sm:w-auto">
                 <input
                   type="search"
-                  className="form-control search-input"
+                  className="form-control search-input w-full sm:w-auto"
                   id="input-search"
                   placeholder="Потърсете по име, жанр..."
                   value={searchQuery}
@@ -174,12 +176,13 @@ const BooksTable: FC<BooksTableProps> = ({
                 <Infobox onClick={handleInfoButtonClick} />
               </div>
             </div>
-            <div className="flex gap-4 items-center">
-              <div className="relative inline-block text-left">
+
+            <div className="flex flex-col sm:flex-row gap-4 items-center w-full sm:w-auto">
+              <div className="relative inline-block text-left w-full sm:w-auto">
                 <div>
                   <button
                     type="button"
-                    className="inline-flex justify-between items-center w-full px-3 py-1.5 text-sm font-medium bg-primary hover:bg-primary/75 text-white dark:text-white/80 rounded-md shadow-sm focus:bg-primary focus:text-white transition-all duration-300 ease-in-out"
+                    className="inline-flex justify-between items-center w-full sm:w-auto px-3 py-1.5 text-sm font-medium bg-primary hover:bg-primary/75 text-white dark:text-white/80 rounded-md shadow-sm focus:bg-primary focus:text-white transition-all duration-300 ease-in-out"
                     onClick={() => setIsSelectOpen(!isSelectOpen)}
                   >
                     {itemsPerPage} елемента на страница
@@ -193,7 +196,7 @@ const BooksTable: FC<BooksTableProps> = ({
                 </div>
 
                 {isSelectOpen && (
-                  <div className="origin-top-right absolute w-full right-0 mt-2 rounded-md shadow-lg bg-white dark:bg-bodybg border border-primary z-10 animate-dropdown">
+                  <div className="origin-top-right absolute w-full sm:w-auto right-0 mt-2 rounded-md shadow-lg bg-white dark:bg-bodybg border border-primary z-10 animate-dropdown">
                     <div
                       role="menu"
                       aria-orientation="vertical"
@@ -234,7 +237,7 @@ const BooksTable: FC<BooksTableProps> = ({
                 </select>
               </div>
               <button
-                className="inline-flex justify-between items-center px-3 py-1.5 text-sm font-medium bg-primary hover:bg-primary/75 text-white dark:text-white/80 rounded-md shadow-sm focus:bg-primary focus:text-white transition-all duration-300 ease-in-out"
+                className="inline-flex justify-between items-center w-full sm:w-auto px-3 py-1.5 text-sm font-medium bg-primary hover:bg-primary/75 text-white dark:text-white/80 rounded-md shadow-sm focus:bg-primary focus:text-white transition-all duration-300 ease-in-out"
                 onClick={() => setIsFilterOpen(true)}
               >
                 <i
@@ -290,7 +293,7 @@ const BooksTable: FC<BooksTableProps> = ({
           </div>
           {/* Пагинация */}
           {totalPages > 1 && (
-            <div className="box-footer flex justify-center items-center gap-4">
+            <div className="box-footer flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4 text-center">
               <span className="text-defaulttextcolor dark:text-white/80">
                 Страница {currentPage} от {totalPages}
               </span>
@@ -299,7 +302,7 @@ const BooksTable: FC<BooksTableProps> = ({
                   aria-label="Page navigation"
                   className="pagination-style-4"
                 >
-                  <ul className="ti-pagination mb-0 gap-3">
+                  <ul className="ti-pagination mb-0 gap-2 sm:gap-3">
                     {/* Бутон за предишна страница */}
                     <li
                       className={`page-item ${
@@ -328,7 +331,7 @@ const BooksTable: FC<BooksTableProps> = ({
                         }`}
                       >
                         <button
-                          className="page-link "
+                          className="page-link"
                           onClick={(e) => {
                             e.preventDefault();
                             setCurrentPage(index + 1);

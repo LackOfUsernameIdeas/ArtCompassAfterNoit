@@ -73,7 +73,7 @@ const ChooseRecommendations: FC = () => {
           {/* Карти с информация за AI */}
           <div className="bg-bodybg p-6 rounded-xl shadow-lg space-y-6 my-[1.5rem]">
             {/* Карти с информация за потребителя */}
-            <div className="grid grid-cols-12 gap-x-6">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-6 lg:grid-cols-12">
               <MainMetricsWidget
                 className="col-span-3 bg-bodybg"
                 icon={<i className="ti ti-percentage-60 text-2xl"></i>}
@@ -110,8 +110,8 @@ const ChooseRecommendations: FC = () => {
           </div>
 
           {/* Въпрос и бутоните за избор */}
-          <div className="flex items-center justify-center px-4">
-            <div className="w-full max-w-4xl px-4 text-center">
+          <div className="flex items-center justify-center">
+            <div className="w-full max-w-4xl text-center">
               {/* Текстът на въпроса */}
               <Card className="dark:border-black/10 bg-bodybg font-semibold text-xl p-4 rounded-lg shadow-lg dark:shadow-xl text-center">
                 <h2 className="text-[1.3rem] opsilion text-defaulttextcolor dark:text-white/80">
@@ -124,12 +124,12 @@ const ChooseRecommendations: FC = () => {
                 </h5>
               </div>
               {/* Бутоните, подравнени хоризонтално */}
-              <div className="flex justify-between gap-4 w-full">
+              <div className="flex flex-col sm:flex-row justify-between sm:gap-4 w-full">
                 {question.options.map((option) => (
                   <button
                     key={option.label}
                     onClick={() => handleOptionClick(option.route)}
-                    className={`w-1/2 py-6 next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center text-4xl transition-all duration-300 ease-in-out transform hover:scale-105`}
+                    className={`w-full sm:w-1/2 py-6 next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 flex justify-center items-center text-4xl transition-all duration-300 ease-in-out transform hover:scale-105`}
                   >
                     {option.label}
                   </button>

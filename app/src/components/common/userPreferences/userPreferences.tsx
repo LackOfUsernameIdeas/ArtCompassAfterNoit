@@ -93,11 +93,27 @@ export default function UserPreferences({
 
   return (
     <Card className="w-full mx-auto my-4 bg-bodybg dark:border-black/10 shadow-lg dark:shadow-xl">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 py-3">
-        <CardTitle className="text-3xl font-bold opsilion text-defaulttextcolor dark:text-white/80">
-          Последно регистрирани предпочитания
-        </CardTitle>
-        <div className="flex flex-wrap text-sm opsilion text-muted-foreground gap-x-1 gap-y-1">
+      <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0 py-3">
+        <div>
+          <CardTitle className="text-3xl font-bold opsilion text-defaulttextcolor dark:text-white/80">
+            Последно регистрирани предпочитания
+          </CardTitle>
+          <div className="flex flex-wrap text-sm opsilion text-muted-foreground gap-x-1 gap-y-1 sm:hidden">
+            <div className="flex items-center gap-1">
+              <Calendar className="w-3" />
+              <span>
+                {new Date(preferences.date).toLocaleDateString("bg-BG")}
+              </span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Clock2 className="w-3" />
+              <span>
+                {new Date(preferences.date).toLocaleTimeString("bg-BG")}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className="hidden sm:flex flex-wrap text-sm opsilion text-muted-foreground gap-x-1 gap-y-1">
           <div className="flex items-center gap-1">
             <Calendar className="w-3" />
             <span>
@@ -112,14 +128,15 @@ export default function UserPreferences({
           </div>
         </div>
       </CardHeader>
+
       <CardContent className="pt-0">
         <div className="grid gap-2">
           {preferenceItems.map((item, index) => (
             <div
               key={index}
-              className="bg-white outline outline-transparent hover:outline-1 dark:hover:outline-primary hover:outline-black/25 dark:bg-bodybg2 p-3 rounded-md flex items-center transition-all duration-300"
+              className="bg-white outline outline-transparent hover:outline-1 dark:hover:outline-primary hover:outline-black/25 dark:bg-bodybg2 p-3 rounded-md flex items-center justify-between transition-all duration-300"
             >
-              <div className="flex items-center opsilion w-1/3 max-w-[30%]">
+              <div className="flex items-center opsilion w-1/3 max-w-[30%] pr-2">
                 {item.icon}
                 <span className="ml-2 font-semibold text-sm">{item.label}</span>
               </div>

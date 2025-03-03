@@ -10,7 +10,7 @@ const AIAnalysisDashboard: FC<AIAnalysisDashboardProps> = ({
 }) => {
   return (
     <div className="bg-bodybg p-6 rounded-xl shadow-lg space-y-4 mt-[-0.5rem]">
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <MainMetricsWidget
           icon={<i className="ti ti-percentage-60 text-2xl"></i>}
           title="Precision"
@@ -33,7 +33,7 @@ const AIAnalysisDashboard: FC<AIAnalysisDashboardProps> = ({
           progress={f1ScoreData.f1_score_percentage}
         />
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4">
         <Widget
           icon={<i className="ti ti-list-numbers text-3xl" />}
           title="Брой на генерирани от вас препоръки"

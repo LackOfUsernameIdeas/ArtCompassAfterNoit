@@ -97,7 +97,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
   return (
     <Fragment>
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
-        <div className="box custom-card h-[27.75rem]">
+        <div className="box custom-card sm:h-[27.75rem]">
           <div className="box-header justify-between">
             <div
               className={`box-title whitespace-nowrap overflow-hidden text-ellipsis opsilion ${
@@ -238,7 +238,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
               </table>
             </div>
           </div>
-          <div className="box-footer">
+          <div className={`box-footer`}>
             <Pagination
               currentPage={currentTablePage}
               totalItems={totalItems}

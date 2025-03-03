@@ -71,7 +71,7 @@ const RecommendationsAnalysesWidgets: React.FC<
             {isSwitching && (
               <svg
                 onClick={handlePrev}
-                className="absolute top-1/2 transform -translate-y-1/2 left-[-7rem] text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200"
+                className="absolute top-1/2 transform -translate-y-1/2 left-[-5.5rem] sm:left-[-7rem] text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="none"
@@ -99,7 +99,7 @@ const RecommendationsAnalysesWidgets: React.FC<
             {isSwitching && (
               <svg
                 onClick={handleNext}
-                className="absolute top-1/2 transform -translate-y-1/2 right-[-7rem] text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200"
+                className="absolute top-1/2 transform -translate-y-1/2 right-[-5.5rem] sm:right-[-7rem] text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="none"
@@ -121,7 +121,7 @@ const RecommendationsAnalysesWidgets: React.FC<
       </CSSTransition>
 
       <div className="bg-bodybg mt-4 p-6 max-w-7xl rounded-xl shadow-lg space-y-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <Widget
             icon={<i className="ti ti-checklist text-3xl"></i>}
             title="Брой релевантни препоръки"

@@ -70,15 +70,14 @@ const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
       <Card className="w-full">
         <CardContent className="p-6 bg-white dark:bg-bodybg2 rounded-lg">
           <Card className="dark:border-black/10 bg-white dark:bg-bodybg2 font-semibold text-xl p-4 rounded-lg shadow-lg dark:shadow-xl mb-6">
-            <div className="flex items-center justify-start space-x-2">
-              <Clapperboard className="h-5 w-5" />
-              <span>
-                {title_en} ({title_bg}) :
-              </span>
+            <div className="flex flex-col sm:flex-row items-center sm:items-center space-y-1 sm:space-y-0 sm:space-x-2">
+              <Clapperboard className="h-5 w-5 self-center sm:self-auto" />
+              <span className="order-2 sm:order-none">{title_bg}</span>
+              <span className="order-3 sm:order-none">({title_en}):</span>
             </div>
           </Card>
 
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4 sm:gap-0">
             <div className="flex items-center">
               <Badge
                 variant={recommendation.isRelevant ? "success" : "destructive"}
@@ -93,17 +92,17 @@ const RelevantRecommendations: React.FC<RelevantRecommendationsProps> = ({
               </Badge>
               <Infobox onClick={handleInfoButtonClick} />
             </div>
-            <div className="flex items-center">
-              <div className="text-2xl font-bold mr-4">
+            <div className="flex flex-col sm:flex-row items-center sm:space-x-4">
+              <div className="text-2xl font-bold">
                 Релевантност: {recommendation.relevanceScore}/7 т.
               </div>
               <Progress
                 value={(recommendation.relevanceScore / 7) * 100}
-                className="w-32 h-2"
+                className="h-2 mt-2 sm:mt-0 sm:w-32"
               />
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {Object.entries(recommendation.criteriaScores).map(
               ([key, value]) => {
                 const Icon = criteriaIcons[key as keyof typeof criteriaIcons];

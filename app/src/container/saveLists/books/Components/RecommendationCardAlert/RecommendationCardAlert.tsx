@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { BookFormat } from "../../../../recommendations/books/booksRecommendations-types";
 import { RecommendationCardProps } from "../../readlist-types";
@@ -32,6 +32,29 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
   const source = selectedItem?.source; // Източник на данните за книгата
   const isGoodreads = source === "Goodreads"; // Проверка дали източникът е Goodreads
   const [visible, setVisible] = useState(false); // Видимостта на картата
+  const modalRef = useRef<HTMLDivElement>(null); // Референция към модалния контейнер, използвана за манипулация с DOM
+  const [position, setPosition] = useState<number>(0); // Държи текущата позиция на модала по вертикалата (Y)
+  const [dragging, setDragging] = useState<boolean>(false); // Флаг, който указва дали потребителят в момента влачи модала
+  const [startY, setStartY] = useState<number>(0); // Запазва началната Y-координата при стартиране на влаченето
+
+  // Започва проследяването на докосването и апазва началната позиция на докосването и активира режима на влачене.
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setDragging(true);
+    setStartY(e.touches[0].clientY);
+  };
+
+  // Актуализира позицията на модала спрямо движението на пръста.
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!dragging) return;
+    const deltaY = e.touches[0].clientY - startY;
+    setPosition((prev) => prev + deltaY);
+    setStartY(e.touches[0].clientY);
+  };
+
+  // Прекратява влаченето, когато потребителят вдигне пръста си.
+  const handleTouchEnd = () => {
+    setDragging(false);
+  };
 
   // Изпълняваме след всяка промяна на избрания елемент
   useEffect(() => {
@@ -174,13 +197,18 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
       }`}
     >
       <div
-        className={`p-6 rounded-lg shadow-lg bg-[rgb(var(--body-bg))] glow-effect border-2 dark:border-white border-secondary text-center max-w-full transform transition-transform duration-300 ${
+        ref={modalRef}
+        style={{ transform: `translateY(${position}px)` }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        className={`p-6 rounded-lg shadow-lg bg-[rgb(var(--body-bg))] glow-effect border-2 dark:border-white border-secondary text-center max-w-full transition-transform duration-300 ${
           visible ? "scale-100" : "scale-75"
-        } md:w-[75%] lg:w-[85%] xl:w-[70%] 2xl:w-[50%]`}
+        } w-full sm:w-[90%] md:w-[75%] lg:w-[85%] xl:w-[70%] 2xl:w-[50%]`}
       >
         <div className="recommendation-card">
-          <div className="flex w-full items-start">
-            <div className="relative flex-shrink-0 mr-8 flex flex-col items-center">
+          <div className="flex w-full items-center sm:items-start flex-col md:flex-row">
+            <div className="relative flex-shrink-0 mb-4 md:mb-0 md:mr-8 flex flex-col items-center">
               {/* Постер */}
               <img
                 src={selectedItem.imageLink}
@@ -250,10 +278,10 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
                 <div className="grid grid-cols-2 gap-8">
                   {/* Заглавия и важна информация */}
                   <div className="mb-2">
-                    <p className="block text-3xl font-bold">
+                    <p className="block text-xl sm:text-3xl font-bold overflow-hidden mb-2 sm:mb-0">
                       {selectedItem.title_bg || "Заглавие не е налично"}
                     </p>
-                    <p className="block text-lg font-semibold text-opacity-60 italic mb-2">
+                    <p className="block text-md sm:text-lg font-semibold text-opacity-60 italic mb-2">
                       {selectedItem.title_en ||
                         "Заглавие на английски не е налично"}
                     </p>
