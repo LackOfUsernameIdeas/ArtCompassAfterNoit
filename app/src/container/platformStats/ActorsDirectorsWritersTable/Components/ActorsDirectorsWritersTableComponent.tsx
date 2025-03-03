@@ -165,11 +165,13 @@ const ActorsDirectorsWritersTableComponent: FC<
                   <span className="font-semibold">Rotten Tomatoes</span> е
                   платформа, показваща процента на положителните рецензии от
                   критици <span className="font-semibold"> (Tomatometer)</span>{" "}
-                  или от зрители
+                  - това е процентът, който виждате като рейтинг, или от зрители
                   <span className="font-semibold"> (Audience Score)</span>.
-                  Средният рейтинг е средната оценка{" "}
-                  <span className="font-semibold"> (от 0 до 10)</span> на всички
-                  ревюта, вместо просто процента на положителните рецензии.
+                  Средният рейтинг е различна метрика – той представлява
+                  средната оценка{" "}
+                  <span className="font-semibold">(от 0 до 10)</span> на всички
+                  на всички рецензии, което дава представа не само за това колко
+                  хора са харесали даден филм, но и колко силно са го харесали.
                 </AccordionContent>
               </AccordionItem>
 

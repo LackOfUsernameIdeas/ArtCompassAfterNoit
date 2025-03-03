@@ -82,7 +82,7 @@ const MetricCharts: FC<MetricChartsProps> = ({
               новите данни се
               <span className="font-semibold"> добавят към </span>
               предходните. Това означава, че стойностите за дадена дата се
-              определят като се изчисли{" "}
+              определят, като се изчисли{" "}
               <span className="font-semibold">средната стойност</span> от
               конкретната дата и от предходните такива{" "}
               <span className="font-semibold">взети заедно</span>. Тези
@@ -177,9 +177,9 @@ const MetricCharts: FC<MetricChartsProps> = ({
                     <span className="font-semibold">
                       точността на препоръките
                     </span>
-                    , така и на
+                    , така и на{" "}
                     <span className="font-semibold">
-                      покритието спрямо всички възможности
+                      покритието, спрямо всички възможности
                     </span>
                     .
                   </p>
@@ -228,7 +228,7 @@ const MetricCharts: FC<MetricChartsProps> = ({
               нов запис като новите данни се
               <span className="font-semibold"> добавят към </span>
               предходните. Това означава, че стойностите за дадена дата се
-              определят като се изчисли{" "}
+              определят, като се изчисли{" "}
               <span className="font-semibold">средната стойност</span> от
               конкретната дата и от предходните такива{" "}
               <span className="font-semibold">взети заедно</span>. Тези
@@ -320,9 +320,9 @@ const MetricCharts: FC<MetricChartsProps> = ({
                     <span className="font-semibold">
                       точността на препоръките
                     </span>
-                    , така и на
+                    , така и на{" "}
                     <span className="font-semibold">
-                      покритието спрямо всички възможности
+                      покритието, спрямо всички възможности
                     </span>
                     .
                   </p>

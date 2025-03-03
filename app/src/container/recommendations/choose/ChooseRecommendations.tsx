@@ -79,7 +79,7 @@ const ChooseRecommendations: FC = () => {
                 icon={<i className="ti ti-percentage-60 text-2xl"></i>}
                 title="Среден Precision (за последно генериране)"
                 value={`${data.averagePrecisionLastRoundPercentage}%`}
-                description="Средна стойност спрямо всички потребители (отнася се за последно
+                description="Средна стойност, спрямо всички потребители (отнася се за последно
               генерираните от тях препоръки)"
               />
               <MainMetricsWidget
@@ -87,7 +87,7 @@ const ChooseRecommendations: FC = () => {
                 icon={<i className="ti ti-percentage-60 text-2xl"></i>}
                 title="Среден Precision (като цяло)"
                 value={`${data.averagePrecisionPercentage}%`}
-                description="Средна стойност спрямо всички потребители (отнася се за всички препоръки в
+                description="Средна стойност, спрямо всички потребители (отнася се за всички препоръки в
               платформата)"
               />
               <MainMetricsWidget
@@ -95,7 +95,7 @@ const ChooseRecommendations: FC = () => {
                 icon={<i className="ti ti-percentage-40 text-2xl"></i>}
                 title="Среден Recall"
                 value={`${data.averageRecallPercentage}%`}
-                description="Средна стойност спрямо всички потребители (отнася се за всички препоръки в
+                description="Средна стойност, спрямо всички потребители (отнася се за всички препоръки в
               платформата)"
               />
               <MainMetricsWidget
@@ -103,7 +103,7 @@ const ChooseRecommendations: FC = () => {
                 icon={<i className="ti ti-percentage-70 text-2xl"></i>}
                 title="Среден F1 Score"
                 value={`${data.averageF1ScorePercentage}%`}
-                description="Средна стойност спрямо всички потребители (отнася се за всички препоръки в
+                description="Средна стойност, спрямо всички потребители (отнася се за всички препоръки в
               платформата)"
               />
             </div>

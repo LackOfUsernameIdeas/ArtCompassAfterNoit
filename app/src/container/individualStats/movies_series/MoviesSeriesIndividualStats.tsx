@@ -223,7 +223,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                   >
                     <div className="text-center !text-lg box p-6 flex flex-col mt-5 ml-5 mr-5">
                       <p className="leading-relaxed">
-                        В тази секция можете да се натъкнете на информация за
+                        В тази секция, можете да се натъкнете на информация за
                         това кои са най-успешните{" "}
                         <span className="font-bold text-primary">
                           актьори, режисьори, сценаристи
@@ -238,18 +238,20 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                         >
                           {" <<Натиснете тук, за да научите повече>> "}
                         </span>
-                        , сред най-често препоръчваните{" "}
+                        , сред най-често{" "}
+                        <span className="font-bold text-primary">
+                          препоръчваните
+                        </span>{" "}
+                        филми и сериали{" "}
                         <span className="font-bold text-primary">
                           специално за вас
-                        </span>{" "}
-                        предпочитания. Също така, можете да видите кои са
-                        най-често препоръчваните{" "}
-                        <span className="font-bold text-primary">ЗА ВАС</span>{" "}
-                        жанрове и колко на{" "}
+                        </span>
+                        . Също така, можете да видите кои са най-често
+                        препоръчваните ви жанрове и колко на{" "}
                         <span className="font-bold text-primary">
                           брой филми и сериали
                         </span>{" "}
-                        са ви били препоръчвани някога!
+                        са били препоръчвани на вас някога!
                       </p>
                     </div>
 
@@ -342,7 +344,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                     >
                       <div className="text-center !text-lg box p-6 flex flex-col mt-3 ml-5 mr-5">
                         <p className="leading-relaxed">
-                          В тази секция можете да се натъкнете на информация за
+                          В тази секци, можете да се натъкнете на информация за
                           това кои са най-успешните{" "}
                           <span className="font-bold text-primary">
                             актьори, режисьори, сценаристи
@@ -357,8 +359,12 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                           >
                             {" <<Натиснете тук, за да научите повече>> "}
                           </span>
-                          , сред вашите запазвани предпочитания в списъка ви за
-                          гледане. Също така, можете да видите кои са{" "}
+                          , сред вашите{" "}
+                          <span className="font-bold text-primary">
+                            запазвани
+                          </span>{" "}
+                          препоръки в списъка ви за гледане. Също така, можете
+                          да видите кои са{" "}
                           <span className="font-bold text-primary">
                             ВАШИТЕ топ жанрове
                           </span>{" "}

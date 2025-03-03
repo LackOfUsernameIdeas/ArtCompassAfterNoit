@@ -23,7 +23,7 @@ const AIStatsWidgetCardsComponent: React.FC<AIStatsWidgetCardProps> = ({
               Среден Precision
             </h5>
             <p className="text-[#8c9097] dark:text-white/50 mb-4">
-              Средна стойност спрямо всички потребители{" "}
+              Средна стойност, спрямо всички потребители{" "}
               <strong>
                 (отнася се за последно генерираните от тях препоръки)
               </strong>
@@ -45,7 +45,7 @@ const AIStatsWidgetCardsComponent: React.FC<AIStatsWidgetCardProps> = ({
               Среден Precision
             </h5>
             <p className="text-[#8c9097] dark:text-white/50 mb-4">
-              Средна стойност спрямо всички потребители{" "}
+              Средна стойност, спрямо всички потребители{" "}
               <strong>
                 (отнася се за всички препоръки в платформата - като цяло)
               </strong>
@@ -67,7 +67,7 @@ const AIStatsWidgetCardsComponent: React.FC<AIStatsWidgetCardProps> = ({
               Среден Recall
             </h5>
             <p className="text-[#8c9097] dark:text-white/50 mb-4">
-              Средна стойност спрямо всички потребители{" "}
+              Средна стойност, спрямо всички потребители{" "}
               <strong>
                 (отнася се за всички препоръки в платформата - като цяло)
               </strong>
@@ -89,7 +89,7 @@ const AIStatsWidgetCardsComponent: React.FC<AIStatsWidgetCardProps> = ({
               Среден F1 Score
             </h5>
             <p className="text-[#8c9097] dark:text-white/50 mb-4">
-              Средна стойност спрямо всички потребители{" "}
+              Средна стойност, спрямо всички потребители{" "}
               <strong>
                 (отнася се за всички препоръки в платформата - като цяло)
               </strong>

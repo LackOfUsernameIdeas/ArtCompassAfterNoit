@@ -206,8 +206,8 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                   Как работи АртКомпас?
                 </h3>
                 <span className="text-[#8c9097] dark:text-white/50 text-[0.9375rem] font-normal block">
-                  Открийте най-добрите препоръки за вас с помощта на Изкуствен
-                  Интелект и станете свидетел на анализ на точността му в три
+                  Открийте най-добрите препоръки за вас, с помощта на Изкуствен
+                  Интелект, и станете свидетел на анализ на поведението му в три
                   лесни стъпки – регистрирайте се, попълнете кратък въпросник и
                   вижте вашите резултати!
                 </span>
@@ -256,10 +256,10 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                       Вашият анализ
                     </h5>
                     <p className="opacity-[0.8] mb-4">
-                      Спрямо вашите индивидуални предпояитания и личностни
+                      Спрямо вашите индивидуални предпочитания и личностни
                       качества, приложението ще анализира поведението на
-                      Изкуствения Интелект с помощта на универсални и потвърдени
-                      показатели за оценка на машинното обучение!
+                      Изкуствения Интелект, с помощта на универсални и
+                      потвърдени показатели за оценка на машинното обучение!
                     </p>
                     <Link
                       className="mx-1 text-primary font-semibold leading-[1] mt-auto"
@@ -306,10 +306,10 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
           <div className="container">
             <AIStatsWidgetCardsComponent data={data} />
             <Card className="dark:border-black/10 bg-bodybg font-semibold text-xl p-4 rounded-lg shadow-lg dark:shadow-xl text-center mt-8">
-              <h2 className="text-2xl opsilion text-defaulttextcolor dark:text-white/80">
+              <h2 className="text-xl text-defaulttextcolor dark:text-white/80">
                 За да придобиете по-ясна представа за значенията на тези
                 показатели за оценка на машинното обучение, моля, разгледайте
-                секцията с разяснения на термините отдолу:
+                секцията с разяснения на термините по-надолу в страницата!
               </h2>
             </Card>
           </div>
@@ -380,9 +380,8 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                       </span>
                       предпочитания на потребителя и определя доколко даден филм
                       или сериал съвпада с неговите изисквания. Той използва
-                      подход, включващ няколко критерия за оценка, и изчислява
-                      общ резултат, който се нарича{" "}
-                      <span className="font-semibold">релевантност</span>.
+                      подход, включващ няколко критерия за оценка и изчислява
+                      общ резултат.
                     </p>
                     <h2 className="text-2xl">Критериите са: </h2>
                     <ul className="space-y-4 mt-3">

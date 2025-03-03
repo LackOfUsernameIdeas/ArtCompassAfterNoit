@@ -2,6 +2,7 @@ import { FC, Fragment } from "react";
 
 import gradientDark from "../../../assets/images/menu-bg-images/layered-peaks-haikei-dark.svg";
 import gradientLight from "../../../assets/images/menu-bg-images/layered-peaks-haikei-light.svg";
+import { Link } from "react-router-dom";
 
 const Footer: FC = () => (
   <Fragment>
@@ -51,10 +52,18 @@ const Footer: FC = () => (
               </h3>
               <ul className="footer-links">
                 <li>
-                  <a href="/app/recommendations">Нови Препоръки</a>
+                  <Link to="/app/recommendations">Нови Препоръки</Link>
                 </li>
                 <li>
-                  <a href="/app/aiAnalysator">AI Анализатор</a>
+                  <Link to="/app/aiAnalysator">AI Анализатор</Link>
+                </li>
+                <li>
+                  <Link to="/app/saveLists/movies_series">
+                    Списък за гледане
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/app/saveLists/books">Списък за четене</Link>
                 </li>
               </ul>
             </div>
@@ -84,7 +93,31 @@ const Footer: FC = () => (
                   >
                     <div className="space-x-1">
                       <i className="ti ti-api text-lg sm:text-xs"></i>
+                      <span>Gemini API</span>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.omdbapi.com/#top"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <div className="space-x-1">
+                      <i className="ti ti-api text-lg sm:text-xs"></i>
                       <span>OMDb API</span>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.omdbapi.com/#top"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <div className="space-x-1">
+                      <i className="ti ti-brand-google text-lg sm:text-xs"></i>
+                      <span>Google Books API</span>
                     </div>
                   </a>
                 </li>
