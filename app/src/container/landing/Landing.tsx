@@ -119,18 +119,18 @@ const Landing: FC<LandingProps> = () => {
           <div className="header-content-right">
             <div className="header-element !items-center">
               <div className="lg:hidden block opsilion">
-                <a
-                  href={`${import.meta.env.BASE_URL}signin`}
+                <Link
+                  to={`${import.meta.env.BASE_URL}signin`}
                   className="ti-btn ti-btn-primary-full !m-1"
                 >
                   Вход
-                </a>
-                <a
-                  href={`${import.meta.env.BASE_URL}signup`}
+                </Link>
+                <Link
+                  to={`${import.meta.env.BASE_URL}signup`}
                   className="ti-btn ti-btn-secondary-full !m-1"
                 >
                   Регистрация
-                </a>
+                </Link>
               </div>
             </div>
           </div>
