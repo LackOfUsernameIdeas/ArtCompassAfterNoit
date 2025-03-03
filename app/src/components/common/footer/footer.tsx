@@ -65,6 +65,11 @@ const Footer: FC = () => (
                 <li>
                   <Link to="/app/saveLists/books">Списък за четене</Link>
                 </li>
+                <li>
+                  <Link to="/app/individualStats/movies_series">
+                    Индивидуални статистики
+                  </Link>
+                </li>
               </ul>
             </div>
 
