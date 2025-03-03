@@ -2755,9 +2755,6 @@ Background Image
   }
 }
 @media (max-width: 991.98px) {
-  [data-nav-layout="horizontal"] .landing-body .landing-main-content {
-    @apply pt-[3.75rem] !important;
-  }
   [data-nav-layout="horizontal"] .landing-main-image {
     @apply hidden;
   }

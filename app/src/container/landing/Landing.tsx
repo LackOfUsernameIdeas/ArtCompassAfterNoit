@@ -1,6 +1,5 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import store from "../../redux/store";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import Navbar2 from "./sidemenu";
 import { Card } from "@/components/ui/card";
@@ -21,7 +20,7 @@ import BookAdaptations from "./components/BookAdaptations";
 
 interface LandingProps {}
 
-const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
+const Landing: FC<LandingProps> = () => {
   // Състояние за задържане на извлечени данни
   const [data, setData] = useState<DataType>({
     usersCount: [], // Броя на потребителите
@@ -95,24 +94,6 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
 
   // Добавя слушател за събитие за скролиране на прозореца
   window.addEventListener("scroll", Topup);
-
-  // Функция за затваряне на менюто на мобилни устройства
-  function menuClose() {
-    // Получава текущото състояние от Redux store
-    const theme = store.getState();
-    // Ако ширината на прозореца е по-малка или равна на 992px (мобилно устройство)
-    if (window.innerWidth <= 992) {
-      // Изпраща действието "close" на ThemeChanger
-      ThemeChanger({ ...theme, toggled: "close" });
-    }
-    // Намира елемента с ID "responsive-overlay"
-    const overlayElement = document.querySelector("#responsive-overlay");
-    if (overlayElement) {
-      // Премахва класа "active" от елемента
-      overlayElement.classList.remove("active");
-    }
-  }
-
   console.log(data);
 
   return (
@@ -122,6 +103,39 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
           <body className="landing-body jobs-landing"></body>
         </Helmet>
       </HelmetProvider>
+      <header className="app-header">
+        <div className="main-header-container container-fluid">
+          <div className="header-content-left">
+            <div className="header-element">
+              <div className="horizontal-logo">
+                <a
+                  href={`${import.meta.env.BASE_URL}app/home`}
+                  className="header-logo"
+                ></a>
+              </div>
+            </div>
+          </div>
+
+          <div className="header-content-right">
+            <div className="header-element !items-center">
+              <div className="lg:hidden block opsilion">
+                <a
+                  href={`${import.meta.env.BASE_URL}signin`}
+                  className="ti-btn ti-btn-primary-full !m-1"
+                >
+                  Вход
+                </a>
+                <a
+                  href={`${import.meta.env.BASE_URL}signup`}
+                  className="ti-btn ti-btn-secondary-full !m-1"
+                >
+                  Регистрация
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
       <aside className="app-sidebar sticky !topacity-0 sticky-pin" id="sidebar">
         <div className="container-xl xl:!p-0">
           <div className="main-sidebar mx-0">
@@ -488,11 +502,10 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                   </AccordionTrigger>
                   <AccordionContent>
                     <p>
-                      Измерва каква част от препоръките при последното Ви
-                      генериране, са{" "}
-                      <span className="font-semibold">наистина </span> подходящи
-                      за вас (релевантни). Високата стойност на{" "}
-                      <span className="font-semibold">Precision</span>, означава
+                      Измерва каква част от последните Ви препоръки, са{" "}
+                      <span className="font-semibold">наистина </span>{" "}
+                      релевантни. Високата стойност на{" "}
+                      <span className="font-semibold">Precision</span> означава,
                       че когато системата препоръчва нещо, то вероятно ще бъде
                       подходящо за вас.
                     </p>
@@ -567,9 +580,9 @@ const Landing: FC<LandingProps> = ({ ThemeChanger }: any) => {
                       <span className="font-semibold">
                         точността на препоръките
                       </span>
-                      , така и на{" "}
+                      , така и на
                       <span className="font-semibold">
-                        покритието, спрямо всички възможности
+                        покритието спрямо всички възможности
                       </span>
                       .
                     </p>
