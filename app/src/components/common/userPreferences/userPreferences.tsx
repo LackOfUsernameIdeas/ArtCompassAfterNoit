@@ -136,7 +136,7 @@ export default function UserPreferences({
               key={index}
               className="bg-white outline outline-transparent hover:outline-1 dark:hover:outline-primary hover:outline-black/25 dark:bg-bodybg2 p-3 rounded-md flex items-center justify-between transition-all duration-300"
             >
-              <div className="flex items-center opsilion w-2/3 max-w-[65%] pr-2 min-w-[100px]">
+              <div className="flex items-center opsilion w-2/3 sm:w-1/3 max-w-[65%] pr-2 min-w-[100px]">
                 {item.icon}
                 <span className="ml-2 font-semibold text-sm">{item.label}</span>
               </div>
