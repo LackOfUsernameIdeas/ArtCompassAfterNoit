@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useRef } from "react";
 import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
 import { PlotModal } from "./PlotModal";
@@ -31,7 +31,29 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false); // Статус на модалния прозорец
   const [modalData, setModalData] = useState<string | undefined>(""); // Данни за съдържанието на модалния прозорец
   const previewLength = 70; // Дължина на прегледа на съдържанието (oписаниeто и сюжета)
+  const modalRef = useRef<HTMLDivElement>(null); // Референция към модалния контейнер, използвана за манипулация с DOM
+  const [position, setPosition] = useState<number>(0); // Държи текущата позиция на модала по вертикалата (Y)
+  const [dragging, setDragging] = useState<boolean>(false); // Флаг, който указва дали потребителят в момента влачи модала
+  const [startY, setStartY] = useState<number>(0); // Запазва началната Y-координата при стартиране на влаченето
 
+  // Започва проследяването на докосването и апазва началната позиция на докосването и активира режима на влачене.
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setDragging(true);
+    setStartY(e.touches[0].clientY);
+  };
+
+  // Актуализира позицията на модала спрямо движението на пръста.
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!dragging) return;
+    const deltaY = e.touches[0].clientY - startY;
+    setPosition((prev) => prev + deltaY);
+    setStartY(e.touches[0].clientY);
+  };
+
+  // Прекратява влаченето, когато потребителят вдигне пръста си.
+  const handleTouchEnd = () => {
+    setDragging(false);
+  };
   // Когато има информация за филма/сериала, кардът се render-ва
   useEffect(() => {
     if (selectedItem) {
@@ -172,13 +194,18 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
       }`}
     >
       <div
+        ref={modalRef}
+        style={{ transform: `translateY(${position}px)` }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         className={`p-6 rounded-lg shadow-lg bg-[rgb(var(--body-bg))] glow-effect border-2 dark:border-white border-secondary text-center max-w-full transform transition-transform duration-300 ${
           visible ? "scale-100" : "scale-75"
-        } md:w-[75%] lg:w-[85%] xl:w-[70%] 2xl:w-[50%]`}
+        } w-full sm:w-[90%] md:w-[75%] lg:w-[85%] xl:w-[70%] 2xl:w-[50%]`}
       >
         <div className="recommendation-card">
-          <div className="flex w-full items-center">
-            <div className="relative flex-shrink-0 mr-8">
+          <div className="flex w-full items-center sm:items-start flex-col md:flex-row">
+            <div className="relative flex-shrink-0 mb-4 md:mb-0 md:mr-8 flex flex-col items-center">
               {/* Постер */}
               <img
                 src={selectedItem.poster}
@@ -219,16 +246,13 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
             <div className="flex-grow w-full md:w-2/3 text-left ml-8">
               {/* Главна информация */}
               <div className="top-0 z-10">
-                <a href="#" className="block text-3xl font-bold mb-1">
+                <p className="block text-xl sm:text-3xl font-bold overflow-hidden mb-2 sm:mb-1">
                   {selectedItem.title_bg || "Заглавие не е налично"}
-                </a>
-                <a
-                  href="#"
-                  className="block text-lg font-semibold text-opacity-60 italic mb-2"
-                >
+                </p>
+                <p className="block text-md sm:text-lg font-semibold text-opacity-60 italic mb-2">
                   {selectedItem.title_en ||
                     "Заглавие на английски не е налично"}
-                </a>
+                </p>
                 <p className="flex gap-1 recommendation-small-details text-sm italic text-defaulttextcolor/70">
                   {translatedGenres || "Жанр неизвестен"} |{" "}
                   {!isMovie &&
@@ -245,7 +269,7 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                   {selectedItem.rated || "N/A"}
                 </p>
                 {/* Рейтинги */}
-                <div className="flex items-center space-x-8 py-2">
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-8 py-2">
                   <div
                     className="flex items-center space-x-2 dark:text-[#FFCC33] text-[#bf9413]"
                     title="IMDb рейтинг: Базиран на отзиви и оценки от потребители."

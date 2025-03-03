@@ -202,7 +202,7 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className={`p-6 rounded-lg shadow-lg bg-[rgb(var(--body-bg))] glow-effect border-2 dark:border-white border-secondary text-center max-w-full transition-transform duration-300 ${
+        className={`p-6 rounded-lg shadow-lg bg-[rgb(var(--body-bg))] glow-effect border-2 dark:border-white border-secondary text-center max-w-full transform transition-transform duration-300 ${
           visible ? "scale-100" : "scale-75"
         } w-full sm:w-[90%] md:w-[75%] lg:w-[85%] xl:w-[70%] 2xl:w-[50%]`}
       >
