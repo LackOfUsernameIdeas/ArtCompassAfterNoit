@@ -73,7 +73,7 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
       >
         <svg
           onClick={handlePrevious}
-          className="absolute top-1/2 transform -translate-y-1/2 text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200 md:left-[-4rem] lg:left-[-4rem] xl:left-[-6rem] 2xl:left-[-10rem]"
+          className="absolute z-10 top-1/2 left-[-3rem] md:left-[-4rem] lg:left-[-4rem] xl:left-[-6rem] 2xl:left-[-10rem] transform -translate-y-1/2 text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="none"
@@ -119,7 +119,7 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
       >
         <svg
           onClick={handleNext}
-          className="absolute top-1/2 transform -translate-y-1/2 text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200 md:right-[-4rem] lg:right-[-4rem] xl:right-[-6rem] 2xl:right-[-10rem]"
+          className="absolute z-2 top-1/2 right-[-3rem] md:right-[-4rem] lg:right-[-4rem] xl:right-[-6rem] 2xl:right-[-10rem] transform -translate-y-1/2 text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="none"

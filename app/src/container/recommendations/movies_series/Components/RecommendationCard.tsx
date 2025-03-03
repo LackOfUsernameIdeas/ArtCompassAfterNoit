@@ -117,8 +117,8 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   console.log("recommendationList", recommendationList);
   return (
     <div className="recommendation-card">
-      <div className="flex w-full items-center">
-        <div className="relative flex-shrink-0 mr-8">
+      <div className="flex w-full items-center sm:items-start flex-col md:flex-row">
+        <div className="relative flex-shrink-0 mb-4 md:mb-0 md:mr-8 flex flex-col items-center">
           {/* Постер */}
           <img
             src={recommendation.poster}
@@ -159,12 +159,12 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
         <div className="flex-grow">
           {/* Главна информация */}
           <div className="top-0 z-10">
-            <a href="#" className="block text-3xl font-bold mb-1">
+            <a href="#" className="block text-xl sm:text-3xl font-bold mb-1">
               {recommendation.bgName || "Заглавие не е налично"}
             </a>
             <a
               href="#"
-              className="block text-lg font-semibold text-opacity-60 italic mb-2"
+              className="block text-md sm:text-lg font-semibold text-opacity-60 italic mb-2"
             >
               {recommendation.title || "Заглавие на английски не е налично"}
             </a>
@@ -184,7 +184,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
               {recommendation.rated || "N/A"}
             </p>
             {/* Рейтинги */}
-            <div className="flex items-center space-x-8 py-2">
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-8 py-2">
               <div
                 className="flex items-center space-x-2 dark:text-[#FFCC33] text-[#bf9413]"
                 title="IMDb рейтинг: Базиран на отзиви и оценки от потребители."
