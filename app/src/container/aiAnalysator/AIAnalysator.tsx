@@ -246,9 +246,10 @@ const AIAnalysator: FC = () => {
 
                   {/* User Specific Precision */}
                   <AccordionItem value="precision-user">
-                    <AccordionTrigger className="opsilion">
+                    <AccordionTrigger className="opsilion text-left">
                       ✅ Precision за последното генериране
                     </AccordionTrigger>
+
                     <AccordionContent>
                       <p>
                         Измерва каква част от последните Ви препоръки, са{" "}
