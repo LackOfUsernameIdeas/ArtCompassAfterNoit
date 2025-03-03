@@ -141,43 +141,43 @@ const Footer: FC = () => (
                 Използвани технологии
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 auto-rows-min footer-links">
-                <div className="flex items-center space-x-2 ml-[2rem]">
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
                   <i className="ti ti-brand-python text-xs"></i>
                   <span className="whitespace-nowrap">Python</span>
                 </div>
-                <div className="flex items-center space-x-2 ml-[2rem]">
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
                   <i className="ti ti-brand-react text-lg sm:text-xs"></i>
                   <span className="whitespace-nowrap">React</span>
                 </div>
-                <div className="flex items-center space-x-[0.40rem] ml-[2rem]">
+                <div className="flex items-center space-x-[0.40rem] md:ml-[2rem]">
                   <i className="ti ti-brand-tailwind text-lg sm:text-xs"></i>
                   <span className="whitespace-nowrap">Tailwind CSS</span>
                 </div>
-                <div className="flex items-center space-x-2 ml-[2rem]">
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
                   <i className="ti ti-brand-typescript text-lg sm:text-xs"></i>
                   <span className="whitespace-nowrap">TypeScript</span>
                 </div>
-                <div className="flex items-center space-x-2 ml-[2rem]">
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
                   <i className="ti ti-brand-nodejs text-lg sm:text-xs"></i>
                   <span className="whitespace-nowrap">NodeJS</span>
                 </div>
-                <div className="flex items-center space-x-2 ml-[2rem]">
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
                   <i className="ti ti-brand-vite text-lg sm:text-xs"></i>
                   <span className="whitespace-nowrap">Vite</span>
                 </div>
-                <div className="flex items-center space-x-2 ml-[2rem]">
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
                   <i className="ti ti-brand-javascript text-lg sm:text-xs"></i>
                   <span className="whitespace-nowrap">Express JS</span>
                 </div>
-                <div className="flex items-center space-x-2 ml-[2rem]">
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
                   <i className="ti ti-database text-lg sm:text-xs"></i>
                   <span className="whitespace-nowrap">MySQL</span>
                 </div>
-                <div className="flex items-center space-x-2 ml-[2rem]">
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
                   <i className="ti ti-brand-adobe text-lg sm:text-xs"></i>
                   <span className="whitespace-nowrap">Apex Charts</span>
                 </div>
-                <div className="flex items-center space-x-2 ml-[2rem]">
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
                   <i className="ti ti-lock-open text-lg sm:text-xs"></i>
                   <span className="whitespace-nowrap">JWT</span>
                 </div>
