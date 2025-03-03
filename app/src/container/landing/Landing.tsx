@@ -136,7 +136,7 @@ const Landing: FC<LandingProps> = () => {
           </div>
         </div>
       </header>
-      <aside className="app-sidebar sticky !topacity-0 sticky-pin" id="sidebar">
+      <aside className="app-sidebar sticky sticky-pin" id="sidebar">
         <div className="container-xl xl:!p-0">
           <div className="main-sidebar mx-0">
             <nav className="main-menu-container nav nav-pills flex-column sub-open">
