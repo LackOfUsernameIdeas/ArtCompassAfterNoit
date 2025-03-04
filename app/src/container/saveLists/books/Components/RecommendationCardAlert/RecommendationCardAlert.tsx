@@ -32,28 +32,47 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
   const source = selectedItem?.source; // Източник на данните за книгата
   const isGoodreads = source === "Goodreads"; // Проверка дали източникът е Goodreads
   const [visible, setVisible] = useState(false); // Видимостта на картата
-  const modalRef = useRef<HTMLDivElement>(null); // Референция към модалния контейнер, използвана за манипулация с DOM
-  const [position, setPosition] = useState<number>(0); // Държи текущата позиция на модала по вертикалата (Y)
-  const [dragging, setDragging] = useState<boolean>(false); // Флаг, който указва дали потребителят в момента влачи модала
-  const [startY, setStartY] = useState<number>(0); // Запазва началната Y-координата при стартиране на влаченето
+  const modalRef = useRef<HTMLDivElement>(null); // Референция към модалния контейнер за директна манипулация в DOM
 
-  // Започва проследяването на докосването и апазва началната позиция на докосването и активира режима на влачене.
+  const [position, setPosition] = useState<number>(0); // Държи текущата вертикална позиция на модала (Y)
+  const [dragging, setDragging] = useState<boolean>(false); // Флаг, който показва дали потребителят в момента влачи модала
+  const [lastY, setLastY] = useState<number>(0); // Запазва последната Y-координата на допир за плавно движение
+
+  // useEffect, който предотвратява скролването на фоновата страница, докато потребителят влачи модала
+  useEffect(() => {
+    const preventScroll = (e: TouchEvent) => {
+      if (dragging) e.preventDefault(); // Спира скролването на основната страница
+    };
+
+    document.addEventListener("touchmove", preventScroll, { passive: false });
+
+    return () => {
+      document.removeEventListener("touchmove", preventScroll); // Премахва слушателя при спиране на влаченето
+    };
+  }, [dragging]);
+
+  // Функция, която се изпълнява при докосване на модала
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    setDragging(true);
-    setStartY(e.touches[0].clientY);
+    setDragging(true); // Активира режима на влачене
+    setLastY(e.touches[0].clientY); // Запазва началната Y-координата
   };
 
-  // Актуализира позицията на модала спрямо движението на пръста.
+  // Функция, която се изпълнява при движение на пръста по екрана
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (!dragging) return;
-    const deltaY = e.touches[0].clientY - startY;
-    setPosition((prev) => prev + deltaY);
-    setStartY(e.touches[0].clientY);
+    if (!dragging) return; // Ако не влачим, прекратяваме функцията
+
+    const deltaY = e.touches[0].clientY - lastY; // Изчислява разликата в позицията
+    setLastY(e.touches[0].clientY); // Обновява последната Y-координата
+
+    // Използваме requestAnimationFrame за по-плавно движение
+    requestAnimationFrame(() => {
+      setPosition((prev) => prev + deltaY);
+    });
   };
 
-  // Прекратява влаченето, когато потребителят вдигне пръста си.
+  // Функция, която се изпълнява, когато потребителят вдигне пръста си от екрана
   const handleTouchEnd = () => {
-    setDragging(false);
+    setDragging(false); // Деактивира режима на влачене
   };
 
   // Изпълняваме след всяка промяна на избрания елемент
@@ -198,7 +217,10 @@ const RecommendationCardAlert: FC<RecommendationCardProps> = ({
     >
       <div
         ref={modalRef}
-        style={{ transform: `translateY(${position}px)` }}
+        style={{
+          transform: `translateY(${position}px)`,
+          transition: dragging ? "none" : "transform 0.3s ease-out"
+        }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
