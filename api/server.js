@@ -10,6 +10,9 @@ const db = require("./database");
 const hf = require("./helper_functions");
 const pythonPath = require("./config.js").pythonPath;
 const pythonPathLocal = require("./config.js").pythonPathLocal;
+const SECRET_KEY = require("./credentials.js").SECRET_KEY;
+const EMAIL_USER = require("./credentials.js").EMAIL_USER;
+const EMAIL_PASS = require("./credentials.js").EMAIL_PASS;
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -39,10 +42,6 @@ app.use(cors(corsOptions));
 app.options("*", cors(corsOptions)); // Handle preflight requests
 
 let verificationCodes = {};
-
-const SECRET_KEY = "1a2b3c4d5e6f7g8h9i0jklmnopqrstuvwxyz123456";
-const EMAIL_USER = "no-reply@artcompass-api.noit.eu";
-const EMAIL_PASS = "Noit_2025";
 
 // Създаване на транспортерен обект с използване на SMTP транспорт
 const transporter = nodemailer.createTransport({
@@ -1186,7 +1185,7 @@ app.get("/get-goodreads-data-for-a-book", (req, res) => {
   }
 
   // Стартиране на Python процес и подаване на URL като аргумент
-  const pythonProcess = spawn(pythonPathLocal, ["./python/scraper.py", url]);
+  const pythonProcess = spawn(pythonPath, ["./python/scraper.py", url]);
 
   let response = "";
 
@@ -1221,7 +1220,7 @@ app.get("/get-goodreads-json-object-for-a-book", (req, res) => {
   }
 
   // Стартиране на Python процес и подаване на URL като аргумент
-  const pythonProcess = spawn(pythonPathLocal, [
+  const pythonProcess = spawn(pythonPath, [
     "./python/scraper_script_tag_json.py",
     url
   ]);
@@ -1265,9 +1264,7 @@ app.post("/get-model-response", (req, res) => {
   }
 
   // Spawn the Python process
-  const pythonProcess = spawn(pythonPathLocal, [
-    "./python/fetch_ai_response.py"
-  ]);
+  const pythonProcess = spawn(pythonPath, ["./python/fetch_ai_response.py"]);
 
   let response = "";
 
