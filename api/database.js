@@ -3892,7 +3892,7 @@ const getLastGeneratedMoviesSeriesRecommendations = (
  * Записва нови стойности за Precision за потребител, ако те са различни от последно запазените.
  *
  * @param {number} userId - Идентификатор на потребителя.
- * @param {string} statsType - Тип на статистиката (например, "генерални" или "персонализирани").
+ * @param {string} statsType - Тип на статистиката.
  * @param {object} data - Обект, съдържащ новите стойности за Precision.
  * @param {function} callback - Функция за обратно извикване, която приема два аргумента: грешка (err) и резултати (results).
  */
@@ -3951,7 +3951,7 @@ const savePrecision = (userId, statsType, data, callback) => {
  * Записва нови стойности за Recall за потребител, ако те са различни от последно запазените.
  *
  * @param {number} userId - Идентификатор на потребителя.
- * @param {string} statsType - Тип на статистиката (например, "генерални" или "персонализирани").
+ * @param {string} statsType - Тип на статистиката.
  * @param {object} data - Обект, съдържащ новите стойности за Recall.
  * @param {function} callback - Функция за обратно извикване, която приема два аргумента: грешка (err) и резултати (results).
  */
@@ -4016,7 +4016,7 @@ const saveRecall = (userId, statsType, data, callback) => {
  * Записва нови стойности за F1 Score за потребител, ако те са различни от последно запазените.
  *
  * @param {number} userId - Идентификатор на потребителя.
- * @param {string} statsType - Тип на статистиката (например, "генерални" или "персонализирани").
+ * @param {string} statsType - Тип на статистиката.
  * @param {object} data - Обект, съдържащ новите стойности за F1 Score.
  * @param {function} callback - Функция за обратно извикване, която приема два аргумента: грешка (err) и резултати (results).
  */

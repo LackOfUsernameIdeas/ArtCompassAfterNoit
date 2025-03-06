@@ -1702,6 +1702,111 @@ app.post("/stats/individual/ai/f1-score", (req, res) => {
   });
 });
 
+// Изчисляване на Accuracy на база всички препоръки, правени някога в платформата
+app.post("/stats/individual/ai/accuracy-total", (req, res) => {
+  const { token, userPreferences } = req.body;
+
+  // Проверка дали липсва обектът с предпочитания на потребителя
+  if (!userPreferences) {
+    return res.status(400).json({
+      error: "Missing userPreferences object"
+    });
+  }
+
+  // Проверка на валидността на токена
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+
+    // Извличане на всички препоръки на потребителите от базата данни
+    db.getAllPlatformDistinctRecommendations((err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error retrieving recommendations" });
+      }
+
+      const total_platform_recommendations_count = result.total_count; // (TP + FP + FN + TN) -> Общият брой препоръки в цялата платформа
+      const recommendations = result.recommendations;
+      let relevant_platform_recommendations_count = 0; // (TP + FN) -> Броят на релевантните препоръки на даден потребител в цялата платформа, независимо дали те са му препоръчвани на него или не
+
+      // Изчисляване на релевантни препоръки
+      recommendations.forEach((recommendation) => {
+        const relevance = hf.checkRelevance(userPreferences, recommendation);
+        if (relevance.isRelevant) {
+          relevant_platform_recommendations_count++;
+        }
+      });
+
+      // Извличане на всички препоръки на даден потребител от базата данни
+      db.getAllUsersDistinctRecommendations(userId, (err, userResult) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: "Error retrieving user recommendations" });
+        }
+
+        const userRecommendations = userResult.recommendations;
+        let user_recommendations_count = 0; // (TP + FP) -> Броят на препоръките на даден потребител
+        let relevant_user_recommendations_count = 0; // (TP)
+
+        // Обработване на потребителските препоръки и изчисляване на точността
+        userRecommendations.forEach((recommendation) => {
+          const relevance = hf.checkRelevance(userPreferences, recommendation);
+          if (relevance.isRelevant) {
+            relevant_user_recommendations_count++;
+          }
+          user_recommendations_count++;
+        });
+
+        // (TN + FN) -> Броят на препоръките, които не са били препоръчани на даден потребител
+        const non_given_recommendations_count =
+          total_platform_recommendations_count - user_recommendations_count; // (TP + FP + TN + FN) - (TP + FP)
+
+        // (FN) -> Броят на препоръките, които са били препоръчани на даден потребител, но не са релевантни
+        const relevant_non_given_recommendations_count =
+          relevant_platform_recommendations_count -
+          relevant_user_recommendations_count; // (TP + FN) - (TP)
+
+        // (TN) -> Броят на препоръките, които не са били препоръчани на даден потребител и не са релевантни
+        const irrelevant_non_given_recommendations_count =
+          non_given_recommendations_count -
+          relevant_non_given_recommendations_count; // (TN + FN) - (FN)
+
+        // Изчисляване на Accuracy - (TP + TN) / (TP + TN + FP + FN)
+        const accuracy_exact =
+          total_platform_recommendations_count > 0
+            ? Math.round(
+                ((relevant_user_recommendations_count +
+                  irrelevant_non_given_recommendations_count) /
+                  total_platform_recommendations_count) *
+                  Math.pow(10, 16)
+              ) / Math.pow(10, 16)
+            : 0;
+
+        const accuracy_fixed = parseFloat(accuracy_exact.toFixed(2));
+        const accuracy_percentage = parseFloat(
+          (accuracy_exact * 100).toFixed(2)
+        );
+
+        // Връщане на резултатите като JSON
+        res.json({
+          accuracy_exact,
+          accuracy_fixed,
+          accuracy_percentage,
+          irrelevant_non_given_recommendations_count,
+          relevant_non_given_recommendations_count,
+          non_given_recommendations_count,
+          relevant_user_recommendations_count,
+          user_recommendations_count,
+          relevant_platform_recommendations_count,
+          total_platform_recommendations_count
+        });
+      });
+    });
+  });
+});
+
 // Извличане на броя книги с филмови и сериални адаптации
 app.get("/stats/platform/adaptations", (req, res) => {
   db.countBookAdaptations((err, result) => {
