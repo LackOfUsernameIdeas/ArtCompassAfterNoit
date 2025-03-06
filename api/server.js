@@ -1807,6 +1807,92 @@ app.post("/stats/individual/ai/accuracy-total", (req, res) => {
   });
 });
 
+// Изчисляване на Specificity на база всички препоръки, правени някога в платформата
+app.post("/stats/individual/ai/specificity-total", (req, res) => {
+  const { token, userPreferences } = req.body;
+
+  if (!userPreferences) {
+    return res.status(400).json({ error: "Missing userPreferences object" });
+  }
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+
+    db.getAllPlatformDistinctRecommendations((err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error retrieving recommendations" });
+      }
+
+      const total_platform_recommendations_count = result.total_count;
+      const recommendations = result.recommendations;
+      let irrelevant_platform_recommendations_count = 0; // (TN + FP)
+
+      recommendations.forEach((recommendation) => {
+        const relevance = hf.checkRelevance(userPreferences, recommendation);
+        if (!relevance.isRelevant) {
+          irrelevant_platform_recommendations_count++;
+        }
+      });
+
+      db.getAllUsersDistinctRecommendations(userId, (err, userResult) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: "Error retrieving user recommendations" });
+        }
+
+        const userRecommendations = userResult.recommendations;
+        let user_recommendations_count = 0; // (TP + FP)
+        let irrelevant_user_recommendations_count = 0; // (FP)
+
+        userRecommendations.forEach((recommendation) => {
+          const relevance = hf.checkRelevance(userPreferences, recommendation);
+          if (!relevance.isRelevant) {
+            irrelevant_user_recommendations_count++;
+          }
+          user_recommendations_count++;
+        });
+
+        const non_given_recommendations_count =
+          total_platform_recommendations_count - user_recommendations_count; // (TP + FP + TN + FN) - (TP + FP) = (TN + FN)
+        const irrelevant_non_given_recommendations_count =
+          irrelevant_platform_recommendations_count -
+          irrelevant_user_recommendations_count; // (TN + FP) - (FP) = (TN)
+
+        // Изчисляване на Specificity - TN / (TN + FP)
+        const specificity_exact =
+          irrelevant_platform_recommendations_count > 0
+            ? Math.round(
+                (irrelevant_non_given_recommendations_count /
+                  irrelevant_platform_recommendations_count) *
+                  Math.pow(10, 16)
+              ) / Math.pow(10, 16)
+            : 0;
+
+        const specificity_fixed = parseFloat(specificity_exact.toFixed(2));
+        const specificity_percentage = parseFloat(
+          (specificity_exact * 100).toFixed(2)
+        );
+
+        res.json({
+          specificity_exact,
+          specificity_fixed,
+          specificity_percentage,
+          irrelevant_non_given_recommendations_count,
+          non_given_recommendations_count,
+          irrelevant_user_recommendations_count,
+          user_recommendations_count,
+          irrelevant_platform_recommendations_count,
+          total_platform_recommendations_count
+        });
+      });
+    });
+  });
+});
+
 // Извличане на броя книги с филмови и сериални адаптации
 app.get("/stats/platform/adaptations", (req, res) => {
   db.countBookAdaptations((err, result) => {
