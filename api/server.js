@@ -1893,6 +1893,163 @@ app.post("/stats/individual/ai/specificity-total", (req, res) => {
   });
 });
 
+// Изчисляване на False Negative Rate на база всички препоръки, правени някога в платформата
+app.post("/stats/individual/ai/fnr-total", (req, res) => {
+  const { token, userPreferences } = req.body;
+
+  if (!userPreferences) {
+    return res.status(400).json({ error: "Missing userPreferences object" });
+  }
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+
+    db.getAllPlatformDistinctRecommendations((err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error retrieving recommendations" });
+      }
+
+      const total_platform_recommendations_count = result.total_count;
+      const recommendations = result.recommendations;
+      let relevant_platform_recommendations_count = 0; // (FN + TP)
+
+      recommendations.forEach((recommendation) => {
+        const relevance = hf.checkRelevance(userPreferences, recommendation);
+        if (relevance.isRelevant) {
+          relevant_platform_recommendations_count++;
+        }
+      });
+
+      db.getAllUsersDistinctRecommendations(userId, (err, userResult) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: "Error retrieving user recommendations" });
+        }
+
+        const userRecommendations = userResult.recommendations;
+        let user_recommendations_count = 0; // (TP + FP)
+        let relevant_user_recommendations_count = 0; // (TP)
+
+        userRecommendations.forEach((recommendation) => {
+          const relevance = hf.checkRelevance(userPreferences, recommendation);
+          if (relevance.isRelevant) {
+            relevant_user_recommendations_count++;
+          }
+          user_recommendations_count++;
+        });
+
+        const relevant_non_given_recommendations_count =
+          relevant_platform_recommendations_count -
+          relevant_user_recommendations_count; // (TP + FN) - (TP) = (FN)
+
+        // Изчисляване на False Negative Rate - FN / (FN + TP)
+        const fnr_exact =
+          relevant_platform_recommendations_count > 0
+            ? Math.round(
+                (relevant_non_given_recommendations_count /
+                  relevant_platform_recommendations_count) *
+                  Math.pow(10, 16)
+              ) / Math.pow(10, 16)
+            : 0;
+
+        const fnr_fixed = parseFloat(fnr_exact.toFixed(2));
+        const fnr_percentage = parseFloat((fnr_exact * 100).toFixed(2));
+
+        res.json({
+          fnr_exact,
+          fnr_fixed,
+          fnr_percentage,
+          relevant_non_given_recommendations_count,
+          relevant_user_recommendations_count,
+          user_recommendations_count,
+          relevant_platform_recommendations_count,
+          total_platform_recommendations_count
+        });
+      });
+    });
+  });
+});
+
+// Изчисляване на False Positive Rate на база всички препоръки, правени някога в платформата
+app.post("/stats/individual/ai/fpr-total", (req, res) => {
+  const { token, userPreferences } = req.body;
+
+  if (!userPreferences) {
+    return res.status(400).json({ error: "Missing userPreferences object" });
+  }
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) return res.status(401).json({ error: "Invalid token" });
+    const userId = decoded.id;
+
+    db.getAllPlatformDistinctRecommendations((err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Error retrieving recommendations" });
+      }
+
+      const total_platform_recommendations_count = result.total_count;
+      const recommendations = result.recommendations;
+      let irrelevant_platform_recommendations_count = 0; // (FP + TN)
+
+      recommendations.forEach((recommendation) => {
+        const relevance = hf.checkRelevance(userPreferences, recommendation);
+        if (!relevance.isRelevant) {
+          irrelevant_platform_recommendations_count++;
+        }
+      });
+
+      db.getAllUsersDistinctRecommendations(userId, (err, userResult) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: "Error retrieving user recommendations" });
+        }
+
+        const userRecommendations = userResult.recommendations;
+        let user_recommendations_count = 0; // (FP + TP)
+        let irrelevant_user_recommendations_count = 0; // (FP)
+
+        userRecommendations.forEach((recommendation) => {
+          const relevance = hf.checkRelevance(userPreferences, recommendation);
+          if (!relevance.isRelevant) {
+            irrelevant_user_recommendations_count++;
+          }
+          user_recommendations_count++;
+        });
+
+        // Изчисляване на False Positive Rate - FN / (FN + TP)
+        const fpr_exact =
+          irrelevant_platform_recommendations_count > 0
+            ? Math.round(
+                (irrelevant_user_recommendations_count /
+                  irrelevant_platform_recommendations_count) *
+                  Math.pow(10, 16)
+              ) / Math.pow(10, 16)
+            : 0;
+
+        const fpr_fixed = parseFloat(fpr_exact.toFixed(2));
+        const fpr_percentage = parseFloat((fpr_exact * 100).toFixed(2));
+
+        res.json({
+          fpr_exact,
+          fpr_fixed,
+          fpr_percentage,
+          irrelevant_user_recommendations_count,
+          user_recommendations_count,
+          irrelevant_platform_recommendations_count,
+          total_platform_recommendations_count
+        });
+      });
+    });
+  });
+});
+
 // Извличане на броя книги с филмови и сериални адаптации
 app.get("/stats/platform/adaptations", (req, res) => {
   db.countBookAdaptations((err, result) => {
