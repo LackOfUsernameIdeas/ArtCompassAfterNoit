@@ -2064,6 +2064,16 @@ app.get("/stats/platform/adaptations", (req, res) => {
   });
 });
 
+// Извличане на броя книги с филмови и сериални адаптации
+app.post("/save-hardware-data", (req, res) => {
+  const { data } = req.body;
+
+  console.log("testing", data);
+
+  // Връщане на резултата като JSON
+  res.json(data);
+});
+
 // Стартиране на сървъра
 app.listen(5000, () => {
   console.log("Server started on port 5000.");
