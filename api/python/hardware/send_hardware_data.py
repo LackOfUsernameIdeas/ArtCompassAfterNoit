@@ -1,22 +1,44 @@
-import requests
+import socketio
 import platform
-import json
+import time
 
+# Create a Socket.IO client instance
+sio = socketio.Client()
+
+# Connect to the WebSocket server
+@sio.event
+def connect():
+    print("Connected to the WebSocket server")
+
+# Handle the acknowledgment from the server
+@sio.event
+def hardwareDataResponse(data):
+    print("Received response from server:", data)
+
+# Handle disconnection
+@sio.event
+def disconnect():
+    print("Disconnected from the server")
+
+# Function to collect hardware data
 def get_hardware_data():
     return {
         "cpu": platform.processor(),
         "os": platform.system() + " " + platform.release()
     }
 
+# Function to send data over WebSocket
 def send_data():
-    url = "http://localhost:5000/save-hardware-data"
-    data = {"data": get_hardware_data()}
+    sio.connect('ws://localhost:5000')  # Connect to the WebSocket server
     
-    try:
-        response = requests.post(url, json=data)
-        print("Response:", response.json())
-    except requests.exceptions.RequestException as e:
-        print("Error sending data:", e)
+    while True:
+        data = {"data": get_hardware_data()}
+        
+        # Emit the 'hardwareData' event to the server
+        sio.emit('hardwareData', data)
+        
+        # Wait for 10 seconds before sending the next request
+        time.sleep(10)
 
 if __name__ == "__main__":
     send_data()

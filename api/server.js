@@ -1,4 +1,6 @@
 const express = require("express");
+const http = require("http");
+const socketIo = require("socket.io");
 const { spawn } = require("child_process");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -6,8 +8,8 @@ const cors = require("cors");
 const nodemailer = require("nodemailer");
 const bodyParser = require("body-parser");
 const crypto = require("crypto");
-const db = require("./database");
-const hf = require("./helper_functions");
+const db = require("./database.js");
+const hf = require("./helper_functions.js");
 const pythonPath = require("./config.js").pythonPath;
 const pythonPathLocal = require("./config.js").pythonPathLocal;
 const SECRET_KEY = require("./credentials.js").SECRET_KEY;
@@ -15,6 +17,7 @@ const EMAIL_USER = require("./credentials.js").EMAIL_USER;
 const EMAIL_PASS = require("./credentials.js").EMAIL_PASS;
 
 const app = express();
+const server = http.createServer(app);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -40,6 +43,11 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions)); // Handle preflight requests
+
+// Прилагане на същите опции на CORS към Socket.IO
+const io = socketIo(server, {
+  cors: corsOptions
+});
 
 let verificationCodes = {};
 
@@ -2064,17 +2072,25 @@ app.get("/stats/platform/adaptations", (req, res) => {
   });
 });
 
-// Извличане на броя книги с филмови и сериални адаптации
-app.post("/save-hardware-data", (req, res) => {
-  const { data } = req.body;
+// When a client connects to the WebSocket server
+io.on("connection", (socket) => {
+  console.log("A client connected");
 
-  console.log("testing", data);
+  // Listen for 'hardwareData' event from the client
+  socket.on("hardwareData", (data) => {
+    console.log("Received hardware data:", data);
 
-  // Връщане на резултата като JSON
-  res.json(data);
+    // Broadcast to all connected clients
+    io.emit("hardwareDataResponse", { status: "received", data: data });
+  });
+
+  // Handle client disconnect
+  socket.on("disconnect", () => {
+    console.log("A client disconnected");
+  });
 });
 
 // Стартиране на сървъра
-app.listen(5000, () => {
+server.listen(5000, () => {
   console.log("Server started on port 5000.");
 });
