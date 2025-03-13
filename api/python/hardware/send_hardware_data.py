@@ -65,7 +65,7 @@ def send_data():
     global is_connected
     while is_connected:
         data = {"data": generate_brain_data()}
-        sio.emit("brainData", data)
+        sio.emit("hardwareData", data)
         time.sleep(1)  # Send data every second for more dynamic updates
 
 # Function to handle connection
