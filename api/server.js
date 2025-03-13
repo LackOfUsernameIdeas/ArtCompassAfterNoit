@@ -2072,21 +2072,21 @@ app.get("/stats/platform/adaptations", (req, res) => {
   });
 });
 
-// When a client connects to the WebSocket server
+// Когато клиент се свърже с WebSocket сървъра
 io.on("connection", (socket) => {
-  console.log("A client connected");
+  console.log("Клиент се свърза");
 
-  // Listen for 'hardwareData' event from the client
+  // Слушане на събитието 'hardwareData' от клиента
   socket.on("hardwareData", (data) => {
-    console.log("Received hardware data:", data);
+    console.log("Получени хардуерни данни:", data);
 
-    // Broadcast to all connected clients
-    io.emit("hardwareDataResponse", { status: "received", data: data });
+    // Изпращане на данните към всички свързани клиенти
+    io.emit("hardwareDataResponse", { status: "получено", data: data });
   });
 
-  // Handle client disconnect
+  // Обработка на прекъсване на връзката от клиент
   socket.on("disconnect", () => {
-    console.log("A client disconnected");
+    console.log("Клиентът прекъсна връзката");
   });
 });
 
