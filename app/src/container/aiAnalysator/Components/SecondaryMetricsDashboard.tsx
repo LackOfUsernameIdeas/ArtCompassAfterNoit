@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { LucideCircleHelp } from "lucide-react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -204,6 +204,17 @@ export default function DataVisualization() {
       setTimeout(() => setFlash(false), 1000);
     }
   };
+
+  useEffect(() => {
+    const handleExternalScroll = () => {
+      handleHelpClick();
+    };
+
+    window.addEventListener("scrollToTerms", handleExternalScroll);
+    return () => {
+      window.removeEventListener("scrollToTerms", handleExternalScroll);
+    };
+  }, []);
 
   const metricConfig = {
     fpr: {

@@ -196,7 +196,7 @@ export default {
         },
         flash: {
           "0%, 100%": { backgroundColor: "inherit" },
-          "30%": { backgroundColor: "theme(colors.primary / 0.4)" }
+          "40%": { backgroundColor: "theme(colors.primary / 0.4)" }
         }
       },
       animation: {
