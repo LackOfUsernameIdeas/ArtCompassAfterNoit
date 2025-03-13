@@ -1,21 +1,9 @@
-"use client";
-
 import { useState } from "react";
-import { ChevronRight, ChevronLeft, BarChart3, CircleHelp } from "lucide-react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { CircleHelp } from "lucide-react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  CardFooter
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Tooltip,
   TooltipContent,
@@ -23,11 +11,9 @@ import {
   TooltipTrigger
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { MetricFormula } from "./MetricFormula";
 
-// Sample data structure based on the provided JSON
 interface MetricData {
-  // Primary metrics
   fpr_exact?: number;
   fpr_fixed?: number;
   fpr_percentage?: number;
@@ -41,7 +27,6 @@ interface MetricData {
   specificity_fixed?: number;
   specificity_percentage?: number;
 
-  // Secondary metrics
   irrelevant_user_recommendations_count?: number;
   user_recommendations_count?: number;
   irrelevant_platform_recommendations_count?: number;
@@ -53,7 +38,6 @@ interface MetricData {
   non_given_recommendations_count?: number;
 }
 
-// Sample data based on the provided JSON
 const sampleData: MetricData[] = [
   {
     fpr_exact: 0.25,
@@ -99,7 +83,6 @@ const sampleData: MetricData[] = [
   }
 ];
 
-// Define the PrimaryMetricCardProps interface
 interface PrimaryMetricCardProps {
   title: string;
   value: number | undefined;
@@ -109,12 +92,10 @@ interface PrimaryMetricCardProps {
   isActive: boolean;
 }
 
-// Primary metric card component with theme colors
 const PrimaryMetricCard = ({
   title,
   value,
   description,
-  tooltipText,
   onClick,
   isActive
 }: PrimaryMetricCardProps) => {
@@ -136,16 +117,6 @@ const PrimaryMetricCard = ({
         >
           {title}
         </Badge>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <CircleHelp className="h-4 w-4 text-defaulttextcolor dark:text-white/80" />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="max-w-xs">{tooltipText}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
       </div>
       <div className="text-lg opsilion text-defaulttextcolor dark:text-white/80 mb-2">
         {description}
@@ -161,7 +132,6 @@ const PrimaryMetricCard = ({
   );
 };
 
-// Metric stat component
 interface MetricStatProps {
   label: string;
   value: number | undefined;
@@ -310,6 +280,22 @@ export default function DataVisualization() {
               <div className="grid gap-3">
                 {activeMetric === "fpr" && (
                   <>
+                    <MetricFormula
+                      formula={
+                        <div className="flex flex-row gap-2 items-center">
+                          <div>FPR</div>
+                          <div> = </div>
+                          <div className="flex flex-col items-center">
+                            <div className="border-b border-foreground px-2">
+                              Нерелевантни препоръки на потребителя
+                            </div>
+                            <div className="px-2 mt-1">
+                              Общо препоръки на потребителя
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    />
                     <MetricStat
                       label="Общо препоръки на потребителя"
                       value={sampleData[0].user_recommendations_count}
