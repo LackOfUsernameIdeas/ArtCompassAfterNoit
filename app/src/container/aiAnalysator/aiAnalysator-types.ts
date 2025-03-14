@@ -43,6 +43,43 @@ export type Metrics = {
   average_precision_last_round_percentage: string; // Среден процент на точност за последния кръг
 };
 
+// Тип за вторични метрики при оценка на модели за машинно обучение
+export type SecondaryMetricData = {
+  fpr_exact?: number; // Точна стойност на false positive rate (Честота на фалшиво положителни случаи)
+  fpr_fixed?: number; // Коригирана стойност на false positive rate
+  fpr_percentage?: number; // False positive rate, изразен в проценти
+  fnr_exact?: number; // Точна стойност на false negative rate (Честота на фалшиво отрицателни случаи)
+  fnr_fixed?: number; // Коригирана стойност на false negative rate
+  fnr_percentage?: number; // False negative rate, изразен в проценти
+  accuracy_exact?: number; // Точна стойност на точността (Accuracy)
+  accuracy_fixed?: number; // Коригирана стойност на точността
+  accuracy_percentage?: number; // Точност, изразена в проценти
+  specificity_exact?: number; // Точна стойност на специфичността (Specificity)
+  specificity_fixed?: number; // Коригирана стойност на специфичността
+  specificity_percentage?: number; // Специфичност, изразена в проценти
+  irrelevant_user_recommendations_count?: number; // Брой нерелевантни препоръки, дадени на потребителите
+  user_recommendations_count?: number; // Общо брой препоръки, дадени на потребителите
+  irrelevant_platform_recommendations_count?: number; // Брой нерелевантни препоръки, дадени от платформата
+  total_platform_recommendations_count?: number; // Общо брой препоръки, генерирани от платформата
+  relevant_non_given_recommendations_count?: number; // Брой релевантни препоръки, които не са били дадени
+  relevant_user_recommendations_count?: number; // Брой релевантни препоръки, дадени на потребителите
+  relevant_platform_recommendations_count?: number; // Брой релевантни препоръки, генерирани от платформата
+  irrelevant_non_given_recommendations_count?: number; // Брой нерелевантни препоръки, които не са били дадени
+  non_given_recommendations_count?: number; // Общо брой препоръки, които не са били предоставени
+};
+
+// Интерфейс за свойствата на таблото за вторични метрики
+export interface SecondaryMetricsDashboardProps {
+  data: SecondaryMetricData[]; // Масив с данни за вторичните метрики
+}
+
+// Интерфейс за свойствата на детайлите на конкретна метрика
+export interface MetricDetailsProps {
+  data: SecondaryMetricData[]; // Масив с данни за вторичните метрики
+  activeMetric: string; // Идентификатор на активната метрика, която се визуализира
+  handleHelpClick: () => void; // Функция за обработка на клик върху помощната информация
+}
+
 // Интерфейс за свойствата на таблото за анализ на изкуствения интелект
 export interface AIAnalysisDashboardProps {
   precisionData: PrecisionData; // Данни за Precision

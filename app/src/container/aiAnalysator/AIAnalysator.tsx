@@ -5,7 +5,8 @@ import {
   Metrics,
   PrecisionData,
   RecallData,
-  RecommendationsAnalysis
+  RecommendationsAnalysis,
+  SecondaryMetricData
 } from "./aiAnalysator-types";
 import RecommendationsAnalysesWidgets from "@/components/common/recommendationsAnalyses/recommendationsAnalyses";
 import { Card } from "@/components/ui/card";
@@ -16,7 +17,8 @@ import {
   getHistoricalAverageMetrics,
   getHistoricalAverageMetricsForUser,
   getPrecisionTotal,
-  getRecallTotal
+  getRecallTotal,
+  getSecondaryMetricsData
 } from "./helper_functions";
 import { analyzeRecommendations } from "../helper_functions_common";
 import ErrorCard from "@/components/common/error/error";
@@ -29,6 +31,7 @@ import {
 import UserPreferences from "@/components/common/userPreferences/userPreferences";
 import { MovieSeriesUserPreferencesAfterSaving } from "../types_common";
 import MetricCharts from "./Components/MetricCharts";
+import SecondaryMetricsDashboard from "./Components/SecondaryMetricsDashboard";
 
 const AIAnalysator: FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -42,6 +45,9 @@ const AIAnalysator: FC = () => {
   const [historicalMetrics, setHistoricalMetrics] = useState<Metrics[] | null>(
     null
   );
+  const [secondaryData, setSecondaryData] = useState<
+    SecondaryMetricData[] | null
+  >(null);
   const [historicalUserMetrics, setHistoricalUserMetrics] = useState<
     Metrics[] | null
   >(null);
@@ -103,12 +109,17 @@ const AIAnalysator: FC = () => {
           const historicalUserMetrics =
             await getHistoricalAverageMetricsForUser(token);
 
+          const secondaryMetrics = await getSecondaryMetricsData(
+            token,
+            lastSavedUserPreferences
+          );
           // Запазване на новите данни в състоянието
           setPrecisionData(precisionObject);
           setRecallData(recallObject);
           setF1ScoreData(f1ScoreObject);
           setHistoricalMetrics(historicalMetrics);
           setHistoricalUserMetrics(historicalUserMetrics);
+          setSecondaryData(secondaryMetrics);
 
           // Анализ на препоръките, ако има релевантни резултати
           if (relevanceResults) {
@@ -166,6 +177,7 @@ const AIAnalysator: FC = () => {
   const renderRecommendationsAnalysis =
     recommendationsAnalysis.relevantRecommendations.length > 0;
 
+  console.log("a", secondaryData);
   return (
     <FadeInWrapper>
       {!showError ? (
@@ -233,10 +245,12 @@ const AIAnalysator: FC = () => {
                           <div className="text-center">
                             <p className="text-primary text-sm">
                               всички ваши РЕЛЕВАНТНИ препоръки правени някога
+                              (TP)
                             </p>
                             <div className="border-b border-gray-400 dark:border-gray-600 my-2"></div>
                             <p className="text-secondary text-sm">
-                              всички ваши препоръки, които някога са правени
+                              всички ваши препоръки, които някога са правени (TP
+                              + FP)
                             </p>
                           </div>
                         </div>
@@ -267,11 +281,12 @@ const AIAnalysator: FC = () => {
                           <div className="text-center">
                             <p className="text-primary text-sm">
                               всички ваши РЕЛЕВАНТНИ препоръки от последното
-                              генериране
+                              генериране (TP)
                             </p>
                             <div className="border-b border-gray-400 dark:border-gray-600 my-2"></div>
                             <p className="text-secondary text-sm">
-                              всички ваши препоръки от последното генериране
+                              всички ваши препоръки от последното генериране (TP
+                              + FP)
                             </p>
                           </div>
                         </div>
@@ -304,11 +319,13 @@ const AIAnalysator: FC = () => {
                           <div className="text-center">
                             <p className="text-primary text-sm">
                               всички ваши РЕЛЕВАНТНИ препоръки правени някога
+                              (TP)
                             </p>
                             <div className="border-b border-gray-400 dark:border-gray-600 my-2"></div>
                             <p className="text-secondary text-sm">
                               всички препоръки, които са РЕЛЕВАНТНИ на ВАШИТЕ
-                              предпочитания, измежду тези в цялата система
+                              предпочитания, измежду тези в цялата система (TP +
+                              FN)
                             </p>
                           </div>
                         </div>
@@ -365,7 +382,7 @@ const AIAnalysator: FC = () => {
               </div>
             </div>
 
-            {precisionData && recallData && f1ScoreData && (
+            {precisionData && recallData && f1ScoreData && secondaryData && (
               <>
                 <AIAnalysisDashboard
                   precisionData={precisionData}
@@ -376,6 +393,7 @@ const AIAnalysator: FC = () => {
                   historicalMetrics={historicalMetrics}
                   historicalUserMetrics={historicalUserMetrics}
                 />
+                <SecondaryMetricsDashboard data={secondaryData} />
               </>
             )}
 

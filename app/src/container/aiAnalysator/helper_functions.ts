@@ -3,7 +3,8 @@ import {
   F1ScoreData,
   PrecisionData,
   RecallData,
-  RelevanceResponse
+  RelevanceResponse,
+  SecondaryMetricData
 } from "./aiAnalysator-types";
 
 /**
@@ -220,6 +221,126 @@ export const getHistoricalAverageMetricsForUser = async (token: string) => {
       "Грешка при изчисляването на метриките за потребителя:",
       error
     );
+    throw error;
+  }
+};
+
+/**
+ * Извлича и комбинира данни от четири API крайни точки за вторични AI метрики.
+ *
+ * @async
+ * @function getSecondaryMetricsData
+ * @param {string} token - Токен за удостоверяване на заявката.
+ * @param {MovieSeriesUserPreferencesAfterSaving} userPreferences - Потребителски предпочитания, използвани за изчисленията.
+ * @returns {Promise<SecondaryMetricData[]>} - Масив от обекти с комбинирани метрики: точност (accuracy), специфичност (specificity),
+ * честота на пропускане (FNR) и честота на фалшиви открития (FPR).
+ * @throws {Error} - Ако заявката към някоя от крайните точки е неуспешна.
+ *
+ * @example
+ * getSecondaryMetricsData(token, userPreferences)
+ *   .then((data) => console.log("Вторични метрики:", data))
+ *   .catch((error) => console.error("Грешка при зареждане на метрики:", error));
+ */
+export const getSecondaryMetricsData = async (
+  token: string,
+  userPreferences: MovieSeriesUserPreferencesAfterSaving
+): Promise<SecondaryMetricData[]> => {
+  try {
+    const endpoints = [
+      "accuracy-total",
+      "specificity-total",
+      "fnr-total",
+      "fpr-total"
+    ];
+
+    const requests = endpoints.map(async (endpoint) => {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/stats/individual/ai/${endpoint}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ token, userPreferences })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Error with request to ${endpoint}: ${response.statusText}`
+        );
+      }
+
+      return response.json();
+    });
+
+    // Изчакваме всички заявки и запазваме резултатите
+    const [accuracy, specificity, fnr, fpr] = await Promise.all(requests);
+
+    return [
+      {
+        fpr_exact: fpr?.fpr_exact,
+        fpr_fixed: fpr?.fpr_fixed,
+        fpr_percentage: fpr?.fpr_percentage,
+        irrelevant_user_recommendations_count:
+          fpr?.irrelevant_user_recommendations_count,
+        user_recommendations_count: fpr?.user_recommendations_count,
+        irrelevant_platform_recommendations_count:
+          fpr?.irrelevant_platform_recommendations_count,
+        total_platform_recommendations_count:
+          fpr?.total_platform_recommendations_count
+      },
+      {
+        fnr_exact: fnr?.fnr_exact,
+        fnr_fixed: fnr?.fnr_fixed,
+        fnr_percentage: fnr?.fnr_percentage,
+        relevant_non_given_recommendations_count:
+          fnr?.relevant_non_given_recommendations_count,
+        relevant_user_recommendations_count:
+          fnr?.relevant_user_recommendations_count,
+        user_recommendations_count: fnr?.user_recommendations_count,
+        relevant_platform_recommendations_count:
+          fnr?.relevant_platform_recommendations_count,
+        total_platform_recommendations_count:
+          fnr?.total_platform_recommendations_count
+      },
+      {
+        specificity_exact: specificity?.specificity_exact,
+        specificity_fixed: specificity?.specificity_fixed,
+        specificity_percentage: specificity?.specificity_percentage,
+        irrelevant_non_given_recommendations_count:
+          specificity?.irrelevant_non_given_recommendations_count,
+        non_given_recommendations_count:
+          specificity?.non_given_recommendations_count,
+        irrelevant_user_recommendations_count:
+          specificity?.irrelevant_user_recommendations_count,
+        user_recommendations_count: specificity?.user_recommendations_count,
+        irrelevant_platform_recommendations_count:
+          specificity?.irrelevant_platform_recommendations_count,
+        total_platform_recommendations_count:
+          specificity?.total_platform_recommendations_count
+      },
+      {
+        accuracy_exact: accuracy?.accuracy_exact,
+        accuracy_fixed: accuracy?.accuracy_fixed,
+        accuracy_percentage: accuracy?.accuracy_percentage,
+        irrelevant_non_given_recommendations_count:
+          accuracy?.irrelevant_non_given_recommendations_count,
+        relevant_non_given_recommendations_count:
+          accuracy?.relevant_non_given_recommendations_count,
+        non_given_recommendations_count:
+          accuracy?.non_given_recommendations_count,
+        relevant_user_recommendations_count:
+          accuracy?.relevant_user_recommendations_count,
+        user_recommendations_count: accuracy?.user_recommendations_count,
+        relevant_platform_recommendations_count:
+          accuracy?.relevant_platform_recommendations_count,
+        total_platform_recommendations_count:
+          accuracy?.total_platform_recommendations_count
+      }
+    ];
+  } catch (error) {
+    console.error("Грешка при изчисляване на вторичните метрики:", error);
     throw error;
   }
 };
