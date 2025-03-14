@@ -251,13 +251,15 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
     setNotification(null);
   };
 
-  console.log("selectedAnswer: ", selectedAnswer);
+  // Изпълняваме useEffect при всяка промяна на currentQuestion или selectedAnswer
   useEffect(() => {
     if (currentQuestion?.value) {
+      // Проверяваме дали опциите на въпроса са масив и дали всички опции са жанрове
       if (
         Array.isArray(currentQuestion.options) &&
         currentQuestion.options.every(isGenreOption)
       ) {
+        // Ако стойността на въпроса е масив, филтрираме и изваждаме само стойностите за bg
         const genreBgValues = Array.isArray(currentQuestion.value)
           ? currentQuestion.value
               .filter(
@@ -267,18 +269,20 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
               .map((value) => value.bg)
           : [
               currentQuestion.value,
+              // Търсим съответния bg за избраната стойност от опциите
               currentQuestion.options.find(
                 (option: { en: string; bg: string }) =>
                   option.en === currentQuestion.value
               )?.bg || currentQuestion.value
             ];
 
+        // Ако избраните стойности не съвпадат със стария отговор, обновяваме selectedAnswer
         if (JSON.stringify(genreBgValues) !== JSON.stringify(selectedAnswer)) {
           console.log("genreBgValues: ", genreBgValues);
-          setSelectedAnswer(genreBgValues);
+          setSelectedAnswer(genreBgValues); // Актуализираме отговора
         }
       } else {
-        // Уверяваме се, че стойността винаги е масив от string
+        // Ако стойността на въпроса не е жанрова опция, се уверяваме, че стойността е масив от string
         const newValue = Array.isArray(currentQuestion.value)
           ? currentQuestion.value.filter(
               (item): item is string => typeof item === "string"
@@ -296,6 +300,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   }, [currentQuestion, selectedAnswer]);
 
   console.log("user's preferences: ", moviesSeriesUserPreferences);
+
   return (
     <div>
       {showViewRecommendations && (
@@ -323,7 +328,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
             window.innerWidth >= 640 ? getMarginClass(currentQuestion) : ""
           }`}
         >
-          {/* Render BrainAnalysisQuestions if selected */}
+          {/* Ако е избрана опцията за генериране на препоръки с устройство за анализ на мозъчните импулси, визуализираме компонента BrainAnalysisQuestions */}
           {renderBrainAnalysis ? (
             <BrainAnalysisQuestions />
           ) : (

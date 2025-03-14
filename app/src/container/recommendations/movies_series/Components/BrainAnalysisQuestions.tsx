@@ -1,12 +1,14 @@
 import { FC, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 
+// Компонент за въпросите по време на мозъчния анализ
 export const BrainAnalysisQuestions = () => {
+  // Състояния за текущия индекс на въпроса, показване на въпроса и дали анализът е завършен
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showQuestion, setShowQuestion] = useState(true);
   const [isAnalysisComplete, setIsAnalysisComplete] = useState(false);
 
-  // Example questions for brain analysis
+  // Примерни въпроси за мозъчния анализ
   const questions = [
     {
       question: "Analyzing your emotional response to drama",
@@ -40,27 +42,34 @@ export const BrainAnalysisQuestions = () => {
     }
   ];
 
+  // Общо количество въпроси
   const totalQuestions = questions.length;
+  // Текущият въпрос, който ще бъде показан
   const currentQuestion = questions[currentQuestionIndex];
 
-  // Function to handle moving to the next question
+  // Функция за преминаване към следващия въпрос
   const handleNext = () => {
+    // Изключваме показването на въпроса (за анимация)
     setShowQuestion(false);
     setTimeout(() => {
+      // Проверяваме дали има още въпроси
       if (currentQuestionIndex < totalQuestions - 1) {
+        // Ако има, увеличаваме индекса на въпроса
         setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
       } else {
+        // Ако няма повече въпроси, маркираме анализата като завършена
         setIsAnalysisComplete(true);
       }
+      // Включваме отново показването на въпроса
       setShowQuestion(true);
-    }, 500);
+    }, 500); // Задаваме забавяне за анимацията
   };
 
   return (
     <div>
       <CSSTransition
         in={showQuestion}
-        timeout={500}
+        timeout={500} // Време за анимация
         classNames="fade"
         unmountOnExit
       >
@@ -91,7 +100,7 @@ export const BrainAnalysisQuestions = () => {
                 </p>
               </div>
 
-              {/* Display example image div */}
+              {/* Показваме изображението за пример (като част от въпроса) */}
               <div className="mt-8 border-2 rounded-lg p-4 bg-opacity-50 bg-black text-white">
                 <div className="flex justify-center items-center h-64 bg-gray-800 rounded-lg">
                   <p className="text-lg text-center">{currentQuestion.image}</p>
@@ -114,7 +123,7 @@ export const BrainAnalysisQuestions = () => {
                 </p>
               </div>
 
-              {/* Next button similar to QuizQuestions */}
+              {/* Бутон за преминаване към следващия въпрос или завършване на анализа */}
               <div
                 onClick={handleNext}
                 className="next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-6 flex justify-center items-center transition-all duration-300 ease-in-out transform opacity-100 cursor-pointer hover:scale-105"
