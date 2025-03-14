@@ -60,21 +60,21 @@ const SecondaryMetricsDashboard: FC<SecondaryMetricsDashboardProps> = ({
           />
 
           <SecondaryMetricsWidget
-            title={metricConfig.fnr.title}
-            value={data[1].fnr_percentage}
-            description={metricConfig.fnr.description}
-            modalText={metricConfig.fnr.tooltip}
-            onClick={() => setActiveMetric("fnr")}
-            isActive={activeMetric === "fnr"}
-          />
-
-          <SecondaryMetricsWidget
             title={metricConfig.specificity.title}
             value={data[2].specificity_percentage}
             description={metricConfig.specificity.description}
             modalText={metricConfig.specificity.tooltip}
             onClick={() => setActiveMetric("specificity")}
             isActive={activeMetric === "specificity"}
+          />
+
+          <SecondaryMetricsWidget
+            title={metricConfig.fnr.title}
+            value={data[1].fnr_percentage}
+            description={metricConfig.fnr.description}
+            modalText={metricConfig.fnr.tooltip}
+            onClick={() => setActiveMetric("fnr")}
+            isActive={activeMetric === "fnr"}
           />
 
           <SecondaryMetricsWidget
