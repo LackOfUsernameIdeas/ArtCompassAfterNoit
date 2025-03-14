@@ -18,7 +18,10 @@ import {
   depthOptions,
   targetGroupOptions
 } from "../moviesSeriesRecommendations-data";
-import { moviesSeriesGenreOptions } from "../../../data_common";
+import {
+  moviesSeriesGenreOptions,
+  preferenceOptions
+} from "../../../data_common";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { ViewRecommendations } from "./ViewRecommendations";
 import Notification from "../../../../components/common/notification/Notification";
@@ -34,9 +37,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   setBookmarkedMovies
 }) => {
   const [recommendationType, setRecommendationType] = useState("");
-  const [preferencesType, setPreferencesType] = useState<
-    "standard" | "device" | null
-  >(null);
+  const [preferencesType, setPreferencesType] = useState<string | null>(null);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [moods, setMoods] = useState<string[]>([]);
   const [timeAvailability, setTimeAvailability] = useState("");
@@ -60,6 +61,12 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   } | null>(null);
 
   const questions = [
+    {
+      question: "Как искате да продължите?",
+      options: preferenceOptions,
+      value: preferencesType,
+      setter: setPreferencesType
+    },
     {
       question: "Какво търсите - филм или сериал?",
       options: typeOptions,
@@ -194,30 +201,44 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       return;
     }
 
-    if (currentQuestionIndex === totalQuestions - 1) {
-      if (alreadyHasRecommendations) {
-        handleOpenModal();
+    // Handle the "Мозъчен анализ" case
+    if (
+      currentQuestionIndex === 0 &&
+      selectedAnswer?.includes(
+        "Мозъчен анализ - устройство за измерване на мозъчни вълни"
+      )
+    ) {
+      setShowQuestion(false); // Hides the current question
+      setNotification({
+        message: "Мозъчен анализ!",
+        type: "success"
+      });
+    } else {
+      if (currentQuestionIndex === totalQuestions - 1) {
+        if (alreadyHasRecommendations) {
+          handleOpenModal();
+        } else {
+          handleSubmit(
+            setNotification,
+            setLoading,
+            setSubmitted,
+            setSubmitCount,
+            setRecommendationList,
+            setRecommendationsAnalysis,
+            setBookmarkedMovies,
+            moviesSeriesUserPreferences,
+            token,
+            submitCount
+          );
+        }
       } else {
-        handleSubmit(
-          setNotification,
-          setLoading,
-          setSubmitted,
-          setSubmitCount,
-          setRecommendationList,
-          setRecommendationsAnalysis,
-          setBookmarkedMovies,
-          moviesSeriesUserPreferences,
-          token,
-          submitCount
+        handleNext(
+          setSelectedAnswer,
+          setShowQuestion,
+          setCurrentQuestionIndex,
+          questions
         );
       }
-    } else {
-      handleNext(
-        setSelectedAnswer,
-        setShowQuestion,
-        setCurrentQuestionIndex,
-        questions
-      );
     }
   };
 
@@ -228,6 +249,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
     setNotification(null);
   };
 
+  console.log("selectedAnswer: ", selectedAnswer);
   useEffect(() => {
     if (currentQuestion?.value) {
       if (
