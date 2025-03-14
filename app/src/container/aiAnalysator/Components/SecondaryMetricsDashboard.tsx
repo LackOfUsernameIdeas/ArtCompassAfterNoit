@@ -106,10 +106,22 @@ const SecondaryMetricsDashboard: FC<SecondaryMetricsDashboardProps> = ({
           </div>
           <div className="grid grid-cols-2 gap-x-5 gap-y-3">
             {[
-              { label: "TP", description: "Подходящи предложени препоръки" },
-              { label: "FP", description: "Неподходящи предложени препоръки" },
-              { label: "FN", description: "Подходящи пропуснати препоръки" },
-              { label: "TN", description: "Неподходящи пропуснати препоръки" }
+              {
+                label: "TP",
+                description: "Подходящи предложени препоръки"
+              },
+              {
+                label: "FN",
+                description: "Подходящи пропуснати препоръки"
+              },
+              {
+                label: "FP",
+                description: "Неподходящи предложени препоръки"
+              },
+              {
+                label: "TN",
+                description: "Неподходящи пропуснати препоръки"
+              }
             ].map(({ label, description }) => (
               <div key={label} className="flex items-center gap-4">
                 <div className="flex pt-1 pl-1 h-8 w-8 items-center justify-center rounded-full bg-primary/15 text-sm font-semibold text-primary shadow">
