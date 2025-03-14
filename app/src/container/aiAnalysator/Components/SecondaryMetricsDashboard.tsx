@@ -49,7 +49,7 @@ const SecondaryMetricsDashboard: FC<SecondaryMetricsDashboardProps> = ({
       </CardHeader>
 
       <CardContent>
-        <div className="grid grid-cols-4 mb-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-4 mb-4 gap-4">
           <SecondaryMetricsWidget
             title={metricConfig.fpr.title}
             value={data[0].fpr_percentage}
@@ -104,7 +104,7 @@ const SecondaryMetricsDashboard: FC<SecondaryMetricsDashboardProps> = ({
               ВИДОВЕ ПРЕДПОЛОЖЕНИЯ НА ИЗКУСТВЕНИЯ ИНТЕЛЕКТ
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-x-5 gap-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3">
             {[
               {
                 label: "TP",

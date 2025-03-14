@@ -17,7 +17,7 @@ const MetricDetails: FC<MetricDetailsProps> = ({
   return (
     <div className="rounded-lg p-4 bg-white dark:bg-bodybg2 shadow-md">
       <div className="flex flex-col">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
           <Badge variant="default" className="opsilion text-white">
             {activeMetric === "fpr"
               ? metricConfig.fpr.title
@@ -35,12 +35,12 @@ const MetricDetails: FC<MetricDetailsProps> = ({
           <div className="grid gap-3">
             {activeMetric === "fpr" && (
               <>
-                <div className="flex flex-row items-center justify-center gap-3">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 text-center sm:text-left">
                   <MetricFormula
                     formula={
-                      <div className="flex flex-row gap-2 items-center">
+                      <div className="flex flex-col sm:flex-row gap-2 items-center">
                         <div>FPR</div>
-                        <div> = </div>
+                        <div>=</div>
                         <div className="flex flex-col items-center">
                           <div className="px-2">FP</div>
                           <div className="border-t border-foreground px-2">
@@ -52,7 +52,7 @@ const MetricDetails: FC<MetricDetailsProps> = ({
                   />
                   <LucideCircleHelp
                     strokeWidth={3}
-                    className={`dark:text-defaulttextcolor/85 cursor-pointer text-bold transition-transform duration-200 hover:scale-110 rounded-full z-10`}
+                    className="dark:text-defaulttextcolor/85 cursor-pointer text-bold transition-transform duration-200 hover:scale-110 rounded-full z-10"
                     onClick={handleHelpClick}
                   />
                 </div>
@@ -73,12 +73,12 @@ const MetricDetails: FC<MetricDetailsProps> = ({
 
             {activeMetric === "specificity" && (
               <>
-                <div className="flex flex-row items-center justify-center gap-3">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 text-center sm:text-left">
                   <MetricFormula
                     formula={
-                      <div className="flex flex-row gap-2 items-center">
+                      <div className="flex flex-col sm:flex-row gap-2 items-center">
                         <div>Specificity</div>
-                        <div> = </div>
+                        <div>=</div>
                         <div className="flex flex-col items-center">
                           <div className="px-2">TN</div>
                           <div className="border-t border-foreground px-2">
@@ -90,7 +90,7 @@ const MetricDetails: FC<MetricDetailsProps> = ({
                   />
                   <LucideCircleHelp
                     strokeWidth={3}
-                    className={`dark:text-defaulttextcolor/85 cursor-pointer text-bold transition-transform duration-200 hover:scale-110 rounded-full z-10`}
+                    className="dark:text-defaulttextcolor/85 cursor-pointer text-bold transition-transform duration-200 hover:scale-110 rounded-full z-10"
                     onClick={handleHelpClick}
                   />
                 </div>
@@ -111,12 +111,12 @@ const MetricDetails: FC<MetricDetailsProps> = ({
 
             {activeMetric === "fnr" && (
               <>
-                <div className="flex flex-row items-center justify-center gap-3">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 text-center sm:text-left">
                   <MetricFormula
                     formula={
-                      <div className="flex flex-row gap-2 items-center">
+                      <div className="flex flex-col sm:flex-row gap-2 items-center">
                         <div>FNR</div>
-                        <div> = </div>
+                        <div>=</div>
                         <div className="flex flex-col items-center">
                           <div className="px-2">FN</div>
                           <div className="border-t border-foreground px-2">
@@ -128,7 +128,7 @@ const MetricDetails: FC<MetricDetailsProps> = ({
                   />
                   <LucideCircleHelp
                     strokeWidth={3}
-                    className={`dark:text-defaulttextcolor/85 cursor-pointer text-bold transition-transform duration-200 hover:scale-110 rounded-full z-10`}
+                    className="dark:text-defaulttextcolor/85 cursor-pointer text-bold transition-transform duration-200 hover:scale-110 rounded-full z-10"
                     onClick={handleHelpClick}
                   />
                 </div>
@@ -149,12 +149,12 @@ const MetricDetails: FC<MetricDetailsProps> = ({
 
             {activeMetric === "accuracy" && (
               <>
-                <div className="flex flex-row items-center justify-center gap-4">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center sm:text-left">
                   <MetricFormula
                     formula={
-                      <div className="flex flex-row gap-2 items-center">
+                      <div className="flex flex-col sm:flex-row gap-2 items-center">
                         <div>Accuracy</div>
-                        <div> = </div>
+                        <div>=</div>
                         <div className="flex flex-col items-center">
                           <div className="px-2">TP + TN</div>
                           <div className="border-t border-foreground px-2">
@@ -166,7 +166,7 @@ const MetricDetails: FC<MetricDetailsProps> = ({
                   />
                   <LucideCircleHelp
                     strokeWidth={3}
-                    className={`dark:text-defaulttextcolor/85 cursor-pointer text-bold transition-transform duration-200 hover:scale-110 rounded-full z-10`}
+                    className="dark:text-defaulttextcolor/85 cursor-pointer text-bold transition-transform duration-200 hover:scale-110 rounded-full z-10"
                     onClick={handleHelpClick}
                   />
                 </div>
