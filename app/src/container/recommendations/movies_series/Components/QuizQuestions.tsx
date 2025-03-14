@@ -33,7 +33,10 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   setRecommendationsAnalysis,
   setBookmarkedMovies
 }) => {
-  const [type, setType] = useState("");
+  const [recommendationType, setRecommendationType] = useState("");
+  const [preferencesType, setPreferencesType] = useState<
+    "standard" | "device" | null
+  >(null);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [moods, setMoods] = useState<string[]>([]);
   const [timeAvailability, setTimeAvailability] = useState("");
@@ -60,8 +63,8 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
     {
       question: "Какво търсите - филм или сериал?",
       options: typeOptions,
-      value: type,
-      setter: setType
+      value: recommendationType,
+      setter: setRecommendationType
     },
     {
       question: "Кои жанрове Ви се гледат в момента?",
@@ -144,7 +147,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
     localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
 
   const moviesSeriesUserPreferences = {
-    type,
+    recommendationType,
     genres,
     moods: moods?.map((mood) => mood.split(" ")[0]),
     timeAvailability,

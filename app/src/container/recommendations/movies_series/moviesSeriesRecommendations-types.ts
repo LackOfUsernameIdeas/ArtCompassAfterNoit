@@ -72,7 +72,7 @@ export interface Recommendation {
 
 // Интерфейс за предпочитания на потребителя.
 export interface MoviesSeriesUserPreferences {
-  type: string; // Вид на предпочитанията
+  recommendationType: string; // Вид на предпочитанията
   genres: { en: string; bg: string }[]; // Жанрове на английски и български
   moods: string[]; // Настроения
   timeAvailability: string; // Наличност на време

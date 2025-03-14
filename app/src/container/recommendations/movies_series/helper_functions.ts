@@ -37,7 +37,7 @@ export const saveMoviesSeriesUserPreferences = async (
 ): Promise<void> => {
   try {
     const {
-      type,
+      recommendationType,
       genres,
       moods,
       timeAvailability,
@@ -63,7 +63,7 @@ export const saveMoviesSeriesUserPreferences = async (
       mood: Array.isArray(moods) ? moods.join(", ") : null,
       timeAvailability,
       preferred_age: age,
-      preferred_type: type,
+      preferred_type: recommendationType,
       preferred_actors: actors,
       preferred_directors: directors,
       preferred_countries: countries,
@@ -172,7 +172,7 @@ export const generateMoviesSeriesRecommendations = async (
   token: string | null
 ) => {
   const {
-    type,
+    recommendationType,
     genres,
     moods,
     timeAvailability,
@@ -187,7 +187,7 @@ export const generateMoviesSeriesRecommendations = async (
   } = moviesSeriesUserPreferences;
 
   try {
-    const typeText = type === "Филм" ? "филма" : "сериала";
+    const typeText = recommendationType === "Филм" ? "филма" : "сериала";
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
