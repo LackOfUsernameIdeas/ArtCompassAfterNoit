@@ -61,50 +61,12 @@ const MetricDetails: FC<MetricDetailsProps> = ({
                   total={data[0].irrelevant_platform_recommendations_count}
                 />
                 <MetricStat
-                  label="Брой нерелевантни ЗА ВАС препоръки, които са отправени към вас (FP):"
+                  label="(FP) -> Брой нерелевантни ЗА ВАС препоръки, които са отправени към вас:"
                   value={data[0].irrelevant_user_recommendations_count}
                 />
                 <MetricStat
-                  label="Брой нерелевантни ЗА ВАС препоръки в платформата - отправени и неотправени към вас (FP + TN):"
+                  label="(FP + TN) -> Брой нерелевантни ЗА ВАС препоръки в платформата - отправени и неотправени към вас:"
                   value={data[0].irrelevant_platform_recommendations_count}
-                />
-              </>
-            )}
-
-            {activeMetric === "fnr" && (
-              <>
-                <div className="flex flex-row items-center justify-center gap-3">
-                  <MetricFormula
-                    formula={
-                      <div className="flex flex-row gap-2 items-center">
-                        <div>FNR</div>
-                        <div> = </div>
-                        <div className="flex flex-col items-center">
-                          <div className="px-2">FN</div>
-                          <div className="border-t border-foreground px-2">
-                            FN + TP
-                          </div>
-                        </div>
-                      </div>
-                    }
-                  />
-                  <LucideCircleHelp
-                    strokeWidth={3}
-                    className={`dark:text-defaulttextcolor/85 cursor-pointer text-bold transition-transform duration-200 hover:scale-110 rounded-full z-10`}
-                    onClick={handleHelpClick}
-                  />
-                </div>
-                <MetricStat
-                  value={data[1].relevant_non_given_recommendations_count}
-                  total={data[1].relevant_platform_recommendations_count}
-                />
-                <MetricStat
-                  label="Брой релевантни ЗА ВАС препоръки, които НЕ са отправени към вас (FN):"
-                  value={data[1].relevant_non_given_recommendations_count}
-                />
-                <MetricStat
-                  label="Брой релевантни ЗА ВАС препоръки в платформата (FN + TP) - отправени и неотправени към вас:"
-                  value={data[1].relevant_platform_recommendations_count}
                 />
               </>
             )}
@@ -137,12 +99,50 @@ const MetricDetails: FC<MetricDetailsProps> = ({
                   total={data[2].irrelevant_platform_recommendations_count}
                 />
                 <MetricStat
-                  label="Брой нерелевантни ЗА ВАС препоръки, които НЕ са отправени към вас (TN):"
+                  label="(TN) -> Брой нерелевантни ЗА ВАС препоръки, които НЕ са отправени към вас:"
                   value={data[2].irrelevant_non_given_recommendations_count}
                 />
                 <MetricStat
-                  label="Брой нерелевантни ЗА ВАС препоръки в платформата - отправени и неотправени към вас (TN + FP):"
+                  label="(TN + FP) -> Брой нерелевантни ЗА ВАС препоръки в платформата - отправени и неотправени към вас:"
                   value={data[2].irrelevant_platform_recommendations_count}
+                />
+              </>
+            )}
+
+            {activeMetric === "fnr" && (
+              <>
+                <div className="flex flex-row items-center justify-center gap-3">
+                  <MetricFormula
+                    formula={
+                      <div className="flex flex-row gap-2 items-center">
+                        <div>FNR</div>
+                        <div> = </div>
+                        <div className="flex flex-col items-center">
+                          <div className="px-2">FN</div>
+                          <div className="border-t border-foreground px-2">
+                            FN + TP
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  />
+                  <LucideCircleHelp
+                    strokeWidth={3}
+                    className={`dark:text-defaulttextcolor/85 cursor-pointer text-bold transition-transform duration-200 hover:scale-110 rounded-full z-10`}
+                    onClick={handleHelpClick}
+                  />
+                </div>
+                <MetricStat
+                  value={data[1].relevant_non_given_recommendations_count}
+                  total={data[1].relevant_platform_recommendations_count}
+                />
+                <MetricStat
+                  label="(FN) -> Брой релевантни ЗА ВАС препоръки, които НЕ са отправени към вас:"
+                  value={data[1].relevant_non_given_recommendations_count}
+                />
+                <MetricStat
+                  label="(FN + TP) -> Брой релевантни ЗА ВАС препоръки в платформата - отправени и неотправени към вас:"
+                  value={data[1].relevant_platform_recommendations_count}
                 />
               </>
             )}
@@ -178,15 +178,15 @@ const MetricDetails: FC<MetricDetailsProps> = ({
                   total={data[3].total_platform_recommendations_count}
                 />
                 <MetricStat
-                  label="Брой релевантни ЗА ВАС препоръки, които са отправени към вас (TP):"
+                  label="(TP) -> Брой релевантни ЗА ВАС препоръки, които са отправени към вас:"
                   value={data[3].relevant_user_recommendations_count}
                 />
                 <MetricStat
-                  label="Брой нерелевантни ЗА ВАС препоръки, които НЕ са отправени към вас (TN):"
+                  label="(TN) -> Брой нерелевантни ЗА ВАС препоръки, които НЕ са отправени към вас:"
                   value={data[3].irrelevant_non_given_recommendations_count}
                 />
                 <MetricStat
-                  label="Общ брой препоръки в платформата (TP + TN + FP + FN):"
+                  label="(TP + TN + FP + FN) -> Общ брой препоръки в платформата:"
                   value={data[3].total_platform_recommendations_count}
                 />
               </>
