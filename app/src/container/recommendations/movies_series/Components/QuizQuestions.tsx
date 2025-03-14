@@ -242,9 +242,12 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   };
 
   const handleNotificationClose = () => {
+    // Проверяваме дали типът на известието е "error"
     if (notification?.type === "error") {
+      // Ако е грешка, пренасочваме потребителя към страницата за вход
       navigate("/signin");
     }
+    // Затваряме известието, като го задаваме на null
     setNotification(null);
   };
 

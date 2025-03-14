@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 
 export const BrainAnalysisQuestions = () => {
@@ -6,7 +6,7 @@ export const BrainAnalysisQuestions = () => {
   const [showQuestion, setShowQuestion] = useState(true);
   const [isAnalysisComplete, setIsAnalysisComplete] = useState(false);
 
-  // Example questions from QuizQuestions
+  // Example questions for brain analysis
   const questions = [
     {
       question: "Analyzing your emotional response to drama",
@@ -56,17 +56,6 @@ export const BrainAnalysisQuestions = () => {
     }, 500);
   };
 
-  // Automatically progress through questions after a delay
-  useEffect(() => {
-    if (!isAnalysisComplete) {
-      const timer = setTimeout(() => {
-        handleNext();
-      }, 3000); // Automatically move to next question after 3 seconds
-
-      return () => clearTimeout(timer);
-    }
-  }, [currentQuestionIndex, isAnalysisComplete]);
-
   return (
     <div>
       <CSSTransition
@@ -75,7 +64,7 @@ export const BrainAnalysisQuestions = () => {
         classNames="fade"
         unmountOnExit
       >
-        <div className="w-full max-w-4xl py-8 px-4 mb-[12rem]">
+        <div className="w-full max-w-4xl">
           {isAnalysisComplete ? (
             <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
               <h2 className="text-xl font-semibold break-words">
@@ -123,6 +112,16 @@ export const BrainAnalysisQuestions = () => {
                   Analyzing brain responses... {currentQuestionIndex + 1}/
                   {totalQuestions}
                 </p>
+              </div>
+
+              {/* Next button similar to QuizQuestions */}
+              <div
+                onClick={handleNext}
+                className="next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-6 flex justify-center items-center transition-all duration-300 ease-in-out transform opacity-100 cursor-pointer hover:scale-105"
+              >
+                {currentQuestionIndex === totalQuestions - 1
+                  ? "Complete Analysis"
+                  : "Next Question"}
               </div>
             </>
           )}
