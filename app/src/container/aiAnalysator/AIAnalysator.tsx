@@ -235,10 +235,12 @@ const AIAnalysator: FC = () => {
                           <div className="text-center">
                             <p className="text-primary text-sm">
                               всички ваши РЕЛЕВАНТНИ препоръки правени някога
+                              (TP)
                             </p>
                             <div className="border-b border-gray-400 dark:border-gray-600 my-2"></div>
                             <p className="text-secondary text-sm">
-                              всички ваши препоръки, които някога са правени
+                              всички ваши препоръки, които някога са правени (TP
+                              + FP)
                             </p>
                           </div>
                         </div>
@@ -269,11 +271,12 @@ const AIAnalysator: FC = () => {
                           <div className="text-center">
                             <p className="text-primary text-sm">
                               всички ваши РЕЛЕВАНТНИ препоръки от последното
-                              генериране
+                              генериране (TP)
                             </p>
                             <div className="border-b border-gray-400 dark:border-gray-600 my-2"></div>
                             <p className="text-secondary text-sm">
-                              всички ваши препоръки от последното генериране
+                              всички ваши препоръки от последното генериране (TP
+                              + FP)
                             </p>
                           </div>
                         </div>
@@ -306,11 +309,13 @@ const AIAnalysator: FC = () => {
                           <div className="text-center">
                             <p className="text-primary text-sm">
                               всички ваши РЕЛЕВАНТНИ препоръки правени някога
+                              (TP)
                             </p>
                             <div className="border-b border-gray-400 dark:border-gray-600 my-2"></div>
                             <p className="text-secondary text-sm">
                               всички препоръки, които са РЕЛЕВАНТНИ на ВАШИТЕ
-                              предпочитания, измежду тези в цялата система
+                              предпочитания, измежду тези в цялата система (TP +
+                              FN)
                             </p>
                           </div>
                         </div>
