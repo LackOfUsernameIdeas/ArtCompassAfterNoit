@@ -49,7 +49,7 @@ const SecondaryMetricsDashboard: FC<SecondaryMetricsDashboardProps> = ({
       </CardHeader>
 
       <CardContent>
-        <div className="grid grid-cols-4 mb-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-4 mb-4 gap-4">
           <SecondaryMetricsWidget
             title={metricConfig.fpr.title}
             value={data[0].fpr_percentage}
@@ -60,21 +60,21 @@ const SecondaryMetricsDashboard: FC<SecondaryMetricsDashboardProps> = ({
           />
 
           <SecondaryMetricsWidget
-            title={metricConfig.fnr.title}
-            value={data[1].fnr_percentage}
-            description={metricConfig.fnr.description}
-            modalText={metricConfig.fnr.tooltip}
-            onClick={() => setActiveMetric("fnr")}
-            isActive={activeMetric === "fnr"}
-          />
-
-          <SecondaryMetricsWidget
             title={metricConfig.specificity.title}
             value={data[2].specificity_percentage}
             description={metricConfig.specificity.description}
             modalText={metricConfig.specificity.tooltip}
             onClick={() => setActiveMetric("specificity")}
             isActive={activeMetric === "specificity"}
+          />
+
+          <SecondaryMetricsWidget
+            title={metricConfig.fnr.title}
+            value={data[1].fnr_percentage}
+            description={metricConfig.fnr.description}
+            modalText={metricConfig.fnr.tooltip}
+            onClick={() => setActiveMetric("fnr")}
+            isActive={activeMetric === "fnr"}
           />
 
           <SecondaryMetricsWidget
@@ -101,15 +101,27 @@ const SecondaryMetricsDashboard: FC<SecondaryMetricsDashboardProps> = ({
         >
           <div className="flex items-center gap-2 mb-4">
             <p className="opsilion text-xl font-bold text-defaulttextcolor dark:text-white/80">
-              Термини
+              ВИДОВЕ ПРЕДПОЛОЖЕНИЯ НА ИЗКУСТВЕНИЯ ИНТЕЛЕКТ
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-x-5 gap-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3">
             {[
-              { label: "TP", description: "Подходящи предложени препоръки" },
-              { label: "FP", description: "Неподходящи предложени препоръки" },
-              { label: "FN", description: "Подходящи пропуснати препоръки" },
-              { label: "TN", description: "Неподходящи пропуснати препоръки" }
+              {
+                label: "TP",
+                description: "Подходящи предложени препоръки"
+              },
+              {
+                label: "FN",
+                description: "Подходящи пропуснати препоръки"
+              },
+              {
+                label: "FP",
+                description: "Неподходящи предложени препоръки"
+              },
+              {
+                label: "TN",
+                description: "Неподходящи пропуснати препоръки"
+              }
             ].map(({ label, description }) => (
               <div key={label} className="flex items-center gap-4">
                 <div className="flex pt-1 pl-1 h-8 w-8 items-center justify-center rounded-full bg-primary/15 text-sm font-semibold text-primary shadow">

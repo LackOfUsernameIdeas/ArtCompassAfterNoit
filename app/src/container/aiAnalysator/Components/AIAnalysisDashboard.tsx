@@ -20,7 +20,7 @@ const AIAnalysisDashboard: FC<AIAnalysisDashboardProps> = ({
         />
         <MainMetricsWidget
           icon={<i className="ti ti-percentage-40 text-2xl"></i>}
-          title="Recall"
+          title="Recall (Честота на подходящи предложени препоръки - TPR)"
           value={`${recallData.recall_percentage.toFixed(2)}%`}
           description={`${recallData.relevant_user_recommendations_count} от общо ${recallData.relevant_platform_recommendations_count} релевантни препоръки в системата са отправени към вас`}
           progress={recallData.recall_percentage}
