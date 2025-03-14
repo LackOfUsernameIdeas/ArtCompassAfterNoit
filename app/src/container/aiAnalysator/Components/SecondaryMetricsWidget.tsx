@@ -7,7 +7,7 @@ interface SecondaryMetricsWidgetProps {
   title: string;
   value: number | undefined;
   description: string;
-  modalText: string;
+  modalText: string | JSX.Element;
   onClick: () => void;
   isActive: boolean;
 }
