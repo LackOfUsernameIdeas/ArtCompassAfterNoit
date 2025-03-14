@@ -31,7 +31,7 @@ const Widget: FC<{
           <div className="ml-1 mt-0.5">
             <LucideCircleHelp
               strokeWidth={2.5}
-              className="w-7 h-7 dark:text-defaulttextcolor/85 cursor-pointer text-bold transition-transform duration-200 hover:scale-110 rounded-full z-10"
+              className="w-6 h-6 dark:text-defaulttextcolor/85 cursor-pointer text-bold transition-transform duration-200 hover:scale-110 rounded-full z-10"
               onClick={handleHelpClick}
             />
           </div>

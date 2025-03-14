@@ -29,7 +29,8 @@ import {
 import UserPreferences from "@/components/common/userPreferences/userPreferences";
 import { MovieSeriesUserPreferencesAfterSaving } from "../types_common";
 import MetricCharts from "./Components/MetricCharts";
-import DataVisualization from "./Components/SecondaryMetricsDashboard";
+import SecondaryMetricsDashboard from "./Components/SecondaryMetricsDashboard";
+import { sampleData } from "./aiAnalysator-data";
 
 const AIAnalysator: FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -377,7 +378,7 @@ const AIAnalysator: FC = () => {
                   historicalMetrics={historicalMetrics}
                   historicalUserMetrics={historicalUserMetrics}
                 />
-                <DataVisualization />
+                <SecondaryMetricsDashboard data={sampleData} />
               </>
             )}
 
