@@ -1,6 +1,6 @@
 interface MetricStatProps {
-  label: string;
   value: number | undefined;
+  label?: string;
   total?: number;
   tooltipText?: string;
 }
@@ -11,9 +11,13 @@ const MetricStat = ({ label, value, total }: MetricStatProps) => {
   return (
     <div className="flex flex-col gap-1">
       <div className="flex justify-between items-center">
-        <div className="flex items-center text-defaulttextcolor dark:text-white/80 gap-1 text-sm">
-          <span>{label}</span>
-        </div>
+        {label ? (
+          <div className="flex items-center text-defaulttextcolor dark:text-white/80 gap-1 text-sm">
+            <span>{label}</span>
+          </div>
+        ) : (
+          <div></div>
+        )}
         <span className="font-medium text-sm">
           {value !== undefined ? value : "N/A"}
           {total && ` / ${total}`}

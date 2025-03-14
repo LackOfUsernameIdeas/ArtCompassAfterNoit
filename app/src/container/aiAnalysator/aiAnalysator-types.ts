@@ -45,10 +45,10 @@ export type Metrics = {
 
 // Тип за вторични метрики при оценка на модели за машинно обучение
 export type SecondaryMetricData = {
-  fpr_exact?: number; // Точна стойност на false positive rate (Честота на фалшиво положителни случаи)
+  fpr_exact?: number; // Точна стойност на false positive rate (Честота на неподходящи предложени препоръки)
   fpr_fixed?: number; // Коригирана стойност на false positive rate
   fpr_percentage?: number; // False positive rate, изразен в проценти
-  fnr_exact?: number; // Точна стойност на false negative rate (Честота на фалшиво отрицателни случаи)
+  fnr_exact?: number; // Точна стойност на false negative rate (Честота на подходящи пропуснати препоръки)
   fnr_fixed?: number; // Коригирана стойност на false negative rate
   fnr_percentage?: number; // False negative rate, изразен в проценти
   accuracy_exact?: number; // Точна стойност на точността (Accuracy)

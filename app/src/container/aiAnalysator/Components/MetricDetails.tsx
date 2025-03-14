@@ -56,20 +56,17 @@ const MetricDetails: FC<MetricDetailsProps> = ({
                     onClick={handleHelpClick}
                   />
                 </div>
-
                 <MetricStat
-                  label="Общо препоръки на потребителя"
-                  value={data[0].user_recommendations_count}
-                />
-                <MetricStat
-                  label="Нерелевантни препоръки на потребителя"
                   value={data[0].irrelevant_user_recommendations_count}
-                  total={data[0].user_recommendations_count}
+                  total={data[0].irrelevant_platform_recommendations_count}
                 />
                 <MetricStat
-                  label="Нерелевантни препоръки на платформата"
+                  label="Брой нерелевантни ЗА ВАС препоръки, които са отправени към вас (FP):"
+                  value={data[0].irrelevant_user_recommendations_count}
+                />
+                <MetricStat
+                  label="Брой нерелевантни ЗА ВАС препоръки в платформата - отправени и неотправени към вас (FP + TN):"
                   value={data[0].irrelevant_platform_recommendations_count}
-                  total={data[0].total_platform_recommendations_count}
                 />
               </>
             )}
@@ -97,21 +94,17 @@ const MetricDetails: FC<MetricDetailsProps> = ({
                     onClick={handleHelpClick}
                   />
                 </div>
-
                 <MetricStat
-                  label="Релевантни недадени препоръки"
                   value={data[1].relevant_non_given_recommendations_count}
                   total={data[1].relevant_platform_recommendations_count}
                 />
                 <MetricStat
-                  label="Релевантни препоръки на потребителя"
-                  value={data[1].relevant_user_recommendations_count}
-                  total={data[1].user_recommendations_count}
+                  label="Брой релевантни ЗА ВАС препоръки, които НЕ са отправени към вас (FN):"
+                  value={data[1].relevant_non_given_recommendations_count}
                 />
                 <MetricStat
-                  label="Релевантни препоръки на платформата"
+                  label="Брой релевантни ЗА ВАС препоръки в платформата (FN + TP) - отправени и неотправени към вас:"
                   value={data[1].relevant_platform_recommendations_count}
-                  total={data[1].total_platform_recommendations_count}
                 />
               </>
             )}
@@ -139,21 +132,17 @@ const MetricDetails: FC<MetricDetailsProps> = ({
                     onClick={handleHelpClick}
                   />
                 </div>
-
                 <MetricStat
-                  label="Нерелевантни недадени препоръки"
                   value={data[2].irrelevant_non_given_recommendations_count}
-                  total={data[2].non_given_recommendations_count}
+                  total={data[2].irrelevant_platform_recommendations_count}
                 />
                 <MetricStat
-                  label="Нерелевантни препоръки на потребителя"
-                  value={data[2].irrelevant_user_recommendations_count}
-                  total={data[2].user_recommendations_count}
+                  label="Брой нерелевантни ЗА ВАС препоръки, които НЕ са отправени към вас (TN):"
+                  value={data[2].irrelevant_non_given_recommendations_count}
                 />
                 <MetricStat
-                  label="Нерелевантни препоръки на платформата"
+                  label="Брой нерелевантни ЗА ВАС препоръки в платформата - отправени и неотправени към вас (TN + FP):"
                   value={data[2].irrelevant_platform_recommendations_count}
-                  total={data[2].total_platform_recommendations_count}
                 />
               </>
             )}
@@ -181,21 +170,24 @@ const MetricDetails: FC<MetricDetailsProps> = ({
                     onClick={handleHelpClick}
                   />
                 </div>
-
                 <MetricStat
-                  label="Нерелевантни недадени препоръки"
-                  value={data[3].irrelevant_non_given_recommendations_count}
-                  total={data[3].non_given_recommendations_count}
+                  value={
+                    (data[3]?.relevant_user_recommendations_count || 0) +
+                    (data[3]?.irrelevant_non_given_recommendations_count || 0)
+                  }
+                  total={data[3].total_platform_recommendations_count}
                 />
                 <MetricStat
-                  label="Релевантни недадени препоръки"
-                  value={data[3].relevant_non_given_recommendations_count}
-                  total={data[3].non_given_recommendations_count}
-                />
-                <MetricStat
-                  label="Релевантни препоръки на потребителя"
+                  label="Брой релевантни ЗА ВАС препоръки, които са отправени към вас (TP):"
                   value={data[3].relevant_user_recommendations_count}
-                  total={data[3].user_recommendations_count}
+                />
+                <MetricStat
+                  label="Брой нерелевантни ЗА ВАС препоръки, които НЕ са отправени към вас (TN):"
+                  value={data[3].irrelevant_non_given_recommendations_count}
+                />
+                <MetricStat
+                  label="Общ брой препоръки в платформата (TP + TN + FP + FN):"
+                  value={data[3].total_platform_recommendations_count}
                 />
               </>
             )}

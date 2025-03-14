@@ -101,7 +101,7 @@ const SecondaryMetricsDashboard: FC<SecondaryMetricsDashboardProps> = ({
         >
           <div className="flex items-center gap-2 mb-4">
             <p className="opsilion text-xl font-bold text-defaulttextcolor dark:text-white/80">
-              Термини
+              ВИДОВЕ ПРЕДПОЛОЖЕНИЯ НА ИЗКУСТВЕНИЯ ИНТЕЛЕКТ
             </p>
           </div>
           <div className="grid grid-cols-2 gap-x-5 gap-y-3">
