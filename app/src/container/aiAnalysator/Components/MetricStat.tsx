@@ -18,13 +18,13 @@ const MetricStat = ({ label, value, total }: MetricStatProps) => {
         ) : (
           <div></div>
         )}
-        <span className="font-medium text-sm">
+        <span className={`${!label && "relative top-6"} font-medium text-sm`}>
           {value !== undefined ? value : "N/A"}
           {total && ` / ${total}`}
         </span>
       </div>
       {total && (
-        <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
+        <div className="mb-3 w-full bg-muted rounded-full h-1.5 overflow-hidden">
           <div
             className="h-full rounded-full bg-primary"
             style={{ width: `${percentage}%` }}
