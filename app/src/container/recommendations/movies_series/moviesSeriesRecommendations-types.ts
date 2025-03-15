@@ -81,7 +81,7 @@ export interface MoviesSeriesUserPreferences {
   directors: string; // Любими режисьори
   interests: string; // Интереси
   countries: string; // Предпочитани държави
-  pacing: string; // Пейсинг
+  pacing: string; // Бързина на сюжетното действие
   depth: string; // Дълбочина на историята
   targetGroup: string; // Целева група
 }

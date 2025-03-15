@@ -59,7 +59,7 @@ export const targetGroupOptions = [
 
 export const openAIKey = import.meta.env.VITE_OPENAI_API_KEY;
 
-export const moviesSeriesPrompt = (
+export const moviesSeriesStandardPreferencesPrompt = (
   userPreferences: MoviesSeriesUserPreferences
 ) => {
   const {
@@ -122,4 +122,69 @@ export const moviesSeriesPrompt = (
       }
     ]
   };
+};
+
+export const moviesSeriesBrainAnalysisPrompt = {
+  model: "gpt-4o-2024-08-06",
+  messages: [
+    {
+      role: "system",
+      content: `You are an AI that recommends movies and series based on data from the 'NeuroSky MindWave Mobile 2: EEG Sensor'. The device provides insights into the user's brain activity, cognitive state, and emotional levels, such as focus, relaxation, stress, and creativity. Relying on this data, provide a list of movies and series, formatted in Bulgarian, with detailed justifications. Return the result in JSON format as instructed.`
+    },
+    {
+      role: "user",
+      content: `Препоръчай ми 5 филма или сериала за гледане, които ЗАДЪЛЖИТЕЛНО да съвпадат с получените данни за мозъчната активност от устройството 'NeuroSky MindWave Mobile 2: EEG Sensor', а именно:
+        {
+          "data": [
+            {
+              "Raw value": 100,
+              "Attention": 35,
+              "Meditation": 23,
+              "Waves": {
+                "delta": 1333398,
+                "theta": 80346,
+                "low-alpha": 13428,
+                "high-alpha": 11566,
+                "low-beta": 9908,
+                "high-beta": 8586,
+                "low-gamma": 2834,
+                "mid-gamma": 4524
+              }
+            },
+            {
+              "Raw value": 5,
+              "Attention": 70,
+              "Meditation": 79,
+              "Waves": {
+                "delta": 981219,
+                "theta": 106313,
+                "low-alpha": 9523,
+                "high-alpha": 13873,
+                "low-beta": 9694,
+                "high-beta": 9925,
+                "low-gamma": 3211,
+                "mid-gamma": 3411
+              }
+            }
+          ]
+        }.
+        Дай информация за всеки отделен филм/сериал по отделно защо той е подходящ за мен.
+        Задължително искам имената на филмите/сериалите да бъдат абсолютно точно както са официално на български език – така, както са известни сред публиката в България.
+        Не се допуска буквален превод на заглавията от английски, ако официалното българско заглавие се различава от буквалния превод.
+        Не препоръчвай 18+ филми/сериали.
+        Форматирай своя response във валиден JSON формат по този начин:
+        {
+          'Официално име на филма или сериала на английски, както е прието да бъде': {
+            'bgName': 'Официално име на филма или сериала на български, както е прието да бъде, а не буквален превод',
+            'description': 'Описание на филма или сериала',
+            'reason': 'Защо този филм/сериал е подходящ за мен?'
+          },
+          'Официално име на филма или сериала на английски, както е прието да бъде': {
+            'bgName': 'Официално име на филма или сериала на български, както е прието да бъде, а не буквален превод',
+            'description': 'Описание на филма или сериала',
+            'reason': 'Защо този филм/сериал е подходящ за мен?'
+          }
+        }`
+    }
+  ]
 };

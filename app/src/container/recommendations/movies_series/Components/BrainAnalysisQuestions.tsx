@@ -1,6 +1,7 @@
 import { FC, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import {
+  MoviesSeriesUserPreferences,
   NotificationState,
   RecommendationsAnalysis
 } from "../moviesSeriesRecommendations-types";
@@ -76,6 +77,21 @@ export const BrainAnalysisQuestions: FC<{
   // Текущият въпрос, който ще бъде показан
   const currentQuestion = questions[currentQuestionIndex];
 
+  const moviesSeriesUserPreferences: MoviesSeriesUserPreferences = {
+    recommendationType: "", // Вид на предпочитанията
+    genres: [], // Жанрове на английски и български
+    moods: [], // Настроения
+    timeAvailability: "", // Наличност на време
+    age: "", // Възраст
+    actors: "", // Любими актьори
+    directors: "", // Любими режисьори
+    interests: "", // Интереси
+    countries: "", // Предпочитани държави
+    pacing: "", // Бързина на сюжетното действие
+    depth: "", // Дълбочина на историята
+    targetGroup: "" // Целева група
+  };
+
   // Функция за преминаване към следващия въпрос
   const handleNext = () => {
     // Изключваме показването на въпроса (за анимация)
@@ -105,7 +121,8 @@ export const BrainAnalysisQuestions: FC<{
       setBookmarkedMovies,
       token,
       submitCount,
-      true // renderBrainAnalysis is true
+      true,
+      moviesSeriesUserPreferences
     );
   };
 

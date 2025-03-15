@@ -8,7 +8,8 @@ import {
 } from "./moviesSeriesRecommendations-types";
 import { NotificationState } from "../../types_common";
 import {
-  moviesSeriesPrompt,
+  moviesSeriesBrainAnalysisPrompt,
+  moviesSeriesStandardPreferencesPrompt,
   openAIKey
 } from "./moviesSeriesRecommendations-data";
 import { moviesSeriesGenreOptions } from "../../data_common";
@@ -153,16 +154,16 @@ const fetchIMDbIDWithFailover = async (movieName: string) => {
  * @async
  * @function generateMoviesSeriesRecommendations
  * @param {string} date - Датата на генерирането на препоръките.
- * @param {MoviesSeriesUserPreferences} moviesSeriesUserPreferences - Предпочитанияте на потребителя за филми/сериали.
+ * @param {MoviesSeriesUserPreferences} moviesSeriesUserPreferences - Предпочитанията на потребителя за филми/сериали.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за задаване на препоръките в компонент.
  * @param {React.Dispatch<React.SetStateAction<{relevantCount: number; totalCount: number;}>>} setRecommendationsAnalysis - Функция за задаване на анализ на препоръките.
  * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
+ * @param {boolean} [renderBrainAnalysis=false] - Опционален параметър за генериране на препоръки, спрямо анализ на мозъчните вълни.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките.
  * @throws {Error} - Хвърля грешка, ако заявката за препоръки е неуспешна.
  */
 export const generateMoviesSeriesRecommendations = async (
   date: string,
-  moviesSeriesUserPreferences: MoviesSeriesUserPreferences,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
   setRecommendationsAnalysis: React.Dispatch<
     React.SetStateAction<RecommendationsAnalysis>
@@ -172,18 +173,26 @@ export const generateMoviesSeriesRecommendations = async (
       [key: string]: any;
     }>
   >,
-  token: string | null
+  token: string | null,
+  renderBrainAnalysis: boolean,
+  moviesSeriesUserPreferences?: MoviesSeriesUserPreferences
 ) => {
   try {
+    const requestBody = renderBrainAnalysis
+      ? moviesSeriesBrainAnalysisPrompt
+      : moviesSeriesUserPreferences &&
+        moviesSeriesStandardPreferencesPrompt(moviesSeriesUserPreferences);
+
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${openAIKey}`
       },
-      body: JSON.stringify(moviesSeriesPrompt(moviesSeriesUserPreferences))
+      body: JSON.stringify(requestBody)
     });
 
+    console.log("prompt: ", requestBody);
     const responseData = await response.json();
     const responseJson = responseData.choices[0].message.content;
     const unescapedData = responseJson
@@ -448,7 +457,7 @@ export const saveMoviesSeriesRecommendation = async (
  * @param {MoviesSeriesUserPreferences} moviesSeriesUserPreferences - Предпочитания на потребителя за филми/сериали.
  * @param {string | null} token - Токенът за аутентификация на потребителя.
  * @param {number} submitCount - Броят на подадените заявки.
- * @param {boolean} [renderBrainAnalysis=false] - Опционален параметър за активиране на анализ на мозъка.
+ * @param {boolean} [renderBrainAnalysis=false] - Опционален параметър за генериране на препоръки, спрямо анализ на мозъчните вълни.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките и записва данни.
  * @throws {Error} - Хвърля грешка, ако не може да се обработи заявката.
  */
@@ -500,14 +509,15 @@ export const handleSubmit = async (
     } = moviesSeriesUserPreferences;
 
     if (
-      !moods ||
-      !timeAvailability ||
-      !actors ||
-      !directors ||
-      !countries ||
-      !pacing ||
-      !depth ||
-      !targetGroup
+      !renderBrainAnalysis &&
+      (!moods ||
+        !timeAvailability ||
+        !actors ||
+        !directors ||
+        !countries ||
+        !pacing ||
+        !depth ||
+        !targetGroup)
     ) {
       showNotification(
         setNotification,
@@ -523,8 +533,53 @@ export const handleSubmit = async (
 
   try {
     if (renderBrainAnalysis) {
-      // TODO: Implement logic for brain analysis case
-      console.log("yiipeeee");
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            type: "movies_series"
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      const date = new Date().toISOString();
+
+      if (response.status === 200) {
+        setRecommendationList([]);
+        if (
+          moviesSeriesUserPreferences &&
+          Object.keys(moviesSeriesUserPreferences).length > 0
+        ) {
+          await saveMoviesSeriesUserPreferences(
+            date,
+            moviesSeriesUserPreferences,
+            token
+          );
+          await generateMoviesSeriesRecommendations(
+            date,
+            setRecommendationList,
+            setRecommendationsAnalysis,
+            setBookmarkedMovies,
+            token,
+            true,
+            moviesSeriesUserPreferences
+          );
+        }
+        setSubmitCount((prevCount) => prevCount + 1);
+      } else {
+        showNotification(
+          setNotification,
+          data.error || "Възникна проблем.",
+          "error"
+        );
+      }
     } else {
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
@@ -557,11 +612,12 @@ export const handleSubmit = async (
           );
           await generateMoviesSeriesRecommendations(
             date,
-            moviesSeriesUserPreferences,
             setRecommendationList,
             setRecommendationsAnalysis,
             setBookmarkedMovies,
-            token
+            token,
+            false,
+            moviesSeriesUserPreferences
           );
         }
         setSubmitCount((prevCount) => prevCount + 1);
