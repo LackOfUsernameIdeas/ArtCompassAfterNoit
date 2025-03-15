@@ -695,9 +695,10 @@ export const handleSubmit = async (
       [key: string]: any;
     }>
   >,
-  booksUserPreferences: BooksUserPreferences,
   token: string | null,
-  submitCount: number
+  submitCount: number,
+  renderBrainAnalysis: boolean = false,
+  booksUserPreferences?: BooksUserPreferences
 ): Promise<void> => {
   const isInvalidToken = await validateToken(setNotification); // Стартиране на проверката на токена при първоначално зареждане
   if (isInvalidToken) {
@@ -713,56 +714,67 @@ export const handleSubmit = async (
     return;
   }
 
-  const { moods, origin, pacing, depth, targetGroup } = booksUserPreferences;
+  if (booksUserPreferences) {
+    const { moods, origin, pacing, depth, targetGroup } = booksUserPreferences;
 
-  if (!moods || !origin || !pacing || !depth || !targetGroup) {
-    showNotification(
-      setNotification,
-      "Моля, попълнете всички задължителни полета!",
-      "warning"
-    );
-    return;
-  }
-
-  setLoading(true);
-  setSubmitted(true);
-
-  try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          type: "books"
-        })
-      }
-    );
-
-    const data = await response.json();
-
-    const date = new Date().toISOString();
-
-    if (response.status === 200) {
-      setRecommendationList([]);
-      await saveBooksUserPreferences(date, booksUserPreferences, token);
-      await generateBooksRecommendations(
-        date,
-        booksUserPreferences,
-        setRecommendationList,
-        setBookmarkedBooks,
-        token
-      );
-      setSubmitCount((prevCount) => prevCount + 1);
-    } else {
+    if (!moods || !origin || !pacing || !depth || !targetGroup) {
       showNotification(
         setNotification,
-        data.error || "Възникна проблем.",
-        "error"
+        "Моля, попълнете всички задължителни полета!",
+        "warning"
       );
+      return;
+    }
+
+    setLoading(true);
+    setSubmitted(true);
+  }
+  try {
+    if (renderBrainAnalysis) {
+      // TODO: Implement logic for brain analysis case
+      console.log("yiipeeee books");
+    } else {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            type: "books"
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      const date = new Date().toISOString();
+
+      if (response.status === 200) {
+        setRecommendationList([]);
+        if (
+          booksUserPreferences &&
+          Object.keys(booksUserPreferences).length > 0
+        ) {
+          await saveBooksUserPreferences(date, booksUserPreferences, token);
+          await generateBooksRecommendations(
+            date,
+            booksUserPreferences,
+            setRecommendationList,
+            setBookmarkedBooks,
+            token
+          );
+          setSubmitCount((prevCount) => prevCount + 1);
+        }
+      } else {
+        showNotification(
+          setNotification,
+          data.error || "Възникна проблем.",
+          "error"
+        );
+      }
     }
   } catch (error) {
     console.error("Error submitting the request:", error);

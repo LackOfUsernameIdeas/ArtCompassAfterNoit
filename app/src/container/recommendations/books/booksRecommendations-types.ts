@@ -189,9 +189,10 @@ export interface ConfirmationModalProps {
         [key: string]: any;
       }>
     >,
-    booksUserPreferences: BooksUserPreferences,
     token: string | null,
-    submitCount: number
+    submitCount: number,
+    renderBrainAnalysis: boolean,
+    booksUserPreferences: BooksUserPreferences
   ) => Promise<void>;
 
   // Функция за задаване на броя на изпратените заявки
