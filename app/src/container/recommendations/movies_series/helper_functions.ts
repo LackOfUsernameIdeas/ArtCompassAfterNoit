@@ -7,7 +7,10 @@ import {
   Analysis
 } from "./moviesSeriesRecommendations-types";
 import { NotificationState } from "../../types_common";
-import { openAIKey } from "./moviesSeriesRecommendations-data";
+import {
+  moviesSeriesPrompt,
+  openAIKey
+} from "./moviesSeriesRecommendations-data";
 import { moviesSeriesGenreOptions } from "../../data_common";
 import {
   analyzeRecommendations,
@@ -171,72 +174,14 @@ export const generateMoviesSeriesRecommendations = async (
   >,
   token: string | null
 ) => {
-  const {
-    recommendationType,
-    genres,
-    moods,
-    timeAvailability,
-    age,
-    actors,
-    directors,
-    interests,
-    countries,
-    pacing,
-    depth,
-    targetGroup
-  } = moviesSeriesUserPreferences;
-
   try {
-    const typeText = recommendationType === "Филм" ? "филма" : "сериала";
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${openAIKey}`
       },
-      body: JSON.stringify({
-        model: "gpt-4o-2024-08-06",
-        messages: [
-          {
-            role: "system",
-            content: `You are an AI that recommends movies and series based on user preferences. Provide a list of movies and series, based on what the user has chosen to watch (movie or series), that match the user's taste and preferences, formatted in Bulgarian, with detailed justifications. Return the result in JSON format as instructed.`
-          },
-          {
-            role: "user",
-            content: `Препоръчай ми 5 ${typeText} за гледане, които ЗАДЪЛЖИТЕЛНО да съвпадат с моите вкусове и предпочитания, а именно:
-                  Любими жанрове: ${genres.map((genre) => genre.bg)}.
-                  Емоционално състояние в този момент: ${moods}.
-                  Разполагаемо свободно време за гледане: ${timeAvailability}.
-                  Възрастта на ${typeText} задължително да бъде: ${age}
-                  Любими актьори: ${actors}.
-                  Любими филмови режисьори: ${directors}.
-                  Теми, които ме интересуват: ${interests}.
-                  Филмите/сериалите могат да бъдат от следните страни: ${countries}.
-                  Темпото (бързината) на филмите/сериалите предпочитам да бъде: ${pacing}.
-                  Предпочитам филмите/сериалите да са: ${depth}.
-                  Целевата група е: ${targetGroup}.
-                  Дай информация за всеки отделен филм/сериал по отделно защо той е подходящ за мен.
-                  Задължително искам имената на филмите/сериалите да бъдат абсолютно точно както са официално на български език – така, както са известни сред публиката в България.
-                  Не се допуска буквален превод на заглавията от английски, ако официалното българско заглавие се различава от буквалния превод.
-                  Не препоръчвай 18+ филми/сериали.
-                  Форматирай своя response във валиден JSON формат по този начин:
-                  {
-                    'Официално име на ${typeText} на английски, както е прието да бъде': {
-                      'bgName': 'Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод',
-                      'description': 'Описание на ${typeText}',
-                      'reason': 'Защо този филм/сериал е подходящ за мен?'
-                    },
-                    'Официално име на ${typeText} на английски, както е прието да бъде': {
-                      'bgName': 'Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод',
-                      'description': 'Описание на ${typeText}',
-                      'reason': 'Защо този филм/сериал е подходящ за мен?'
-                    },
-                    // ...additional movies
-                  }. Не добавяй излишни думи или скоби. Избягвай вложени двойни или единични кавички(кавички от един тип едно в друго, които да дават грешки на JSON.parse функцията). Увери се, че всички данни са правилно "escape-нати", за да не предизвикат грешки в JSON формата. 
-                  JSON формата трябва да е валиден за JavaScript JSON.parse() функцията.`
-          }
-        ]
-      })
+      body: JSON.stringify(moviesSeriesPrompt(moviesSeriesUserPreferences))
     });
 
     const responseData = await response.json();
