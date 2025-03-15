@@ -18,7 +18,7 @@ const MetricStat = ({ label, value, total }: MetricStatProps) => {
         ) : (
           <div></div>
         )}
-        <span className={`${!label && "relative top-6"} font-medium text-sm`}>
+        <span className={`${!label && "relative top-5"} font-medium text-sm`}>
           {value !== undefined ? value : "N/A"}
           {total && ` / ${total}`}
         </span>
