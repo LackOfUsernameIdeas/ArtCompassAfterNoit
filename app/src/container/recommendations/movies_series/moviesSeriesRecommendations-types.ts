@@ -204,9 +204,10 @@ export interface ConfirmationModalProps {
         [key: string]: any;
       }>
     >,
-    moviesSeriesUserPreferences: MoviesSeriesUserPreferences,
     token: string | null,
-    submitCount: number
+    submitCount: number,
+    renderBrainAnalysis: boolean,
+    moviesSeriesUserPreferences: MoviesSeriesUserPreferences
   ) => Promise<void>;
 
   // Функция за задаване на броя на изпратените заявки

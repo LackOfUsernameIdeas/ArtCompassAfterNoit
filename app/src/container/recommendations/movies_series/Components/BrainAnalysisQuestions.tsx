@@ -1,12 +1,41 @@
 import { FC, useState } from "react";
 import { CSSTransition } from "react-transition-group";
+import {
+  NotificationState,
+  RecommendationsAnalysis
+} from "../moviesSeriesRecommendations-types";
+import { handleSubmit } from "../helper_functions";
 
 // Компонент за въпросите по време на мозъчния анализ
-export const BrainAnalysisQuestions = () => {
+export const BrainAnalysisQuestions: FC<{
+  setNotification: React.Dispatch<
+    React.SetStateAction<NotificationState | null>
+  >;
+  setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>;
+  setRecommendationsAnalysis: React.Dispatch<
+    React.SetStateAction<RecommendationsAnalysis>
+  >;
+  setBookmarkedMovies: React.Dispatch<
+    React.SetStateAction<{ [key: string]: any }>
+  >;
+  token: string | null;
+  submitCount: number;
+  setSubmitCount: React.Dispatch<React.SetStateAction<number>>;
+}> = ({
+  setNotification,
+  setRecommendationList,
+  setRecommendationsAnalysis,
+  setBookmarkedMovies,
+  token,
+  submitCount,
+  setSubmitCount
+}) => {
   // Състояния за текущия индекс на въпроса, показване на въпроса и дали анализът е завършен
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showQuestion, setShowQuestion] = useState(true);
   const [isAnalysisComplete, setIsAnalysisComplete] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   // Примерни въпроси за мозъчния анализ
   const questions = [
@@ -65,6 +94,21 @@ export const BrainAnalysisQuestions = () => {
     }, 500); // Задаваме забавяне за анимацията
   };
 
+  const handleRecommendationsSubmit = async () => {
+    await handleSubmit(
+      setNotification,
+      setLoading,
+      setSubmitted,
+      setSubmitCount,
+      setRecommendationList,
+      setRecommendationsAnalysis,
+      setBookmarkedMovies,
+      token,
+      submitCount,
+      true // renderBrainAnalysis is true
+    );
+  };
+
   return (
     <div>
       <CSSTransition
@@ -84,8 +128,13 @@ export const BrainAnalysisQuestions = () => {
                 recommendations.
               </p>
               <div className="flex justify-center mt-6">
-                <div className="next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 cursor-pointer hover:scale-105 transition-all duration-300">
-                  View Recommendations
+                <div
+                  onClick={handleRecommendationsSubmit}
+                  className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 cursor-pointer hover:scale-105 transition-all duration-300 ${
+                    loading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  {loading ? "Loading..." : "View Recommendations"}
                 </div>
               </div>
             </div>

@@ -503,6 +503,7 @@ export const saveMoviesSeriesRecommendation = async (
  * @param {MoviesSeriesUserPreferences} moviesSeriesUserPreferences - Предпочитания на потребителя за филми/сериали.
  * @param {string | null} token - Токенът за аутентификация на потребителя.
  * @param {number} submitCount - Броят на подадените заявки.
+ * @param {boolean} [renderBrainAnalysis=false] - Опционален параметър за активиране на анализ на мозъка.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките и записва данни.
  * @throws {Error} - Хвърля грешка, ако не може да се обработи заявката.
  */
@@ -522,9 +523,10 @@ export const handleSubmit = async (
       [key: string]: any;
     }>
   >,
-  moviesSeriesUserPreferences: MoviesSeriesUserPreferences,
   token: string | null,
-  submitCount: number
+  submitCount: number,
+  renderBrainAnalysis: boolean = false,
+  moviesSeriesUserPreferences?: MoviesSeriesUserPreferences
 ): Promise<void> => {
   const isInvalidToken = await validateToken(setNotification); // Стартиране на проверката на токена при първоначално зареждане
   if (isInvalidToken) {
@@ -540,79 +542,91 @@ export const handleSubmit = async (
     return;
   }
 
-  const {
-    moods,
-    timeAvailability,
-    actors,
-    directors,
-    countries,
-    pacing,
-    depth,
-    targetGroup
-  } = moviesSeriesUserPreferences;
+  if (moviesSeriesUserPreferences) {
+    const {
+      moods,
+      timeAvailability,
+      actors,
+      directors,
+      countries,
+      pacing,
+      depth,
+      targetGroup
+    } = moviesSeriesUserPreferences;
 
-  if (
-    !moods ||
-    !timeAvailability ||
-    !actors ||
-    !directors ||
-    !countries ||
-    !pacing ||
-    !depth ||
-    !targetGroup
-  ) {
-    showNotification(
-      setNotification,
-      "Моля, попълнете всички задължителни полета!",
-      "warning"
-    );
-    return;
+    if (
+      !moods ||
+      !timeAvailability ||
+      !actors ||
+      !directors ||
+      !countries ||
+      !pacing ||
+      !depth ||
+      !targetGroup
+    ) {
+      showNotification(
+        setNotification,
+        "Моля, попълнете всички задължителни полета!",
+        "warning"
+      );
+      return;
+    }
   }
 
   setLoading(true);
   setSubmitted(true);
 
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          type: "movies_series"
-        })
-      }
-    );
-
-    const data = await response.json();
-
-    const date = new Date().toISOString();
-
-    if (response.status === 200) {
-      setRecommendationList([]);
-      await saveMoviesSeriesUserPreferences(
-        date,
-        moviesSeriesUserPreferences,
-        token
-      );
-      await generateMoviesSeriesRecommendations(
-        date,
-        moviesSeriesUserPreferences,
-        setRecommendationList,
-        setRecommendationsAnalysis,
-        setBookmarkedMovies,
-        token
-      );
-      setSubmitCount((prevCount) => prevCount + 1);
+    if (renderBrainAnalysis) {
+      // TODO: Implement logic for brain analysis case
+      console.log("yiipeeee");
     } else {
-      showNotification(
-        setNotification,
-        data.error || "Възникна проблем.",
-        "error"
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            type: "movies_series"
+          })
+        }
       );
+
+      const data = await response.json();
+
+      const date = new Date().toISOString();
+
+      if (response.status === 200) {
+        setRecommendationList([]);
+        if (
+          moviesSeriesUserPreferences &&
+          Object.keys(moviesSeriesUserPreferences).length > 0
+        ) {
+          await saveMoviesSeriesUserPreferences(
+            date,
+            moviesSeriesUserPreferences,
+            token
+          );
+          await generateMoviesSeriesRecommendations(
+            date,
+            moviesSeriesUserPreferences,
+            setRecommendationList,
+            setRecommendationsAnalysis,
+            setBookmarkedMovies,
+            token
+          );
+        }
+        setSubmitCount((prevCount) => prevCount + 1);
+      } else {
+        showNotification(
+          setNotification,
+          data.error || "Възникна проблем.",
+          "error"
+        );
+      }
     }
   } catch (error) {
     console.error("Error submitting the request:", error);

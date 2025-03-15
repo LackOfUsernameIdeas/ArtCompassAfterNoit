@@ -225,9 +225,10 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
             setRecommendationList,
             setRecommendationsAnalysis,
             setBookmarkedMovies,
-            moviesSeriesUserPreferences,
             token,
-            submitCount
+            submitCount,
+            false,
+            moviesSeriesUserPreferences
           );
         }
       } else {
@@ -330,7 +331,15 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
         >
           {/* Ако е избрана опцията за генериране на препоръки с устройство за анализ на мозъчните импулси, визуализираме компонента BrainAnalysisQuestions */}
           {renderBrainAnalysis ? (
-            <BrainAnalysisQuestions />
+            <BrainAnalysisQuestions
+              setNotification={setNotification}
+              setRecommendationList={setRecommendationList}
+              setRecommendationsAnalysis={setRecommendationsAnalysis}
+              setBookmarkedMovies={setBookmarkedMovies}
+              submitCount={submitCount}
+              token={token}
+              setSubmitCount={setSubmitCount}
+            />
           ) : (
             <>
               <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
