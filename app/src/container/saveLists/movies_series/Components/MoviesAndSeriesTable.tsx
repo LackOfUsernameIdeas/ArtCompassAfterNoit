@@ -130,6 +130,11 @@ const MoviesAndSeriesTable: FC<MoviesAndSeriesTableProps> = ({
     setCurrentPage(1);
   };
 
+  // Reset на първа страница при търсене.
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
   // Превежда нужна информация.
   useEffect(() => {
     const fetchAndSetData = async () => {

@@ -108,6 +108,11 @@ const BooksTable: FC<BooksTableProps> = ({
     setCurrentPage(1);
   };
 
+  // Reset на първа страница при търсене.
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
   // При всяка промяна в `data` извлича авторите от книгите и обновява състоянието.
   useEffect(() => {
     const newAuthors: string[] = [];
