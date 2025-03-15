@@ -158,7 +158,7 @@ const fetchIMDbIDWithFailover = async (movieName: string) => {
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за задаване на препоръките в компонент.
  * @param {React.Dispatch<React.SetStateAction<{relevantCount: number; totalCount: number;}>>} setRecommendationsAnalysis - Функция за задаване на анализ на препоръките.
  * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
- * @param {boolean} [renderBrainAnalysis=false] - Опционален параметър за генериране на препоръки, спрямо анализ на мозъчните вълни.
+ * @param {boolean} renderBrainAnalysis - параметър за генериране на препоръки, спрямо анализ на мозъчните вълни.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките.
  * @throws {Error} - Хвърля грешка, ако заявката за препоръки е неуспешна.
  */
@@ -193,6 +193,7 @@ export const generateMoviesSeriesRecommendations = async (
     });
 
     console.log("prompt: ", requestBody);
+
     const responseData = await response.json();
     const responseJson = responseData.choices[0].message.content;
     const unescapedData = responseJson

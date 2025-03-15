@@ -290,6 +290,8 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
           {/* Ако е избрана опцията за генериране на препоръки с устройство за анализ на мозъчните импулси, визуализираме компонента BrainAnalysisQuestions */}
           {renderBrainAnalysis ? (
             <BrainAnalysisQuestions
+              setLoading={setLoading}
+              setSubmitted={setSubmitted}
               setNotification={setNotification}
               setRecommendationList={setRecommendationList}
               setBookmarkedBooks={setBookmarkedBooks}

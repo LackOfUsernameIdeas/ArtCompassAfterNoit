@@ -7,8 +7,10 @@ import {
 } from "./booksRecommendations-types";
 import { NotificationState } from "../../types_common";
 import {
+  goodreadsBrainAnalysisPrompt,
   goodreadsExampleResponse,
   goodreadsPrompt,
+  googleBooksBrainAnalysisPrompt,
   googleBooksExampleResponse,
   googleBooksPrompt,
   openAIKey
@@ -271,6 +273,7 @@ export const processDataWithFallback = (
  * @param {BooksUserPreferences} booksUserPreferences - Предпочитанияте на потребителя за книги.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за задаване на препоръките в компонент.
  * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
+ * @param {boolean} renderBrainAnalysis - параметър за генериране на препоръки, спрямо анализ на мозъчните вълни.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките.
  * @throws {Error} - Хвърля грешка, ако заявката за препоръки е неуспешна.
  */
@@ -283,21 +286,28 @@ export const generateBooksRecommendations = async (
       [key: string]: any;
     }>
   >,
-  token: string | null
+  token: string | null,
+  renderBrainAnalysis: boolean
 ) => {
   try {
+    const requestBody = renderBrainAnalysis
+      ? import.meta.env.VITE_BOOKS_SOURCE === "GoogleBooks"
+        ? googleBooksBrainAnalysisPrompt
+        : goodreadsBrainAnalysisPrompt
+      : import.meta.env.VITE_BOOKS_SOURCE === "GoogleBooks"
+      ? googleBooksPrompt(booksUserPreferences)
+      : goodreadsPrompt(booksUserPreferences);
+
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${openAIKey}`
       },
-      body: JSON.stringify(
-        import.meta.env.VITE_BOOKS_SOURCE == "GoogleBooks"
-          ? googleBooksPrompt(booksUserPreferences)
-          : goodreadsPrompt(booksUserPreferences)
-      )
+      body: JSON.stringify(requestBody)
     });
+
+    console.log("prompt: ", requestBody);
 
     const responseData = await response.json();
     const responseJson = responseData.choices[0].message.content;
@@ -697,8 +707,8 @@ export const handleSubmit = async (
   >,
   token: string | null,
   submitCount: number,
-  renderBrainAnalysis: boolean = false,
-  booksUserPreferences?: BooksUserPreferences
+  renderBrainAnalysis: boolean,
+  booksUserPreferences: BooksUserPreferences
 ): Promise<void> => {
   const isInvalidToken = await validateToken(setNotification); // Стартиране на проверката на токена при първоначално зареждане
   if (isInvalidToken) {
@@ -717,7 +727,10 @@ export const handleSubmit = async (
   if (booksUserPreferences) {
     const { moods, origin, pacing, depth, targetGroup } = booksUserPreferences;
 
-    if (!moods || !origin || !pacing || !depth || !targetGroup) {
+    if (
+      !renderBrainAnalysis &&
+      (!moods || !origin || !pacing || !depth || !targetGroup)
+    ) {
       showNotification(
         setNotification,
         "Моля, попълнете всички задължителни полета!",
@@ -731,8 +744,48 @@ export const handleSubmit = async (
   }
   try {
     if (renderBrainAnalysis) {
-      // TODO: Implement logic for brain analysis case
-      console.log("yiipeeee books");
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            type: "books"
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      const date = new Date().toISOString();
+
+      if (response.status === 200) {
+        setRecommendationList([]);
+        if (
+          booksUserPreferences &&
+          Object.keys(booksUserPreferences).length > 0
+        ) {
+          await saveBooksUserPreferences(date, booksUserPreferences, token);
+          await generateBooksRecommendations(
+            date,
+            booksUserPreferences,
+            setRecommendationList,
+            setBookmarkedBooks,
+            token,
+            false
+          );
+          setSubmitCount((prevCount) => prevCount + 1);
+        }
+      } else {
+        showNotification(
+          setNotification,
+          data.error || "Възникна проблем.",
+          "error"
+        );
+      }
     } else {
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
@@ -764,7 +817,8 @@ export const handleSubmit = async (
             booksUserPreferences,
             setRecommendationList,
             setBookmarkedBooks,
-            token
+            token,
+            true
           );
           setSubmitCount((prevCount) => prevCount + 1);
         }

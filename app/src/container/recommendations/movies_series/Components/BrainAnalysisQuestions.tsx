@@ -112,6 +112,7 @@ export const BrainAnalysisQuestions: FC<{
     }, 500); // Задаваме забавяне за анимацията
   };
 
+  // Функция за изпращане на заявки за препоръки
   const handleRecommendationsSubmit = async () => {
     await handleSubmit(
       setNotification,
