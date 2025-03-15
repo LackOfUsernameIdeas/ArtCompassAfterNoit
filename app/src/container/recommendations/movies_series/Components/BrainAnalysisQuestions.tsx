@@ -9,6 +9,8 @@ import { handleSubmit } from "../helper_functions";
 
 // Компонент за въпросите по време на мозъчния анализ
 export const BrainAnalysisQuestions: FC<{
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието за зареждане
+  setSubmitted: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието за изпращане
   setNotification: React.Dispatch<
     React.SetStateAction<NotificationState | null>
   >;
@@ -23,6 +25,8 @@ export const BrainAnalysisQuestions: FC<{
   submitCount: number;
   setSubmitCount: React.Dispatch<React.SetStateAction<number>>;
 }> = ({
+  setLoading,
+  setSubmitted,
   setNotification,
   setRecommendationList,
   setRecommendationsAnalysis,
@@ -35,8 +39,6 @@ export const BrainAnalysisQuestions: FC<{
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showQuestion, setShowQuestion] = useState(true);
   const [isAnalysisComplete, setIsAnalysisComplete] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
 
   // Примерни въпроси за мозъчния анализ
   const questions = [
@@ -147,11 +149,9 @@ export const BrainAnalysisQuestions: FC<{
               <div className="flex justify-center mt-6">
                 <div
                   onClick={handleRecommendationsSubmit}
-                  className={`next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 cursor-pointer hover:scale-105 transition-all duration-300 ${
-                    loading ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                  className="next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 cursor-pointer hover:scale-105 transition-all duration-300"
                 >
-                  {loading ? "Loading..." : "View Recommendations"}
+                  View Recommendations
                 </div>
               </div>
             </div>
