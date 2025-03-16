@@ -3854,6 +3854,7 @@ const getLastUserPreferences = (userId, callback) => {
     SELECT * 
     FROM movies_series_user_preferences 
     WHERE user_id = ? 
+    AND (preferred_genres_en IS NOT NULL AND preferred_genres_en != '')
     ORDER BY date DESC LIMIT 1
   `;
 
