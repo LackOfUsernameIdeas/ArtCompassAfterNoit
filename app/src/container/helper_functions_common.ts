@@ -3,6 +3,7 @@ import {
   ActorData,
   Analysis,
   BookRecommendation,
+  BrainData,
   DirectorData,
   Genre,
   MovieSeriesRecommendation,
@@ -12,6 +13,7 @@ import {
   RecommendationsAnalysis,
   WriterData
 } from "./types_common";
+import { io } from "socket.io-client";
 
 // ==============================
 // Type Guards
@@ -1008,4 +1010,41 @@ export const getAverageMetrics = async (): Promise<any> => {
   } catch (error) {
     console.error("Error retrieving average metrics:", error);
   }
+};
+
+/**
+ * Свързва се със SocketIO сървър и слуша за данни от събития.
+ *
+ * @async
+ * @function connectSocketIO
+ * @param {React.Dispatch<React.SetStateAction<BrainData | null>>} setData - Функция за обновяване на състоянието с получените данни.
+ * @returns {void}
+ */
+export const connectSocketIO = async (
+  setChartData: React.Dispatch<React.SetStateAction<BrainData | null>>
+) => {
+  // Създаване на връзка със SocketIO сървъра
+  const socket = io("ws://localhost:5000");
+
+  // Обработване на свързване със сървъра
+  socket.on("connect", () => {
+    console.log("Успешно свързване със SocketIO сървъра");
+  });
+
+  // Слушане на събитието 'hardwareData' за получаване на данни от сървъра
+  socket.on("hardwareDataResponse", (data) => {
+    console.log("Получени хардуерни данни:", data);
+    // Обновяване на състоянието с получените данни
+    setChartData(data);
+  });
+
+  // Обработване на прекъсване на връзката от сървъра
+  socket.on("disconnect", () => {
+    console.log("SocketIO връзката беше прекъсната");
+  });
+
+  // Грешки по време на връзката
+  socket.on("connect_error", (error) => {
+    console.error("Грешка при свързване със SocketIO сървъра:", error);
+  });
 };

@@ -2083,7 +2083,7 @@ io.on("connection", (socket) => {
     console.log("Получени хардуерни данни:", data);
 
     // Изпращане на данните към всички свързани клиенти
-    io.emit("hardwareDataResponse", { status: "получено", data: data });
+    io.emit("hardwareDataResponse", data);
   });
 
   // Обработка на прекъсване на връзката от клиент

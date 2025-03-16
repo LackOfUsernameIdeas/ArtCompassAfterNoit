@@ -6,6 +6,7 @@ import {
   RecommendationsAnalysis
 } from "../moviesSeriesRecommendations-types";
 import { handleSubmit } from "../helper_functions";
+import BrainAnalysisTrackStats from "./BrainAnalysisTrackStats";
 
 // Компонент за въпросите по време на мозъчния анализ
 export const BrainAnalysisQuestions: FC<{
@@ -139,23 +140,9 @@ export const BrainAnalysisQuestions: FC<{
       >
         <div className="w-full max-w-4xl">
           {isAnalysisComplete ? (
-            <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
-              <h2 className="text-xl font-semibold break-words">
-                Brain Analysis Complete
-              </h2>
-              <p className="text-sm text-gray-500 mt-2">
-                Your brain profile has been analyzed. Here are your personalized
-                recommendations.
-              </p>
-              <div className="flex justify-center mt-6">
-                <div
-                  onClick={handleRecommendationsSubmit}
-                  className="next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 cursor-pointer hover:scale-105 transition-all duration-300"
-                >
-                  View Recommendations
-                </div>
-              </div>
-            </div>
+            <BrainAnalysisTrackStats
+              handleRecommendationsSubmit={handleRecommendationsSubmit}
+            />
           ) : (
             <>
               <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
