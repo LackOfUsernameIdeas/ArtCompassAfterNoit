@@ -188,6 +188,7 @@ const AIAnalysator: FC = () => {
         value !== null &&
         value !== "" // Ensure meaningful data
     );
+
   return (
     <FadeInWrapper>
       {!showError ? (
