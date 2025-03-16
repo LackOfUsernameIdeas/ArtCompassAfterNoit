@@ -82,22 +82,41 @@ const AIAnalysator: FC = () => {
           lastSavedUserPreferences
         } = lastSavedRecommendationsAndPreferences;
 
+        // Проверка дали потребителските предпочитания са невалидни
+        // (т.е. препоръките са базирани на анализ на мозъчни импулси, а не на ръчно въведени данни)
+        const isBrainAnalysisBased =
+          !lastSavedUserPreferences ||
+          Object.entries(lastSavedUserPreferences).every(
+            ([key, value]) =>
+              key === "id" ||
+              key === "user_id" ||
+              key === "date" || // Игнорираме мета данните
+              value === null ||
+              value === "" // Проверяваме дали липсват стойности
+          );
+
+        if (isBrainAnalysisBased) {
+          console.warn(
+            "Пропускане на заявките: Потребителските предпочитания не са валидни."
+          );
+          return;
+        }
+
         // Запазване на потребителските предпочитания в състоянието
         setUserPreferences(lastSavedUserPreferences);
 
-        // Проверка дали има налични данни за анализ
+        // Продължаваме само ако има валидни потребителски предпочитания и препоръки
         if (
           lastSavedRecommendations.length > 0 &&
-          relevanceResults.length > 0 &&
-          lastSavedUserPreferences
+          relevanceResults.length > 0
         ) {
-          // Изчисляване на точност (Precision) и пълнота (Recall)
+          // Изчисляване на Precision и Recall
           const [precisionObject, recallObject] = await Promise.all([
             getPrecisionTotal(token, lastSavedUserPreferences),
             getRecallTotal(token, lastSavedUserPreferences)
           ]);
 
-          // Изчисляване на F1-оценка (F1 Score)
+          // Изчисляване на F1 Score
           const f1ScoreObject = await getF1Score(
             token,
             precisionObject.precision_exact,
@@ -109,11 +128,13 @@ const AIAnalysator: FC = () => {
           const historicalUserMetrics =
             await getHistoricalAverageMetricsForUser(token);
 
+          // Извличане на вторични метрики
           const secondaryMetrics = await getSecondaryMetricsData(
             token,
             lastSavedUserPreferences
           );
-          // Запазване на новите данни в състоянието
+
+          // Запазване на всички извлечени данни в състоянието
           setPrecisionData(precisionObject);
           setRecallData(recallObject);
           setF1ScoreData(f1ScoreObject);
@@ -176,18 +197,6 @@ const AIAnalysator: FC = () => {
   // Показване на съдържание само след като е дошъл отговорът от заявките
   const renderRecommendationsAnalysis =
     recommendationsAnalysis.relevantRecommendations.length > 0;
-
-  // Последно регистрираните потребителски предпочитания се проверяват, защото ако не са с валидни стойности, това означава, че препоръките са генерирани, спрямо анализ на мозъчните импулси, а не на ръчно въведени потребителски предпочитания
-  const isBrainAnalysisBased =
-    userPreferences &&
-    Object.entries(userPreferences).some(
-      ([key, value]) =>
-        key !== "id" &&
-        key !== "user_id" &&
-        key !== "date" && // Ignore metadata
-        value !== null &&
-        value !== "" // Ensure meaningful data
-    );
 
   return (
     <FadeInWrapper>
@@ -393,29 +402,25 @@ const AIAnalysator: FC = () => {
               </div>
             </div>
 
-            {isBrainAnalysisBased &&
-              precisionData &&
-              recallData &&
-              f1ScoreData &&
-              secondaryData && (
-                <>
-                  <AIAnalysisDashboard
-                    precisionData={precisionData}
-                    recallData={recallData}
-                    f1ScoreData={f1ScoreData}
-                  />
-                  <MetricCharts
-                    historicalMetrics={historicalMetrics}
-                    historicalUserMetrics={historicalUserMetrics}
-                  />
-                  <SecondaryMetricsDashboard data={secondaryData} />
-                </>
-              )}
+            {precisionData && recallData && f1ScoreData && secondaryData && (
+              <>
+                <AIAnalysisDashboard
+                  precisionData={precisionData}
+                  recallData={recallData}
+                  f1ScoreData={f1ScoreData}
+                />
+                <MetricCharts
+                  historicalMetrics={historicalMetrics}
+                  historicalUserMetrics={historicalUserMetrics}
+                />
+                <SecondaryMetricsDashboard data={secondaryData} />
+              </>
+            )}
 
-            {isBrainAnalysisBased && userPreferences && (
+            {userPreferences && (
               <UserPreferences preferences={userPreferences} />
             )}
-            {isBrainAnalysisBased && renderRecommendationsAnalysis && (
+            {renderRecommendationsAnalysis && (
               <RecommendationsAnalysesWidgets
                 recommendationsAnalysis={recommendationsAnalysis}
                 currentIndex={currentIndex}
