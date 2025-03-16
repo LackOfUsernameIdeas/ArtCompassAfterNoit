@@ -333,14 +333,15 @@ export const generateMoviesSeriesRecommendations = async (
       recommendationsToAnalyze.push(recommendationData);
     }
 
-    await analyzeRecommendations(
-      moviesSeriesUserPreferences,
-      recommendationsToAnalyze,
-      setRecommendationsAnalysis,
-      true,
-      date,
-      token
-    ); // Извикване на функцията за анализ на предпочитанията и определяне на Precision
+    !renderBrainAnalysis &&
+      (await analyzeRecommendations(
+        moviesSeriesUserPreferences,
+        recommendationsToAnalyze,
+        setRecommendationsAnalysis,
+        true,
+        date,
+        token
+      )); // Извикване на функцията за анализ на предпочитанията и определяне на Precision
   } catch (error) {
     console.error("Error generating recommendations:", error);
   }

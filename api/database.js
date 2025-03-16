@@ -4256,8 +4256,14 @@ const getHistoricalAverageMetrics = (callback) => {
         }
       });
 
+      const sortedResults = Array.from(historyMap.values()).sort(
+        (a, b) =>
+          new Date(a.record_date.split("-").reverse().join("-")) -
+          new Date(b.record_date.split("-").reverse().join("-"))
+      );
+
       // Преобразуваме map в масив и го връщаме
-      callback(null, Array.from(historyMap.values()));
+      callback(null, sortedResults);
     });
   });
 };
@@ -4366,8 +4372,14 @@ const getHistoricalAverageMetricsForUser = (userId, callback) => {
           }
         });
 
+        const sortedResults = Array.from(historyMap.values()).sort(
+          (a, b) =>
+            new Date(a.record_date.split("-").reverse().join("-")) -
+            new Date(b.record_date.split("-").reverse().join("-"))
+        );
+
         // Преобразуваме map в масив и го връщаме
-        callback(null, Array.from(historyMap.values()));
+        callback(null, sortedResults);
       });
     }
   );

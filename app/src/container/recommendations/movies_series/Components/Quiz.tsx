@@ -46,6 +46,13 @@ export const Quiz: FC<QuizProps> = ({
     );
   };
 
+  const isAnalysisUpdated = () =>
+    recommendationsAnalysis.relevantCount !== 0 ||
+    recommendationsAnalysis.totalCount !== 0 ||
+    recommendationsAnalysis.precisionValue !== 0 ||
+    recommendationsAnalysis.precisionPercentage !== 0 ||
+    recommendationsAnalysis.relevantRecommendations.length > 0;
+
   console.log("recommendationsAnalysis: ", recommendationsAnalysis);
   return (
     <div className="flex items-center justify-center px-4">
@@ -105,14 +112,16 @@ export const Quiz: FC<QuizProps> = ({
             setBookmarkedMovies={setBookmarkedMovies}
             bookmarkedMovies={bookmarkedMovies}
           />
-          <RecommendationsAnalysesWidgets
-            recommendationsAnalysis={recommendationsAnalysis}
-            currentIndex={currentIndex}
-            handlePrev={handlePrev}
-            handleNext={handleNext}
-            isSwitching={false}
-            newGeneration
-          />
+          {isAnalysisUpdated() && (
+            <RecommendationsAnalysesWidgets
+              recommendationsAnalysis={recommendationsAnalysis}
+              currentIndex={currentIndex}
+              handlePrev={handlePrev}
+              handleNext={handleNext}
+              isSwitching={false}
+              newGeneration
+            />
+          )}
         </div>
       </CSSTransition>
     </div>

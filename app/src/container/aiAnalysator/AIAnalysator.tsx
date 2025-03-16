@@ -177,7 +177,17 @@ const AIAnalysator: FC = () => {
   const renderRecommendationsAnalysis =
     recommendationsAnalysis.relevantRecommendations.length > 0;
 
-  console.log("a", secondaryData);
+  // Последно регистрираните потребителски предпочитания се проверяват, защото ако не са с валидни стойности, това означава, че препоръките са генерирани, спрямо анализ на мозъчните импулси, а не на ръчно въведени потребителски предпочитания
+  const isBrainAnalysisBased =
+    userPreferences &&
+    Object.entries(userPreferences).some(
+      ([key, value]) =>
+        key !== "id" &&
+        key !== "user_id" &&
+        key !== "date" && // Ignore metadata
+        value !== null &&
+        value !== "" // Ensure meaningful data
+    );
   return (
     <FadeInWrapper>
       {!showError ? (
@@ -382,25 +392,29 @@ const AIAnalysator: FC = () => {
               </div>
             </div>
 
-            {precisionData && recallData && f1ScoreData && secondaryData && (
-              <>
-                <AIAnalysisDashboard
-                  precisionData={precisionData}
-                  recallData={recallData}
-                  f1ScoreData={f1ScoreData}
-                />
-                <MetricCharts
-                  historicalMetrics={historicalMetrics}
-                  historicalUserMetrics={historicalUserMetrics}
-                />
-                <SecondaryMetricsDashboard data={secondaryData} />
-              </>
-            )}
+            {isBrainAnalysisBased &&
+              precisionData &&
+              recallData &&
+              f1ScoreData &&
+              secondaryData && (
+                <>
+                  <AIAnalysisDashboard
+                    precisionData={precisionData}
+                    recallData={recallData}
+                    f1ScoreData={f1ScoreData}
+                  />
+                  <MetricCharts
+                    historicalMetrics={historicalMetrics}
+                    historicalUserMetrics={historicalUserMetrics}
+                  />
+                  <SecondaryMetricsDashboard data={secondaryData} />
+                </>
+              )}
 
-            {userPreferences && (
+            {isBrainAnalysisBased && userPreferences && (
               <UserPreferences preferences={userPreferences} />
             )}
-            {renderRecommendationsAnalysis && (
+            {isBrainAnalysisBased && renderRecommendationsAnalysis && (
               <RecommendationsAnalysesWidgets
                 recommendationsAnalysis={recommendationsAnalysis}
                 currentIndex={currentIndex}
