@@ -54,7 +54,7 @@ const RecommendationsAnalysesWidgets: React.FC<
             }
             className="text-primary font-semibold hover:text-secondary transition-colors underline"
           >
-            {newGeneration ? "Посетете AI Анализатор." : "Към нови препоръки."}
+            {newGeneration ? "Посетете AI Анализатор." : "Към Нови Препоръки."}
           </button>
         </p>
       </Card>
