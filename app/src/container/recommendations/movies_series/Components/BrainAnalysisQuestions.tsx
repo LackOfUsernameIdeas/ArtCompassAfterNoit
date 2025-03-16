@@ -36,10 +36,11 @@ export const BrainAnalysisQuestions: FC<{
   submitCount,
   setSubmitCount
 }) => {
-  // Състояния за текущия индекс на въпроса, показване на въпроса и дали анализът е завършен
+  // Състояния за текущия индекс на въпроса, показване на въпроса, дали анализът е завършен и cooldown между въпроси
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showQuestion, setShowQuestion] = useState(true);
   const [isAnalysisComplete, setIsAnalysisComplete] = useState(false);
+  const [isOnCooldown, setIsOnCooldown] = useState(false);
 
   // Примерни въпроси за мозъчния анализ
   const questions = [
@@ -97,6 +98,9 @@ export const BrainAnalysisQuestions: FC<{
 
   // Функция за преминаване към следващия въпрос
   const handleNext = () => {
+    // Ако има активен cooldown, не се активира функцията
+    if (isOnCooldown) return;
+    setIsOnCooldown(true); // Слагаме cooldown
     // Изключваме показването на въпроса (за анимация)
     setShowQuestion(false);
     setTimeout(() => {
@@ -110,6 +114,9 @@ export const BrainAnalysisQuestions: FC<{
       }
       // Включваме отново показването на въпроса
       setShowQuestion(true);
+      setTimeout(() => {
+        setIsOnCooldown(false); // Премахваме cooldown
+      }, 600);
     }, 500); // Задаваме забавяне за анимацията
   };
 

@@ -676,6 +676,8 @@ export const saveBookRecommendation = async (
   }
 };
 
+let isOnCooldown = false;
+
 /**
  * Обработва изпращането на потребителски данни за генериране на препоръки.
  * Извършва валидация на полетата, изпраща заявка до сървъра и обновява списъка с препоръки.
@@ -710,6 +712,8 @@ export const handleSubmit = async (
   renderBrainAnalysis: boolean,
   booksUserPreferences: BooksUserPreferences
 ): Promise<void> => {
+  if (isOnCooldown) return;
+  isOnCooldown = true;
   const isInvalidToken = await validateToken(setNotification); // Стартиране на проверката на токена при първоначално зареждане
   if (isInvalidToken) {
     return;
@@ -838,6 +842,9 @@ export const handleSubmit = async (
       "error"
     );
   } finally {
+    setTimeout(() => {
+      isOnCooldown = false;
+    }, 600);
     setLoading(false);
   }
 };
@@ -1079,11 +1086,16 @@ export const handleNext = (
   setCurrentQuestionIndex: React.Dispatch<React.SetStateAction<number>>,
   questions: any[]
 ): void => {
+  if (isOnCooldown) return;
+  isOnCooldown = true;
   setSelectedAnswer(null);
   setShowQuestion(false);
   setTimeout(() => {
     setCurrentQuestionIndex((prev) => (prev + 1) % questions.length);
     setShowQuestion(true);
+    setTimeout(() => {
+      isOnCooldown = false;
+    }, 600);
   }, 300);
 };
 
