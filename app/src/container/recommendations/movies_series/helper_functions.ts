@@ -6,7 +6,7 @@ import {
   RecommendationsAnalysis,
   Analysis
 } from "./moviesSeriesRecommendations-types";
-import { NotificationState } from "../../types_common";
+import { BrainData, NotificationState } from "../../types_common";
 import {
   moviesSeriesBrainAnalysisPrompt,
   moviesSeriesStandardPreferencesPrompt,
@@ -175,13 +175,16 @@ export const generateMoviesSeriesRecommendations = async (
   >,
   token: string | null,
   renderBrainAnalysis: boolean,
-  moviesSeriesUserPreferences?: MoviesSeriesUserPreferences
+  moviesSeriesUserPreferences?: MoviesSeriesUserPreferences,
+  brainData?: BrainData[]
 ) => {
   try {
-    const requestBody = renderBrainAnalysis
-      ? moviesSeriesBrainAnalysisPrompt
-      : moviesSeriesUserPreferences &&
-        moviesSeriesStandardPreferencesPrompt(moviesSeriesUserPreferences);
+    console.log("brainData", brainData);
+    const requestBody =
+      renderBrainAnalysis && brainData
+        ? moviesSeriesBrainAnalysisPrompt(brainData)
+        : moviesSeriesUserPreferences &&
+          moviesSeriesStandardPreferencesPrompt(moviesSeriesUserPreferences);
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -484,7 +487,8 @@ export const handleSubmit = async (
   token: string | null,
   submitCount: number,
   renderBrainAnalysis: boolean = false,
-  moviesSeriesUserPreferences?: MoviesSeriesUserPreferences
+  moviesSeriesUserPreferences?: MoviesSeriesUserPreferences,
+  brainData?: BrainData[]
 ): Promise<void> => {
   if (isOnCooldown) return;
   isOnCooldown = true;
@@ -575,7 +579,8 @@ export const handleSubmit = async (
             setBookmarkedMovies,
             token,
             true,
-            moviesSeriesUserPreferences
+            moviesSeriesUserPreferences,
+            brainData
           );
         }
         setSubmitCount((prevCount) => prevCount + 1);
@@ -932,4 +937,18 @@ export const handleRetakeQuiz = (
     setSubmitted(false);
     setLoading(false);
   }, 500);
+};
+
+export const getBrainWaveKey = (index: number) => {
+  const keys = [
+    "delta",
+    "theta",
+    "lowAlpha",
+    "highAlpha",
+    "lowBeta",
+    "highBeta",
+    "lowGamma",
+    "midGamma"
+  ];
+  return keys[index];
 };
