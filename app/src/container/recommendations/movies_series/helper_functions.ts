@@ -650,7 +650,7 @@ export const handleSubmit = async (
   } finally {
     setTimeout(() => {
       isOnCooldown = false;
-    }, 600);
+    }, 500);
     setLoading(false);
   }
 };
@@ -889,7 +889,7 @@ export const handleNext = (
     setShowQuestion(true);
     setTimeout(() => {
       isOnCooldown = false;
-    }, 600);
+    }, 500);
   }, 300);
 };
 

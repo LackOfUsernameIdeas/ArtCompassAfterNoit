@@ -117,7 +117,7 @@ export const BrainAnalysisQuestions: FC<{
       setShowQuestion(true);
       setTimeout(() => {
         setIsOnCooldown(false); // Премахваме cooldown
-      }, 600);
+      }, 500);
     }, 500); // Задаваме забавяне за анимацията
   };
 
