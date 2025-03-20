@@ -291,6 +291,7 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
   };
 
   const handleSubmitClick = () => {
+    if (seriesData.length === 0) return;
     handleRecommendationsSubmit(seriesData);
   };
 
@@ -390,15 +391,16 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
           </div>
         </div>
       )}
-
-      <div className="flex justify-center gap-6 mt-6">
-        <div
-          onClick={handleSubmitClick}
-          className="next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 cursor-pointer hover:scale-105 transition-all duration-300"
-        >
-          View Recommendations
+      {seriesData.length > 0 && (
+        <div className="flex justify-center gap-6 mt-6">
+          <div
+            onClick={handleSubmitClick}
+            className="next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 cursor-pointer hover:scale-105 transition-all duration-300"
+          >
+            View Recommendations
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

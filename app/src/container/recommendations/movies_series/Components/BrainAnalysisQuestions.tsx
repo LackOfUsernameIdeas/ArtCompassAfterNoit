@@ -121,6 +121,11 @@ export const BrainAnalysisQuestions: FC<{
     }, 500); // Задаваме забавяне за анимацията
   };
 
+  // Функция за пропускане на въпросите
+  const handleSkipAll = () => {
+    setIsAnalysisComplete(true); // Mark analysis as completed
+  };
+
   // Функция за изпращане на заявки за препоръки
   const handleRecommendationsSubmit = async (brainData: BrainData[]) => {
     await handleSubmit(
@@ -186,6 +191,14 @@ export const BrainAnalysisQuestions: FC<{
                 </p>
               </div>
 
+              {!isAnalysisComplete && (
+                <div
+                  onClick={handleSkipAll}
+                  className="skip-all bg-red-600 text-white font-bold rounded-lg p-4 mt-4 flex justify-center items-center transition-all duration-300 ease-in-out transform opacity-100 cursor-pointer hover:scale-105"
+                >
+                  Skip All
+                </div>
+              )}
               {/* Бутон за преминаване към следващия въпрос или завършване на анализа */}
               <div
                 onClick={handleNext}
