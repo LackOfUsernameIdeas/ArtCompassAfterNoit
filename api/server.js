@@ -2078,12 +2078,15 @@ app.get("/stats/platform/adaptations", (req, res) => {
 io.on("connection", (socket) => {
   console.log("Клиент се свърза");
 
+  // Показване на съобщение за изчакване на връзка с устройството
+  socket.emit("statusMessage", "Изчакване на връзка с устройството"); // Това ще изпрати съобщението на клиента, който се свързва.
+
   // Слушане на събитието 'hardwareData' от клиента
   socket.on("hardwareData", (data) => {
     console.log("Получени хардуерни данни:", data);
 
     // Изпращане на данните към всички свързани клиенти
-    io.emit("hardwareDataResponse", data);
+    socket.broadcast.emit("hardwareDataResponse", data);
   });
 
   // Обработка на прекъсване на връзката от клиент
