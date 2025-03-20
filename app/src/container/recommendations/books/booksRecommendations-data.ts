@@ -1,3 +1,4 @@
+import { BrainData } from "@/container/types_common";
 import { BooksUserPreferences } from "./booksRecommendations-types";
 
 export const moodOptions = [
@@ -68,58 +69,28 @@ export const googleBooksPrompt = (userPreferences: BooksUserPreferences) => {
   };
 };
 
-export const googleBooksBrainAnalysisPrompt = {
-  model: "gpt-4-turbo",
-  messages: [
-    {
-      role: "system",
-      content:
-        "Ти си изкуствен интелект, който препоръчва книги САМО В Google Books и събира подробна информация за всяка една от тях. Цялата информация трябва да бъде представена в правилен JSON формат с всички стойности преведени на български език, като заглавието на изданието трябва да бъде точно и реално. Книгите не трябва да са измислени, а в действителност да съществуват."
-    },
-    {
-      role: "user",
-      content: `Книгите трябва да съответстват на следните данни за мозъчната активност, получени от устройството 'NeuroSky MindWave Mobile 2: EEG Sensor', а именно:
-        {
-          "data": [
-            {
-              "Raw value": 100,
-              "Attention": 35,
-              "Meditation": 23,
-              "Waves": {
-                "delta": 1333398,
-                "theta": 80346,
-                "low-alpha": 13428,
-                "high-alpha": 11566,
-                "low-beta": 9908,
-                "high-beta": 8586,
-                "low-gamma": 2834,
-                "mid-gamma": 4524
-              }
-            },
-            {
-              "Raw value": 5,
-              "Attention": 70,
-              "Meditation": 79,
-              "Waves": {
-                "delta": 981219,
-                "theta": 106313,
-                "low-alpha": 9523,
-                "high-alpha": 13873,
-                "low-beta": 9694,
-                "high-beta": 9925,
-                "low-gamma": 3211,
-                "mid-gamma": 3411
-              }
-            }
-          ]
-        }.`
-    },
-    {
-      role: "user",
-      content:
-        "Събери подробна информация от Google Books и представи данните в следния JSON формат: [{'title_en': string, 'title_bg': string, 'real_edition_title': string, 'origin': string, 'reason': string, 'adaptations': string, 'goodreads_rating': number}, {още 4 препоръки...}]. Обектът трябва да бъде валиден за JavaScript JSON.parse() функцията. Полето \"origin\" описва произхода на книгата по региони, например: 'Руска литература', 'Българска литература', 'Европейска литература' и т.н. В полето \"reason\" трябва да се даде отговор на въпроса: 'Защо тази книга е подходяща за мен?' спрямо предпочитанията, които са посочени. Полето \"real_edition_title\" трябва да съдържа пълното заглавие на изданието точно както е в Google Books, което ще бъде използвано за директно търсене в следния формат: 'точно име - автор - Google Books'. Освен това, точното име и автора в \"real_edition_title\" трябва задължително да са на родния език на автора, например: при английски автор като Arthur C. Clarke, името на произведението също трябва да бъде в английски, при български автор - името на произведението трябва да е на български и т.н. Включи адаптации на книгите (ако има такива), като филми, сериали или театрални постановки, посочвайки имената на адаптациите и годините на издаване/представяне. Всички текстови стойности, включително заглавия, автори, описания, жанрове и произход, трябва да бъдат преведени на български език. Отговори само с валиден JSON обект без допълнителен текст или обяснения."
-    }
-  ]
+export const googleBooksBrainAnalysisPrompt = (brainWaveData: BrainData[]) => {
+  const brainWaveString = JSON.stringify(brainWaveData, null, 2);
+  return {
+    model: "gpt-4-turbo",
+    messages: [
+      {
+        role: "system",
+        content:
+          "Ти си изкуствен интелект, който препоръчва книги САМО В Google Books и събира подробна информация за всяка една от тях. Цялата информация трябва да бъде представена в правилен JSON формат с всички стойности преведени на български език, като заглавието на изданието трябва да бъде точно и реално. Книгите не трябва да са измислени, а в действителност да съществуват."
+      },
+      {
+        role: "user",
+        content: `Книгите трябва да съответстват на следните данни за мозъчната активност, получени от устройството 'NeuroSky MindWave Mobile 2: EEG Sensor', а именно:
+        ${brainWaveString}.`
+      },
+      {
+        role: "user",
+        content:
+          "Събери подробна информация от Google Books и представи данните в следния JSON формат: [{'title_en': string, 'title_bg': string, 'real_edition_title': string, 'origin': string, 'reason': string, 'adaptations': string, 'goodreads_rating': number}, {още 4 препоръки...}]. Обектът трябва да бъде валиден за JavaScript JSON.parse() функцията. Полето \"origin\" описва произхода на книгата по региони, например: 'Руска литература', 'Българска литература', 'Европейска литература' и т.н. В полето \"reason\" трябва да се даде отговор на въпроса: 'Защо тази книга е подходяща за мен?' спрямо предпочитанията, които са посочени. Полето \"real_edition_title\" трябва да съдържа пълното заглавие на изданието точно както е в Google Books, което ще бъде използвано за директно търсене в следния формат: 'точно име - автор - Google Books'. Освен това, точното име и автора в \"real_edition_title\" трябва задължително да са на родния език на автора, например: при английски автор като Arthur C. Clarke, името на произведението също трябва да бъде в английски, при български автор - името на произведението трябва да е на български и т.н. Включи адаптации на книгите (ако има такива), като филми, сериали или театрални постановки, посочвайки имената на адаптациите и годините на издаване/представяне. Всички текстови стойности, включително заглавия, автори, описания, жанрове и произход, трябва да бъдат преведени на български език. Отговори само с валиден JSON обект без допълнителен текст или обяснения."
+      }
+    ]
+  };
 };
 
 export const googleBooksExampleResponse = `[
@@ -233,59 +204,29 @@ export const goodreadsPrompt = (userPreferences: BooksUserPreferences) => {
   };
 };
 
-export const goodreadsBrainAnalysisPrompt = {
-  model: "gpt-4-turbo",
-  messages: [
-    {
-      role: "system",
-      content: `You are an AI that recommends books based on data from the 'NeuroSky MindWave Mobile 2: EEG Sensor'. The device provides insights into the user's brain activity, cognitive state, and emotional levels, such as focus, relaxation, stress, and creativity. 
+export const goodreadsBrainAnalysisPrompt = (brainWaveData: BrainData[]) => {
+  const brainWaveString = JSON.stringify(brainWaveData, null, 2);
+  return {
+    model: "gpt-4-turbo",
+    messages: [
+      {
+        role: "system",
+        content: `You are an AI that recommends books based on data from the 'NeuroSky MindWave Mobile 2: EEG Sensor'. The device provides insights into the user's brain activity, cognitive state, and emotional levels, such as focus, relaxation, stress, and creativity. 
       Relying on this data, provide a list of books, formatted in Bulgarian, with detailed justifications. You must recommend books that exist on Goodreads, ensuring that all titles and details correspond to real entries from Goodreads. Inventing books or providing fictional information is absolutely prohibited.
       Return the result in JSON format as instructed.`
-    },
-    {
-      role: "user",
-      content: `Обърни внимание на следните данни за мозъчната активност, получени от устройството 'NeuroSky MindWave Mobile 2: EEG Sensor', а именно:
-        {
-          "data": [
-            {
-              "Raw value": 100,
-              "Attention": 35,
-              "Meditation": 23,
-              "Waves": {
-                "delta": 1333398,
-                "theta": 80346,
-                "low-alpha": 13428,
-                "high-alpha": 11566,
-                "low-beta": 9908,
-                "high-beta": 8586,
-                "low-gamma": 2834,
-                "mid-gamma": 4524
-              }
-            },
-            {
-              "Raw value": 5,
-              "Attention": 70,
-              "Meditation": 79,
-              "Waves": {
-                "delta": 981219,
-                "theta": 106313,
-                "low-alpha": 9523,
-                "high-alpha": 13873,
-                "low-beta": 9694,
-                "high-beta": 9925,
-                "low-gamma": 3211,
-                "mid-gamma": 3411
-              }
-            }
-          ]
-        }.`
-    },
-    {
-      role: "user",
-      content:
-        "Събери подробна информация от Goodreads и представи данните в следния JSON формат: [{'title_en': string, 'title_bg': string, 'real_edition_title': 'точно име - автор - Goodreads', 'origin': string, 'reason': string, 'adaptations': string}, {още 4 препоръки...}]. Обектът трябва да бъде валиден за JavaScript JSON.parse() функцията. Полето \"origin\" описва произхода на книгата по региони, например: 'Руска литература', 'Българска литература', 'Европейска литература' и т.н. В полето \"reason\" трябва да се даде отговор на въпроса: 'Защо тази книга е подходяща за мен?' спрямо предпочитанията, които са посочени. Полето \"real_edition_title\" трябва да съдържа точното и пълното заглавие на изданието точно както е в Goodreads, което ще бъде използвано за директно търсене. Включи адаптации на книгите (ако има такива), като филми, сериали или театрални постановки, посочвайки имената на адаптациите и годините на издаване/представяне. Всички текстови стойности, включително заглавия, автори, описания, жанрове и произход, трябва да бъдат преведени на български език. Отговори само с валиден JSON обект без допълнителен текст или обяснения."
-    }
-  ]
+      },
+      {
+        role: "user",
+        content: `Обърни внимание на следните данни за мозъчната активност, получени от устройството 'NeuroSky MindWave Mobile 2: EEG Sensor', а именно:
+        ${brainWaveString}.`
+      },
+      {
+        role: "user",
+        content:
+          "Събери подробна информация от Goodreads и представи данните в следния JSON формат: [{'title_en': string, 'title_bg': string, 'real_edition_title': 'точно име - автор - Goodreads', 'origin': string, 'reason': string, 'adaptations': string}, {още 4 препоръки...}]. Обектът трябва да бъде валиден за JavaScript JSON.parse() функцията. Полето \"origin\" описва произхода на книгата по региони, например: 'Руска литература', 'Българска литература', 'Европейска литература' и т.н. В полето \"reason\" трябва да се даде отговор на въпроса: 'Защо тази книга е подходяща за мен?' спрямо предпочитанията, които са посочени. Полето \"real_edition_title\" трябва да съдържа точното и пълното заглавие на изданието точно както е в Goodreads, което ще бъде използвано за директно търсене. Включи адаптации на книгите (ако има такива), като филми, сериали или театрални постановки, посочвайки имената на адаптациите и годините на издаване/представяне. Всички текстови стойности, включително заглавия, автори, описания, жанрове и произход, трябва да бъдат преведени на български език. Отговори само с валиден JSON обект без допълнителен текст или обяснения."
+      }
+    ]
+  };
 };
 
 export const goodreadsExampleResponse = `[

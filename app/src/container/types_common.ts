@@ -243,22 +243,19 @@ export interface MovieSeriesRecommendationAfterSaving {
   date?: string; // Дата на въвеждане на данните
 }
 
-// Интерфейс за данни от мозъчна активност, включващи различни вълни.
-export interface Waves {
+// Интерфейс за основните данни от мозъчната активност, включително внимание, медитация и мигане.
+export interface BrainData {
+  time: string; // Време на измерването във формат HH:MM:SS
+  data_type: "headset_data"; // Тип на данните (в този случай фиксиран като headset_data)
+  attention: number; // Стойност за внимание
+  meditation: number; // Стойност за медитация
+  blink_strength: number | null; // Сила на мигане, която може да бъде null
   delta: number; // Стойност за delta вълната
   theta: number; // Стойност за theta вълната
-  "low-alpha": number; // Стойност за low-alpha вълната
-  "high-alpha": number; // Стойност за high-alpha вълната
-  "low-beta": number; // Стойност за low-beta вълната
-  "high-beta": number; // Стойност за high-beta вълната
-  "low-gamma": number; // Стойност за low-gamma вълната
-  "mid-gamma": number; // Стойност за mid-gamma вълната
-}
-
-// Интерфейс за данни, свързани с мозъчната активност, включващи raw value, внимание, медитация и вълни.
-export interface BrainData {
-  "Raw value": number; // Основна стойност, измерена от устройството
-  Attention: number; // Стойност за внимание
-  Meditation: number; // Стойност за медитация
-  Waves: Waves; // Обект, съдържащ стойности за различните мозъчни вълни
+  lowAlpha: number; // Стойност за low-alpha вълната
+  highAlpha: number; // Стойност за high-alpha вълната
+  lowBeta: number; // Стойност за low-beta вълната
+  highBeta: number; // Стойност за high-beta вълната
+  lowGamma: number; // Стойност за low-gamma вълната
+  highGamma: number; // Стойност за high-gamma вълната
 }

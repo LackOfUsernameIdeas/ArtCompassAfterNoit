@@ -5,13 +5,11 @@ import {
   IndustryIdentifier,
   Recommendation
 } from "./booksRecommendations-types";
-import { NotificationState } from "../../types_common";
+import { BrainData, NotificationState } from "../../types_common";
 import {
   goodreadsBrainAnalysisPrompt,
-  goodreadsExampleResponse,
   goodreadsPrompt,
   googleBooksBrainAnalysisPrompt,
-  googleBooksExampleResponse,
   googleBooksPrompt,
   openAIKey
 } from "./booksRecommendations-data";
@@ -287,16 +285,18 @@ export const generateBooksRecommendations = async (
     }>
   >,
   token: string | null,
-  renderBrainAnalysis: boolean
+  renderBrainAnalysis: boolean,
+  brainData?: BrainData[]
 ) => {
   try {
-    const requestBody = renderBrainAnalysis
-      ? import.meta.env.VITE_BOOKS_SOURCE === "GoogleBooks"
-        ? googleBooksBrainAnalysisPrompt
-        : goodreadsBrainAnalysisPrompt
-      : import.meta.env.VITE_BOOKS_SOURCE === "GoogleBooks"
-      ? googleBooksPrompt(booksUserPreferences)
-      : goodreadsPrompt(booksUserPreferences);
+    const requestBody =
+      renderBrainAnalysis && brainData
+        ? import.meta.env.VITE_BOOKS_SOURCE === "GoogleBooks"
+          ? googleBooksBrainAnalysisPrompt(brainData)
+          : goodreadsBrainAnalysisPrompt(brainData)
+        : import.meta.env.VITE_BOOKS_SOURCE === "GoogleBooks"
+        ? googleBooksPrompt(booksUserPreferences)
+        : goodreadsPrompt(booksUserPreferences);
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
