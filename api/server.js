@@ -2074,14 +2074,14 @@ app.get("/stats/platform/adaptations", (req, res) => {
   });
 });
 
-// Когато клиент се свърже с WebSocket сървъра
+// Когато клиент се свърже със SocketIO сървъра
 io.on("connection", (socket) => {
   console.log("Клиент се свърза");
 
-  // Показване на съобщение за изчакване на връзка с устройството
-  socket.emit("statusMessage", "Изчакване на връзка с устройството"); // Това ще изпрати съобщението на клиента, който се свързва.
+  // Това ще изпрати първоначален сигнал на клиента, който се свързва.
+  socket.emit("connectSignal");
 
-  // Слушане на събитието 'hardwareData' от клиента (python app)
+  // Слушане на събитието 'hardwareData' от изпращащото приложение (python app)
   socket.on("hardwareData", (data) => {
     console.log("Получени хардуерни данни:", data);
 
@@ -2092,8 +2092,8 @@ io.on("connection", (socket) => {
   // Слушане на събитието 'dataDoneTransmitting' от клиента
   socket.on("dataDoneTransmitting", (data) => {
     console.log("Получено съобщение за завършване на трансфер на данни:", data);
-    // Изпращане на съобщение до останалите клиенти, че изпращащото приложение (Python app) е спряло потока от данни.
-    socket.broadcast.emit("statusMessage", "Клиентът прекрати потока от данни");
+    // Изпращане на сигнал до останалите клиенти, че изпращащото приложение (python app) е спряло потока от данни.
+    socket.broadcast.emit("dataDoneTransmittingSignal");
   });
 
   // Слушане за прекъсване на връзката от клиент
