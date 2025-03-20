@@ -126,6 +126,7 @@ export const moviesSeriesStandardPreferencesPrompt = (
 };
 
 export const moviesSeriesBrainAnalysisPrompt = (brainWaveData: BrainData[]) => {
+  const brainWaveString = JSON.stringify(brainWaveData, null, 2);
   return {
     model: "gpt-4o-2024-08-06",
     messages: [
@@ -136,7 +137,7 @@ export const moviesSeriesBrainAnalysisPrompt = (brainWaveData: BrainData[]) => {
       {
         role: "user",
         content: `Препоръчай ми 5 филма или сериала за гледане, които ЗАДЪЛЖИТЕЛНО да съвпадат с получените данни за мозъчната активност от устройството 'NeuroSky MindWave Mobile 2: EEG Sensor', а именно:
-          ${brainWaveData}.
+          ${brainWaveString}.
           Дай информация за всеки отделен филм/сериал по отделно защо той е подходящ за мен.
           Задължително искам имената на филмите/сериалите да бъдат абсолютно точно както са официално на български език – така, както са известни сред публиката в България.
           Не се допуска буквален превод на заглавията от английски, ако официалното българско заглавие се различава от буквалния превод.

@@ -70,6 +70,7 @@ export const googleBooksPrompt = (userPreferences: BooksUserPreferences) => {
 };
 
 export const googleBooksBrainAnalysisPrompt = (brainWaveData: BrainData[]) => {
+  const brainWaveString = JSON.stringify(brainWaveData, null, 2);
   return {
     model: "gpt-4-turbo",
     messages: [
@@ -81,7 +82,7 @@ export const googleBooksBrainAnalysisPrompt = (brainWaveData: BrainData[]) => {
       {
         role: "user",
         content: `Книгите трябва да съответстват на следните данни за мозъчната активност, получени от устройството 'NeuroSky MindWave Mobile 2: EEG Sensor', а именно:
-        ${brainWaveData}.`
+        ${brainWaveString}.`
       },
       {
         role: "user",
@@ -204,6 +205,7 @@ export const goodreadsPrompt = (userPreferences: BooksUserPreferences) => {
 };
 
 export const goodreadsBrainAnalysisPrompt = (brainWaveData: BrainData[]) => {
+  const brainWaveString = JSON.stringify(brainWaveData, null, 2);
   return {
     model: "gpt-4-turbo",
     messages: [
@@ -216,7 +218,7 @@ export const goodreadsBrainAnalysisPrompt = (brainWaveData: BrainData[]) => {
       {
         role: "user",
         content: `Обърни внимание на следните данни за мозъчната активност, получени от устройството 'NeuroSky MindWave Mobile 2: EEG Sensor', а именно:
-        ${brainWaveData}.`
+        ${brainWaveString}.`
       },
       {
         role: "user",

@@ -7,6 +7,7 @@ import {
 } from "../moviesSeriesRecommendations-types";
 import { handleSubmit } from "../helper_functions";
 import BrainAnalysisTrackStats from "./BrainAnalysisTrackStats";
+import { BrainData } from "@/container/types_common";
 
 // Компонент за въпросите по време на мозъчния анализ
 export const BrainAnalysisQuestions: FC<{
@@ -121,7 +122,7 @@ export const BrainAnalysisQuestions: FC<{
   };
 
   // Функция за изпращане на заявки за препоръки
-  const handleRecommendationsSubmit = async () => {
+  const handleRecommendationsSubmit = async (brainData: BrainData[]) => {
     await handleSubmit(
       setNotification,
       setLoading,
@@ -133,7 +134,8 @@ export const BrainAnalysisQuestions: FC<{
       token,
       submitCount,
       true,
-      moviesSeriesUserPreferences
+      moviesSeriesUserPreferences,
+      brainData
     );
   };
 
