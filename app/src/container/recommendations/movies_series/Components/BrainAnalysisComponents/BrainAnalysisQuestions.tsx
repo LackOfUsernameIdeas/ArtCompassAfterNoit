@@ -4,8 +4,8 @@ import {
   MoviesSeriesUserPreferences,
   NotificationState,
   RecommendationsAnalysis
-} from "../moviesSeriesRecommendations-types";
-import { handleSubmit } from "../helper_functions";
+} from "../../moviesSeriesRecommendations-types";
+import { handleSubmit } from "../../helper_functions";
 import BrainAnalysisTrackStats from "./BrainAnalysisTrackStats";
 import { BrainData } from "@/container/types_common";
 

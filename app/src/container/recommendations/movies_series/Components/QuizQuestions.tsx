@@ -26,7 +26,7 @@ import { ConfirmationModal } from "./ConfirmationModal";
 import { ViewRecommendations } from "./ViewRecommendations";
 import Notification from "../../../../components/common/notification/Notification";
 import { useNavigate } from "react-router-dom";
-import { BrainAnalysisQuestions } from "./BrainAnalysisQuestions";
+import { BrainAnalysisQuestions } from "./BrainAnalysisComponents/BrainAnalysisQuestions";
 
 export const QuizQuestions: FC<QuizQuestionProps> = ({
   setLoading,
