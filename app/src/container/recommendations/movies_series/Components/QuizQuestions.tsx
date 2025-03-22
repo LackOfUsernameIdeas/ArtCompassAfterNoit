@@ -31,11 +31,14 @@ import { BrainAnalysisQuestions } from "./BrainAnalysisComponents/BrainAnalysisQ
 export const QuizQuestions: FC<QuizQuestionProps> = ({
   setLoading,
   setSubmitted,
+  submitted,
   showViewRecommendations,
   alreadyHasRecommendations,
   setRecommendationList,
   setRecommendationsAnalysis,
-  setBookmarkedMovies
+  setBookmarkedMovies,
+  setIsAnalysisComplete,
+  isAnalysisComplete
 }) => {
   const [preferencesType, setPreferencesType] = useState<string | null>(null);
   const [renderBrainAnalysis, setRenderBrainAnalysis] = useState(false);
@@ -325,22 +328,26 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
         unmountOnExit
       >
         <div
-          className={`w-full max-w-4xl py-8 px-4 mb-[12rem] ${
+          className={`w-full ${
+            !isAnalysisComplete && "max-w-4xl"
+          } py-8 px-4 mb-[12rem] ${
             window.innerWidth >= 640 ? getMarginClass(currentQuestion) : ""
           }`}
         >
           {/* Ако е избрана опцията за генериране на препоръки с устройство за анализ на мозъчните импулси, визуализираме компонента BrainAnalysisQuestions */}
           {renderBrainAnalysis ? (
             <BrainAnalysisQuestions
-              setLoading={setLoading}
               setSubmitted={setSubmitted}
               setNotification={setNotification}
               setRecommendationList={setRecommendationList}
               setRecommendationsAnalysis={setRecommendationsAnalysis}
               setBookmarkedMovies={setBookmarkedMovies}
               submitCount={submitCount}
+              submitted={submitted}
               token={token}
               setSubmitCount={setSubmitCount}
+              setIsAnalysisComplete={setIsAnalysisComplete}
+              isAnalysisComplete={isAnalysisComplete}
             />
           ) : (
             <>

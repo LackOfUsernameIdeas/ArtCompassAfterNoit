@@ -7,8 +7,6 @@ interface BrainWaveChartProps {
   brainWaveKey: keyof BrainData;
   seriesData: BrainData[];
   color: string;
-  timeCounter: number;
-  maxDataPoints?: number;
 }
 
 const BrainWaveChart: React.FC<BrainWaveChartProps> = ({
@@ -17,7 +15,6 @@ const BrainWaveChart: React.FC<BrainWaveChartProps> = ({
   seriesData,
   color
 }) => {
-  // Format the data for this specific brain wave
   const formattedSeries = [
     {
       name: title,
@@ -28,13 +25,11 @@ const BrainWaveChart: React.FC<BrainWaveChartProps> = ({
     }
   ];
 
-  // Get the latest value for this brain wave
   const latestValue =
     seriesData.length > 0
       ? Math.round(Number(seriesData[seriesData.length - 1][brainWaveKey]) || 0)
       : 0;
 
-  // Chart options for brain waves
   const brainWaveOptions: ApexCharts.ApexOptions = {
     chart: {
       id: `${brainWaveKey}-chart`,
@@ -51,13 +46,13 @@ const BrainWaveChart: React.FC<BrainWaveChartProps> = ({
       },
       background: "transparent",
       sparkline: {
-        enabled: true
+        enabled: false
       }
     },
     colors: [color],
     stroke: {
       curve: "smooth",
-      width: 2
+      width: 3
     },
     fill: {
       type: "gradient",
@@ -71,15 +66,24 @@ const BrainWaveChart: React.FC<BrainWaveChartProps> = ({
       }
     },
     grid: {
-      show: false
+      borderColor: "rgba(255, 255, 255, 0.1)",
+      row: {
+        colors: ["transparent"],
+        opacity: 0.5
+      },
+      padding: {
+        left: 10,
+        right: 10
+      }
     },
     markers: {
       size: 0,
       hover: {
-        size: 3
+        size: 4
       }
     },
     xaxis: {
+      type: "numeric",
       labels: {
         show: false
       },
@@ -93,17 +97,13 @@ const BrainWaveChart: React.FC<BrainWaveChartProps> = ({
     yaxis: {
       labels: {
         show: false
-      }
+      },
+      logarithmic: true,
+      min: 1
     },
     tooltip: {
       theme: "dark",
       x: {
-        show: false
-      },
-      y: {
-        formatter: (value) => Math.round(value).toString()
-      },
-      marker: {
         show: false
       }
     },
@@ -116,14 +116,14 @@ const BrainWaveChart: React.FC<BrainWaveChartProps> = ({
   };
 
   return (
-    <div className="bg-black bg-opacity-30 rounded-lg p-2 h-full flex flex-col">
-      <div className="flex justify-between items-center mb-0">
-        <h3 className="text-xs font-medium text-gray-200 truncate">{title}</h3>
-        <span className="text-xs font-bold" style={{ color }}>
+    <div className="bg-black bg-opacity-30 rounded-lg p-3 pb-0 h-full flex flex-col">
+      <div className="flex justify-between items-center mb-1">
+        <h3 className="text-sm font-medium text-gray-200">{title}</h3>
+        <span className="text-sm font-bold" style={{ color }}>
           {latestValue}
         </span>
       </div>
-      <div className="flex-grow min-h-[60px]">
+      <div className="flex-grow">
         <ApexCharts
           options={brainWaveOptions}
           series={formattedSeries}

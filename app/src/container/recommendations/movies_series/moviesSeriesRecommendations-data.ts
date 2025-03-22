@@ -1,4 +1,4 @@
-import { BrainData } from "@/container/types_common";
+import { FilteredBrainData } from "@/container/types_common";
 import { MoviesSeriesUserPreferences } from "./moviesSeriesRecommendations-types";
 
 export const moodOptions = [
@@ -125,7 +125,9 @@ export const moviesSeriesStandardPreferencesPrompt = (
   };
 };
 
-export const moviesSeriesBrainAnalysisPrompt = (brainWaveData: BrainData[]) => {
+export const moviesSeriesBrainAnalysisPrompt = (
+  brainWaveData: FilteredBrainData[]
+) => {
   const brainWaveString = JSON.stringify(brainWaveData, null, 2);
   return {
     model: "gpt-4o-2024-08-06",

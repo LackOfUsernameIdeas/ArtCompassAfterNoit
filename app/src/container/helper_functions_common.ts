@@ -1022,7 +1022,7 @@ export const getAverageMetrics = async (): Promise<any> => {
  */
 export const connectSocketIO = async (
   setChartData: React.Dispatch<React.SetStateAction<BrainData | null>>,
-  setTimeCounter: (value: React.SetStateAction<number>) => void
+  setTransmissionComplete: React.Dispatch<React.SetStateAction<boolean>> // New state setter
 ) => {
   // Създаване на връзка със SocketIO сървъра
   const socket = io("ws://localhost:5000");
@@ -1037,10 +1037,8 @@ export const connectSocketIO = async (
     console.log("📡 Received raw hardware data:", data);
 
     try {
-      // If data is a string, parse it into an object
       const parsedData = typeof data === "string" ? JSON.parse(data) : data;
 
-      // Validate the parsed object structure
       if (
         parsedData &&
         typeof parsedData === "object" &&
@@ -1056,8 +1054,12 @@ export const connectSocketIO = async (
     } catch (error) {
       console.error("❌ Error parsing data:", error);
     }
+  });
 
-    setTimeCounter((prev) => prev + 1);
+  // New listener for data transmission completion
+  socket.on("dataDoneTransmittingSignal", () => {
+    console.log("✅ Data transmission complete");
+    setTransmissionComplete(true);
   });
 
   // Обработване на прекъсване на връзката от сървъра

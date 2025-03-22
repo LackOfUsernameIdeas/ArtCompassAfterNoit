@@ -6,7 +6,11 @@ import {
   RecommendationsAnalysis,
   Analysis
 } from "./moviesSeriesRecommendations-types";
-import { BrainData, NotificationState } from "../../types_common";
+import {
+  BrainData,
+  FilteredBrainData,
+  NotificationState
+} from "../../types_common";
 import {
   moviesSeriesBrainAnalysisPrompt,
   moviesSeriesStandardPreferencesPrompt,
@@ -104,6 +108,62 @@ export const saveMoviesSeriesUserPreferences = async (
 };
 
 /**
+ * Записва мозъчния анализ на потребителя в базата данни чрез POST заявка.
+ * Ако не успее да запише анализа, се хвърля грешка.
+ *
+ * @async
+ * @function saveBrainAnalysis
+ * @param {string} date - Датата на анализа.
+ * @param {Object} analysisData - Данните от мозъчния анализ.
+ * @param {string} analysisType - Типът на анализа ("movies_series" или "books").
+ * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
+ * @returns {Promise<void>} - Няма връщан резултат, но хвърля грешка при неуспех.
+ * @throws {Error} - Хвърля грешка, ако заявката не е успешна.
+ */
+export const saveBrainAnalysis = async (
+  date: string,
+  analysisData: BrainData[],
+  analysisType: "movies_series" | "books",
+  token: string | null
+): Promise<void> => {
+  try {
+    if (!token) {
+      throw new Error("Токенът е задължителен.");
+    }
+
+    const requestBody = {
+      token,
+      analysisType,
+      data: analysisData,
+      date
+    };
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/save-brain-analysis`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestBody)
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || "Неуспешно записване на мозъчния анализ."
+      );
+    }
+
+    const result = await response.json();
+    console.log("Мозъчният анализ е записан успешно:", result);
+  } catch (error) {
+    console.error("Грешка при записването на мозъчния анализ:", error);
+  }
+};
+
+/**
  * Извлича данни за филм от IMDb чрез няколко различни търсачки в случай на неуспех.
  * Ако не успее да извлече данни от всички търсачки, хвърля грешка.
  *
@@ -176,7 +236,7 @@ export const generateMoviesSeriesRecommendations = async (
   token: string | null,
   renderBrainAnalysis: boolean,
   moviesSeriesUserPreferences?: MoviesSeriesUserPreferences,
-  brainData?: BrainData[]
+  brainData?: FilteredBrainData[]
 ) => {
   try {
     console.log("brainData", brainData);
@@ -488,7 +548,8 @@ export const handleSubmit = async (
   submitCount: number,
   renderBrainAnalysis: boolean = false,
   moviesSeriesUserPreferences?: MoviesSeriesUserPreferences,
-  brainData?: BrainData[]
+  brainData?: BrainData[],
+  analysisType?: "movies_series" | "books"
 ): Promise<void> => {
   if (isOnCooldown) return;
   isOnCooldown = true;
@@ -539,10 +600,10 @@ export const handleSubmit = async (
   }
 
   setLoading(true);
-  setSubmitted(true);
+  if (!renderBrainAnalysis) setSubmitted(true);
 
   try {
-    if (renderBrainAnalysis) {
+    if (renderBrainAnalysis && analysisType && brainData) {
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
         {
@@ -567,12 +628,11 @@ export const handleSubmit = async (
           moviesSeriesUserPreferences &&
           Object.keys(moviesSeriesUserPreferences).length > 0
         ) {
-          await saveMoviesSeriesUserPreferences(
-            date,
-            moviesSeriesUserPreferences,
-            token
+          await saveBrainAnalysis(date, brainData, analysisType, token);
+          const filteredBrainData = brainData.map(
+            ({ blink_strength, raw_data, data_type, ...rest }) => rest
           );
-          // tuka vmesto saveMoviesSeriesUserPreferences trqbva da se izpolzva saveBrainAnalysis
+
           await generateMoviesSeriesRecommendations(
             date,
             setRecommendationList,
@@ -581,7 +641,7 @@ export const handleSubmit = async (
             token,
             true,
             moviesSeriesUserPreferences,
-            brainData
+            filteredBrainData
           );
         }
         setSubmitCount((prevCount) => prevCount + 1);
@@ -653,6 +713,7 @@ export const handleSubmit = async (
       isOnCooldown = false;
     }, 500);
     setLoading(false);
+    if (renderBrainAnalysis) setSubmitted(true);
   }
 };
 
@@ -952,4 +1013,20 @@ export const getBrainWaveKey = (index: number) => {
     "midGamma"
   ];
   return keys[index];
+};
+
+export const MAX_DATA_POINTS = 30;
+
+export const updateSeriesData = (
+  currentData: { x: string; y: number }[],
+  timestamp: string,
+  value: number
+) => {
+  const newData = [...currentData, { x: timestamp, y: value }];
+
+  if (newData.length > MAX_DATA_POINTS) {
+    return newData.slice(newData.length - MAX_DATA_POINTS);
+  }
+
+  return newData;
 };

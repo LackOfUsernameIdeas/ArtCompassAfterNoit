@@ -20,6 +20,7 @@ export const Quiz: FC<QuizProps> = ({
   const [submitted, setSubmitted] = useState(false);
   const [recommendationList, setRecommendationList] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAnalysisComplete, setIsAnalysisComplete] = useState(false);
   const [recommendationsAnalysis, setRecommendationsAnalysis] =
     useState<RecommendationsAnalysis>({
       relevantCount: 0,
@@ -72,15 +73,18 @@ export const Quiz: FC<QuizProps> = ({
         classNames="fade"
         unmountOnExit
       >
-        <div className="w-full max-w-4xl">
+        <div className={`${!isAnalysisComplete && "w-full max-w-4xl"}`}>
           <QuizQuestions
             setLoading={setLoading}
             setSubmitted={setSubmitted}
+            submitted={submitted}
             showViewRecommendations={alreadyHasRecommendations && !submitted}
             alreadyHasRecommendations={alreadyHasRecommendations}
             setRecommendationList={setRecommendationList}
             setRecommendationsAnalysis={setRecommendationsAnalysis}
             setBookmarkedMovies={setBookmarkedMovies}
+            setIsAnalysisComplete={setIsAnalysisComplete}
+            isAnalysisComplete={isAnalysisComplete}
           />
         </div>
       </CSSTransition>

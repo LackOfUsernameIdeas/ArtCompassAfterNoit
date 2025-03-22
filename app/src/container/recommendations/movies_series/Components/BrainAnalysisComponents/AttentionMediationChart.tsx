@@ -4,14 +4,13 @@ import ApexCharts from "react-apexcharts";
 interface AttentionMeditationChartProps {
   attentionMeditation: {
     name: string;
-    data: { x: number; y: number }[];
+    data: { x: string; y: number }[];
   }[];
 }
 
 const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
   attentionMeditation
 }) => {
-  // Get latest values
   const attentionValue =
     attentionMeditation[0].data.length > 0
       ? Math.round(
@@ -26,7 +25,6 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
         )
       : 0;
 
-  // Chart options for attention and meditation
   const attentionMeditationOptions: ApexCharts.ApexOptions = {
     chart: {
       id: "attention-meditation-chart",
@@ -41,13 +39,12 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
       toolbar: {
         show: false
       },
-      background: "transparent",
-      height: 120
+      background: "transparent"
     },
     colors: ["#FF5722", "#4CAF50"],
     stroke: {
       curve: "smooth",
-      width: 2
+      width: 3
     },
     fill: {
       type: "gradient",
@@ -67,25 +64,20 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
         opacity: 0.5
       },
       padding: {
-        left: 5,
-        right: 5
+        left: 10,
+        right: 10
       }
     },
     markers: {
       size: 0,
       hover: {
-        size: 3
+        size: 4
       }
     },
     xaxis: {
       type: "numeric",
       labels: {
-        formatter: (value) => `${value}s`,
-        style: {
-          colors: "rgba(255, 255, 255, 0.7)",
-          fontSize: "8px"
-        },
-        offsetY: -2
+        show: false
       },
       axisBorder: {
         show: false
@@ -100,7 +92,7 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
       labels: {
         style: {
           colors: "rgba(255, 255, 255, 0.7)",
-          fontSize: "8px"
+          fontSize: "10px"
         },
         formatter: (value) => Math.round(value).toString()
       }
@@ -120,30 +112,26 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
       floating: true,
       offsetY: -5,
       offsetX: -5,
-      fontSize: "10px",
       labels: {
         colors: "rgba(255, 255, 255, 0.9)"
-      },
-      itemMargin: {
-        horizontal: 5
       }
     }
   };
 
   return (
-    <div className="bg-black bg-opacity-30 rounded-lg p-2 h-full flex flex-col">
-      <div className="flex justify-between items-center mb-0">
-        <h3 className="text-xs font-medium text-gray-200">Mental State</h3>
-        <div className="flex space-x-2">
-          <span className="text-xs font-bold text-[#FF5722]">
+    <div className="bg-black bg-opacity-30 rounded-lg p-3 h-full flex flex-col">
+      <div className="flex justify-between items-center mb-1">
+        <h3 className="text-sm font-medium text-gray-200">Mental State</h3>
+        <div className="flex space-x-3">
+          <span className="text-sm font-bold text-[#FF5722]">
             A: {attentionValue}
           </span>
-          <span className="text-xs font-bold text-[#4CAF50]">
+          <span className="text-sm font-bold text-[#4CAF50]">
             M: {meditationValue}
           </span>
         </div>
       </div>
-      <div className="flex-grow min-h-[100px]">
+      <div className="flex-grow mb-2">
         <ApexCharts
           options={attentionMeditationOptions}
           series={attentionMeditation}

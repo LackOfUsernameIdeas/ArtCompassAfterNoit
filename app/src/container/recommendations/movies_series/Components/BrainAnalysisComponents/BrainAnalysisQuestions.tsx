@@ -1,18 +1,23 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { CSSTransition } from "react-transition-group";
 import {
   MoviesSeriesUserPreferences,
   NotificationState,
   RecommendationsAnalysis
 } from "../../moviesSeriesRecommendations-types";
-import { handleSubmit } from "../../helper_functions";
+import {
+  handleSubmit,
+  MAX_DATA_POINTS,
+  updateSeriesData
+} from "../../helper_functions";
 import BrainAnalysisTrackStats from "./BrainAnalysisTrackStats";
 import { BrainData } from "@/container/types_common";
+import Loader from "@/components/common/loader/Loader";
+import { connectSocketIO } from "@/container/helper_functions_common";
 
 // Компонент за въпросите по време на мозъчния анализ
 export const BrainAnalysisQuestions: FC<{
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието за зареждане
-  setSubmitted: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието за изпращане
+  setSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
   setNotification: React.Dispatch<
     React.SetStateAction<NotificationState | null>
   >;
@@ -23,25 +28,95 @@ export const BrainAnalysisQuestions: FC<{
   setBookmarkedMovies: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
   >;
+  submitted: boolean;
   token: string | null;
   submitCount: number;
   setSubmitCount: React.Dispatch<React.SetStateAction<number>>;
+  setIsAnalysisComplete: React.Dispatch<React.SetStateAction<boolean>>;
+  isAnalysisComplete: boolean;
 }> = ({
-  setLoading,
   setSubmitted,
   setNotification,
   setRecommendationList,
   setRecommendationsAnalysis,
   setBookmarkedMovies,
+  submitted,
   token,
   submitCount,
-  setSubmitCount
+  setSubmitCount,
+  setIsAnalysisComplete,
+  isAnalysisComplete
 }) => {
   // Състояния за текущия индекс на въпроса, показване на въпроса, дали анализът е завършен и cooldown между въпроси
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showQuestion, setShowQuestion] = useState(true);
-  const [isAnalysisComplete, setIsAnalysisComplete] = useState(false);
+  const [transmissionComplete, setTransmissionComplete] = useState(false);
   const [isOnCooldown, setIsOnCooldown] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [chartData, setChartData] = useState<BrainData | null>(null);
+  const [seriesData, setSeriesData] = useState<BrainData[]>([]);
+  const [attentionMeditation, setAttentionMeditation] = useState<
+    {
+      name: string;
+      data: { x: string; y: number }[];
+    }[]
+  >([
+    { name: "Attention", data: [] },
+    { name: "Meditation", data: [] }
+  ]);
+
+  useEffect(() => {
+    connectSocketIO(setChartData, setTransmissionComplete);
+    return () => {
+      console.log(
+        "Component unmounted, WebSocket connection should be closed."
+      );
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!chartData) return;
+    if (!submitted) setLoading(false);
+
+    setSeriesData((prevData) => {
+      const newData = [...prevData, { ...chartData }];
+
+      // Филтриране на данните – изключва обекти, в които ВСИЧКИ стойности са 0
+      const filteredData = newData.filter(
+        (data) =>
+          !(
+            data.attention === 0 &&
+            data.meditation === 0 &&
+            data.delta === 0 &&
+            data.theta === 0 &&
+            data.lowAlpha === 0 &&
+            data.highAlpha === 0 &&
+            data.lowBeta === 0 &&
+            data.highBeta === 0 &&
+            data.lowGamma === 0 &&
+            data.highGamma === 0
+          )
+      );
+      return filteredData.length > MAX_DATA_POINTS
+        ? filteredData.slice(-MAX_DATA_POINTS)
+        : filteredData;
+    });
+
+    setAttentionMeditation((prevData) =>
+      prevData.map((stat, index) => {
+        const key = index === 0 ? "attention" : "meditation";
+        const value = chartData[key];
+        return {
+          ...stat,
+          data: updateSeriesData(
+            stat.data,
+            chartData.time,
+            typeof value === "number" ? value : 0
+          )
+        };
+      })
+    );
+  }, [chartData]);
 
   // Примерни въпроси за мозъчния анализ
   const questions = [
@@ -112,6 +187,7 @@ export const BrainAnalysisQuestions: FC<{
       } else {
         // Ако няма повече въпроси, маркираме анализата като завършена
         setIsAnalysisComplete(true);
+        setLoading(true);
       }
       // Включваме отново показването на въпроса
       setShowQuestion(true);
@@ -124,6 +200,7 @@ export const BrainAnalysisQuestions: FC<{
   // Функция за пропускане на въпросите
   const handleSkipAll = () => {
     setIsAnalysisComplete(true); // Mark analysis as completed
+    setLoading(true);
   };
 
   // Функция за изпращане на заявки за препоръки
@@ -140,76 +217,98 @@ export const BrainAnalysisQuestions: FC<{
       submitCount,
       true,
       moviesSeriesUserPreferences,
-      brainData
+      brainData,
+      "movies_series"
     );
   };
 
   return (
     <div>
       <CSSTransition
-        in={showQuestion}
+        in={loading}
+        timeout={500} // Време за анимация
+        classNames="fade"
+        unmountOnExit
+      >
+        <Loader brainAnalysis />
+      </CSSTransition>
+      <CSSTransition
+        in={!loading && !isAnalysisComplete && showQuestion}
         timeout={500} // Време за анимация
         classNames="fade"
         unmountOnExit
       >
         <div className="w-full max-w-4xl">
-          {isAnalysisComplete ? (
-            <BrainAnalysisTrackStats
-              handleRecommendationsSubmit={handleRecommendationsSubmit}
-            />
-          ) : (
-            <>
-              <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
-                <h2 className="text-xl font-semibold break-words">
-                  {currentQuestion.question}
-                </h2>
-                <p className="text-sm text-gray-500 mt-2">
-                  {currentQuestion.description}
-                </p>
-              </div>
+          <>
+            <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
+              <h2 className="text-xl font-semibold break-words">
+                {currentQuestion.question}
+              </h2>
+              <p className="text-sm text-gray-500 mt-2">
+                {currentQuestion.description}
+              </p>
+            </div>
 
-              {/* Показваме изображението за пример (като част от въпроса) */}
-              <div className="mt-8 border-2 rounded-lg p-4 bg-opacity-50 bg-black text-white">
-                <div className="flex justify-center items-center h-64 bg-gray-800 rounded-lg">
-                  <p className="text-lg text-center">{currentQuestion.image}</p>
-                </div>
-                <div className="mt-4 flex justify-center">
-                  <div className="h-4 w-full max-w-md bg-gray-700 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-secondary transition-all duration-3000 ease-linear"
-                      style={{
-                        width: `${
-                          ((currentQuestionIndex + 1) / totalQuestions) * 100
-                        }%`
-                      }}
-                    ></div>
-                  </div>
-                </div>
-                <p className="text-center mt-2 text-gray-400">
-                  Analyzing brain responses... {currentQuestionIndex + 1}/
-                  {totalQuestions}
-                </p>
-              </div>
-
+            <div className="flex justify-end">
               {!isAnalysisComplete && (
-                <div
+                <button
                   onClick={handleSkipAll}
-                  className="skip-all bg-red-600 text-white font-bold rounded-lg p-4 mt-4 flex justify-center items-center transition-all duration-300 ease-in-out transform opacity-100 cursor-pointer hover:scale-105"
+                  className="back-button text-secondary dark:text-white hover:opacity-70 text-3xl transition-all duration-300 flex items-center gap-2"
                 >
-                  Skip All
-                </div>
+                  <span className="text-sm">Пропускане на стъпките</span>{" "}
+                  &#8594;
+                </button>
               )}
-              {/* Бутон за преминаване към следващия въпрос или завършване на анализа */}
-              <div
-                onClick={handleNext}
-                className="next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-6 flex justify-center items-center transition-all duration-300 ease-in-out transform opacity-100 cursor-pointer hover:scale-105"
-              >
-                {currentQuestionIndex === totalQuestions - 1
-                  ? "Complete Analysis"
-                  : "Next Question"}
+            </div>
+
+            {/* Показваме изображението за пример (като част от въпроса) */}
+            <div className="border-2 rounded-lg p-4 bg-opacity-50 bg-black text-white">
+              <div className="flex justify-center items-center h-64 bg-gray-800 rounded-lg">
+                <p className="text-lg text-center">{currentQuestion.image}</p>
               </div>
-            </>
-          )}
+              <div className="mt-4 flex justify-center">
+                <div className="h-4 w-full max-w-md bg-gray-700 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-secondary transition-all duration-3000 ease-linear"
+                    style={{
+                      width: `${
+                        ((currentQuestionIndex + 1) / totalQuestions) * 100
+                      }%`
+                    }}
+                  ></div>
+                </div>
+              </div>
+              <p className="text-center mt-2 text-gray-400">
+                Analyzing brain responses... {currentQuestionIndex + 1}/
+                {totalQuestions}
+              </p>
+            </div>
+            {/* Бутон за преминаване към следващия въпрос или завършване на анализа */}
+            <div
+              onClick={handleNext}
+              className="next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-6 flex justify-center items-center transition-all duration-300 ease-in-out transform opacity-100 cursor-pointer hover:scale-105"
+            >
+              {currentQuestionIndex === totalQuestions - 1
+                ? "Complete Analysis"
+                : "Next Question"}
+            </div>
+          </>
+        </div>
+      </CSSTransition>
+      <CSSTransition
+        in={!loading && isAnalysisComplete}
+        timeout={500} // Време за анимация
+        classNames="fade"
+        unmountOnExit
+      >
+        <div className="w-full">
+          <BrainAnalysisTrackStats
+            handleRecommendationsSubmit={handleRecommendationsSubmit}
+            transmissionComplete={transmissionComplete}
+            seriesData={seriesData}
+            chartData={chartData}
+            attentionMeditation={attentionMeditation}
+          />
         </div>
       </CSSTransition>
     </div>

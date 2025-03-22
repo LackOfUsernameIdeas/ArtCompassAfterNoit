@@ -151,6 +151,7 @@ export interface PlotModalProps {
 export interface QuizQuestionProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието за зареждане
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието за изпращане
+  submitted: boolean; // Състоянието за изпращане
   showViewRecommendations: boolean; // Флаг за показване на препоръките
   alreadyHasRecommendations: boolean; // Флаг за проверка дали вече има препоръки
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>; // Функция за задаване на списък с препоръки
@@ -160,6 +161,8 @@ export interface QuizQuestionProps {
   setBookmarkedMovies: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
   >; // Функция за актуализиране на маркираните филми
+  setIsAnalysisComplete: React.Dispatch<React.SetStateAction<boolean>>; // Функция за актуализиране състоянието на мозъчния анализ
+  isAnalysisComplete: boolean; // Състоянието на мозъчния анализ
 }
 
 // Пропс за компонентата ViewRecommendations, която показва резултатите от препоръките.

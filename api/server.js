@@ -15,6 +15,8 @@ const pythonPathLocal = require("./config.js").pythonPathLocal;
 const SECRET_KEY = require("./credentials.js").SECRET_KEY;
 const EMAIL_USER = require("./credentials.js").EMAIL_USER;
 const EMAIL_PASS = require("./credentials.js").EMAIL_PASS;
+const fs = require("fs");
+const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
@@ -2079,8 +2081,12 @@ app.post("/save-brain-analysis", (req, res) => {
   const { token, analysisType, data, date } = req.body;
 
   // Проверка за липсващи данни
-  if (!token || !analysisType || !data || !date) {
-    return res.status(400).json({ error: "Всички полета са задължителни." });
+  if (!token || !analysisType || !data || !date || !Array.isArray(data)) {
+    return res
+      .status(400)
+      .json({
+        error: "Всички полета са задължителни и 'data' трябва да е масив."
+      });
   }
 
   // Верификация на токена и извличане на потребителското ID
@@ -2092,54 +2098,84 @@ app.post("/save-brain-analysis", (req, res) => {
 
     const userId = decoded.id;
 
-    if (analysisType === "movies_series") {
-      db.saveMoviesSeriesBrainAnalysis(userId, data, date, (err, result) => {
-        if (err) {
-          return res.status(500).json({ error: err.message });
-        }
-        res.status(201).json({
-          message:
-            "Данните за мозъчния анализ на филми/сериали са запазени успешно!"
-        });
-      });
-    } else if (analysisType === "books") {
-      db.saveBooksBrainAnalysis(userId, data, date, (err, result) => {
-        if (err) {
-          return res.status(500).json({ error: err.message });
-        }
-        res.status(201).json({
-          message: "Данните за мозъчния анализ на книги са запазени успешно!"
-        });
-      });
-    } else {
+    const saveFunction =
+      analysisType === "movies_series"
+        ? db.saveMoviesSeriesBrainAnalysis
+        : analysisType === "books"
+        ? db.saveBooksBrainAnalysis
+        : null;
+
+    if (!saveFunction) {
       return res.status(400).json({ error: "Невалиден тип анализ." });
     }
+
+    // Запазване на всеки обект в масива data
+    const savePromises = data.map((entry) => {
+      return new Promise((resolve, reject) => {
+        saveFunction(userId, entry, date, (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        });
+      });
+    });
+
+    Promise.all(savePromises)
+      .then(() => {
+        res.status(201).json({
+          message: `Данните за мозъчния анализ на ${analysisType} са запазени успешно!`
+        });
+      })
+      .catch((error) => {
+        res.status(500).json({ error: error.message });
+      });
   });
 });
+
+const DATA_FILE = path.join(__dirname, "session_data.json");
 
 // Когато клиент се свърже със SocketIO сървъра
 io.on("connection", (socket) => {
   console.log("Клиент се свърза");
-
-  // Това ще изпрати първоначален сигнал на клиента, който се свързва.
   socket.emit("connectSignal");
 
-  // Слушане на събитието 'hardwareData' от изпращащото приложение (python app)
   socket.on("hardwareData", (data) => {
     console.log("Получени хардуерни данни:", data);
 
-    // Изпращане на данните към всички свързани клиенти, освен към изпращащия (защото е безсмислено)
-    socket.broadcast.emit("hardwareDataResponse", data);
+    // Четене на JSON файла
+    fs.readFile(DATA_FILE, "utf8", (err, fileData) => {
+      if (err) {
+        console.error("Грешка при четене на файла:", err);
+        return;
+      }
+
+      let jsonData;
+      try {
+        jsonData = JSON.parse(fileData);
+      } catch (parseErr) {
+        console.error("Грешка при парсиране на JSON:", parseErr);
+        return;
+      }
+
+      // Изпращане на данните един по един
+      jsonData.forEach((item, index) => {
+        setTimeout(() => {
+          socket.broadcast.emit("hardwareDataResponse", item);
+          if (index === jsonData.length - 1) {
+            socket.broadcast.emit("dataDoneTransmittingSignal");
+          }
+        }, index * 500); // Интервал между съобщенията
+      });
+    });
   });
 
-  // Слушане на събитието 'dataDoneTransmitting' от клиента
   socket.on("dataDoneTransmitting", (data) => {
     console.log("Получено съобщение за завършване на трансфер на данни:", data);
-    // Изпращане на сигнал до останалите клиенти, че изпращащото приложение (python app) е спряло потока от данни.
     socket.broadcast.emit("dataDoneTransmittingSignal");
   });
 
-  // Слушане за прекъсване на връзката от клиент
   socket.on("disconnect", () => {
     console.log("Клиентът прекъсна връзката");
   });

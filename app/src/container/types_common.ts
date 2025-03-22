@@ -250,6 +250,7 @@ export interface BrainData {
   attention: number; // Стойност за внимание
   meditation: number; // Стойност за медитация
   blink_strength: number | null; // Сила на мигане, която може да бъде null
+  raw_data: number[]; // raw информация за EEG
   delta: number; // Стойност за delta вълната
   theta: number; // Стойност за theta вълната
   lowAlpha: number; // Стойност за low-alpha вълната
@@ -259,3 +260,8 @@ export interface BrainData {
   lowGamma: number; // Стойност за low-gamma вълната
   highGamma: number; // Стойност за high-gamma вълната
 }
+
+export type FilteredBrainData = Omit<
+  BrainData,
+  "blink_strength" | "raw_data" | "data_type"
+>; // BrainData без blink strength, raw data и data type
