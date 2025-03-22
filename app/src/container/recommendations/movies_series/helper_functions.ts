@@ -628,6 +628,11 @@ export const handleSubmit = async (
           moviesSeriesUserPreferences &&
           Object.keys(moviesSeriesUserPreferences).length > 0
         ) {
+          await saveMoviesSeriesUserPreferences(
+            date,
+            moviesSeriesUserPreferences,
+            token
+          );
           await saveBrainAnalysis(date, brainData, analysisType, token);
           const filteredBrainData = brainData.map(
             ({ blink_strength, raw_data, data_type, ...rest }) => rest
