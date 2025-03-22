@@ -121,33 +121,38 @@ export const BrainAnalysisQuestions: FC<{
   // Примерни въпроси за мозъчния анализ
   const questions = [
     {
-      question: "Analyzing your emotional response to drama",
+      question: "1. Сваляне на ThinkGear програмата - mwm2.neurosky.com",
       description:
-        "The device is measuring your brain's reaction to dramatic scenes",
+        "Оттам избирате от опциите за изтегляне, спрямо вашата операционната система. След това разархивирате сваления файл и стартирате ThinkGear Connector - зелената иконка. Трябва да се появи долу вдясно иконка, наподобяваща мозък.",
       image: "example image 1"
     },
     {
-      question: "Examining your response to comedy",
-      description:
-        "The device is detecting patterns in your response to humorous content",
+      question: "2. Пускане на устройството.",
+      description: "Излиза синя светлина, когато е пуснато.",
       image: "example image 2"
     },
     {
-      question: "Testing your engagement with action sequences",
+      question: "3. Свързване на устройството.",
       description:
-        "The system is tracking how your brain processes fast-paced content",
+        "Трябва вашето устройство да поддържа Bluetooth. Пускате го. Свързвате се към устройството (изчаквате, докато не видите иконката със СЛУШАЛКИ).",
       image: "example image 3"
     },
     {
-      question: "Analyzing your attention to detail",
+      question: "4. Конфигуриране на COM порт.",
       description:
-        "The device is measuring how your brain focuses on visual details",
+        "След успешно свързване, отивате на More Bluetooth options и оттам в раздела COM ports. Трябва да видите на кой от тях е свързано устройството и ако не е, да добавите порт към него. Интересува ни OUTGOING порта. В нашия случай, това е COM4. След като знаете номера, отивате и пишете „COM4“ в ThinkGear Connector приложението на показаното поле.",
       image: "example image 4"
     },
     {
-      question: "Examining your emotional memory connections",
+      question: "5. Сваляне на програмата за свързване с АртКомпас",
       description:
-        "The system is detecting how your brain connects emotions to memories",
+        "След сваляне на архива го разархивирате и отваряте. Трябва да виждате execute файла за свързване.",
+      image: "example image 5"
+    },
+    {
+      question: "6. Същинско свързване",
+      description:
+        "Ако първо сте пуснали ThinkGear Connector, след което сте включили устройството, след което bluetooth на вашия компютър и най-накрая нашата програмата и видите, че иконката на ThinkGear долу вдясно е в синьо и пише, че има връзка с устройството и също така ви излезе прозореца за започване на сесията, значи успешно сте свързали устройството. **Ако все пак не излиза в терминала съобщението за успешно свързване и не се появява прозореца на програмата, но въпреки това ThinkGear посочва, че има връзка, опитайте да рестартирате.**",
       image: "example image 5"
     }
   ];
