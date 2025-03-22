@@ -2074,6 +2074,49 @@ app.get("/stats/platform/adaptations", (req, res) => {
   });
 });
 
+// Запазване на данни за мозъчния анализ, свързани с филми, сериали и книги.
+app.post("/save-brain-analysis", (req, res) => {
+  const { token, analysisType, data, date } = req.body;
+
+  // Проверка за липсващи данни
+  if (!token || !analysisType || !data || !date) {
+    return res.status(400).json({ error: "Всички полета са задължителни." });
+  }
+
+  // Верификация на токена и извличане на потребителското ID
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) {
+      console.log(err);
+      return res.status(401).json({ error: "Невалиден токен." });
+    }
+
+    const userId = decoded.id;
+
+    if (analysisType === "movies_series") {
+      db.saveMoviesSeriesBrainAnalysis(userId, data, date, (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        res.status(201).json({
+          message:
+            "Данните за мозъчния анализ на филми/сериали са запазени успешно!"
+        });
+      });
+    } else if (analysisType === "books") {
+      db.saveBooksBrainAnalysis(userId, data, date, (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+        res.status(201).json({
+          message: "Данните за мозъчния анализ на книги са запазени успешно!"
+        });
+      });
+    } else {
+      return res.status(400).json({ error: "Невалиден тип анализ." });
+    }
+  });
+});
+
 // Когато клиент се свърже със SocketIO сървъра
 io.on("connection", (socket) => {
   console.log("Клиент се свърза");

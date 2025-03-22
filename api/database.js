@@ -4422,6 +4422,74 @@ const countBookAdaptations = (callback) => {
   });
 };
 
+/**
+ * Запазва данни от устройството в базата данни.
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {Object} data - Данни от устройството.
+ * @param {string} date - Дата, на която са генерирани предпочитанията.
+ * @param {Function} callback - Функция за обратно извикване след завършване на заявката.
+ */
+const saveMoviesSeriesBrainAnalysis = (userId, data, date, callback) => {
+  const query = `INSERT INTO movies_series_brain_analysis (
+    user_id, time, data_type, attention, meditation, delta, theta, 
+    lowAlpha, highAlpha, lowBeta, highBeta, lowGamma, highGamma, raw_data, date
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+
+  const values = [
+    userId,
+    data.time,
+    data.data_type,
+    data.attention,
+    data.meditation,
+    data.delta,
+    data.theta,
+    data.lowAlpha,
+    data.highAlpha,
+    data.lowBeta,
+    data.highBeta,
+    data.lowGamma,
+    data.highGamma,
+    JSON.stringify(data.raw_data),
+    date
+  ];
+
+  db.query(query, values, callback);
+};
+
+/**
+ * Запазва данни от устройството в базата данни.
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {Object} data - Данни от устройството.
+ * @param {string} date - Дата, на която са генерирани предпочитанията.
+ * @param {Function} callback - Функция за обратно извикване след завършване на заявката.
+ */
+const saveBooksBrainAnalysis = (userId, data, date, callback) => {
+  const query = `INSERT INTO books_brain_analysis (
+    user_id, time, data_type, attention, meditation, delta, theta, 
+    lowAlpha, highAlpha, lowBeta, highBeta, lowGamma, highGamma, raw_data, date
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+
+  const values = [
+    userId,
+    data.time,
+    data.data_type,
+    data.attention,
+    data.meditation,
+    data.delta,
+    data.theta,
+    data.lowAlpha,
+    data.highAlpha,
+    data.lowBeta,
+    data.highBeta,
+    data.lowGamma,
+    data.highGamma,
+    JSON.stringify(data.raw_data),
+    date
+  ];
+
+  db.query(query, values, callback);
+};
+
 module.exports = {
   checkEmailExists,
   createUser,
@@ -4479,5 +4547,7 @@ module.exports = {
   calculateAverageMetrics,
   getHistoricalAverageMetrics,
   getHistoricalAverageMetricsForUser,
-  countBookAdaptations
+  countBookAdaptations,
+  saveMoviesSeriesBrainAnalysis,
+  saveBooksBrainAnalysis
 };

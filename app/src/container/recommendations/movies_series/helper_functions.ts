@@ -572,6 +572,7 @@ export const handleSubmit = async (
             moviesSeriesUserPreferences,
             token
           );
+          // tuka vmesto saveMoviesSeriesUserPreferences trqbva da se izpolzva saveBrainAnalysis
           await generateMoviesSeriesRecommendations(
             date,
             setRecommendationList,

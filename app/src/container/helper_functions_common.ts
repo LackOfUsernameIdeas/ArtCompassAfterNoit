@@ -1070,3 +1070,54 @@ export const connectSocketIO = async (
     console.error("Грешка при свързване със SocketIO сървъра:", error);
   });
 };
+
+/**
+ * Записва данните за мозъчния анализ в базата данни чрез POST заявка.
+ * Ако не успее да запише анализа, се хвърля грешка.
+ *
+ * @async
+ * @function saveBrainAnalysis
+ * @param {string} date - Датата на анализа.
+ * @param {string} analysisType - Типът анализ ("movies_series" или "books").
+ * @param {Object} data - Данните от анализа.
+ * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
+ * @returns {Promise<void>} - Няма връщан резултат, но хвърля грешка при неуспех.
+ * @throws {Error} - Хвърля грешка, ако заявката не е успешна.
+ */
+export const saveBrainAnalysis = async (
+  date: string,
+  analysisType: "movies_series" | "books",
+  data: object,
+  token: string | null
+): Promise<void> => {
+  try {
+    if (!token || !analysisType || !data || !date) {
+      throw new Error("Всички полета са задължителни.");
+    }
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/save-brain-analysis`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          token,
+          analysisType,
+          data,
+          date
+        })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Грешка при запазване на мозъчния анализ.");
+    }
+
+    const result = await response.json();
+    console.log("Мозъчният анализ е запазен успешно:", result);
+  } catch (error) {
+    console.error("Грешка при запазване на мозъчния анализ:", error);
+  }
+};
