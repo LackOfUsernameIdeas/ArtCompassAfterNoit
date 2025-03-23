@@ -173,7 +173,20 @@ export const BrainAnalysisSteps: FC<{
     }, 500); // Задаваме забавяне за анимацията
   };
 
-  // Функция за пропускане на въпросите
+  const isBackDisabled = currentStepIndex === 0;
+
+  // Функция за връщане на предишна стъпка
+  const handleBack = () => {
+    if (currentStepIndex > 0) {
+      setShowStep(false); // Пускане на анимация
+      setTimeout(() => {
+        setCurrentStepIndex((prevIndex) => prevIndex - 1);
+        setShowStep(true);
+      }, 500); // Задаваме забавяне за анимацията
+    }
+  };
+
+  // Функция за пропускане на стъпките
   const handleSkipAll = () => {
     setIsAnalysisComplete(true); // Mark analysis as completed
     setLoading(true);
@@ -231,7 +244,21 @@ export const BrainAnalysisSteps: FC<{
                 </p>
               </div>
 
-              <div className="flex justify-end">
+              <div
+                className={`flex ${
+                  isBackDisabled ? "justify-end" : "justify-between"
+                }`}
+              >
+                {!isBackDisabled && (
+                  <div className="flex justify-start">
+                    <button
+                      onClick={handleBack}
+                      className="back-button text-secondary dark:text-white hover:opacity-70 text-3xl transition-all duration-300 "
+                    >
+                      &#8592;
+                    </button>
+                  </div>
+                )}
                 {!isAnalysisComplete && (
                   <button
                     onClick={handleSkipAll}
