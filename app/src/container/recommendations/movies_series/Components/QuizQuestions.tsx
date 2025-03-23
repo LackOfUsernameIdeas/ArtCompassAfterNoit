@@ -210,7 +210,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
     if (
       currentQuestionIndex === 0 &&
       selectedAnswer?.includes(
-        "Мозъчен анализ - устройство за измерване на мозъчни вълни"
+        "Мозъчен анализ - препоръките се дават на база анализ от устройство за измерване на мозъчни вълни"
       )
     ) {
       // Set state to render BrainAnalysisQuestions

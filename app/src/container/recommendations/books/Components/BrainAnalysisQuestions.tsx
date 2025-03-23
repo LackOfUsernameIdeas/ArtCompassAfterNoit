@@ -1,5 +1,21 @@
 import { FC, useState } from "react";
 import { CSSTransition } from "react-transition-group";
+import img0 from "@/assets/images/instructions/0.jpg";
+import img1_1 from "@/assets/images/instructions/1.1.png";
+import img1_2 from "@/assets/images/instructions/1.2.png";
+import img1_3 from "@/assets/images/instructions/1.3.png";
+import img1_4 from "@/assets/images/instructions/1.4.png";
+import img2 from "@/assets/images/instructions/2.jpg";
+import img3_1 from "@/assets/images/instructions/3.1.png";
+import img3_2 from "@/assets/images/instructions/3.2.png";
+import img3_3 from "@/assets/images/instructions/3.3.png";
+import img3_4 from "@/assets/images/instructions/3.4.png";
+import img4_1 from "@/assets/images/instructions/4.1.png";
+import img4_2 from "@/assets/images/instructions/4.2.png";
+import img5 from "@/assets/images/instructions/5.png";
+import img6_1 from "@/assets/images/instructions/6.1.png";
+import img6_2 from "@/assets/images/instructions/6.2.png";
+import img6_3 from "@/assets/images/instructions/6.3.png";
 import {
   BooksUserPreferences,
   NotificationState
@@ -36,44 +52,58 @@ export const BrainAnalysisQuestions: FC<{
   const [isAnalysisComplete, setIsAnalysisComplete] = useState(false);
   const [isOnCooldown, setIsOnCooldown] = useState(false);
 
-  // Примерни въпроси за мозъчния анализ
-  const questions = [
+  const [selectedImage, setSelectedImage] = useState<string | null>(null); // Състояние за избраното изображение (за показване в пълен размер)
+  const closeModal = () => setSelectedImage(null); // Функция за затваряне на прозорецa с изображението
+
+  // Стъпки за успешно съставяне на мозъчен анализ
+  const steps = [
     {
-      question: "Analyzing your emotional response to drama",
+      question: "0. Въведение",
       description:
-        "The device is measuring your brain's reaction to dramatic scenes",
-      image: "example image 1"
+        "За да започнете мозъчния анализ, трябва да се сдобиете с устройството NeuroSky MindWave Mobile 2. Следвайте следващите стъпки, за да го използвате успешно.",
+      images: [img0]
     },
     {
-      question: "Examining your response to comedy",
+      question: "1. Сваляне на ThinkGear програмата - mwm2.neurosky.com",
       description:
-        "The device is detecting patterns in your response to humorous content",
-      image: "example image 2"
+        "Оттам избирате от опциите за изтегляне, спрямо вашата операционната система. След това разархивирате сваления файл и стартирате ThinkGear Connector - зелената иконка. Трябва да се появи долу вдясно иконка, наподобяваща мозък.",
+      images: [img1_1, img1_2, img1_3, img1_4]
     },
     {
-      question: "Testing your engagement with action sequences",
-      description:
-        "The system is tracking how your brain processes fast-paced content",
-      image: "example image 3"
+      question: "2. Пускане на устройството.",
+      description: "Излиза синя светлина, когато е пуснато.",
+      images: [img2]
     },
     {
-      question: "Analyzing your attention to detail",
+      question: "3. Свързване на устройството.",
       description:
-        "The device is measuring how your brain focuses on visual details",
-      image: "example image 4"
+        "Трябва вашият компютър да поддържа Bluetooth (или да имате Bluetooth Adapter). Пускате го от настройките и натискате на опцията за добавяне на ново устройство. Свързвате се към MindWave Mobile (изчаквате, докато не видите иконката със СЛУШАЛКИ).",
+      images: [img3_1, img3_2, img3_3, img3_4]
     },
     {
-      question: "Examining your emotional memory connections",
+      question: "4. Конфигуриране на COM порт.",
       description:
-        "The system is detecting how your brain connects emotions to memories",
-      image: "example image 5"
+        "След успешно свързване, отивате на More Bluetooth options и оттам в раздела COM ports. Трябва да видите на кой от тях е свързано устройството и ако не е, да добавите порт към него. Интересува ни OUTGOING порта. Той се обозначава с COM и съответната цифра (в примера от снимките, това е COM4). След идентифицирате правилния порт, отивате и го пишете (пример: „COM4“) в ThinkGear Connector приложението на показаното поле.",
+      images: [img4_1, img4_2]
+    },
+    {
+      question: "5. Сваляне на програмата за свързване с АртКомпас",
+      description:
+        "След сваляне на архива го разархивирате и отваряте. Трябва да виждате .exe файла за свързване.",
+      images: [img5]
+    },
+    {
+      question: "6. Същинско свързване",
+      description:
+        "Ако първо сте пуснали ThinkGear Connector, след което сте включили устройството, след което Bluetooth на вашия компютър и най-накрая нашата програмата и видите, че иконката на ThinkGear долу вдясно е в синьо и пише, че има връзка с устройството и също така ви излезе прозореца за започване на сесията, значи успешно сте свързали устройството. **Ако все пак не излиза в command prompt-а съобщението за успешно свързване и не се появява прозореца на програмата, но въпреки това ThinkGear посочва, че има връзка, опитайте да рестартирате.**",
+      images: [img6_1, img6_2, img6_3]
     }
   ];
 
   // Общо количество въпроси
-  const totalQuestions = questions.length;
+  const totalQuestions = steps.length;
   // Текущият въпрос, който ще бъде показан
-  const currentQuestion = questions[currentQuestionIndex];
+  const currentQuestion = steps[currentQuestionIndex];
 
   const booksUserPreferences: BooksUserPreferences = {
     genres: [], // Жанрове на английски и български
@@ -166,24 +196,93 @@ export const BrainAnalysisQuestions: FC<{
 
               {/* Показваме изображението за пример (като част от въпроса) */}
               <div className="mt-8 border-2 rounded-lg p-4 bg-opacity-50 bg-black text-white">
-                <div className="flex justify-center items-center h-64 bg-gray-800 rounded-lg">
-                  <p className="text-lg text-center">{currentQuestion.image}</p>
+                <div className="flex flex-wrap justify-center gap-4">
+                  {currentQuestion.images?.map((imgSrc, index) => {
+                    console.log(imgSrc);
+                    return (
+                      <img
+                        key={index}
+                        src={imgSrc} // Use imgSrc dynamically
+                        alt={`Изображение ${index}`}
+                        className="h-32 cursor-pointer rounded-lg object-contain border-2 transition-transform hover:scale-105"
+                        onClick={() => setSelectedImage(imgSrc)}
+                      />
+                    );
+                  })}
                 </div>
+                {selectedImage && (
+                  <div
+                    className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50"
+                    onClick={closeModal}
+                  >
+                    <img
+                      src={selectedImage}
+                      alt="Full-size"
+                      className="max-w-full max-h-full rounded-lg shadow-lg"
+                      onClick={(e) => e.stopPropagation()} // Предотвратява затварянето при клик върху изображението
+                    />
+                    {/* Х Бутон */}
+                    <button
+                      onClick={closeModal}
+                      className="absolute top-4 right-4 p-2 bg-opacity-60 rounded-full transition-transform duration-300 transform hover:scale-110 z-10"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="50"
+                        height="50"
+                        viewBox="0 0 48 48"
+                      >
+                        <linearGradient
+                          id="hbE9Evnj3wAjjA2RX0We2a_OZuepOQd0omj_gr1"
+                          x1="7.534"
+                          x2="27.557"
+                          y1="7.534"
+                          y2="27.557"
+                          gradientUnits="userSpaceOnUse"
+                        >
+                          <stop offset="0" stopColor="#f44f5a"></stop>
+                          <stop offset=".443" stopColor="#ee3d4a"></stop>
+                          <stop offset="1" stopColor="#e52030"></stop>
+                        </linearGradient>
+                        <path
+                          fill="url(#hbE9Evnj3wAjjA2RX0We2a_OZuepOQd0omj_gr1)"
+                          d="M42.42,12.401c0.774-0.774,0.774-2.028,0-2.802L38.401,5.58c-0.774-0.774-2.028-0.774-2.802,0	L24,17.179L12.401,5.58c-0.774-0.774-2.028-0.774-2.802,0L5.58,9.599c-0.774,0.774-0.774,2.028,0,2.802L17.179,24L5.58,35.599	c-0.774,0.774-0.774,2.028,0,2.802l4.019,4.019c0.774,0.774,2.028,0.774,2.802,0L42.42,12.401z"
+                        ></path>
+                        <linearGradient
+                          id="hbE9Evnj3wAjjA2RX0We2b_OZuepOQd0omj_gr2"
+                          x1="27.373"
+                          x2="40.507"
+                          y1="27.373"
+                          y2="40.507"
+                          gradientUnits="userSpaceOnUse"
+                        >
+                          <stop offset="0" stopColor="#a8142e"></stop>
+                          <stop offset=".179" stopColor="#ba1632"></stop>
+                          <stop offset=".243" stopColor="#c21734"></stop>
+                        </linearGradient>
+                        <path
+                          fill="url(#hbE9Evnj3wAjjA2RX0We2b_OZuepOQd0omj_gr2)"
+                          d="M24,30.821L35.599,42.42c0.774,0.774,2.028,0.774,2.802,0l4.019-4.019	c0.774-0.774,0.774-2.028,0-2.802L30.821,24L24,30.821z"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                )}
                 <div className="mt-4 flex justify-center">
                   <div className="h-4 w-full max-w-md bg-gray-700 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-secondary transition-all duration-3000 ease-linear"
                       style={{
                         width: `${
-                          ((currentQuestionIndex + 1) / totalQuestions) * 100
+                          (currentQuestionIndex / (totalQuestions - 1)) * 100
                         }%`
                       }}
                     ></div>
                   </div>
                 </div>
                 <p className="text-center mt-2 text-gray-400">
-                  Analyzing brain responses... {currentQuestionIndex + 1}/
-                  {totalQuestions}
+                  Разглеждане на стъпките... {currentQuestionIndex}/
+                  {totalQuestions - 1}
                 </p>
               </div>
 
@@ -193,8 +292,8 @@ export const BrainAnalysisQuestions: FC<{
                 className="next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-6 flex justify-center items-center transition-all duration-300 ease-in-out transform opacity-100 cursor-pointer hover:scale-105"
               >
                 {currentQuestionIndex === totalQuestions - 1
-                  ? "Complete Analysis"
-                  : "Next Question"}
+                  ? "Напред към анализа"
+                  : "Следваща стъпка"}
               </div>
             </>
           )}

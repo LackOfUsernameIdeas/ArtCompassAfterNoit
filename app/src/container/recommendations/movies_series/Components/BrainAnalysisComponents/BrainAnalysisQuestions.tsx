@@ -80,8 +80,9 @@ export const BrainAnalysisQuestions: FC<{
     { name: "Attention", data: [] },
     { name: "Meditation", data: [] }
   ]);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const closeModal = () => setSelectedImage(null);
+
+  const [selectedImage, setSelectedImage] = useState<string | null>(null); // Състояние за избраното изображение (за показване в пълен размер)
+  const closeModal = () => setSelectedImage(null); // Функция за затваряне на прозорецa с изображението
 
   useEffect(() => {
     connectSocketIO(setChartData, setTransmissionComplete);
@@ -136,8 +137,8 @@ export const BrainAnalysisQuestions: FC<{
     );
   }, [chartData]);
 
-  // Примерни въпроси за мозъчния анализ
-  const questions = [
+  // Стъпки за успешно съставяне на мозъчен анализ
+  const steps = [
     {
       question: "0. Въведение",
       description:
@@ -182,9 +183,9 @@ export const BrainAnalysisQuestions: FC<{
   ];
 
   // Общо количество въпроси
-  const totalQuestions = questions.length;
+  const totalQuestions = steps.length;
   // Текущият въпрос, който ще бъде показан
-  const currentQuestion = questions[currentQuestionIndex];
+  const currentQuestion = steps[currentQuestionIndex];
 
   const moviesSeriesUserPreferences: MoviesSeriesUserPreferences = {
     recommendationType: "", // Вид на предпочитанията
@@ -296,7 +297,7 @@ export const BrainAnalysisQuestions: FC<{
                 return (
                   <img
                     key={index}
-                    src={imgSrc} // Use imgSrc dynamically
+                    src={imgSrc}
                     alt={`Изображение ${index}`}
                     className="h-32 cursor-pointer rounded-lg object-contain border-2 transition-transform hover:scale-105"
                     onClick={() => setSelectedImage(imgSrc)}
@@ -313,9 +314,9 @@ export const BrainAnalysisQuestions: FC<{
                   src={selectedImage}
                   alt="Full-size"
                   className="max-w-full max-h-full rounded-lg shadow-lg"
-                  onClick={(e) => e.stopPropagation()} // Prevent closing when clicking on image
+                  onClick={(e) => e.stopPropagation()} // Предотвратява затварянето при клик върху изображението
                 />
-                {/* Х Button */}
+                {/* Х Бутон */}
                 <button
                   onClick={closeModal}
                   className="absolute top-4 right-4 p-2 bg-opacity-60 rounded-full transition-transform duration-300 transform hover:scale-110 z-10"
@@ -369,15 +370,15 @@ export const BrainAnalysisQuestions: FC<{
                   className="h-full bg-secondary transition-all duration-3000 ease-linear"
                   style={{
                     width: `${
-                      ((currentQuestionIndex + 1) / totalQuestions) * 100
+                      (currentQuestionIndex / (totalQuestions - 1)) * 100
                     }%`
                   }}
                 ></div>
               </div>
             </div>
             <p className="text-center mt-2 text-gray-400">
-              Analyzing brain responses... {currentQuestionIndex + 1}/
-              {totalQuestions}
+              Разглеждане на стъпките... {currentQuestionIndex}/
+              {totalQuestions - 1}
             </p>
           </div>
           {/* Бутон за преминаване към следващия въпрос или завършване на анализа */}
@@ -386,8 +387,8 @@ export const BrainAnalysisQuestions: FC<{
             className="next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-6 flex justify-center items-center transition-all duration-300 ease-in-out transform opacity-100 cursor-pointer hover:scale-105"
           >
             {currentQuestionIndex === totalQuestions - 1
-              ? "Complete Analysis"
-              : "Next Question"}
+              ? "Напред към анализа"
+              : "Следваща стъпка"}
           </div>
         </div>
       </CSSTransition>
