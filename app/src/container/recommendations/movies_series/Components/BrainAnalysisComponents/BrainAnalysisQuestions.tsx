@@ -1,5 +1,21 @@
 import { FC, useState, useEffect } from "react";
 import { CSSTransition } from "react-transition-group";
+import img0 from "@/assets/images/instructions/0.jpg";
+import img1_1 from "@/assets/images/instructions/1.1.png";
+import img1_2 from "@/assets/images/instructions/1.2.png";
+import img1_3 from "@/assets/images/instructions/1.3.png";
+import img1_4 from "@/assets/images/instructions/1.4.png";
+import img2 from "@/assets/images/instructions/2.jpg";
+import img3_1 from "@/assets/images/instructions/3.1.png";
+import img3_2 from "@/assets/images/instructions/3.2.png";
+import img3_3 from "@/assets/images/instructions/3.3.png";
+import img3_4 from "@/assets/images/instructions/3.4.png";
+import img4_1 from "@/assets/images/instructions/4.1.png";
+import img4_2 from "@/assets/images/instructions/4.2.png";
+import img5 from "@/assets/images/instructions/5.png";
+import img6_1 from "@/assets/images/instructions/6.1.png";
+import img6_2 from "@/assets/images/instructions/6.2.png";
+import img6_3 from "@/assets/images/instructions/6.3.png";
 import {
   MoviesSeriesUserPreferences,
   NotificationState,
@@ -124,42 +140,42 @@ export const BrainAnalysisQuestions: FC<{
       question: "0. Въведение",
       description:
         "За да започнете мозъчния анализ, трябва да се сдобиете с устройството NeuroSky MindWave Mobile 2. Следвайте следващите стъпки, за да го използвате успешно.",
-      image: "example image 0"
+      images: [img0]
     },
     {
       question: "1. Сваляне на ThinkGear програмата - mwm2.neurosky.com",
       description:
         "Оттам избирате от опциите за изтегляне, спрямо вашата операционната система. След това разархивирате сваления файл и стартирате ThinkGear Connector - зелената иконка. Трябва да се появи долу вдясно иконка, наподобяваща мозък.",
-      image: "example image 1"
+      images: [img1_1, img1_2, img1_3, img1_4]
     },
     {
       question: "2. Пускане на устройството.",
       description: "Излиза синя светлина, когато е пуснато.",
-      image: "example image 2"
+      images: [img2]
     },
     {
       question: "3. Свързване на устройството.",
       description:
         "Трябва вашият компютър да поддържа Bluetooth (или да имате Bluetooth Adapter). Пускате го от настройките и натискате на опцията за добавяне на ново устройство. Свързвате се към MindWave Mobile (изчаквате, докато не видите иконката със СЛУШАЛКИ).",
-      image: "example image 3"
+      images: [img3_1, img3_2, img3_3, img3_4]
     },
     {
       question: "4. Конфигуриране на COM порт.",
       description:
         "След успешно свързване, отивате на More Bluetooth options и оттам в раздела COM ports. Трябва да видите на кой от тях е свързано устройството и ако не е, да добавите порт към него. Интересува ни OUTGOING порта. В нашия случай, това е COM4. След като знаете номера, отивате и пишете „COM4“ в ThinkGear Connector приложението на показаното поле.",
-      image: "example image 4"
+      images: [img4_1, img4_2]
     },
     {
       question: "5. Сваляне на програмата за свързване с АртКомпас",
       description:
         "След сваляне на архива го разархивирате и отваряте. Трябва да виждате .exe файла за свързване.",
-      image: "example image 5"
+      images: [img5]
     },
     {
       question: "6. Същинско свързване",
       description:
         "Ако първо сте пуснали ThinkGear Connector, след което сте включили устройството, след което Bluetooth на вашия компютър и най-накрая нашата програмата и видите, че иконката на ThinkGear долу вдясно е в синьо и пише, че има връзка с устройството и също така ви излезе прозореца за започване на сесията, значи успешно сте свързали устройството. **Ако все пак не излиза в command prompt-а съобщението за успешно свързване и не се появява прозореца на програмата, но въпреки това ThinkGear посочва, че има връзка, опитайте да рестартирате.**",
-      image: "example image 5"
+      images: [img6_1, img6_2, img6_3]
     }
   ];
 
@@ -250,60 +266,68 @@ export const BrainAnalysisQuestions: FC<{
         unmountOnExit
       >
         <div className="w-full max-w-4xl">
-          <>
-            <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
-              <h2 className="text-xl font-semibold break-words">
-                {currentQuestion.question}
-              </h2>
-              <p className="text-sm text-gray-500 mt-2">
-                {currentQuestion.description}
-              </p>
+          <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
+            <h2 className="text-xl font-semibold break-words">
+              {currentQuestion.question}
+            </h2>
+            <p className="text-sm text-gray-500 mt-2">
+              {currentQuestion.description}
+            </p>
+          </div>
+
+          <div className="flex justify-end">
+            {!isAnalysisComplete && (
+              <button
+                onClick={handleSkipAll}
+                className="back-button text-secondary dark:text-white hover:opacity-70 text-3xl transition-all duration-300 flex items-center gap-2"
+              >
+                <span className="text-sm">Пропускане на стъпките</span> &#8594;
+              </button>
+            )}
+          </div>
+
+          {/* Показваме изображението за пример (като част от въпроса) */}
+          <div className="border-2 rounded-lg p-4 bg-opacity-50 bg-black text-white">
+            <div className="flex flex-wrap justify-center gap-4">
+              {currentQuestion.images?.map((imgSrc, index) => {
+                console.log(imgSrc);
+                return (
+                  <img
+                    key={index}
+                    src={imgSrc} // Use imgSrc dynamically
+                    alt={`Изображение ${index}`}
+                    className="h-64 rounded-lg object-contain border-2"
+                  />
+                );
+              })}
             </div>
 
-            <div className="flex justify-end">
-              {!isAnalysisComplete && (
-                <button
-                  onClick={handleSkipAll}
-                  className="back-button text-secondary dark:text-white hover:opacity-70 text-3xl transition-all duration-300 flex items-center gap-2"
-                >
-                  <span className="text-sm">Пропускане на стъпките</span>{" "}
-                  &#8594;
-                </button>
-              )}
-            </div>
-
-            {/* Показваме изображението за пример (като част от въпроса) */}
-            <div className="border-2 rounded-lg p-4 bg-opacity-50 bg-black text-white">
-              <div className="flex justify-center items-center h-64 bg-gray-800 rounded-lg">
-                <p className="text-lg text-center">{currentQuestion.image}</p>
+            <div className="mt-4 flex justify-center">
+              <div className="h-4 w-full max-w-md bg-gray-700 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-secondary transition-all duration-3000 ease-linear"
+                  style={{
+                    width: `${
+                      ((currentQuestionIndex + 1) / totalQuestions) * 100
+                    }%`
+                  }}
+                ></div>
               </div>
-              <div className="mt-4 flex justify-center">
-                <div className="h-4 w-full max-w-md bg-gray-700 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-secondary transition-all duration-3000 ease-linear"
-                    style={{
-                      width: `${
-                        ((currentQuestionIndex + 1) / totalQuestions) * 100
-                      }%`
-                    }}
-                  ></div>
-                </div>
-              </div>
-              <p className="text-center mt-2 text-gray-400">
-                Analyzing brain responses... {currentQuestionIndex + 1}/
-                {totalQuestions}
-              </p>
             </div>
-            {/* Бутон за преминаване към следващия въпрос или завършване на анализа */}
-            <div
-              onClick={handleNext}
-              className="next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-6 flex justify-center items-center transition-all duration-300 ease-in-out transform opacity-100 cursor-pointer hover:scale-105"
-            >
-              {currentQuestionIndex === totalQuestions - 1
-                ? "Complete Analysis"
-                : "Next Question"}
-            </div>
-          </>
+            <p className="text-center mt-2 text-gray-400">
+              Analyzing brain responses... {currentQuestionIndex + 1}/
+              {totalQuestions}
+            </p>
+          </div>
+          {/* Бутон за преминаване към следващия въпрос или завършване на анализа */}
+          <div
+            onClick={handleNext}
+            className="next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-6 flex justify-center items-center transition-all duration-300 ease-in-out transform opacity-100 cursor-pointer hover:scale-105"
+          >
+            {currentQuestionIndex === totalQuestions - 1
+              ? "Complete Analysis"
+              : "Next Question"}
+          </div>
         </div>
       </CSSTransition>
       <CSSTransition
