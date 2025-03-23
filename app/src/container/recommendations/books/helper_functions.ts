@@ -790,7 +790,7 @@ export const handleSubmit = async (
             setRecommendationList,
             setBookmarkedBooks,
             token,
-            false,
+            true,
             filteredBrainData
           );
         }
@@ -834,7 +834,7 @@ export const handleSubmit = async (
             setRecommendationList,
             setBookmarkedBooks,
             token,
-            true
+            false
           );
         }
         setSubmitCount((prevCount) => prevCount + 1);
