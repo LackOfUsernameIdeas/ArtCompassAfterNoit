@@ -1033,7 +1033,9 @@ export const connectSocketIO = async (
     console.log(
       `🔄 Attempting to connect... (Try ${attempts + 1}/${maxAttempts})`
     );
-    const socket = io("ws://localhost:5000", { reconnection: false });
+    const socket = io(import.meta.env.VITE_SOCKET_IO_URL, {
+      reconnection: false
+    });
 
     socket.on("connect", () => {
       console.log("✅ Successfully connected to SocketIO server");
