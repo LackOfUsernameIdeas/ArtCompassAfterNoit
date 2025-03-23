@@ -20,16 +20,16 @@ import {
   MoviesSeriesUserPreferences,
   NotificationState,
   RecommendationsAnalysis
-} from "../../moviesSeriesRecommendations-types";
-import {
-  handleSubmit,
-  MAX_DATA_POINTS,
-  updateSeriesData
-} from "../../helper_functions";
-import BrainAnalysisTrackStats from "./BrainAnalysisTrackStats";
+} from "../moviesSeriesRecommendations-types";
+import { handleSubmit } from "../helper_functions";
+import BrainAnalysisTrackStats from "../../../../components/common/brainAnalysis/BrainAnalysisTrackStats";
 import { BrainData } from "@/container/types_common";
 import Loader from "@/components/common/loader/Loader";
-import { connectSocketIO } from "@/container/helper_functions_common";
+import {
+  connectSocketIO,
+  MAX_DATA_POINTS,
+  updateSeriesData
+} from "@/container/helper_functions_common";
 
 // Компонент за въпросите по време на мозъчния анализ
 export const BrainAnalysisSteps: FC<{
@@ -64,7 +64,7 @@ export const BrainAnalysisSteps: FC<{
   isAnalysisComplete
 }) => {
   // Състояния за текущия индекс на въпроса, показване на въпроса, дали анализът е завършен и cooldown между въпроси
-  const [currentStepIndex, setcurrentStepIndex] = useState(0);
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [showStep, setShowStep] = useState(true);
   const [transmissionComplete, setTransmissionComplete] = useState(false);
   const [isOnCooldown, setIsOnCooldown] = useState(false);
@@ -198,9 +198,9 @@ export const BrainAnalysisSteps: FC<{
     }
   ];
 
-  // Общо количество въпроси
+  // Общо количество стъпки
   const totalSteps = steps.length;
-  // Текущият въпрос, който ще бъде показан
+  // Текущата стъпка, който ще бъде показан
   const currentStep = steps[currentStepIndex];
 
   const moviesSeriesUserPreferences: MoviesSeriesUserPreferences = {
@@ -229,7 +229,7 @@ export const BrainAnalysisSteps: FC<{
       // Проверяваме дали има още въпроси
       if (currentStepIndex < totalSteps - 1) {
         // Ако има, увеличаваме индекса на въпроса
-        setcurrentStepIndex((prevIndex) => prevIndex + 1);
+        setCurrentStepIndex((prevIndex) => prevIndex + 1);
       } else {
         // Ако няма повече въпроси, маркираме анализата като завършена
         setIsAnalysisComplete(true);

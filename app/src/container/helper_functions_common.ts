@@ -1085,28 +1085,35 @@ export const connectSocketIO = async (
 };
 
 /**
- * Записва данните за мозъчния анализ в базата данни чрез POST заявка.
+ * Записва мозъчния анализ на потребителя в базата данни чрез POST заявка.
  * Ако не успее да запише анализа, се хвърля грешка.
  *
  * @async
  * @function saveBrainAnalysis
  * @param {string} date - Датата на анализа.
- * @param {string} analysisType - Типът анализ ("movies_series" или "books").
- * @param {Object} data - Данните от анализа.
+ * @param {Object} analysisData - Данните от мозъчния анализ.
+ * @param {string} analysisType - Типът на анализа ("movies_series" или "books").
  * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
  * @returns {Promise<void>} - Няма връщан резултат, но хвърля грешка при неуспех.
  * @throws {Error} - Хвърля грешка, ако заявката не е успешна.
  */
 export const saveBrainAnalysis = async (
   date: string,
+  analysisData: BrainData[],
   analysisType: "movies_series" | "books",
-  data: object,
   token: string | null
 ): Promise<void> => {
   try {
-    if (!token || !analysisType || !data || !date) {
-      throw new Error("Всички полета са задължителни.");
+    if (!token) {
+      throw new Error("Токенът е задължителен.");
     }
+
+    const requestBody = {
+      token,
+      analysisType,
+      data: analysisData,
+      date
+    };
 
     const response = await fetch(
       `${import.meta.env.VITE_API_BASE_URL}/save-brain-analysis`,
@@ -1115,22 +1122,44 @@ export const saveBrainAnalysis = async (
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          token,
-          analysisType,
-          data,
-          date
-        })
+        body: JSON.stringify(requestBody)
       }
     );
 
     if (!response.ok) {
-      throw new Error("Грешка при запазване на мозъчния анализ.");
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || "Неуспешно записване на мозъчния анализ."
+      );
     }
 
     const result = await response.json();
-    console.log("Мозъчният анализ е запазен успешно:", result);
+    console.log("Мозъчният анализ е записан успешно:", result);
   } catch (error) {
-    console.error("Грешка при запазване на мозъчния анализ:", error);
+    console.error("Грешка при записването на мозъчния анализ:", error);
   }
+};
+
+export const MAX_DATA_POINTS = 30;
+
+/**
+ * Актуализира данните на серията, като добавя нова стойност и премахва най-старите, ако броят надхвърли ограничението.
+ *
+ * @param {Array<{ x: string; y: number }>} currentData - Текущите данни на серията.
+ * @param {string} timestamp - Времеви маркер за новата стойност.
+ * @param {number} value - Стойност, която ще бъде добавена към серията.
+ * @returns {Array<{ x: string; y: number }>} Актуализиран масив с данни, ограничен до `MAX_DATA_POINTS`.
+ */
+export const updateSeriesData = (
+  currentData: { x: string; y: number }[],
+  timestamp: string,
+  value: number
+) => {
+  const newData = [...currentData, { x: timestamp, y: value }];
+
+  if (newData.length > MAX_DATA_POINTS) {
+    return newData.slice(newData.length - MAX_DATA_POINTS);
+  }
+
+  return newData;
 };

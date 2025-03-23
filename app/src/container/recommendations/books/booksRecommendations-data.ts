@@ -1,4 +1,4 @@
-import { BrainData } from "@/container/types_common";
+import { FilteredBrainData } from "@/container/types_common";
 import { BooksUserPreferences } from "./booksRecommendations-types";
 
 export const moodOptions = [
@@ -69,7 +69,9 @@ export const googleBooksPrompt = (userPreferences: BooksUserPreferences) => {
   };
 };
 
-export const googleBooksBrainAnalysisPrompt = (brainWaveData: BrainData[]) => {
+export const googleBooksBrainAnalysisPrompt = (
+  brainWaveData: FilteredBrainData[]
+) => {
   const brainWaveString = JSON.stringify(brainWaveData, null, 2);
   return {
     model: "gpt-4-turbo",
@@ -204,7 +206,9 @@ export const goodreadsPrompt = (userPreferences: BooksUserPreferences) => {
   };
 };
 
-export const goodreadsBrainAnalysisPrompt = (brainWaveData: BrainData[]) => {
+export const goodreadsBrainAnalysisPrompt = (
+  brainWaveData: FilteredBrainData[]
+) => {
   const brainWaveString = JSON.stringify(brainWaveData, null, 2);
   return {
     model: "gpt-4-turbo",

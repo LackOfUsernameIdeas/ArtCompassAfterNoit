@@ -1,7 +1,7 @@
 import type React from "react";
 import type { BrainData } from "@/container/types_common";
-import BrainWaveChart from "./BrainWaveChart";
-import AttentionMeditationChart from "./AttentionMediationChart";
+import BrainWaveChart from "./charts/BrainWaveChart";
+import AttentionMeditationChart from "./charts/AttentionMediationChart";
 import BrainActivityCard from "./BrainActivityCard";
 
 interface BrainAnalysisTrackStatsProps {

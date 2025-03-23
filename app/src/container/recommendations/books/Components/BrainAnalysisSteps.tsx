@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import img0 from "@/assets/images/steps/0.jpg";
 import img1_1 from "@/assets/images/steps/1.1.png";
@@ -21,11 +21,18 @@ import {
   NotificationState
 } from "../booksRecommendations-types";
 import { handleSubmit } from "../helper_functions";
+import { BrainData } from "@/container/types_common";
+import {
+  connectSocketIO,
+  MAX_DATA_POINTS,
+  updateSeriesData
+} from "@/container/helper_functions_common";
+import BrainAnalysisTrackStats from "@/components/common/brainAnalysis/BrainAnalysisTrackStats";
+import Loader from "@/components/common/loader/Loader";
 
 // Компонент за въпросите по време на мозъчния анализ
 export const BrainAnalysisSteps: FC<{
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието за зареждане
-  setSubmitted: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието за изпращане
+  setSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
   setNotification: React.Dispatch<
     React.SetStateAction<NotificationState | null>
   >;
@@ -33,27 +40,112 @@ export const BrainAnalysisSteps: FC<{
   setBookmarkedBooks: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
   >;
+  submitted: boolean;
   token: string | null;
   submitCount: number;
   setSubmitCount: React.Dispatch<React.SetStateAction<number>>;
+  setIsAnalysisComplete: React.Dispatch<React.SetStateAction<boolean>>;
+  isAnalysisComplete: boolean;
 }> = ({
-  setLoading,
   setSubmitted,
   setNotification,
   setRecommendationList,
   setBookmarkedBooks,
+  submitted,
   token,
   submitCount,
-  setSubmitCount
+  setSubmitCount,
+  setIsAnalysisComplete,
+  isAnalysisComplete
 }) => {
   // Състояния за текущия индекс на въпроса, показване на въпроса, дали анализът е завършен и cooldown между въпроси
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [showStep, setShowStep] = useState(true);
-  const [isAnalysisComplete, setIsAnalysisComplete] = useState(false);
+  const [transmissionComplete, setTransmissionComplete] = useState(false);
   const [isOnCooldown, setIsOnCooldown] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [connectionError, setConnectionError] = useState(false);
+  const [chartData, setChartData] = useState<BrainData | null>(null);
+  const [seriesData, setSeriesData] = useState<BrainData[]>([]);
+  const [attentionMeditation, setAttentionMeditation] = useState<
+    {
+      name: string;
+      data: { x: string; y: number }[];
+    }[]
+  >([
+    { name: "Attention", data: [] },
+    { name: "Meditation", data: [] }
+  ]);
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null); // Състояние за избраното изображение (за показване в пълен размер)
   const closeModal = () => setSelectedImage(null); // Функция за затваряне на прозорецa с изображението
+
+  useEffect(() => {
+    if (isAnalysisComplete) {
+      connectSocketIO(
+        setChartData,
+        setTransmissionComplete,
+        setConnectionError
+      );
+    }
+
+    return () => {
+      if (isAnalysisComplete) {
+        console.log(
+          "Component unmounted, WebSocket connection should be closed."
+        );
+      }
+    };
+  }, [isAnalysisComplete]);
+
+  const retryConnection = () => {
+    setConnectionError(false);
+    connectSocketIO(setChartData, setTransmissionComplete, setConnectionError);
+  };
+
+  useEffect(() => {
+    if (!chartData) return;
+    if (!submitted) setLoading(false);
+
+    setSeriesData((prevData) => {
+      const newData = [...prevData, { ...chartData }];
+
+      // Филтриране на данните – изключва обекти, в които ВСИЧКИ стойности са 0
+      const filteredData = newData.filter(
+        (data) =>
+          !(
+            data.attention === 0 &&
+            data.meditation === 0 &&
+            data.delta === 0 &&
+            data.theta === 0 &&
+            data.lowAlpha === 0 &&
+            data.highAlpha === 0 &&
+            data.lowBeta === 0 &&
+            data.highBeta === 0 &&
+            data.lowGamma === 0 &&
+            data.highGamma === 0
+          )
+      );
+      return filteredData.length > MAX_DATA_POINTS
+        ? filteredData.slice(-MAX_DATA_POINTS)
+        : filteredData;
+    });
+
+    setAttentionMeditation((prevData) =>
+      prevData.map((stat, index) => {
+        const key = index === 0 ? "attention" : "meditation";
+        const value = chartData[key];
+        return {
+          ...stat,
+          data: updateSeriesData(
+            stat.data,
+            chartData.time,
+            typeof value === "number" ? value : 0
+          )
+        };
+      })
+    );
+  }, [chartData]);
 
   // Стъпки за успешно съставяне на мозъчен анализ
   const steps = [
@@ -83,7 +175,7 @@ export const BrainAnalysisSteps: FC<{
     {
       step: "4. Конфигуриране на COM порт.",
       description:
-        "След успешно свързване, отивате на More Bluetooth options и оттам в раздела COM ports. Трябва да видите на кой от тях е свързано устройството и ако не е, да добавите порт към него. Интересува ни OUTGOING порта. Той се обозначава с COM и съответната цифра (в примера от снимките, това е COM4). След идентифицирате правилния порт, отивате и го пишете (пример: „COM4“) в ThinkGear Connector приложението на показаното поле.",
+        "След успешно свързване, отивате на More Bluetooth options и оттам в раздела COM ports. Трябва да видите на кой от тях е свързано устройството и ако не е, да добавите порт към него. Интересува ни OUTGOING порта. Той се обозначава с COM и съответната цифра (в примера от снимките, това е COM4). След като идентифицирате правилния порт, отивате и го пишете (пример: „COM4“) в ThinkGear Connector приложението на показаното поле.",
       images: [img4_1, img4_2]
     },
     {
@@ -101,9 +193,9 @@ export const BrainAnalysisSteps: FC<{
     }
   ];
 
-  // Общо количество въпроси
+  // Общо количество стъпки
   const totalSteps = steps.length;
-  // Текущият въпрос, който ще бъде показан
+  // Текущата стъпка, който ще бъде показан
   const currentStep = steps[currentStepIndex];
 
   const booksUserPreferences: BooksUserPreferences = {
@@ -132,6 +224,7 @@ export const BrainAnalysisSteps: FC<{
       } else {
         // Ако няма повече въпроси, маркираме анализата като завършена
         setIsAnalysisComplete(true);
+        setLoading(true);
       }
       // Включваме отново показването на въпроса
       setShowStep(true);
@@ -141,8 +234,14 @@ export const BrainAnalysisSteps: FC<{
     }, 500); // Задаваме забавяне за анимацията
   };
 
+  // Функция за пропускане на въпросите
+  const handleSkipAll = () => {
+    setIsAnalysisComplete(true); // Mark analysis as completed
+    setLoading(true);
+  };
+
   // Функция за изпращане на заявки за препоръки
-  const handleRecommendationsSubmit = async () => {
+  const handleRecommendationsSubmit = async (brainData: BrainData[]) => {
     await handleSubmit(
       setNotification,
       setLoading,
@@ -153,39 +252,37 @@ export const BrainAnalysisSteps: FC<{
       token,
       submitCount,
       true,
-      booksUserPreferences
+      booksUserPreferences,
+      brainData,
+      "books"
     );
   };
 
   return (
     <div>
+      {/* Everything disappears when there's a connection error */}
       <CSSTransition
-        in={showStep}
-        timeout={500} // Време за анимация
+        in={!connectionError}
+        timeout={400}
         classNames="fade"
         unmountOnExit
       >
-        <div className="w-full max-w-4xl">
-          {isAnalysisComplete ? (
-            <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
-              <h2 className="text-xl font-semibold break-words">
-                Brain Analysis Complete
-              </h2>
-              <p className="text-sm text-gray-500 mt-2">
-                Your brain profile has been analyzed. Here are your personalized
-                recommendations.
-              </p>
-              <div className="flex justify-center mt-6">
-                <div
-                  onClick={handleRecommendationsSubmit}
-                  className="next glow-next bg-opacity-70 text-white font-bold rounded-lg p-6 mt-4 cursor-pointer hover:scale-105 transition-all duration-300"
-                >
-                  View Recommendations
-                </div>
-              </div>
-            </div>
-          ) : (
-            <>
+        <div>
+          <CSSTransition
+            in={loading}
+            timeout={500} // Време за анимация
+            classNames="fade"
+            unmountOnExit
+          >
+            <Loader brainAnalysis />
+          </CSSTransition>
+          <CSSTransition
+            in={!loading && !isAnalysisComplete && showStep}
+            timeout={500} // Време за анимация
+            classNames="fade"
+            unmountOnExit
+          >
+            <div className="w-full max-w-4xl">
               <div className="question bg-opacity-70 border-2 text-white rounded-lg p-4 glow-effect transition-all duration-300">
                 <h2 className="text-xl font-semibold break-words">
                   {currentStep.step}
@@ -195,15 +292,27 @@ export const BrainAnalysisSteps: FC<{
                 </p>
               </div>
 
+              <div className="flex justify-end">
+                {!isAnalysisComplete && (
+                  <button
+                    onClick={handleSkipAll}
+                    className="back-button text-secondary dark:text-white hover:opacity-70 text-3xl transition-all duration-300 flex items-center gap-2"
+                  >
+                    <span className="text-sm">Пропускане на стъпките</span>{" "}
+                    &#8594;
+                  </button>
+                )}
+              </div>
+
               {/* Показваме изображението за пример (като част от въпроса) */}
-              <div className="mt-8 border-2 rounded-lg p-4 bg-opacity-50 bg-black text-white">
+              <div className="border-2 rounded-lg p-4 bg-opacity-50 bg-black text-white">
                 <div className="flex flex-wrap justify-center gap-4">
                   {currentStep.images?.map((imgSrc, index) => {
                     console.log(imgSrc);
                     return (
                       <img
                         key={index}
-                        src={imgSrc} // Use imgSrc dynamically
+                        src={imgSrc}
                         alt={`Изображение ${index}`}
                         className="h-32 cursor-pointer rounded-lg object-contain border-2 transition-transform hover:scale-105"
                         onClick={() => setSelectedImage(imgSrc)}
@@ -287,6 +396,7 @@ export const BrainAnalysisSteps: FC<{
                     </button>
                   </div>
                 )}
+
                 <div className="mt-4 flex justify-center">
                   <div className="h-4 w-full max-w-md bg-gray-700 rounded-full overflow-hidden">
                     <div
@@ -301,7 +411,6 @@ export const BrainAnalysisSteps: FC<{
                   Разглеждане на стъпките... {currentStepIndex}/{totalSteps - 1}
                 </p>
               </div>
-
               {/* Бутон за преминаване към следващия въпрос или завършване на анализа */}
               <div
                 onClick={handleNext}
@@ -311,8 +420,42 @@ export const BrainAnalysisSteps: FC<{
                   ? "Напред към анализа"
                   : "Следваща стъпка"}
               </div>
-            </>
-          )}
+            </div>
+          </CSSTransition>
+          <CSSTransition
+            in={!loading && isAnalysisComplete}
+            timeout={500} // Време за анимация
+            classNames="fade"
+            unmountOnExit
+          >
+            <div className="w-full">
+              <BrainAnalysisTrackStats
+                handleRecommendationsSubmit={handleRecommendationsSubmit}
+                transmissionComplete={transmissionComplete}
+                seriesData={seriesData}
+                chartData={chartData}
+                attentionMeditation={attentionMeditation}
+              />
+            </div>
+          </CSSTransition>
+        </div>
+      </CSSTransition>
+
+      {/* Fade-in error message when connection fails */}
+      <CSSTransition
+        in={connectionError}
+        timeout={500}
+        classNames="fade"
+        unmountOnExit
+      >
+        <div className="fixed inset-0 flex flex-col items-center justify-center space-y-4 text-center">
+          <p>⚠️ Неуспешно свързване със сървъра.</p>
+          <button
+            onClick={retryConnection}
+            className="mt-2 px-4 py-2 font-semibold rounded-lg hover:bg-opacity-80 transition"
+          >
+            🔄 Опитай отново
+          </button>
         </div>
       </CSSTransition>
     </div>

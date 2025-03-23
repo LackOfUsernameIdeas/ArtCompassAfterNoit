@@ -26,7 +26,7 @@ import { ConfirmationModal } from "./ConfirmationModal";
 import { ViewRecommendations } from "./ViewRecommendations";
 import Notification from "../../../../components/common/notification/Notification";
 import { useNavigate } from "react-router-dom";
-import { BrainAnalysisSteps } from "./BrainAnalysisComponents/BrainAnalysisSteps";
+import { BrainAnalysisSteps } from "./BrainAnalysisSteps";
 
 export const QuizQuestions: FC<QuizQuestionProps> = ({
   setLoading,
@@ -68,7 +68,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   const questions = [
     {
       question: "Как искате да продължите?",
-      options: preferenceOptions,
+      options: preferenceOptions.moviesSeries,
       value: preferencesType,
       setter: setPreferencesType
     },

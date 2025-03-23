@@ -30,10 +30,13 @@ import { BrainAnalysisSteps } from "./BrainAnalysisSteps";
 export const QuizQuestions: FC<QuizQuestionProps> = ({
   setLoading,
   setSubmitted,
+  submitted,
   showViewRecommendations,
   alreadyHasRecommendations,
   setRecommendationList,
-  setBookmarkedBooks
+  setBookmarkedBooks,
+  setIsAnalysisComplete,
+  isAnalysisComplete
 }) => {
   const [preferencesType, setPreferencesType] = useState<string | null>(null);
   const [renderBrainAnalysis, setRenderBrainAnalysis] = useState(false);
@@ -58,7 +61,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   const questions = [
     {
       question: "Как искате да продължите?",
-      options: preferenceOptions,
+      options: preferenceOptions.books,
       value: preferencesType,
       setter: setPreferencesType
     },
@@ -283,21 +286,25 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
         unmountOnExit
       >
         <div
-          className={`w-full max-w-4xl py-8 px-4 mb-[12rem] ${
+          className={`w-full ${
+            !isAnalysisComplete && "max-w-4xl"
+          } py-8 px-4 mb-[12rem] ${
             window.innerWidth >= 640 ? getMarginClass(currentQuestion) : ""
           }`}
         >
           {/* Ако е избрана опцията за генериране на препоръки с устройство за анализ на мозъчните импулси, визуализираме компонента BrainAnalysisSteps */}
           {renderBrainAnalysis ? (
             <BrainAnalysisSteps
-              setLoading={setLoading}
               setSubmitted={setSubmitted}
               setNotification={setNotification}
               setRecommendationList={setRecommendationList}
               setBookmarkedBooks={setBookmarkedBooks}
               submitCount={submitCount}
+              submitted={submitted}
               token={token}
               setSubmitCount={setSubmitCount}
+              setIsAnalysisComplete={setIsAnalysisComplete}
+              isAnalysisComplete={isAnalysisComplete}
             />
           ) : (
             <>

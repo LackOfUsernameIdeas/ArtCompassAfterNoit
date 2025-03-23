@@ -5,7 +5,11 @@ import {
   IndustryIdentifier,
   Recommendation
 } from "./booksRecommendations-types";
-import { BrainData, NotificationState } from "../../types_common";
+import {
+  BrainData,
+  FilteredBrainData,
+  NotificationState
+} from "../../types_common";
 import {
   goodreadsBrainAnalysisPrompt,
   goodreadsPrompt,
@@ -20,6 +24,7 @@ import {
 import {
   checkRecommendationExistsInReadlist,
   removeFromReadlist,
+  saveBrainAnalysis,
   saveToReadlist,
   showNotification,
   translate,
@@ -286,7 +291,7 @@ export const generateBooksRecommendations = async (
   >,
   token: string | null,
   renderBrainAnalysis: boolean,
-  brainData?: BrainData[]
+  brainData?: FilteredBrainData[]
 ) => {
   try {
     const requestBody =
@@ -709,8 +714,10 @@ export const handleSubmit = async (
   >,
   token: string | null,
   submitCount: number,
-  renderBrainAnalysis: boolean,
-  booksUserPreferences: BooksUserPreferences
+  renderBrainAnalysis: boolean = false,
+  booksUserPreferences: BooksUserPreferences,
+  brainData?: BrainData[],
+  analysisType?: "movies_series" | "books"
 ): Promise<void> => {
   if (isOnCooldown) return;
   isOnCooldown = true;
@@ -742,12 +749,12 @@ export const handleSubmit = async (
       );
       return;
     }
-
-    setLoading(true);
-    setSubmitted(true);
   }
+
+  setLoading(true);
+  if (!renderBrainAnalysis) setSubmitted(true);
   try {
-    if (renderBrainAnalysis) {
+    if (renderBrainAnalysis && analysisType && brainData) {
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
         {
@@ -773,16 +780,21 @@ export const handleSubmit = async (
           Object.keys(booksUserPreferences).length > 0
         ) {
           await saveBooksUserPreferences(date, booksUserPreferences, token);
+          await saveBrainAnalysis(date, brainData, analysisType, token);
+          const filteredBrainData = brainData.map(
+            ({ blink_strength, raw_data, data_type, ...rest }) => rest
+          );
           await generateBooksRecommendations(
             date,
             booksUserPreferences,
             setRecommendationList,
             setBookmarkedBooks,
             token,
-            false
+            false,
+            filteredBrainData
           );
-          setSubmitCount((prevCount) => prevCount + 1);
         }
+        setSubmitCount((prevCount) => prevCount + 1);
       } else {
         showNotification(
           setNotification,
@@ -824,8 +836,8 @@ export const handleSubmit = async (
             token,
             true
           );
-          setSubmitCount((prevCount) => prevCount + 1);
         }
+        setSubmitCount((prevCount) => prevCount + 1);
       } else {
         showNotification(
           setNotification,
@@ -846,6 +858,7 @@ export const handleSubmit = async (
       isOnCooldown = false;
     }, 500);
     setLoading(false);
+    if (renderBrainAnalysis) setSubmitted(true);
   }
 };
 
