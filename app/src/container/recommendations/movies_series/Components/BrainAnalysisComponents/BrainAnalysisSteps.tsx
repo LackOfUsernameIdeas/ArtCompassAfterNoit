@@ -172,7 +172,8 @@ export const BrainAnalysisSteps: FC<{
       step: "5. Сваляне на програмата за свързване с АртКомпас",
       description:
         "След сваляне на архива го разархивирате и отваряте. Трябва да виждате .exe файла за свързване.",
-      images: [img5]
+      images: [img5],
+      fileName: "artcompass_brain_analysis.zip"
     },
     {
       step: "6. Същинско свързване",
@@ -305,6 +306,24 @@ export const BrainAnalysisSteps: FC<{
                 );
               })}
             </div>
+            {currentStep.fileName && (
+              <a
+                href={`https://noit.eu/${currentStep.fileName}`} // Adjusted URL to your server location
+                download
+                style={{
+                  marginTop: "10px",
+                  padding: "10px 20px",
+                  backgroundColor: "#28a745",
+                  color: "white",
+                  textDecoration: "none",
+                  borderRadius: "5px",
+                  display: "inline-block",
+                  fontSize: "16px"
+                }}
+              >
+                ⬇️ Свали програмата
+              </a>
+            )}
             {selectedImage && (
               <div
                 className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50"
