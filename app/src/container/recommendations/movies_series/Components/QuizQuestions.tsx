@@ -26,7 +26,7 @@ import { ConfirmationModal } from "./ConfirmationModal";
 import { ViewRecommendations } from "./ViewRecommendations";
 import Notification from "../../../../components/common/notification/Notification";
 import { useNavigate } from "react-router-dom";
-import { BrainAnalysisQuestions } from "./BrainAnalysisComponents/BrainAnalysisQuestions";
+import { BrainAnalysisSteps } from "./BrainAnalysisComponents/BrainAnalysisSteps";
 
 export const QuizQuestions: FC<QuizQuestionProps> = ({
   setLoading,
@@ -213,7 +213,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
         "Мозъчен анализ - препоръките се дават на база анализ от устройство за измерване на мозъчни вълни"
       )
     ) {
-      // Set state to render BrainAnalysisQuestions
+      // Set state to render BrainAnalysisSteps
       setRenderBrainAnalysis(true);
     } else {
       if (currentQuestionIndex === totalQuestions - 1) {
@@ -334,9 +334,9 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
             window.innerWidth >= 640 ? getMarginClass(currentQuestion) : ""
           }`}
         >
-          {/* Ако е избрана опцията за генериране на препоръки с устройство за анализ на мозъчните импулси, визуализираме компонента BrainAnalysisQuestions */}
+          {/* Ако е избрана опцията за генериране на препоръки с устройство за анализ на мозъчните импулси, визуализираме компонента BrainAnalysisSteps */}
           {renderBrainAnalysis ? (
-            <BrainAnalysisQuestions
+            <BrainAnalysisSteps
               setSubmitted={setSubmitted}
               setNotification={setNotification}
               setRecommendationList={setRecommendationList}
