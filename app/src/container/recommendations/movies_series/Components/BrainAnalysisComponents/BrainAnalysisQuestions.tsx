@@ -80,6 +80,8 @@ export const BrainAnalysisQuestions: FC<{
     { name: "Attention", data: [] },
     { name: "Meditation", data: [] }
   ]);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const closeModal = () => setSelectedImage(null);
 
   useEffect(() => {
     connectSocketIO(setChartData, setTransmissionComplete);
@@ -162,7 +164,7 @@ export const BrainAnalysisQuestions: FC<{
     {
       question: "4. Конфигуриране на COM порт.",
       description:
-        "След успешно свързване, отивате на More Bluetooth options и оттам в раздела COM ports. Трябва да видите на кой от тях е свързано устройството и ако не е, да добавите порт към него. Интересува ни OUTGOING порта. В нашия случай, това е COM4. След като знаете номера, отивате и пишете „COM4“ в ThinkGear Connector приложението на показаното поле.",
+        "След успешно свързване, отивате на More Bluetooth options и оттам в раздела COM ports. Трябва да видите на кой от тях е свързано устройството и ако не е, да добавите порт към него. Интересува ни OUTGOING порта. Той се обозначава с COM и съответната цифра (в примера от снимките, това е COM4). След идентифицирате правилния порт, отивате и го пишете (пример: „COM4“) в ThinkGear Connector приложението на показаното поле.",
       images: [img4_1, img4_2]
     },
     {
@@ -296,11 +298,70 @@ export const BrainAnalysisQuestions: FC<{
                     key={index}
                     src={imgSrc} // Use imgSrc dynamically
                     alt={`Изображение ${index}`}
-                    className="h-64 rounded-lg object-contain border-2"
+                    className="h-32 cursor-pointer rounded-lg object-contain border-2 transition-transform hover:scale-105"
+                    onClick={() => setSelectedImage(imgSrc)}
                   />
                 );
               })}
             </div>
+            {selectedImage && (
+              <div
+                className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50"
+                onClick={closeModal}
+              >
+                <img
+                  src={selectedImage}
+                  alt="Full-size"
+                  className="max-w-full max-h-full rounded-lg shadow-lg"
+                  onClick={(e) => e.stopPropagation()} // Prevent closing when clicking on image
+                />
+                {/* Х Button */}
+                <button
+                  onClick={closeModal}
+                  className="absolute top-4 right-4 p-2 bg-opacity-60 rounded-full transition-transform duration-300 transform hover:scale-110 z-10"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="50"
+                    height="50"
+                    viewBox="0 0 48 48"
+                  >
+                    <linearGradient
+                      id="hbE9Evnj3wAjjA2RX0We2a_OZuepOQd0omj_gr1"
+                      x1="7.534"
+                      x2="27.557"
+                      y1="7.534"
+                      y2="27.557"
+                      gradientUnits="userSpaceOnUse"
+                    >
+                      <stop offset="0" stopColor="#f44f5a"></stop>
+                      <stop offset=".443" stopColor="#ee3d4a"></stop>
+                      <stop offset="1" stopColor="#e52030"></stop>
+                    </linearGradient>
+                    <path
+                      fill="url(#hbE9Evnj3wAjjA2RX0We2a_OZuepOQd0omj_gr1)"
+                      d="M42.42,12.401c0.774-0.774,0.774-2.028,0-2.802L38.401,5.58c-0.774-0.774-2.028-0.774-2.802,0	L24,17.179L12.401,5.58c-0.774-0.774-2.028-0.774-2.802,0L5.58,9.599c-0.774,0.774-0.774,2.028,0,2.802L17.179,24L5.58,35.599	c-0.774,0.774-0.774,2.028,0,2.802l4.019,4.019c0.774,0.774,2.028,0.774,2.802,0L42.42,12.401z"
+                    ></path>
+                    <linearGradient
+                      id="hbE9Evnj3wAjjA2RX0We2b_OZuepOQd0omj_gr2"
+                      x1="27.373"
+                      x2="40.507"
+                      y1="27.373"
+                      y2="40.507"
+                      gradientUnits="userSpaceOnUse"
+                    >
+                      <stop offset="0" stopColor="#a8142e"></stop>
+                      <stop offset=".179" stopColor="#ba1632"></stop>
+                      <stop offset=".243" stopColor="#c21734"></stop>
+                    </linearGradient>
+                    <path
+                      fill="url(#hbE9Evnj3wAjjA2RX0We2b_OZuepOQd0omj_gr2)"
+                      d="M24,30.821L35.599,42.42c0.774,0.774,2.028,0.774,2.802,0l4.019-4.019	c0.774-0.774,0.774-2.028,0-2.802L30.821,24L24,30.821z"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            )}
 
             <div className="mt-4 flex justify-center">
               <div className="h-4 w-full max-w-md bg-gray-700 rounded-full overflow-hidden">
