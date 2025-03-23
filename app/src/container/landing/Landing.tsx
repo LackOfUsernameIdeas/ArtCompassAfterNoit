@@ -220,10 +220,13 @@ const Landing: FC<LandingProps> = () => {
                   Как работи АртКомпас?
                 </h3>
                 <span className="text-[#8c9097] dark:text-white/50 text-[0.9375rem] font-normal block">
-                  Открийте най-добрите препоръки за вас, с помощта на Изкуствен
-                  Интелект, и станете свидетел на анализ на поведението му в три
-                  лесни стъпки – регистрирайте се, попълнете кратък въпросник и
-                  вижте вашите резултати!
+                  Открийте най-добрите препоръки за вас с помощта на Изкуствен
+                  Интелект и станете свидетел на анализ на поведението му.
+                  Вашето състояние ще бъде анализирано чрез биоелектрическата
+                  активност на мозъка ви, свързана с различни емоционални и
+                  физически състояния, за да получите максимално персонализирани
+                  препоръки. Всичко това в три лесни стъпки – регистрирайте се,
+                  следвайте внимателно инструкциите и вижте вашите резултати!
                 </span>
               </div>
             </div>
@@ -234,23 +237,51 @@ const Landing: FC<LandingProps> = () => {
                     <div className="mb-4 ms-1">
                       <div className="icon-style">
                         <span className="avatar avatar-lg avatar-rounded bg-primary svg-white">
-                          <i className="ti ti-user-plus"></i>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            className="lucide lucide-brain-circuit"
+                          >
+                            <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" />
+                            <path d="M9 13a4.5 4.5 0 0 0 3-4" />
+                            <path d="M6.003 5.125A3 3 0 0 0 6.401 6.5" />
+                            <path d="M3.477 10.896a4 4 0 0 1 .585-.396" />
+                            <path d="M6 18a4 4 0 0 1-1.967-.516" />
+                            <path d="M12 13h4" />
+                            <path d="M12 18h6a2 2 0 0 1 2 2v1" />
+                            <path d="M12 8h8" />
+                            <path d="M16 8V5a2 2 0 0 1 2-2" />
+                            <circle cx="16" cy="13" r=".5" />
+                            <circle cx="18" cy="3" r=".5" />
+                            <circle cx="20" cy="21" r=".5" />
+                            <circle cx="20" cy="8" r=".5" />
+                          </svg>
                         </span>
                       </div>
                     </div>
                     <h5 className="font-semibold opsilion text-[1.5rem] mb-4">
-                      Регистрация
+                      ЕЕГ анализ на мозъка
                     </h5>
                     <p className="opacity-[0.8] mb-4">
-                      Създайте свой профил, за да станете част от нашата
-                      платформа. АртКомпас ви предоставя възможността да
-                      изживеете едно уникално кино и библиопреживяване.
+                      Мозъка притежава биоелектрическа активност, която се
+                      изследва с ЕлектроЕнцефалоГрафия (ЕЕГ). Това е метод,
+                      който разделя мозъчните вълни в категории и ги свързва с
+                      различни емоционални и физически състояния. Разгледайте
+                      вашето собствено състояние и препоръките на Изкуствения
+                      Интелект, направени специфично за него!
                     </p>
                     <Link
                       className="mx-1 text-primary font-semibold leading-[1] mt-auto"
-                      to={`${import.meta.env.BASE_URL}signup`}
+                      to={`${import.meta.env.BASE_URL}signin`}
                     >
-                      Създайте свой профил сега
+                      Анализирайте вашия мозък
                       <i className="ri-arrow-right-s-line align-middle rtl:rotate-180"></i>
                     </Link>
                   </div>
@@ -262,12 +293,28 @@ const Landing: FC<LandingProps> = () => {
                     <div className="mb-4 ms-1">
                       <div className="icon-style">
                         <span className="avatar avatar-lg avatar-rounded bg-primary svg-white">
-                          <i className="ti ti-report-analytics"></i>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            className="lucide lucide-chart-column-increasing"
+                          >
+                            <path d="M13 17V9" />
+                            <path d="M18 17V5" />
+                            <path d="M3 3v16a2 2 0 0 0 2 2h16" />
+                            <path d="M8 17v-3" />
+                          </svg>
                         </span>
                       </div>
                     </div>
                     <h5 className="font-semibold opsilion text-[1.5rem] mb-4">
-                      Вашият анализ
+                      Анализ на препоръките
                     </h5>
                     <p className="opacity-[0.8] mb-4">
                       Спрямо вашите индивидуални предпочитания и личностни
@@ -291,7 +338,27 @@ const Landing: FC<LandingProps> = () => {
                     <div className="mb-4 ms-1">
                       <div className="icon-style">
                         <span className="avatar avatar-lg avatar-rounded bg-primary svg-white">
-                          <i className="ti ti-movie"></i>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            className="lucide lucide-film"
+                          >
+                            <rect width="18" height="18" x="3" y="3" rx="2" />
+                            <path d="M7 3v18" />
+                            <path d="M3 7.5h4" />
+                            <path d="M3 12h18" />
+                            <path d="M3 16.5h4" />
+                            <path d="M17 3v18" />
+                            <path d="M17 7.5h4" />
+                            <path d="M17 16.5h4" />
+                          </svg>
                         </span>
                       </div>
                     </div>
