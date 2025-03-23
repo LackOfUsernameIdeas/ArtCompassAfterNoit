@@ -1,21 +1,21 @@
 import { FC, useState, useEffect } from "react";
 import { CSSTransition } from "react-transition-group";
-import img0 from "@/assets/images/instructions/0.jpg";
-import img1_1 from "@/assets/images/instructions/1.1.png";
-import img1_2 from "@/assets/images/instructions/1.2.png";
-import img1_3 from "@/assets/images/instructions/1.3.png";
-import img1_4 from "@/assets/images/instructions/1.4.png";
-import img2 from "@/assets/images/instructions/2.jpg";
-import img3_1 from "@/assets/images/instructions/3.1.png";
-import img3_2 from "@/assets/images/instructions/3.2.png";
-import img3_3 from "@/assets/images/instructions/3.3.png";
-import img3_4 from "@/assets/images/instructions/3.4.png";
-import img4_1 from "@/assets/images/instructions/4.1.png";
-import img4_2 from "@/assets/images/instructions/4.2.png";
-import img5 from "@/assets/images/instructions/5.png";
-import img6_1 from "@/assets/images/instructions/6.1.png";
-import img6_2 from "@/assets/images/instructions/6.2.png";
-import img6_3 from "@/assets/images/instructions/6.3.png";
+import img0 from "@/assets/images/steps/0.jpg";
+import img1_1 from "@/assets/images/steps/1.1.png";
+import img1_2 from "@/assets/images/steps/1.2.png";
+import img1_3 from "@/assets/images/steps/1.3.png";
+import img1_4 from "@/assets/images/steps/1.4.png";
+import img2 from "@/assets/images/steps/2.jpg";
+import img3_1 from "@/assets/images/steps/3.1.png";
+import img3_2 from "@/assets/images/steps/3.2.png";
+import img3_3 from "@/assets/images/steps/3.3.png";
+import img3_4 from "@/assets/images/steps/3.4.png";
+import img4_1 from "@/assets/images/steps/4.1.png";
+import img4_2 from "@/assets/images/steps/4.2.png";
+import img5 from "@/assets/images/steps/5.png";
+import img6_1 from "@/assets/images/steps/6.1.png";
+import img6_2 from "@/assets/images/steps/6.2.png";
+import img6_3 from "@/assets/images/steps/6.3.png";
 import {
   MoviesSeriesUserPreferences,
   NotificationState,
