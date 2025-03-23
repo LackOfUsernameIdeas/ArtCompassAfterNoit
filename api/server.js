@@ -2082,11 +2082,9 @@ app.post("/save-brain-analysis", (req, res) => {
 
   // Проверка за липсващи данни
   if (!token || !analysisType || !data || !date || !Array.isArray(data)) {
-    return res
-      .status(400)
-      .json({
-        error: "Всички полета са задължителни и 'data' трябва да е масив."
-      });
+    return res.status(400).json({
+      error: "Всички полета са задължителни и 'data' трябва да е масив."
+    });
   }
 
   // Верификация на токена и извличане на потребителското ID

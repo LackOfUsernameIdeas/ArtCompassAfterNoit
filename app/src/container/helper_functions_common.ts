@@ -1018,59 +1018,70 @@ export const getAverageMetrics = async (): Promise<any> => {
  * @async
  * @function connectSocketIO
  * @param {React.Dispatch<React.SetStateAction<BrainData | null>>} setData - Функция за обновяване на състоянието с получените данни.
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} setTransmissionComplete - Функция за обновяване на флага за край на получаването на данни.
  * @returns {void}
  */
 export const connectSocketIO = async (
   setChartData: React.Dispatch<React.SetStateAction<BrainData | null>>,
-  setTransmissionComplete: React.Dispatch<React.SetStateAction<boolean>> // New state setter
+  setTransmissionComplete: React.Dispatch<React.SetStateAction<boolean>>,
+  setConnectionError: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-  // Създаване на връзка със SocketIO сървъра
-  const socket = io("ws://localhost:5000");
+  let attempts = 2;
+  const maxAttempts = 3;
 
-  // Обработване на свързване със сървъра
-  socket.on("connect", () => {
-    console.log("Успешно свързване със SocketIO сървъра");
-  });
+  const connect = () => {
+    console.log(
+      `🔄 Attempting to connect... (Try ${attempts + 1}/${maxAttempts})`
+    );
+    const socket = io("ws://localhost:9999", { reconnection: false });
 
-  // Слушане на събитието 'hardwareData' за получаване на данни от сървъра
-  socket.on("hardwareDataResponse", (data: unknown) => {
-    console.log("📡 Received raw hardware data:", data);
+    socket.on("connect", () => {
+      console.log("✅ Successfully connected to SocketIO server");
+      setConnectionError(false);
+    });
 
-    try {
-      const parsedData = typeof data === "string" ? JSON.parse(data) : data;
-
-      if (
-        parsedData &&
-        typeof parsedData === "object" &&
-        "time" in parsedData &&
-        "data_type" in parsedData &&
-        parsedData.data_type === "headset_data"
-      ) {
-        console.log("✅ Data successfully parsed & validated");
-        setChartData(parsedData as BrainData);
-      } else {
-        console.error("❌ Invalid data format received:", parsedData);
+    socket.on("hardwareDataResponse", (data: unknown) => {
+      console.log("📡 Received raw hardware data:", data);
+      try {
+        const parsedData = typeof data === "string" ? JSON.parse(data) : data;
+        if (
+          parsedData &&
+          typeof parsedData === "object" &&
+          "time" in parsedData &&
+          "data_type" in parsedData &&
+          parsedData.data_type === "headset_data"
+        ) {
+          console.log("✅ Data successfully parsed & validated");
+          setChartData(parsedData as BrainData);
+        } else {
+          console.error("❌ Invalid data format received:", parsedData);
+        }
+      } catch (error) {
+        console.error("❌ Error parsing data:", error);
       }
-    } catch (error) {
-      console.error("❌ Error parsing data:", error);
-    }
-  });
+    });
 
-  // New listener for data transmission completion
-  socket.on("dataDoneTransmittingSignal", () => {
-    console.log("✅ Data transmission complete");
-    setTransmissionComplete(true);
-  });
+    socket.on("dataDoneTransmittingSignal", () => {
+      console.log("✅ Data transmission complete");
+      setTransmissionComplete(true);
+    });
 
-  // Обработване на прекъсване на връзката от сървъра
-  socket.on("disconnect", () => {
-    console.log("SocketIO връзката беше прекъсната");
-  });
+    socket.on("disconnect", () => {
+      console.log("⚠️ Disconnected from SocketIO server");
+    });
 
-  // Грешки по време на връзката
-  socket.on("connect_error", (error) => {
-    console.error("Грешка при свързване със SocketIO сървъра:", error);
-  });
+    socket.on("connect_error", (error) => {
+      console.error("❌ Connection error:", error);
+      attempts++;
+      if (attempts < maxAttempts) {
+        setTimeout(connect, 3000);
+      } else {
+        setConnectionError(true);
+      }
+    });
+  };
+
+  connect();
 };
 
 /**

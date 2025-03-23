@@ -3,8 +3,7 @@ import {
   Question,
   MoviesSeriesUserPreferences,
   Recommendation,
-  RecommendationsAnalysis,
-  Analysis
+  RecommendationsAnalysis
 } from "./moviesSeriesRecommendations-types";
 import {
   BrainData,
@@ -1006,22 +1005,16 @@ export const handleRetakeQuiz = (
   }, 500);
 };
 
-export const getBrainWaveKey = (index: number) => {
-  const keys = [
-    "delta",
-    "theta",
-    "lowAlpha",
-    "highAlpha",
-    "lowBeta",
-    "highBeta",
-    "lowGamma",
-    "midGamma"
-  ];
-  return keys[index];
-};
-
 export const MAX_DATA_POINTS = 30;
 
+/**
+ * Актуализира данните на серията, като добавя нова стойност и премахва най-старите, ако броят надхвърли ограничението.
+ *
+ * @param {Array<{ x: string; y: number }>} currentData - Текущите данни на серията.
+ * @param {string} timestamp - Времеви маркер за новата стойност.
+ * @param {number} value - Стойност, която ще бъде добавена към серията.
+ * @returns {Array<{ x: string; y: number }>} Актуализиран масив с данни, ограничен до `MAX_DATA_POINTS`.
+ */
 export const updateSeriesData = (
   currentData: { x: string; y: number }[],
   timestamp: string,
