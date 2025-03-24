@@ -80,7 +80,8 @@ export const Quiz: FC<QuizProps> = ({
             setSubmitted={setSubmitted}
             submitted={submitted}
             showViewRecommendations={
-              alreadyHasRecommendations && !submitted && !renderBrainAnalysis
+              alreadyHasRecommendations &&
+              (!submitted || (renderBrainAnalysis && !isBrainAnalysisComplete))
             }
             alreadyHasRecommendations={alreadyHasRecommendations}
             setRecommendationList={setRecommendationList}
@@ -105,7 +106,15 @@ export const Quiz: FC<QuizProps> = ({
             <p className="text-lg text-gray-600">
               Искате други препоръки?{" "}
               <button
-                onClick={() => handleRetakeQuiz(setLoading, setSubmitted)}
+                onClick={() =>
+                  handleRetakeQuiz(
+                    setLoading,
+                    setSubmitted,
+                    setIsBrainAnalysisComplete,
+                    setCurrentIndex,
+                    renderBrainAnalysis
+                  )
+                }
                 className="text-primary font-semibold hover:text-secondary transition-colors underline"
               >
                 Повторете {renderBrainAnalysis ? "анализа" : "въпросника"}
