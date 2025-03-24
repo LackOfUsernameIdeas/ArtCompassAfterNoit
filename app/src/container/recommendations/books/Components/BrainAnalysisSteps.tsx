@@ -271,14 +271,14 @@ export const BrainAnalysisSteps: FC<{
               </div>
 
               {/* Показваме изображението за пример (като част от въпроса) */}
-              <div className="border-2 rounded-lg p-4 bg-opacity-50 bg-black text-white">
+              <div className="border-2 border-primary rounded-lg p-4 bg-opacity-50 bg-bodybg text-white">
                 <div className="flex flex-wrap justify-center gap-4">
                   {currentStep.images?.map((imgSrc, index) => (
                     <img
                       key={index}
                       src={imgSrc}
                       alt={`Изображение ${index}`}
-                      className="h-32 cursor-pointer rounded-lg object-contain border-2 transition-transform hover:scale-105"
+                      className="h-32 cursor-pointer rounded-lg object-contain border-2 border-primary transition-transform hover:scale-105"
                       onClick={() => setSelectedImage(imgSrc)}
                     />
                   ))}
