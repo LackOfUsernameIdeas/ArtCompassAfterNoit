@@ -161,8 +161,8 @@ export interface QuizQuestionProps {
   setBookmarkedMovies: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
   >; // Функция за актуализиране на маркираните филми
-  setIsAnalysisComplete: React.Dispatch<React.SetStateAction<boolean>>; // Функция за актуализиране състоянието на мозъчния анализ
-  isAnalysisComplete: boolean; // Състоянието на мозъчния анализ
+  setAreStepsComplete: React.Dispatch<React.SetStateAction<boolean>>; // Функция за актуализиране състоянието на мозъчния анализ
+  areStepsComplete: boolean; // Състоянието на мозъчния анализ
 }
 
 // Пропс за компонентата ViewRecommendations, която показва резултатите от препоръките.

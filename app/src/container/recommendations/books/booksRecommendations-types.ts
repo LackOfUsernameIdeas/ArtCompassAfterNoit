@@ -149,8 +149,8 @@ export interface QuizQuestionProps {
   setBookmarkedBooks: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
   >; // Функция за актуализиране на маркираните книги
-  setIsAnalysisComplete: React.Dispatch<React.SetStateAction<boolean>>; // Функция за актуализиране състоянието на мозъчния анализ
-  isAnalysisComplete: boolean; // Състоянието на мозъчния анализ
+  setAreStepsComplete: React.Dispatch<React.SetStateAction<boolean>>; // Функция за актуализиране състоянието на мозъчния анализ
+  areStepsComplete: boolean; // Състоянието на мозъчния анализ
 }
 // Пропс за компонентата ViewRecommendations, която показва резултатите от препоръките.
 export interface ViewRecommendationsProps {
