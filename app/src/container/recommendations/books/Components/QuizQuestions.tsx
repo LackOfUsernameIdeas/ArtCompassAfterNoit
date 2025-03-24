@@ -35,8 +35,8 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   alreadyHasRecommendations,
   setRecommendationList,
   setBookmarkedBooks,
-  setAreStepsComplete,
-  areStepsComplete
+  setIsAnalysisComplete,
+  isAnalysisComplete
 }) => {
   const [preferencesType, setPreferencesType] = useState<string | null>(null);
   const [renderBrainAnalysis, setRenderBrainAnalysis] = useState(false);
@@ -287,7 +287,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       >
         <div
           className={`w-full ${
-            !areStepsComplete && "max-w-4xl"
+            !isAnalysisComplete && "max-w-4xl"
           } py-8 px-4 mb-[12rem] ${
             window.innerWidth >= 640 ? getMarginClass(currentQuestion) : ""
           }`}
@@ -303,8 +303,8 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
               submitted={submitted}
               token={token}
               setSubmitCount={setSubmitCount}
-              setAreStepsComplete={setAreStepsComplete}
-              areStepsComplete={areStepsComplete}
+              setIsAnalysisComplete={setIsAnalysisComplete}
+              isAnalysisComplete={isAnalysisComplete}
             />
           ) : (
             <>

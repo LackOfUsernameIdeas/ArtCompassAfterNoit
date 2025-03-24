@@ -33,8 +33,8 @@ export const BrainAnalysisSteps: FC<{
   token: string | null;
   submitCount: number;
   setSubmitCount: React.Dispatch<React.SetStateAction<number>>;
-  setAreStepsComplete: React.Dispatch<React.SetStateAction<boolean>>;
-  areStepsComplete: boolean;
+  setIsAnalysisComplete: React.Dispatch<React.SetStateAction<boolean>>;
+  isAnalysisComplete: boolean;
 }> = ({
   setSubmitted,
   setNotification,
@@ -45,8 +45,8 @@ export const BrainAnalysisSteps: FC<{
   token,
   submitCount,
   setSubmitCount,
-  setAreStepsComplete,
-  areStepsComplete
+  setIsAnalysisComplete,
+  isAnalysisComplete
 }) => {
   // Състояния за текущия индекс на въпроса, показване на въпроса, дали анализът е завършен и cooldown между въпроси
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -71,7 +71,7 @@ export const BrainAnalysisSteps: FC<{
   const closeModal = () => setSelectedImage(null); // Функция за затваряне на прозорецa с изображението
 
   useEffect(() => {
-    if (areStepsComplete) {
+    if (isAnalysisComplete) {
       connectSocketIO(
         setChartData,
         setTransmissionComplete,
@@ -80,13 +80,13 @@ export const BrainAnalysisSteps: FC<{
     }
 
     return () => {
-      if (areStepsComplete) {
+      if (isAnalysisComplete) {
         console.log(
           "Component unmounted, WebSocket connection should be closed."
         );
       }
     };
-  }, [areStepsComplete]);
+  }, [isAnalysisComplete]);
 
   const retryConnection = () => {
     setConnectionError(false);
@@ -171,7 +171,7 @@ export const BrainAnalysisSteps: FC<{
         setCurrentStepIndex((prevIndex) => prevIndex + 1);
       } else {
         // Ако няма повече въпроси, маркираме анализата като завършена
-        setAreStepsComplete(true);
+        setIsAnalysisComplete(true);
         setLoading(true);
       }
       // Включваме отново показването на въпроса
@@ -197,7 +197,7 @@ export const BrainAnalysisSteps: FC<{
 
   // Функция за пропускане на стъпките
   const handleSkipAll = () => {
-    setAreStepsComplete(true); // Mark analysis as completed
+    setIsAnalysisComplete(true); // Mark analysis as completed
     setLoading(true);
   };
 
@@ -239,7 +239,7 @@ export const BrainAnalysisSteps: FC<{
             <Loader brainAnalysis />
           </CSSTransition>
           <CSSTransition
-            in={!loading && !areStepsComplete && showStep}
+            in={!loading && !isAnalysisComplete && showStep}
             timeout={500} // Време за анимация
             classNames="fade"
             unmountOnExit
@@ -269,7 +269,7 @@ export const BrainAnalysisSteps: FC<{
                     </button>
                   </div>
                 )}
-                {!areStepsComplete && (
+                {!isAnalysisComplete && (
                   <button
                     onClick={handleSkipAll}
                     className="back-button text-secondary dark:text-white hover:opacity-70 text-3xl transition-all duration-300 flex items-center gap-2"
@@ -399,7 +399,7 @@ export const BrainAnalysisSteps: FC<{
             </div>
           </CSSTransition>
           <CSSTransition
-            in={!loading && areStepsComplete}
+            in={!loading && isAnalysisComplete}
             timeout={500} // Време за анимация
             classNames="fade"
             unmountOnExit
