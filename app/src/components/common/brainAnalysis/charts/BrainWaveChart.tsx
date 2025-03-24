@@ -1,7 +1,8 @@
 import type React from "react";
 import ApexCharts from "react-apexcharts";
 import type { BrainData } from "@/container/types_common";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 
 interface BrainWaveChartProps {
   title: string;
@@ -82,6 +83,48 @@ const getThemeOptions = (
   };
 };
 
+const AnimatedValue = ({ value, color }: { value: number; color: string }) => {
+  const count = useMotionValue(value);
+  const rounded = useTransform(count, (latest) => Math.round(latest));
+  const animationRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (animationRef.current) {
+      animationRef.current.stop();
+    }
+
+    animationRef.current = animate(count, value, {
+      duration: 0.4,
+      ease: "easeOut"
+    });
+
+    return () => {
+      if (animationRef.current) {
+        animationRef.current.stop();
+      }
+    };
+  }, [count, value]);
+
+  return (
+    <motion.span
+      className="text-sm font-bold"
+      style={{ color }}
+      initial={{ scale: 1 }}
+      animate={{
+        scale: [1, 1.15, 1],
+        filter: ["brightness(1)", "brightness(1.3)", "brightness(1)"]
+      }}
+      transition={{
+        duration: 0.4,
+        times: [0, 0.2, 1],
+        ease: "easeInOut"
+      }}
+    >
+      {rounded}
+    </motion.span>
+  );
+};
+
 const BrainWaveChart: React.FC<BrainWaveChartProps> = ({
   title,
   brainWaveKey,
@@ -91,6 +134,8 @@ const BrainWaveChart: React.FC<BrainWaveChartProps> = ({
   const [mode, setMode] = useState<"light" | "dark">(
     (localStorage.getItem("artMenu") as "light" | "dark") || "light"
   );
+  const [currentValue, setCurrentValue] = useState<number>(0);
+  const [valueKey, setValueKey] = useState<number>(0);
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -101,6 +146,18 @@ const BrainWaveChart: React.FC<BrainWaveChartProps> = ({
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
+
+  useEffect(() => {
+    if (seriesData.length > 0) {
+      const newValue = Math.round(
+        Number(seriesData[seriesData.length - 1][brainWaveKey]) || 0
+      );
+      if (newValue !== currentValue) {
+        setCurrentValue(newValue);
+        setValueKey((prev) => prev + 1);
+      }
+    }
+  }, [seriesData, brainWaveKey, currentValue]);
 
   const formattedSeries = [
     {
@@ -123,9 +180,9 @@ const BrainWaveChart: React.FC<BrainWaveChartProps> = ({
         <h3 className="text-sm font-medium text-gray-700 dark:text-gray-200">
           {title}
         </h3>
-        <span className="text-sm font-bold" style={{ color }}>
-          {latestValue}
-        </span>
+        <div className="relative h-6 flex items-center">
+          <AnimatedValue key={valueKey} value={currentValue} color={color} />
+        </div>
       </div>
       <div className="flex-grow">
         <ApexCharts
