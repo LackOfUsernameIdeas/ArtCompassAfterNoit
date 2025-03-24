@@ -40,16 +40,18 @@ const RealTimeDataCard: React.FC<RealTimeDataCardProps> = ({ data }) => {
   }
 
   return (
-    <div className="bg-black bg-opacity-30 rounded-xl p-4 backdrop-blur-sm shadow-lg">
+    <div className="bg-white dark:bg-black dark:bg-opacity-30 rounded-xl p-4 shadow-md dark:shadow-lg dark:backdrop-blur-sm border border-gray-200 dark:border-transparent">
       <h3 className="text-lg font-medium mb-3 flex items-center">
         <i className="mr-2 text-xl text-primary ti ti-brain" />
         <span>Вашата мозчъна активност в реално време</span>
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-black bg-opacity-30 rounded-lg p-3">
+        <div className="bg-gray-50 dark:bg-black dark:bg-opacity-30 rounded-lg p-3 border border-gray-200 dark:border-transparent">
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col items-center justify-center">
-              <div className="text-xs text-gray-400 mb-1">Attention</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                Attention
+              </div>
               <div className="relative w-16 h-16 flex items-center justify-center">
                 <svg className="w-full h-full" viewBox="0 0 100 100">
                   <circle
@@ -57,7 +59,8 @@ const RealTimeDataCard: React.FC<RealTimeDataCardProps> = ({ data }) => {
                     cy="50"
                     r="45"
                     fill="transparent"
-                    stroke="#374151"
+                    stroke="#e5e7eb"
+                    className="dark:stroke-[#374151]"
                     strokeWidth="8"
                   />
                   <circle
@@ -83,7 +86,9 @@ const RealTimeDataCard: React.FC<RealTimeDataCardProps> = ({ data }) => {
 
             {/* Meditation Indicator */}
             <div className="flex flex-col items-center justify-center">
-              <div className="text-xs text-gray-400 mb-1">Meditation</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                Meditation
+              </div>
               <div className="relative w-16 h-16 flex items-center justify-center">
                 <svg className="w-full h-full" viewBox="0 0 100 100">
                   <circle
@@ -91,7 +96,8 @@ const RealTimeDataCard: React.FC<RealTimeDataCardProps> = ({ data }) => {
                     cy="50"
                     r="45"
                     fill="transparent"
-                    stroke="#374151"
+                    stroke="#e5e7eb"
+                    className="dark:stroke-[#374151]"
                     strokeWidth="8"
                   />
                   <circle
@@ -117,9 +123,9 @@ const RealTimeDataCard: React.FC<RealTimeDataCardProps> = ({ data }) => {
           </div>
         </div>
 
-        <div className="bg-black bg-opacity-30 rounded-lg p-3 flex flex-col h-full">
+        <div className="bg-gray-50 dark:bg-black dark:bg-opacity-30 rounded-lg p-3 flex flex-col h-full border border-gray-200 dark:border-transparent">
           <div>
-            <h4 className="text-lg font-medium text-gray-300 mb-2 flex items-center">
+            <h4 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
               <i className="mr-1 text-xl text-primary ti ti-wave-sine" />
               <span>Мозъчните Ви вълни</span>
             </h4>
@@ -128,7 +134,7 @@ const RealTimeDataCard: React.FC<RealTimeDataCardProps> = ({ data }) => {
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-x-4 gap-y-1">
             {brainWaveConfig.map((wave) => (
               <div key={wave.key} className="flex items-center justify-between">
-                <span className="text-sm text-gray-400 truncate mr-1">
+                <span className="text-sm text-gray-600 dark:text-gray-400 truncate mr-1">
                   {wave.title}
                 </span>
                 <span

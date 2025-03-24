@@ -1,4 +1,5 @@
 import type React from "react";
+import { useEffect, useState } from "react";
 import ApexCharts from "react-apexcharts";
 
 interface AttentionMeditationChartProps {
@@ -11,6 +12,20 @@ interface AttentionMeditationChartProps {
 const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
   attentionMeditation
 }) => {
+  const [mode, setMode] = useState<"light" | "dark">(
+    (localStorage.getItem("artMenu") as "light" | "dark") || "light"
+  );
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const currentMode = localStorage.getItem("artMenu") as "light" | "dark";
+      if (currentMode) setMode(currentMode);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
   const attentionValue =
     attentionMeditation[0].data.length > 0
       ? Math.round(
@@ -49,16 +64,16 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
     fill: {
       type: "gradient",
       gradient: {
-        shade: "dark",
+        shade: "light",
         type: "vertical",
-        shadeIntensity: 0.3,
+        shadeIntensity: 0.2,
         opacityFrom: 0.7,
         opacityTo: 0.2,
         stops: [0, 100]
       }
     },
     grid: {
-      borderColor: "rgba(255, 255, 255, 0.1)",
+      borderColor: "rgba(0, 0, 0, 0.1)",
       row: {
         colors: ["transparent"],
         opacity: 0.5
@@ -91,14 +106,14 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
       max: 100,
       labels: {
         style: {
-          colors: "rgba(255, 255, 255, 0.7)",
+          colors: "rgba(0, 0, 0, 0.7)",
           fontSize: "10px"
         },
         formatter: (value) => Math.round(value).toString()
       }
     },
     tooltip: {
-      theme: "dark",
+      theme: "light",
       x: {
         show: false
       }
@@ -113,15 +128,64 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
       offsetY: -5,
       offsetX: -5,
       labels: {
-        colors: "rgba(255, 255, 255, 0.9)"
+        colors: "rgba(0, 0, 0, 0.9)"
       }
     }
   };
 
+  // Create a function to get theme-specific options
+  const getThemeOptions = (isDark: boolean): ApexCharts.ApexOptions => {
+    return {
+      ...attentionMeditationOptions,
+      grid: {
+        ...attentionMeditationOptions.grid,
+        borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)"
+      },
+      fill: {
+        type: "gradient",
+        gradient: {
+          shade: isDark ? "dark" : "light",
+          type: "vertical",
+          shadeIntensity: isDark ? 0.3 : 0.2,
+          opacityFrom: 0.7,
+          opacityTo: 0.2,
+          stops: [0, 100]
+        }
+      },
+      yaxis: {
+        min: 0,
+        max: 100,
+        labels: {
+          style: {
+            colors: isDark ? "rgba(255, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.7)",
+            fontSize: "10px"
+          },
+          formatter: (value) => Math.round(value).toString()
+        }
+      },
+      tooltip: {
+        theme: isDark ? "dark" : "light",
+        x: {
+          show: false
+        }
+      },
+      legend: {
+        position: "top",
+        horizontalAlign: "right",
+        floating: true,
+        offsetY: -5,
+        offsetX: -5,
+        labels: {
+          colors: isDark ? "rgba(255, 255, 255, 0.9)" : "rgba(0, 0, 0, 0.9)"
+        }
+      }
+    };
+  };
+
   return (
-    <div className="bg-black bg-opacity-30 rounded-lg p-3 h-full flex flex-col">
+    <div className="bg-white dark:bg-black dark:bg-opacity-30 rounded-lg p-3 h-full flex flex-col border border-gray-200 dark:border-transparent shadow-md dark:shadow-none">
       <div className="flex justify-between items-center mb-1">
-        <h3 className="text-sm font-medium text-gray-200">
+        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-200">
           Менталното Ви състояние
         </h3>
         <div className="flex space-x-3">
@@ -135,7 +199,7 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
       </div>
       <div className="flex-grow mb-2">
         <ApexCharts
-          options={attentionMeditationOptions}
+          options={getThemeOptions(mode === "dark")}
           series={attentionMeditation}
           type="area"
           height="100%"

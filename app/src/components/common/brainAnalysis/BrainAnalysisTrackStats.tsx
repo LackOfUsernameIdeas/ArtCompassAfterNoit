@@ -44,7 +44,7 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
   };
 
   return (
-    <div className="text-white rounded-lg p-4 transition-all duration-300">
+    <div className="rounded-lg p-4 transition-all duration-300 bg-gray-50 dark:bg-transparent">
       <div className="relative mx-auto">
         {chartData && (
           <div className="space-y-4">
@@ -85,7 +85,7 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
         <div className="flex justify-center mt-6">
           <button
             onClick={handleSubmitClick}
-            className="next glow-next bg-opacity-70 text-white font-bold rounded-lg px-6 py-3 cursor-pointer hover:scale-105 transition-all duration-300"
+            className="next glow-next text-white font-bold rounded-lg px-6 py-3 cursor-pointer hover:scale-105 transition-all duration-300 shadow-md"
           >
             View Recommendations
           </button>
