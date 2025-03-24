@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { Genre, QuizQuestionProps } from "../booksRecommendations-types";
+import { motion } from "framer-motion";
 import {
   handleAnswerClick,
   handleInputChange,
@@ -295,18 +296,25 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
         >
           {/* Ако е избрана опцията за генериране на препоръки с устройство за анализ на мозъчните импулси, визуализираме компонента BrainAnalysisSteps */}
           {renderBrainAnalysis ? (
-            <BrainAnalysisSteps
-              setSubmitted={setSubmitted}
-              setNotification={setNotification}
-              setRecommendationList={setRecommendationList}
-              setBookmarkedBooks={setBookmarkedBooks}
-              submitCount={submitCount}
-              submitted={submitted}
-              token={token}
-              setSubmitCount={setSubmitCount}
-              setIsBrainAnalysisComplete={setIsBrainAnalysisComplete}
-              isBrainAnalysisComplete={isBrainAnalysisComplete}
-            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            >
+              <BrainAnalysisSteps
+                setSubmitted={setSubmitted}
+                setNotification={setNotification}
+                setRecommendationList={setRecommendationList}
+                setBookmarkedBooks={setBookmarkedBooks}
+                submitCount={submitCount}
+                submitted={submitted}
+                token={token}
+                setSubmitCount={setSubmitCount}
+                setIsBrainAnalysisComplete={setIsBrainAnalysisComplete}
+                isBrainAnalysisComplete={isBrainAnalysisComplete}
+              />
+            </motion.div>
           ) : (
             <>
               {" "}
