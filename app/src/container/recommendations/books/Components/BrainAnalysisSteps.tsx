@@ -370,7 +370,7 @@ export const BrainAnalysisSteps: FC<{
                     ></div>
                   </div>
                 </div>
-                <p className="text-center mt-2 text-gray-400">
+                <p className="text-center mt-2 text-secondary dark:text-white">
                   Разглеждане на стъпките... {currentStepIndex}/{totalSteps - 1}
                 </p>
               </div>
