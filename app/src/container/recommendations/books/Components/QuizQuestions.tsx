@@ -36,10 +36,11 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   setRecommendationList,
   setBookmarkedBooks,
   setIsBrainAnalysisComplete,
-  isBrainAnalysisComplete
+  isBrainAnalysisComplete,
+  renderBrainAnalysis,
+  setRenderBrainAnalysis
 }) => {
   const [preferencesType, setPreferencesType] = useState<string | null>(null);
-  const [renderBrainAnalysis, setRenderBrainAnalysis] = useState(false);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [moods, setMoods] = useState<string[]>([]);
   const [authors, setAuthors] = useState("");

@@ -1043,7 +1043,6 @@ export const connectSocketIO = async (
     });
 
     socket.on("hardwareDataResponse", (data: unknown) => {
-      console.log("📡 Received raw hardware data:", data);
       try {
         const parsedData = typeof data === "string" ? JSON.parse(data) : data;
         if (
@@ -1053,7 +1052,6 @@ export const connectSocketIO = async (
           "data_type" in parsedData &&
           parsedData.data_type === "headset_data"
         ) {
-          console.log("✅ Data successfully parsed & validated");
           setChartData(parsedData as BrainData);
         } else {
           console.error("❌ Invalid data format received:", parsedData);

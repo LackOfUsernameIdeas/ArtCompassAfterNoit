@@ -16,6 +16,7 @@ export const Quiz: FC<QuizProps> = ({
   const [submitted, setSubmitted] = useState(false);
   const [recommendationList, setRecommendationList] = useState<any[]>([]);
   const [isBrainAnalysisComplete, setIsBrainAnalysisComplete] = useState(false);
+  const [renderBrainAnalysis, setRenderBrainAnalysis] = useState(false);
   console.log("recommendationList: ", recommendationList);
 
   const alreadyHasRecommendations = recommendationList.length > 0;
@@ -42,12 +43,20 @@ export const Quiz: FC<QuizProps> = ({
             setLoading={setLoading}
             setSubmitted={setSubmitted}
             submitted={submitted}
-            showViewRecommendations={alreadyHasRecommendations && !submitted}
+            showViewRecommendations={
+              alreadyHasRecommendations &&
+              // Случай 1: Когато не сме в режим на мозъчен анализ и не сме изпратили въпросника
+              ((!renderBrainAnalysis && !submitted) ||
+                // Случай 2: Когато сме в режим на мозъчен анализ, но анализът не е завършен
+                (renderBrainAnalysis && !isBrainAnalysisComplete))
+            }
             alreadyHasRecommendations={alreadyHasRecommendations}
             setRecommendationList={setRecommendationList}
             setBookmarkedBooks={setBookmarkedBooks}
             setIsBrainAnalysisComplete={setIsBrainAnalysisComplete}
             isBrainAnalysisComplete={isBrainAnalysisComplete}
+            renderBrainAnalysis={renderBrainAnalysis}
+            setRenderBrainAnalysis={setRenderBrainAnalysis}
           />
         </div>
       </CSSTransition>
@@ -63,10 +72,17 @@ export const Quiz: FC<QuizProps> = ({
             <p className="text-lg text-gray-600">
               Искате други препоръки?{" "}
               <button
-                onClick={() => handleRetakeQuiz(setLoading, setSubmitted)}
+                onClick={() =>
+                  handleRetakeQuiz(
+                    setLoading,
+                    setSubmitted,
+                    setIsBrainAnalysisComplete,
+                    renderBrainAnalysis
+                  )
+                }
                 className="text-primary font-semibold hover:text-secondary transition-colors underline"
               >
-                Повторете въпросника
+                Повторете {renderBrainAnalysis ? "анализа" : "въпросника"}
               </button>
             </p>
           </div>

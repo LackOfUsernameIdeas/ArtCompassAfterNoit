@@ -1145,15 +1145,24 @@ export const handleBack = (
  * @function handleRetakeQuiz
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setLoading - Функцията за показване на индикатора за зареждане.
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitted - Функцията за нулиране на състоянието на резултата.
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} setIsBrainAnalysisComplete - Функцията за нулиране на състоянието на завършен мозъчен анализ.
+ * @param {boolean} renderBrainAnalysis - Дали се използва мозъчен анализ.
  * @returns {void} - Няма връщан резултат, но актуализира състоянието на компонентите.
  */
 export const handleRetakeQuiz = (
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  setSubmitted: React.Dispatch<React.SetStateAction<boolean>>
+  setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
+  setIsBrainAnalysisComplete?: React.Dispatch<React.SetStateAction<boolean>>,
+  renderBrainAnalysis?: boolean
 ): void => {
   setLoading(true);
   setTimeout(() => {
     setSubmitted(false);
     setLoading(false);
   }, 500);
+
+  // Reset brain analysis state if in brain analysis mode
+  if (renderBrainAnalysis && setIsBrainAnalysisComplete) {
+    setIsBrainAnalysisComplete(false);
+  }
 };
