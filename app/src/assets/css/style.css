@@ -20138,4 +20138,18 @@ option.selectionList {
   height: 80px;
 }
 
+@keyframes flash-bounce {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  60% {
+    transform: scale(1.1);
+  }
+}
+
+.flash-bounce {
+  animation: flash-bounce 1s ease-in-out;
+}
+
 /*# sourceMappingURL=style.css.map */

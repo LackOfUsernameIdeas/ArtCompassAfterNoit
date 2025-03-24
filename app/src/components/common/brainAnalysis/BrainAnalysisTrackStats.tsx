@@ -3,6 +3,7 @@ import type { BrainData } from "@/container/types_common";
 import BrainWaveChart from "./charts/BrainWaveChart";
 import AttentionMeditationChart from "./charts/AttentionMediationChart";
 import BrainActivityCard from "./BrainActivityCard";
+import { useEffect, useRef, useState } from "react";
 
 interface BrainAnalysisTrackStatsProps {
   handleRecommendationsSubmit: (brainData: BrainData[]) => void;
@@ -22,6 +23,8 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
   seriesData,
   attentionMeditation
 }) => {
+  const termsCardRef = useRef<HTMLButtonElement>(null);
+  const [flash, setFlash] = useState(false);
   // Brain wave configuration with colors
   const brainWaveConfig: Array<{
     key: keyof BrainData;
@@ -43,8 +46,26 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
     handleRecommendationsSubmit(seriesData);
   };
 
+  const handleScroll = () => {
+    if (termsCardRef.current) {
+      termsCardRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+
+      setFlash(true);
+      setTimeout(() => setFlash(false), 1000);
+    }
+  };
+
+  useEffect(() => {
+    if (transmissionComplete) {
+      handleScroll();
+    }
+  }, [transmissionComplete]);
+
   return (
-    <div className="rounded-lg p-4 transition-all duration-300 bg-gray-50 dark:bg-transparent">
+    <div className="rounded-lg p-4 transition-all duration-300">
       <div className="relative mx-auto">
         {chartData && (
           <div className="space-y-4">
@@ -84,10 +105,13 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
       {transmissionComplete && (
         <div className="flex justify-center mt-6">
           <button
+            ref={termsCardRef}
             onClick={handleSubmitClick}
-            className="next glow-next text-white font-bold rounded-lg px-6 py-3 cursor-pointer hover:scale-105 transition-all duration-300 shadow-md"
+            className={`next glow-next text-white font-bold rounded-lg px-6 py-3 cursor-pointer hover:scale-105 transition-transform duration-300 shadow-md ${
+              flash ? "flash-bounce" : ""
+            }`}
           >
-            View Recommendations
+            Генерирайте препоръки!
           </button>
         </div>
       )}
