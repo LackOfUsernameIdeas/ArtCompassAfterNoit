@@ -21,6 +21,7 @@ export const Quiz: FC<QuizProps> = ({
   const [recommendationList, setRecommendationList] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isBrainAnalysisComplete, setIsBrainAnalysisComplete] = useState(false);
+  const [renderBrainAnalysis, setRenderBrainAnalysis] = useState(false);
   const [recommendationsAnalysis, setRecommendationsAnalysis] =
     useState<RecommendationsAnalysis>({
       relevantCount: 0,
@@ -78,13 +79,17 @@ export const Quiz: FC<QuizProps> = ({
             setLoading={setLoading}
             setSubmitted={setSubmitted}
             submitted={submitted}
-            showViewRecommendations={alreadyHasRecommendations && !submitted}
+            showViewRecommendations={
+              alreadyHasRecommendations && !submitted && !renderBrainAnalysis
+            }
             alreadyHasRecommendations={alreadyHasRecommendations}
             setRecommendationList={setRecommendationList}
             setRecommendationsAnalysis={setRecommendationsAnalysis}
             setBookmarkedMovies={setBookmarkedMovies}
             setIsBrainAnalysisComplete={setIsBrainAnalysisComplete}
             isBrainAnalysisComplete={isBrainAnalysisComplete}
+            renderBrainAnalysis={renderBrainAnalysis}
+            setRenderBrainAnalysis={setRenderBrainAnalysis}
           />
         </div>
       </CSSTransition>
@@ -103,7 +108,7 @@ export const Quiz: FC<QuizProps> = ({
                 onClick={() => handleRetakeQuiz(setLoading, setSubmitted)}
                 className="text-primary font-semibold hover:text-secondary transition-colors underline"
               >
-                Повторете въпросника
+                Повторете {renderBrainAnalysis ? "анализа" : "въпросника"}
               </button>
             </p>
           </div>

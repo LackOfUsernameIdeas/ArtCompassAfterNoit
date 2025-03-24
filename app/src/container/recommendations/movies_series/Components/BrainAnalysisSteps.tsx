@@ -283,18 +283,15 @@ export const BrainAnalysisSteps: FC<{
               {/* Показваме изображението за пример (като част от въпроса) */}
               <div className="border-2 rounded-lg p-4 bg-opacity-50 bg-black text-white">
                 <div className="flex flex-wrap justify-center gap-4">
-                  {currentStep.images?.map((imgSrc, index) => {
-                    console.log(imgSrc);
-                    return (
-                      <img
-                        key={index}
-                        src={imgSrc}
-                        alt={`Изображение ${index}`}
-                        className="h-32 cursor-pointer rounded-lg object-contain border-2 transition-transform hover:scale-105"
-                        onClick={() => setSelectedImage(imgSrc)}
-                      />
-                    );
-                  })}
+                  {currentStep.images?.map((imgSrc, index) => (
+                    <img
+                      key={index}
+                      src={imgSrc}
+                      alt={`Изображение ${index}`}
+                      className="h-32 cursor-pointer rounded-lg object-contain border-2 transition-transform hover:scale-105"
+                      onClick={() => setSelectedImage(imgSrc)}
+                    />
+                  ))}
                 </div>
                 {currentStep.fileName && (
                   <a
