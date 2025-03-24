@@ -52,6 +52,7 @@ export const BrainAnalysisSteps: FC<{
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [showStep, setShowStep] = useState(true);
   const [transmissionComplete, setTransmissionComplete] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("Зареждане...");
   const [isOnCooldown, setIsOnCooldown] = useState(false);
   const [loading, setLoading] = useState(false);
   const [connectionError, setConnectionError] = useState(false);
@@ -171,6 +172,7 @@ export const BrainAnalysisSteps: FC<{
         setCurrentStepIndex((prevIndex) => prevIndex + 1);
       } else {
         // Ако няма повече въпроси, маркираме анализата като завършена
+        setLoadingMessage("Изчакване на връзка с устройството...");
         setIsBrainAnalysisComplete(true);
         setLoading(true);
       }
@@ -197,12 +199,14 @@ export const BrainAnalysisSteps: FC<{
 
   // Функция за пропускане на стъпките
   const handleSkipAll = () => {
+    setLoadingMessage("Изчакване на връзка с устройството...");
     setIsBrainAnalysisComplete(true); // Mark analysis as completed
     setLoading(true);
   };
 
   // Функция за изпращане на заявки за препоръки
   const handleRecommendationsSubmit = async (brainData: BrainData[]) => {
+    setLoadingMessage("Генериране на препоръки...");
     await handleSubmit(
       setNotification,
       setLoading,
@@ -236,7 +240,7 @@ export const BrainAnalysisSteps: FC<{
             classNames="fade"
             unmountOnExit
           >
-            <Loader brainAnalysis />
+            <Loader brainAnalysis loadingMessage={loadingMessage} />
           </CSSTransition>
           <CSSTransition
             in={!loading && !isBrainAnalysisComplete && showStep}
