@@ -1,4 +1,5 @@
 import { moviesSeriesGenreOptions } from "./data_common";
+import { MoviesSeriesUserPreferences } from "./recommendations/movies_series/moviesSeriesRecommendations-types";
 import {
   ActorData,
   Analysis,
@@ -750,9 +751,17 @@ export const handleBookBookmarkClick = (
  * @param {any} moviesSeriesUserPreferences - Предпочитания на потребителя за филми/сериали.
  * @returns {any} Форматираните или неформатирани предпочитания в зависимост от флага.
  */
-const formatPreferences = (moviesSeriesUserPreferences: any) => {
-  const { type, genres, moods, timeAvailability, age, targetGroup } =
-    moviesSeriesUserPreferences;
+const formatPreferences = (
+  moviesSeriesUserPreferences: MoviesSeriesUserPreferences
+) => {
+  const {
+    recommendationType,
+    genres,
+    moods,
+    timeAvailability,
+    age,
+    targetGroup
+  } = moviesSeriesUserPreferences;
 
   // Форматираме предпочитаните жанрове (на английски)
   const preferredGenresEn =
@@ -764,7 +773,7 @@ const formatPreferences = (moviesSeriesUserPreferences: any) => {
     mood: Array.isArray(moods) ? moods.join(", ") : "",
     timeAvailability,
     preferred_age: age,
-    preferred_type: type,
+    preferred_type: recommendationType,
     preferred_target_group: targetGroup
   };
 };
