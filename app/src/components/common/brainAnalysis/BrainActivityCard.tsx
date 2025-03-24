@@ -1,7 +1,6 @@
 import { useRef } from "react";
 import type React from "react";
 import type { BrainData } from "@/container/types_common";
-import { Activity, Brain, BarChart2 } from "lucide-react";
 
 interface RealTimeDataCardProps {
   data: BrainData | null;
@@ -43,8 +42,8 @@ const RealTimeDataCard: React.FC<RealTimeDataCardProps> = ({ data }) => {
   return (
     <div className="bg-black bg-opacity-30 rounded-xl p-4 backdrop-blur-sm shadow-lg">
       <h3 className="text-lg font-medium mb-3 flex items-center">
-        <Activity className="mr-2 h-5 w-5 text-emerald-400" />
-        <span>Real-Time Brain Activity</span>
+        <i className="mr-2 text-xl text-primary ti ti-brain" />
+        <span>Вашата мозчъна активност в реално време</span>
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-black bg-opacity-30 rounded-lg p-3">
@@ -118,19 +117,22 @@ const RealTimeDataCard: React.FC<RealTimeDataCardProps> = ({ data }) => {
           </div>
         </div>
 
-        <div className="bg-black bg-opacity-30 rounded-lg p-3">
-          <h4 className="text-sm font-medium text-gray-300 mb-2 flex items-center">
-            <BarChart2 className="mr-1 h-4 w-4 text-purple-400" />
-            <span>Brain Waves</span>
-          </h4>
-          <div className="grid grid-cols-4 gap-x-4 gap-y-1">
+        <div className="bg-black bg-opacity-30 rounded-lg p-3 flex flex-col h-full">
+          <div>
+            <h4 className="text-lg font-medium text-gray-300 mb-2 flex items-center">
+              <i className="mr-1 text-xl text-primary ti ti-wave-sine" />
+              <span>Мозъчните Ви вълни</span>
+            </h4>
+          </div>
+          <div className="flex-grow"></div>{" "}
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-x-4 gap-y-1">
             {brainWaveConfig.map((wave) => (
               <div key={wave.key} className="flex items-center justify-between">
-                <span className="text-xs text-gray-400 truncate mr-1">
+                <span className="text-sm text-gray-400 truncate mr-1">
                   {wave.title}
                 </span>
                 <span
-                  className="text-xs font-medium"
+                  className="text-sm font-medium"
                   style={{ color: wave.color }}
                 >
                   {Math.round(Number(displayData[wave.key]) || 0)}

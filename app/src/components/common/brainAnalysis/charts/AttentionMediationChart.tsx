@@ -121,13 +121,15 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
   return (
     <div className="bg-black bg-opacity-30 rounded-lg p-3 h-full flex flex-col">
       <div className="flex justify-between items-center mb-1">
-        <h3 className="text-sm font-medium text-gray-200">Mental State</h3>
+        <h3 className="text-sm font-medium text-gray-200">
+          Менталното Ви състояние
+        </h3>
         <div className="flex space-x-3">
           <span className="text-sm font-bold text-[#FF5722]">
-            A: {attentionValue}
+            {attentionValue}
           </span>
           <span className="text-sm font-bold text-[#4CAF50]">
-            M: {meditationValue}
+            {meditationValue}
           </span>
         </div>
       </div>
