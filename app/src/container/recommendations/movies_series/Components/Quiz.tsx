@@ -81,7 +81,10 @@ export const Quiz: FC<QuizProps> = ({
             submitted={submitted}
             showViewRecommendations={
               alreadyHasRecommendations &&
-              (!submitted || (renderBrainAnalysis && !isBrainAnalysisComplete))
+              // Случай 1: Когато не сме в режим на мозъчен анализ и не сме изпратили въпросника
+              ((!renderBrainAnalysis && !submitted) ||
+                // Случай 2: Когато сме в режим на мозъчен анализ, но анализът не е завършен
+                (renderBrainAnalysis && !isBrainAnalysisComplete))
             }
             alreadyHasRecommendations={alreadyHasRecommendations}
             setRecommendationList={setRecommendationList}
