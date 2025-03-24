@@ -45,22 +45,15 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
 
   return (
     <div className="text-white rounded-lg p-4 transition-all duration-300">
-      {/* This div breaks out of the parent container's max-width constraint */}
       <div className="relative mx-auto">
         {chartData && (
           <div className="space-y-4">
-            {/* Real-time Data Card */}
             <BrainActivityCard data={chartData} />
-
-            {/* Chart Layout */}
             <div className="space-y-4">
-              {/* Attention & Meditation Chart - Full Width */}
               <AttentionMeditationChart
                 attentionMeditation={attentionMeditation}
               />
-
-              {/* Brain Wave Charts - Horizontal Layout */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                 {brainWaveConfig.slice(0, 4).map((wave) => (
                   <div key={wave.key}>
                     <BrainWaveChart
@@ -72,8 +65,7 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
                   </div>
                 ))}
               </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                 {brainWaveConfig.slice(4).map((wave) => (
                   <div key={wave.key}>
                     <BrainWaveChart
@@ -89,7 +81,6 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
           </div>
         )}
       </div>
-
       {transmissionComplete && (
         <div className="flex justify-center mt-6">
           <button
