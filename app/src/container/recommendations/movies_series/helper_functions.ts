@@ -131,23 +131,42 @@ const fetchIMDbIDWithFailover = async (movieName: string) => {
           engine.key
         }&cx=${engine.cx}&q=${encodeURIComponent(movieName)}`
       );
+
+      // Detailed error logging
+      if (!response.ok) {
+        console.warn(
+          `Engine ${engine.cx} returned non-OK status: ${response.status}`
+        );
+        continue;
+      }
+
       const data = await response.json();
 
-      if (response.ok && !data.error && data.items) {
-        console.log(
-          `Fetched IMDb data successfully using engine: ${engine.cx}`
-        );
-        return data;
-      } else {
-        console.log(`Engine ${engine.cx} failed. Trying next...`);
+      // Comprehensive data validation
+      if (data.error) {
+        console.warn(`Engine ${engine.cx} returned an error:`, data.error);
+        continue;
       }
+      if (!data.items || data.items.length === 0) {
+        console.warn(
+          `No items found for movie/series: "${movieName}" with engine ${engine.cx}`
+        );
+        continue;
+      }
+
+      console.log(
+        `Successfully fetched movie/series data for "${movieName}" using engine: ${engine.cx}`
+      );
+      return data;
     } catch (error) {
-      console.error(`Error fetching data with engine ${engine.cx}:`, error);
+      console.error(`Detailed error with engine ${engine.cx}:`, error);
+      // Log the full error for debugging
+      if (error instanceof Error) {
+        console.error(`Error message: ${error.message}`);
+        console.error(`Error stack: ${error.stack}`);
+      }
     }
   }
-  throw new Error(
-    `Failed to fetch IMDb data for "${movieName}" using all engines.`
-  );
 };
 
 /**
@@ -216,14 +235,15 @@ export const generateMoviesSeriesRecommendations = async (
     const recommendationsToAnalyze = [];
 
     for (const movieTitle in recommendations) {
-      const imdbData = await fetchIMDbIDWithFailover(movieTitle);
-
-      console.log("Movies and series results: ", imdbData);
-      if (!Array.isArray(imdbData.items)) {
-        console.warn(
-          `No items found for movie or series: ${movieTitle} in Google Custom Search Engine.`
+      let imdbData;
+      try {
+        imdbData = await fetchIMDbIDWithFailover(movieTitle);
+      } catch (error) {
+        console.error(
+          `Failed to fetch movie or series data for ${movieTitle}:`,
+          error
         );
-        continue; // Skip to the next movie or series
+        continue;
       }
 
       const imdbItem = imdbData.items.find((item: { link: string }) =>

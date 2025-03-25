@@ -136,32 +136,58 @@ const fetchBooksIDWithFailover = async (
     { key: "AIzaSyB7Sal-d83t6ksI7vePRehZcWgYf42q-Tg", cx: "727f76a1178b143c3" }
   ];
 
-  for (let engine of source == "GoogleBooks"
-    ? enginesGoogleBooks
-    : enginesGoodreads) {
+  const engines =
+    source === "GoogleBooks" ? enginesGoogleBooks : enginesGoodreads;
+
+  for (let engine of engines) {
     try {
       const response = await fetch(
         `https://customsearch.googleapis.com/customsearch/v1?key=${
           engine.key
         }&cx=${engine.cx}&q=${encodeURIComponent(bookName)}`
       );
+
+      // Detailed error logging
+      if (!response.ok) {
+        console.warn(
+          `Engine ${engine.cx} returned non-OK status: ${response.status}`
+        );
+        continue;
+      }
+
       const data = await response.json();
 
-      if (response.ok && !data.error && data.items) {
-        console.log(
-          `Fetched Book data successfully using engine: ${engine.cx}`
-        );
-        return data;
-      } else {
-        console.log(`Engine ${engine.cx} failed. Trying next...`);
+      // Comprehensive data validation
+      if (data.error) {
+        console.warn(`Engine ${engine.cx} returned an error:`, data.error);
+        continue;
       }
+
+      if (!data.items || data.items.length === 0) {
+        console.warn(
+          `No items found for book "${bookName}" with engine ${engine.cx}`
+        );
+        continue;
+      }
+
+      console.log(
+        `Successfully fetched book data for "${bookName}" using engine: ${engine.cx}`
+      );
+      return data;
     } catch (error) {
-      console.error(`Error fetching data with engine ${engine.cx}:`, error);
+      console.error(`Detailed error with engine ${engine.cx}:`, error);
+      // Log the full error for debugging
+      if (error instanceof Error) {
+        console.error(`Error message: ${error.message}`);
+        console.error(`Error stack: ${error.stack}`);
+      }
     }
   }
-  throw new Error(
-    `Failed to fetch Book data for "${bookName}" using all engines.`
-  );
+
+  // If all engines fail, throw a specific error
+  const errorMessage = `Failed to fetch Book data for "${bookName}" using all available engines.`;
+  console.error(errorMessage);
+  throw new Error(errorMessage);
 };
 
 /**
@@ -336,17 +362,16 @@ export const generateBooksRecommendations = async (
     for (const book of recommendations) {
       const bookName = book.real_edition_title;
       console.log("Processing book: ", bookName);
-      const bookResults = await fetchBooksIDWithFailover(
-        bookName,
-        import.meta.env.VITE_BOOKS_SOURCE
-      );
 
-      console.log("Book results: ", bookResults);
-      if (!Array.isArray(bookResults.items)) {
-        console.warn(
-          `No items found for book: ${bookName} in Google Custom Search Engine.`
+      let bookResults;
+      try {
+        bookResults = await fetchBooksIDWithFailover(
+          bookName,
+          import.meta.env.VITE_BOOKS_SOURCE
         );
-        continue; // Skip to the next book
+      } catch (error) {
+        console.error(`Failed to fetch book data for ${bookName}:`, error);
+        continue;
       }
 
       const bookItem = bookResults.items.find((item: { link: string }) =>
