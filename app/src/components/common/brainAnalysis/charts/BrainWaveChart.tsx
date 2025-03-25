@@ -1,8 +1,8 @@
 import type React from "react";
 import ApexCharts from "react-apexcharts";
 import type { BrainData } from "@/container/types_common";
-import { useEffect, useRef, useState } from "react";
-import { motion, useMotionValue, useTransform, animate } from "framer-motion";
+import { useEffect, useState } from "react";
+import AnimatedValue from "../../animatedValue/AnimatedValue";
 
 interface BrainWaveChartProps {
   title: string;
@@ -83,48 +83,6 @@ const getThemeOptions = (
   };
 };
 
-const AnimatedValue = ({ value, color }: { value: number; color: string }) => {
-  const count = useMotionValue(value);
-  const rounded = useTransform(count, (latest) => Math.round(latest));
-  const animationRef = useRef<any>(null);
-
-  useEffect(() => {
-    if (animationRef.current) {
-      animationRef.current.stop();
-    }
-
-    animationRef.current = animate(count, value, {
-      duration: 0.4,
-      ease: "easeOut"
-    });
-
-    return () => {
-      if (animationRef.current) {
-        animationRef.current.stop();
-      }
-    };
-  }, [count, value]);
-
-  return (
-    <motion.span
-      className="text-sm font-bold"
-      style={{ color }}
-      initial={{ scale: 1 }}
-      animate={{
-        scale: [1, 1.15, 1],
-        filter: ["brightness(1)", "brightness(1.3)", "brightness(1)"]
-      }}
-      transition={{
-        duration: 0.4,
-        times: [0, 0.2, 1],
-        ease: "easeInOut"
-      }}
-    >
-      {rounded}
-    </motion.span>
-  );
-};
-
 const BrainWaveChart: React.FC<BrainWaveChartProps> = ({
   title,
   brainWaveKey,
@@ -168,11 +126,6 @@ const BrainWaveChart: React.FC<BrainWaveChartProps> = ({
       }))
     }
   ];
-
-  const latestValue =
-    seriesData.length > 0
-      ? Math.round(Number(seriesData[seriesData.length - 1][brainWaveKey]) || 0)
-      : 0;
 
   return (
     <div className="bg-white dark:bg-black dark:bg-opacity-30 rounded-lg p-3 pb-0 h-full flex flex-col border border-gray-200 dark:border-transparent shadow-sm dark:shadow-none">

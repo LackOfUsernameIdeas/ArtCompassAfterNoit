@@ -1,6 +1,7 @@
 import type React from "react";
 import { useEffect, useState } from "react";
 import ApexCharts from "react-apexcharts";
+import AnimatedValue from "../../animatedValue/AnimatedValue";
 
 interface AttentionMeditationChartProps {
   attentionMeditation: {
@@ -15,6 +16,9 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
   const [mode, setMode] = useState<"light" | "dark">(
     (localStorage.getItem("artMenu") as "light" | "dark") || "light"
   );
+  const [attentionValue, setAttentionValue] = useState<number>(0);
+  const [meditationValue, setMeditationValue] = useState<number>(0);
+  const [valueKey, setValueKey] = useState<number>(0);
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -26,19 +30,25 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  const attentionValue =
-    attentionMeditation[0].data.length > 0
-      ? Math.round(
-          attentionMeditation[0].data[attentionMeditation[0].data.length - 1].y
-        )
-      : 0;
+  useEffect(() => {
+    if (attentionMeditation[0]?.data.length > 0) {
+      const newAttentionValue = Math.round(
+        attentionMeditation[0].data[attentionMeditation[0].data.length - 1].y
+      );
+      const newMeditationValue = Math.round(
+        attentionMeditation[1].data[attentionMeditation[1].data.length - 1].y
+      );
 
-  const meditationValue =
-    attentionMeditation[1].data.length > 0
-      ? Math.round(
-          attentionMeditation[1].data[attentionMeditation[1].data.length - 1].y
-        )
-      : 0;
+      if (
+        newAttentionValue !== attentionValue ||
+        newMeditationValue !== meditationValue
+      ) {
+        setAttentionValue(newAttentionValue);
+        setMeditationValue(newMeditationValue);
+        setValueKey((prev) => prev + 1);
+      }
+    }
+  }, [attentionMeditation, attentionValue, meditationValue]);
 
   const attentionMeditationOptions: ApexCharts.ApexOptions = {
     chart: {
@@ -189,12 +199,16 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
           Менталното Ви състояние
         </h3>
         <div className="flex space-x-3">
-          <span className="text-sm font-bold text-[#FF5722]">
-            {attentionValue}
-          </span>
-          <span className="text-sm font-bold text-[#4CAF50]">
-            {meditationValue}
-          </span>
+          <AnimatedValue
+            key={`${valueKey}-attention`}
+            value={attentionValue}
+            color="#FF5722"
+          />
+          <AnimatedValue
+            key={`${valueKey}-meditation`}
+            value={meditationValue}
+            color="#4CAF50"
+          />
         </div>
       </div>
       <div className="flex-grow mb-2">

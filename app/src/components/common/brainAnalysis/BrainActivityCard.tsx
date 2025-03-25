@@ -1,16 +1,25 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type React from "react";
 import type { BrainData } from "@/container/types_common";
+import AnimatedValue from "../animatedValue/AnimatedValue";
 
-interface RealTimeDataCardProps {
+interface BrainActivityCardProps {
   data: BrainData | null;
 }
 
-const RealTimeDataCard: React.FC<RealTimeDataCardProps> = ({ data }) => {
+const BrainActivityCard: React.FC<BrainActivityCardProps> = ({ data }) => {
   const prevValidData = useRef<BrainData | null>(null);
 
-  if (!data) return null;
+  // State for tracking values and their animation keys
+  const [currentAttention, setCurrentAttention] = useState<number>(0);
+  const [attentionKey, setAttentionKey] = useState<number>(0);
+  const [currentMeditation, setCurrentMeditation] = useState<number>(0);
+  const [meditationKey, setMeditationKey] = useState<number>(0);
+  const [brainWaveValues, setBrainWaveValues] = useState<
+    Record<string, { value: number; key: number }>
+  >({});
 
+  // Brain wave config with color and key
   const brainWaveConfig: Array<{
     key: keyof BrainData;
     title: string;
@@ -26,18 +35,58 @@ const RealTimeDataCard: React.FC<RealTimeDataCardProps> = ({ data }) => {
     { key: "highGamma", title: "High Gamma", color: "#FF8042" }
   ];
 
-  const shouldKeepPreviousData = brainWaveConfig.every(
-    ({ key }) => data[key] === 0
-  );
+  // Update values with animation key management
+  useEffect(() => {
+    if (!data) return;
+
+    // Attention value update
+    const newAttention = Math.round(Number(data.attention) || 0);
+    if (newAttention !== currentAttention) {
+      setCurrentAttention(newAttention);
+      setAttentionKey((prev) => prev + 1);
+    }
+
+    // Meditation value update
+    const newMeditation = Math.round(Number(data.meditation) || 0);
+    if (newMeditation !== currentMeditation) {
+      setCurrentMeditation(newMeditation);
+      setMeditationKey((prev) => prev + 1);
+    }
+
+    // Brain wave values update
+    const newBrainWaveValues = brainWaveConfig.reduce((acc, wave) => {
+      const newValue = Math.round(Number(data[wave.key]) || 0);
+      const existingValue = brainWaveValues[wave.key]?.value;
+
+      if (newValue !== existingValue) {
+        acc[wave.key] = {
+          value: newValue,
+          key: (brainWaveValues[wave.key]?.key || 0) + 1
+        };
+      } else {
+        acc[wave.key] = brainWaveValues[wave.key];
+      }
+
+      return acc;
+    }, {} as Record<string, { value: number; key: number }>);
+
+    setBrainWaveValues(newBrainWaveValues);
+  }, [data]);
+
+  // Data validation and previous data logic
+  const shouldKeepPreviousData =
+    data && brainWaveConfig.every(({ key }) => data[key] === 0);
 
   const displayData =
     shouldKeepPreviousData && prevValidData.current
       ? prevValidData.current
       : data;
 
-  if (!shouldKeepPreviousData) {
+  if (!shouldKeepPreviousData && data) {
     prevValidData.current = data;
   }
+
+  if (!data) return null;
 
   return (
     <div className="bg-white dark:bg-black dark:bg-opacity-30 rounded-xl p-4 shadow-md dark:shadow-lg dark:backdrop-blur-sm border border-gray-200 dark:border-transparent">
@@ -70,21 +119,22 @@ const RealTimeDataCard: React.FC<RealTimeDataCardProps> = ({ data }) => {
                     fill="transparent"
                     stroke="#f59e0b"
                     strokeWidth="8"
-                    strokeDasharray={`${
-                      2.83 * (displayData.attention || 0)
-                    } 283`}
+                    strokeDasharray={`${2.83 * (currentAttention || 0)} 283`}
                     strokeDashoffset="0"
                     transform="rotate(-90 50 50)"
                     className="transition-all duration-300"
                   />
                 </svg>
                 <div className="absolute text-lg font-semibold">
-                  {displayData.attention || 0}
+                  <AnimatedValue
+                    key={attentionKey}
+                    value={currentAttention}
+                    color="#f59e0b"
+                  />
                 </div>
               </div>
             </div>
 
-            {/* Meditation Indicator */}
             <div className="flex flex-col items-center justify-center">
               <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">
                 Meditation
@@ -107,16 +157,18 @@ const RealTimeDataCard: React.FC<RealTimeDataCardProps> = ({ data }) => {
                     fill="transparent"
                     stroke="#0ea5e9"
                     strokeWidth="8"
-                    strokeDasharray={`${
-                      2.83 * (displayData.meditation || 0)
-                    } 283`}
+                    strokeDasharray={`${2.83 * (currentMeditation || 0)} 283`}
                     strokeDashoffset="0"
                     transform="rotate(-90 50 50)"
                     className="transition-all duration-300"
                   />
                 </svg>
                 <div className="absolute text-lg font-semibold">
-                  {displayData.meditation || 0}
+                  <AnimatedValue
+                    key={meditationKey}
+                    value={currentMeditation}
+                    color="#0ea5e9"
+                  />
                 </div>
               </div>
             </div>
@@ -137,12 +189,12 @@ const RealTimeDataCard: React.FC<RealTimeDataCardProps> = ({ data }) => {
                 <span className="text-sm text-gray-600 dark:text-gray-400 truncate mr-1">
                   {wave.title}
                 </span>
-                <span
-                  className="text-sm font-medium"
-                  style={{ color: wave.color }}
-                >
-                  {Math.round(Number(displayData[wave.key]) || 0)}
-                </span>
+                <AnimatedValue
+                  small
+                  key={brainWaveValues[wave.key]?.key || 0}
+                  value={brainWaveValues[wave.key]?.value || 0}
+                  color={wave.color}
+                />
               </div>
             ))}
           </div>
@@ -152,4 +204,4 @@ const RealTimeDataCard: React.FC<RealTimeDataCardProps> = ({ data }) => {
   );
 };
 
-export default RealTimeDataCard;
+export default BrainActivityCard;
