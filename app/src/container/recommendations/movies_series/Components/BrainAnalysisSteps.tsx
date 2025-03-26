@@ -11,13 +11,18 @@ import { BrainData } from "@/container/types_common";
 import Loader from "@/components/common/loader/Loader";
 import {
   connectSocketIO,
+  getMarginClass,
   MAX_DATA_POINTS,
   updateSeriesData
 } from "@/container/helper_functions_common";
 import { steps } from "@/container/data_common";
+import DownloadButton from "@/components/common/download/Download";
+import StepImages from "@/components/common/brainAnalysis/StepImages";
 
 // Компонент за въпросите по време на мозъчния анализ
 export const BrainAnalysisSteps: FC<{
+  currentStepIndex: number;
+  setCurrentStepIndex: React.Dispatch<React.SetStateAction<number>>;
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
   setNotification: React.Dispatch<
     React.SetStateAction<NotificationState | null>
@@ -36,6 +41,8 @@ export const BrainAnalysisSteps: FC<{
   setIsBrainAnalysisComplete: React.Dispatch<React.SetStateAction<boolean>>;
   isBrainAnalysisComplete: boolean;
 }> = ({
+  currentStepIndex,
+  setCurrentStepIndex,
   setSubmitted,
   setNotification,
   setRecommendationList,
@@ -49,7 +56,6 @@ export const BrainAnalysisSteps: FC<{
   isBrainAnalysisComplete
 }) => {
   // Състояния за текущия индекс на въпроса, показване на въпроса, дали анализът е завършен и cooldown между въпроси
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [showStep, setShowStep] = useState(true);
   const [transmissionComplete, setTransmissionComplete] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("Зареждане...");
@@ -286,69 +292,21 @@ export const BrainAnalysisSteps: FC<{
 
               {/* Показваме изображението за пример (като част от въпроса) */}
               <div className="border-2 border-primary rounded-lg p-4 bg-opacity-50 bg-bodybg text-white">
-                <div className="flex flex-wrap justify-center gap-4">
-                  {currentStep.images?.map((imgSrc, index) => {
-                    const [isLoading, setIsLoading] = useState(true);
-
-                    return (
-                      <div key={index} className="relative h-32 w-32">
-                        <img
-                          src={imgSrc}
-                          alt={`Изображение ${index}`}
-                          onLoad={(e) => {
-                            const imgElement = e.currentTarget;
-                            imgElement.classList.remove("opacity-0");
-                            imgElement.classList.add("opacity-100");
-                            setIsLoading(false);
-                          }}
-                          className={`absolute inset-0 h-32 cursor-pointer rounded-lg object-contain border-2 border-primary transition-all duration-300 ease-in-out transform hover:scale-105 opacity-0`}
-                          onClick={() => setSelectedImage(imgSrc)}
-                        />
-                        {isLoading && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse">
-                            <svg
-                              className="w-12 h-12 text-gray-400 dark:text-gray-500"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
-                              <circle
-                                className="opacity-25"
-                                cx="12"
-                                cy="12"
-                                r="10"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                              ></circle>
-                              <path
-                                className="opacity-75"
-                                fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                              ></path>
-                            </svg>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
+                <CSSTransition
+                  in={showStep}
+                  timeout={500}
+                  classNames="fade"
+                  unmountOnExit
+                >
+                  <StepImages
+                    setSelectedImage={setSelectedImage}
+                    currentStep={currentStep}
+                  />
+                </CSSTransition>
                 {currentStep.fileName && (
-                  <a
-                    href={`https://noit.eu/${currentStep.fileName}`} // Adjusted URL to your server location
-                    download
-                    style={{
-                      marginTop: "10px",
-                      padding: "10px 20px",
-                      backgroundColor: "#28a745",
-                      color: "white",
-                      textDecoration: "none",
-                      borderRadius: "5px",
-                      display: "inline-block",
-                      fontSize: "16px"
-                    }}
-                  >
-                    ⬇️ Свали програмата
-                  </a>
+                  <div className="flex justify-center py-2">
+                    <DownloadButton fileName={currentStep.fileName} />
+                  </div>
                 )}
                 {selectedImage && (
                   <div

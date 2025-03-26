@@ -14,6 +14,7 @@ import img5 from "@/assets/images/steps/5.png";
 import img6_1 from "@/assets/images/steps/6.1.png";
 import img6_2 from "@/assets/images/steps/6.2.png";
 import img6_3 from "@/assets/images/steps/6.3.png";
+import { Step } from "./types_common";
 
 /**
  * Мапинг на възможните опции за предпочитания.
@@ -142,7 +143,7 @@ export const goodreadsGenreOptions: Array<{ en: string; bg: string }> = [
 ];
 
 // Стъпки за успешно съставяне на мозъчен анализ
-export const steps = [
+export const steps: Step[] = [
   {
     step: "0. Въведение",
     description:

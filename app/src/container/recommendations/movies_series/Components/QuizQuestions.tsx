@@ -8,8 +8,7 @@ import {
   handleBack,
   handleNext,
   isGenreOption,
-  handleSubmit,
-  getMarginClass
+  handleSubmit
 } from "../helper_functions";
 import {
   ageOptions,
@@ -28,6 +27,10 @@ import { ViewRecommendations } from "./ViewRecommendations";
 import Notification from "../../../../components/common/notification/Notification";
 import { useNavigate } from "react-router-dom";
 import { BrainAnalysisSteps } from "./BrainAnalysisSteps";
+import {
+  getBrainAnalysisMarginClass,
+  getMarginClass
+} from "@/container/helper_functions_common";
 
 export const QuizQuestions: FC<QuizQuestionProps> = ({
   setLoading,
@@ -59,6 +62,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
 
   const [submitCount, setSubmitCount] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [showQuestion, setShowQuestion] = useState(true);
   const [selectedAnswer, setSelectedAnswer] = useState<string[] | null>(null);
   const typeOptions = ["Филм", "Сериал"];
@@ -331,9 +335,13 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       >
         <div
           className={`w-full ${
-            !isBrainAnalysisComplete && "max-w-4xl"
-          } py-8 px-4 mb-[12rem] ${
-            window.innerWidth >= 640 ? getMarginClass(currentQuestion) : ""
+            !isBrainAnalysisComplete ? "max-w-4xl py-0" : "py-8"
+          } px-4 mb-[12rem] ${
+            window.innerWidth >= 640 && !renderBrainAnalysis
+              ? getMarginClass(currentQuestion)
+              : window.innerWidth >= 640 && renderBrainAnalysis
+              ? getBrainAnalysisMarginClass(currentStepIndex)
+              : ""
           }`}
         >
           {/* Ако е избрана опцията за генериране на препоръки с устройство за анализ на мозъчните импулси, визуализираме компонента BrainAnalysisSteps */}
@@ -345,6 +353,8 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
               <BrainAnalysisSteps
+                currentStepIndex={currentStepIndex}
+                setCurrentStepIndex={setCurrentStepIndex}
                 setSubmitted={setSubmitted}
                 setNotification={setNotification}
                 setRecommendationList={setRecommendationList}

@@ -1,3 +1,23 @@
+// Интерфейс за въпрос с възможности и стойности.
+export interface Question {
+  question: string; // Текст на въпроса
+  options?: string[] | { en: string; bg: string }[]; // Падащо меню или множествен избор
+  isMultipleChoice?: boolean; // Флаг за множествен избор
+  isInput?: boolean; // Флаг за въпрос, изискващ текстов вход
+  value: any; // Стойност на отговора
+  setter: React.Dispatch<React.SetStateAction<any>>; // Сетър за стойността на отговора
+  placeholder?: string; // Плейсхолдър за въпроси с текстов вход
+  description?: string; // Допълнително описание на въпроса
+}
+
+// Интерфейс за стъпки за свързване на Mindwave устройство.
+export interface Step {
+  step: string;
+  description: string;
+  images: string[];
+  fileName?: string;
+}
+
 // Вида на уведомлението.
 export type NotificationType = "success" | "error" | "warning";
 

@@ -1,11 +1,11 @@
 import {
   Genre,
-  Question,
   MoviesSeriesUserPreferences,
   Recommendation,
   RecommendationsAnalysis
 } from "./moviesSeriesRecommendations-types";
 import {
+  Question,
   BrainData,
   FilteredBrainData,
   NotificationState
@@ -819,38 +819,6 @@ export const handleAnswerClick = (
   } else {
     setter(answer);
     setSelectedAnswer([answer]);
-  }
-};
-
-/**
- * Връща CSS клас, който задава марж в зависимост от броя на опциите за текущия въпрос.
- *
- * @function getMarginClass
- * @param {Question} question - Текущият въпрос, съдържащ информация за опциите.
- * @returns {string} - Строка с CSS клас, който определя маржа за въпроса.
- */
-export const getMarginClass = (question: Question): string => {
-  if (question.isInput) {
-    return question.description ? "mt-[5rem]" : "mt-[9rem]";
-  }
-
-  const length = question.options?.length || 0;
-
-  switch (true) {
-    case length > 20:
-      return "mt-[1rem]";
-    case length > 15:
-      return "mt-[2rem]";
-    case length > 10:
-      return "mt-[1rem]";
-    case length >= 6:
-      return "mt-0"; // Zero margin remains unchanged
-    case length >= 4:
-      return "mt-[1.5rem]";
-    case length >= 3:
-      return "mt-[3rem]";
-    default:
-      return "mt-[9rem]";
   }
 };
 

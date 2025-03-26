@@ -11,7 +11,9 @@ import {
   MovieSeriesRecommendationBeforeSaving,
   NotificationState,
   NotificationType,
+  Question,
   RecommendationsAnalysis,
+  Step,
   WriterData
 } from "./types_common";
 import { io } from "socket.io-client";
@@ -1171,4 +1173,61 @@ export const updateSeriesData = (
   }
 
   return newData;
+};
+
+/**
+ * Връща CSS клас, който задава марж в зависимост от броя на опциите за текущия въпрос.
+ *
+ * @function getMarginClass
+ * @param {Question} question - Текущият въпрос, съдържащ информация за опциите.
+ * @returns {string} - Строка с CSS клас, който определя маржа за въпроса.
+ */
+export const getMarginClass = (question: Question): string => {
+  if (question.isInput) {
+    return question.description ? "mt-[5rem]" : "mt-[9rem]";
+  }
+
+  const length = question.options?.length || 0;
+
+  switch (true) {
+    case length > 20:
+      return "mt-[1rem]";
+    case length > 15:
+      return "mt-[2rem]";
+    case length > 10:
+      return "mt-[1rem]";
+    case length >= 6:
+      return "mt-0"; // Zero margin remains unchanged
+    case length >= 4:
+      return "mt-[1.5rem]";
+    case length >= 3:
+      return "mt-[3rem]";
+    default:
+      return "mt-[9rem]";
+  }
+};
+
+/**
+ * Връща CSS клас, който задава марж в зависимост от текущата стъпка.
+ *
+ * @function getBrainAnalysisMarginClass
+ * @param {Question} i - Индекс на текущата стъпка.
+ * @returns {string} - Строка с CSS клас, който определя маржа за стъпката.
+ */
+export const getBrainAnalysisMarginClass = (i: number): string => {
+  console.log("getBrainAnalysisMarginClass triggered with:", i);
+
+  switch (i) {
+    case 6:
+      return "mt-[4rem]";
+    case 1:
+    case 3:
+      return "mt-[5rem]";
+    case 5:
+      return "mt-[6rem]";
+    default:
+      return "mt-[7rem]";
+    case 2:
+      return "mt-[8rem]";
+  }
 };

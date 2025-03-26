@@ -21,18 +21,6 @@ export interface Rating {
   Value: string; // Стойност на рейтинга
 }
 
-// Интерфейс за въпрос с възможности и стойности.
-export interface Question {
-  question: string; // Текст на въпроса
-  options?: string[] | { en: string; bg: string }[]; // Падащо меню или множествен избор
-  isMultipleChoice?: boolean; // Флаг за множествен избор
-  isInput?: boolean; // Флаг за въпрос, изискващ текстов вход
-  value: any; // Стойност на отговора
-  setter: Dispatch<SetStateAction<any>>; // Сетър за стойността на отговора
-  placeholder?: string; // Плейсхолдър за въпроси с текстов вход
-  description?: string; // Допълнително описание на въпроса
-}
-
 // Интерфейс за книга с всички основни данни за книгата.
 export interface Recommendation {
   id: string; // ID на книгата
