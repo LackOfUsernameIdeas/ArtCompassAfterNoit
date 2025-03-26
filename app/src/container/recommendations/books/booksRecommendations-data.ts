@@ -83,7 +83,7 @@ export const googleBooksBrainAnalysisPrompt = (
       },
       {
         role: "user",
-        content: `Книгите трябва ЗАДЪЛЖИТЕЛНО да съвпадат със следните данни за мозъчна активност, получени от устройството 'NeuroSky MindWave Mobile 2: EEG Sensor', а именно:
+        content: `Книгите трябва ЗАДЪЛЖИТЕЛНО да съвпадат със следните данни за мозъчна активност, получени от устройството 'NeuroSky MindWave Mobile 2: EEG Sensor' и задължително трябва да дадеш аргументирана причина защо препоръката е подходяща спрямо данните, а именно:
         ${brainWaveString}.`
       },
       {
@@ -215,9 +215,9 @@ export const goodreadsBrainAnalysisPrompt = (
     messages: [
       {
         role: "system",
-        content: `You are an AI that recommends books based on data from the 'NeuroSky MindWave Mobile 2: EEG Sensor'. 
+        content: `You are an AI that recommends books based on data from the 'NeuroSky MindWave Mobile 2: EEG Sensor' and gives a well argumented reason why the book is relevant based on the provided data. 
         The device provides insights into the user's brain activity, cognitive state and emotional levels by measuring EEG power spectrums (Delta, Theta, low and high Alpha, low and high Beta, low and high Gamma) 
-        and using data from EEG algorithms - Attention and Mediation. Relying on this data, provide a list of books, formatted in Bulgarian, with detailed justifications.
+        and using data from EEG algorithms - Attention and Mediation. Relying on both the brain wave data and the eeg algorithm data, provide a list of books, formatted in Bulgarian, with detailed justifications.
         You must recommend books that exist on Goodreads, ensuring that all titles and details correspond to real entries from Goodreads. 
         Inventing books or providing fictional information is absolutely prohibited.
         Return the result in JSON format as instructed.`
