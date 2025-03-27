@@ -196,7 +196,7 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
     <div className="bg-white dark:bg-black dark:bg-opacity-30 rounded-lg p-3 h-full flex flex-col border border-gray-200 dark:border-transparent shadow-md dark:shadow-none">
       <div className="flex justify-between items-center mb-1">
         <h3 className="text-sm font-medium text-gray-700 dark:text-gray-200">
-          Менталното Ви състояние
+          Вашето менталното състояние
         </h3>
         <div className="flex space-x-3">
           <AnimatedValue

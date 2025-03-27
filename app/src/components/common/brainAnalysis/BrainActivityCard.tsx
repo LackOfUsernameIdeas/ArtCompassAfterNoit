@@ -92,7 +92,7 @@ const BrainActivityCard: React.FC<BrainActivityCardProps> = ({ data }) => {
     <div className="bg-white dark:bg-black dark:bg-opacity-30 rounded-xl p-4 shadow-md dark:shadow-lg dark:backdrop-blur-sm border border-gray-200 dark:border-transparent">
       <h3 className="text-lg font-medium mb-3 flex items-center">
         <i className="mr-2 text-xl text-primary ti ti-brain" />
-        <span>Вашата мозчъна активност в реално време</span>
+        <span>Вашата мозъчна активност в реално време</span>
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-gray-50 dark:bg-black dark:bg-opacity-30 rounded-lg p-3 border border-gray-200 dark:border-transparent">
@@ -179,7 +179,7 @@ const BrainActivityCard: React.FC<BrainActivityCardProps> = ({ data }) => {
           <div>
             <h4 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
               <i className="mr-1 text-xl text-primary ti ti-wave-sine" />
-              <span>Мозъчните Ви вълни</span>
+              <span>Мозъчни вълни</span>
             </h4>
           </div>
           <div className="flex-grow"></div>{" "}
