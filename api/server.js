@@ -173,9 +173,6 @@ app.post("/handle-submit", (req, res) => {
     userRequests[userId][type].count += 1;
     userRequests[userId][type].lastRequestTime = new Date().toLocaleString();
 
-    console.log(
-      `✨✨✨ НОВО ГЕНЕРИРАНЕ! ✨✨✨\n🚀 Текущ брой на генерирания за ${type}: ${userRequests[userId][type].count}\n⏰ ${userRequests[userId][type].lastRequestTime}`
-    );
     res.json({ message: `Заявката за ${type} беше успешно обработена!` });
   });
 });
@@ -251,16 +248,6 @@ app.post("/verify-email", (req, res) => {
 
       // Изтрива кода след регистрация
       delete verificationCodes[email];
-      console.log(`
-        ===================================
-        🚀 NEW ACCOUNT CREATED! 🎉
-        ===================================
-        🟢 First Name: ${storedData.firstName}
-        🟢 Last Name: ${storedData.lastName}
-        📧 Email: ${email}
-        📅 Date & Time: ${new Date().toLocaleString()}
-        ===================================
-        `);
       res.json({ message: "Успешно регистриран профил!" });
     }
   );
@@ -285,19 +272,8 @@ app.post("/signin", (req, res) => {
         .json({ error: "Въведената парола е грешна или непълна!" });
 
     const token = jwt.sign({ id: user.id }, SECRET_KEY, {
-      expiresIn: rememberMe ? "7d" : "7d"
+      expiresIn: rememberMe ? "7d" : "2h"
     });
-
-    console.log(`
-      ===================================
-      🔑 USER LOGGED IN  
-      ===================================
-      🟢 First Name: ${user.first_name}
-      🟢 Last Name: ${user.last_name}
-      📧 Email: ${email}
-      📅 Date & Time: ${new Date().toLocaleString()}
-      ===================================
-      `);
 
     res.json({ message: "Успешно влизане!", token });
   });
@@ -632,12 +608,10 @@ app.post("/check-for-recommendation-in-list", (req, res) => {
 
 // Вземане на данни за общ брой на потребители в платформата
 app.get("/stats/platform/users-count", (req, res) => {
-  console.log("--Landing--");
   db.getUsersCount((err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching users count" });
     }
-    console.log("--Landing--");
     res.json(result);
   });
 });
@@ -669,7 +643,6 @@ app.get("/stats/platform/top-recommendations", (req, res) => {
 // Вземане на данни за най-препоръчвани държави, които създават филми/сериали в платформата
 app.get("/stats/platform/top-countries", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
-  console.log("--Топ държави--");
 
   if (limit <= 0) {
     return res
@@ -681,7 +654,6 @@ app.get("/stats/platform/top-countries", async (req, res) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top countries" });
     }
-    console.log("--Топ държави--");
     res.json(result);
   });
 });
@@ -706,14 +678,12 @@ app.get("/stats/platform/top-genres", async (req, res) => {
 
 // Вземане на данни за най-популярни жанрове във времето в платформата
 app.get("/stats/platform/genre-popularity-over-time", async (req, res) => {
-  console.log("--Популярност на жанровете във времето--");
   db.getGenrePopularityOverTime((err, result) => {
     if (err) {
       return res
         .status(500)
         .json({ error: "Error fetching genre popularity over time" });
     }
-    console.log("--Популярност на жанровете във времето--");
     res.json(result);
   });
 });
@@ -721,7 +691,6 @@ app.get("/stats/platform/genre-popularity-over-time", async (req, res) => {
 // Вземане на данни за най-препоръчвани актьори в платформата
 app.get("/stats/platform/top-actors", async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
-  console.log("--Топ препоръки--");
 
   if (limit <= 0) {
     return res
@@ -733,7 +702,6 @@ app.get("/stats/platform/top-actors", async (req, res) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching top actors" });
     }
-    console.log("--Топ препоръки--");
     res.json(result);
   });
 });
@@ -808,12 +776,10 @@ app.get("/stats/platform/total-awards", async (req, res) => {
 
 // Вземане на данни за филмови режисьори в платформата, сортирани по успешност
 app.get("/stats/platform/sorted-directors-by-prosperity", async (req, res) => {
-  console.log("--Актьори, режисьори и сценаристи по Просперитет--");
   db.getSortedDirectorsByProsperity((err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching sorted directors" });
     }
-    console.log("--Актьори, режисьори и сценаристи по Просперитет--");
     res.json(result);
   });
 });
@@ -840,14 +806,11 @@ app.get("/stats/platform/sorted-writers-by-prosperity", async (req, res) => {
 
 // Вземане на данни за филми в платформата, сортирани по успешност
 app.get("/stats/platform/sorted-movies-by-prosperity", async (req, res) => {
-  console.log("--Най-успешни филми по Просперитет, IMDb Рейтинг и Боксофис--");
   db.getSortedMoviesByProsperity((err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error fetching sorted movies" });
     }
-    console.log(
-      "--Най-успешни филми по Просперитет, IMDb Рейтинг и Боксофис--"
-    );
+
     res.json(result);
   });
 });
@@ -857,7 +820,6 @@ app.get(
   "/stats/platform/sorted-movies-and-series-by-metascore",
   async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
-    console.log("--Филми и сериали по оценки--");
 
     if (limit <= 0) {
       return res
@@ -871,7 +833,6 @@ app.get(
           .status(500)
           .json({ error: "Error fetching sorted movies by meta score" });
       }
-      console.log("--Филми и сериали по оценки--");
       res.json(result);
     });
   }
@@ -944,7 +905,6 @@ app.post("/stats/individual/top-recommendations", (req, res) => {
 // Вземане на данни за филми/сериали в списък за гледане на даден потребител
 app.post("/stats/individual/watchlist", (req, res) => {
   const { token } = req.body;
-  console.log("--Списък за гледане--");
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
@@ -953,7 +913,6 @@ app.post("/stats/individual/watchlist", (req, res) => {
       if (err) {
         return res.status(500).json({ error: "Error fetching watchlist" });
       }
-      console.log("--Списък за гледане--");
       res.json(result);
     });
   });
@@ -962,7 +921,6 @@ app.post("/stats/individual/watchlist", (req, res) => {
 // Вземане на данни за книги в списък за четене на даден потребител
 app.post("/stats/individual/readlist", (req, res) => {
   const { token } = req.body;
-  console.log("--Списък за четене--");
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
     if (err) return res.status(401).json({ error: "Invalid token" });
@@ -971,7 +929,6 @@ app.post("/stats/individual/readlist", (req, res) => {
       if (err) {
         return res.status(500).json({ error: "Error fetching readlist" });
       }
-      console.log("--Списък за четене--");
       res.json(result);
     });
   });
@@ -980,7 +937,6 @@ app.post("/stats/individual/readlist", (req, res) => {
 // Вземане на данни за най-препоръчвани жанрове на даден потребител
 app.post("/stats/individual/top-genres", (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
-  console.log("--Индивидуални статистики--");
 
   if (limit <= 0) {
     return res
@@ -997,7 +953,6 @@ app.post("/stats/individual/top-genres", (req, res) => {
       if (err) {
         return res.status(500).json({ error: "Error fetching top genres" });
       }
-      console.log("--Индивидуални статистики--");
       res.json(result);
     });
   });
@@ -1195,7 +1150,7 @@ app.get("/get-goodreads-data-for-a-book", (req, res) => {
   }
 
   // Стартиране на Python процес и подаване на URL като аргумент
-  const pythonProcess = spawn(pythonPathLocal, ["./python/scraper.py", url]);
+  const pythonProcess = spawn(pythonPath, ["./python/scraper.py", url]);
 
   let response = "";
 
@@ -1230,7 +1185,7 @@ app.get("/get-goodreads-json-object-for-a-book", (req, res) => {
   }
 
   // Стартиране на Python процес и подаване на URL като аргумент
-  const pythonProcess = spawn(pythonPathLocal, [
+  const pythonProcess = spawn(pythonPath, [
     "./python/scraper_script_tag_json.py",
     url
   ]);
@@ -1274,9 +1229,7 @@ app.post("/get-model-response", (req, res) => {
   }
 
   // Spawn the Python process
-  const pythonProcess = spawn(pythonPathLocal, [
-    "./python/fetch_ai_response.py"
-  ]);
+  const pythonProcess = spawn(pythonPath, ["./python/fetch_ai_response.py"]);
 
   let response = "";
 
@@ -1460,7 +1413,6 @@ app.post("/stats/individual/ai/historical-average-metrics", (req, res) => {
 // Изчисляване на Precision на база всички препоръки, правени някога за даден потребител
 app.post("/stats/individual/ai/precision-total", (req, res) => {
   const { token, userPreferences } = req.body;
-  console.log("AI Анализатор");
 
   // Проверка дали липсва обектът с предпочитания на потребителя
   if (!userPreferences) {
@@ -1533,7 +1485,6 @@ app.post("/stats/individual/ai/precision-total", (req, res) => {
               .json({ error: "Error saving AI precision stats" });
           }
 
-          console.log("AI Анализатор");
           // Връщане на резултатите като JSON
           res.json({
             precision_exact,
@@ -2132,48 +2083,76 @@ app.post("/save-brain-analysis", (req, res) => {
   });
 });
 
-const DATA_FILE = path.join(__dirname, "session_data.json");
+// const DATA_FILE = path.join(__dirname, "session_data.json");
+
+// // Когато клиент се свърже със SocketIO сървъра
+// io.on("connection", (socket) => {
+//   console.log("Клиент се свърза");
+//   socket.emit("connectSignal");
+
+//   socket.on("hardwareData", (data) => {
+//     console.log("Получени хардуерни данни:", data);
+
+//     // Четене на JSON файла
+//     fs.readFile(DATA_FILE, "utf8", (err, fileData) => {
+//       if (err) {
+//         console.error("Грешка при четене на файла:", err);
+//         return;
+//       }
+
+//       let jsonData;
+//       try {
+//         jsonData = JSON.parse(fileData);
+//       } catch (parseErr) {
+//         console.error("Грешка при парсиране на JSON:", parseErr);
+//         return;
+//       }
+
+//       // Изпращане на данните един по един
+//       jsonData.forEach((item, index) => {
+//         setTimeout(() => {
+//           socket.broadcast.emit("hardwareDataResponse", item);
+//           if (index === jsonData.length - 1) {
+//             socket.broadcast.emit("dataDoneTransmittingSignal");
+//           }
+//         }, index * 500); // Интервал между съобщенията
+//       });
+//     });
+//   });
+
+//   socket.on("dataDoneTransmitting", (data) => {
+//     console.log("Получено съобщение за завършване на трансфер на данни:", data);
+//     socket.broadcast.emit("dataDoneTransmittingSignal");
+//   });
+
+//   socket.on("disconnect", () => {
+//     console.log("Клиентът прекъсна връзката");
+//   });
+// });
 
 // Когато клиент се свърже със SocketIO сървъра
 io.on("connection", (socket) => {
   console.log("Клиент се свърза");
+
+  // Това ще изпрати първоначален сигнал на клиента, който се свързва.
   socket.emit("connectSignal");
 
+  // Слушане на събитието 'hardwareData' от изпращащото приложение (python app)
   socket.on("hardwareData", (data) => {
     console.log("Получени хардуерни данни:", data);
 
-    // Четене на JSON файла
-    fs.readFile(DATA_FILE, "utf8", (err, fileData) => {
-      if (err) {
-        console.error("Грешка при четене на файла:", err);
-        return;
-      }
-
-      let jsonData;
-      try {
-        jsonData = JSON.parse(fileData);
-      } catch (parseErr) {
-        console.error("Грешка при парсиране на JSON:", parseErr);
-        return;
-      }
-
-      // Изпращане на данните един по един
-      jsonData.forEach((item, index) => {
-        setTimeout(() => {
-          socket.broadcast.emit("hardwareDataResponse", item);
-          if (index === jsonData.length - 1) {
-            socket.broadcast.emit("dataDoneTransmittingSignal");
-          }
-        }, index * 500); // Интервал между съобщенията
-      });
-    });
+    // Изпращане на данните към всички свързани клиенти, освен към изпращащия (защото е безсмислено)
+    socket.broadcast.emit("hardwareDataResponse", data);
   });
 
+  // Слушане на събитието 'dataDoneTransmitting' от клиента
   socket.on("dataDoneTransmitting", (data) => {
     console.log("Получено съобщение за завършване на трансфер на данни:", data);
+    // Изпращане на сигнал до останалите клиенти, че изпращащото приложение (python app) е спряло потока от данни.
     socket.broadcast.emit("dataDoneTransmittingSignal");
   });
 
+  // Слушане за прекъсване на връзката от клиент
   socket.on("disconnect", () => {
     console.log("Клиентът прекъсна връзката");
   });
