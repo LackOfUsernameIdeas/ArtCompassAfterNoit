@@ -17,7 +17,6 @@ import BooksIndividualStats from "./container/individualStats/books/BooksIndivid
 import Watchlist from "./container/saveLists/movies_series/Watchlist.tsx";
 import Readlist from "./container/saveLists/books/Readlist.tsx";
 import Contact from "./container/contact/Contact.tsx";
-import Test from "./container/test/test.tsx";
 import ChooseRecommendations from "./container/recommendations/choose/ChooseRecommendations.tsx";
 import MoviesByProsperityBubbleChart from "./container/platformStats/MoviesByProsperity/MoviesByProsperity.tsx";
 import ActorsDirectorsWritersTable from "./container/platformStats/ActorsDirectorsWritersTable/ActorsDirectorsWritersTable.tsx";
@@ -96,7 +95,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             />
             <Route path="saveLists/movies_series" element={<Watchlist />} />
             <Route path="saveLists/books" element={<Readlist />} />
-            <Route path="test" element={<Test />} />
             <Route path="contact" element={<Contact />} />
           </Route>
 
