@@ -203,25 +203,41 @@ export const generateMoviesSeriesRecommendations = async (
 ) => {
   try {
     console.log("brainData", brainData);
-    const requestBody =
-      renderBrainAnalysis && brainData
-        ? moviesSeriesBrainAnalysisPrompt(brainData)
-        : moviesSeriesUserPreferences &&
-          moviesSeriesStandardPreferencesPrompt(moviesSeriesUserPreferences);
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${openAIKey}`
-      },
-      body: JSON.stringify(requestBody)
+    let requestBody;
+    if (renderBrainAnalysis && brainData) {
+      requestBody = moviesSeriesBrainAnalysisPrompt(brainData);
+    } else if (moviesSeriesUserPreferences) {
+      requestBody = moviesSeriesStandardPreferencesPrompt(
+        moviesSeriesUserPreferences
+      );
+    }
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/get-model-response`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          api_key: openAIKey,
+          provider: "openai",
+          modelOpenAI: requestBody?.model, // Use the model from the prompt function
+          messages: requestBody?.messages || []
+        })
+      }
+    );
+
+    console.log("body: ", {
+      api_key: openAIKey,
+      provider: "openai",
+      modelOpenAI: requestBody?.model, // Use the model from the prompt function
+      messages: requestBody?.messages || []
     });
 
-    console.log("prompt: ", requestBody);
-
     const responseData = await response.json();
-    const responseJson = responseData.choices[0].message.content;
+    const responseJson = responseData.response;
     const unescapedData = responseJson
       .replace(/^```json([\s\S]*?)```$/, "$1")
       .replace(/^```JSON([\s\S]*?)```$/, "$1")
@@ -373,6 +389,7 @@ export const generateMoviesSeriesRecommendations = async (
     console.error("Error generating recommendations:", error);
   }
 };
+
 /**
  * Записва препоръка за филм или сериал в базата данни.
  * Препоръката съдържа подробности за филма/сериала като заглавие, жанр, рейтинг и други.
