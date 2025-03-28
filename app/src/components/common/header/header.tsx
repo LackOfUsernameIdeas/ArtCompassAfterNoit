@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import store from "../../../redux/store";
 import { connect } from "react-redux";
 import { ThemeChanger } from "../../../redux/action";
-import logo from "../../../assets/images/brand-logos/logo-large.png";
-import logoPink from "../../../assets/images/brand-logos/logo-large-pink.png";
+import logo from "../../../assets/images/brand-logos/logo_large.png";
+import logoPink from "../../../assets/images/brand-logos/logo_large_pink.png";
 
 interface HeaderProps {}
 
@@ -70,13 +70,13 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
               <div className="header-element">
                 <div className="horizontal-logo">
                   <a
-                    href={`${import.meta.env.BASE_URL}app/home/`}
+                    href={`${import.meta.env.BASE_URL}app/recommendations/`}
                     className="header-logo"
                     onMouseEnter={() => setIsLogoHovered(true)}
                     onMouseLeave={() => setIsLogoHovered(false)}
                   >
                     <img
-                      src={local_varaiable.class == "dark" ? logo : logoPink}
+                      src={local_varaiable.class == "dark" ? logoPink : logo}
                       alt="logo"
                       className="logo"
                       style={{
@@ -91,7 +91,7 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
             </div>
             <div className="header-content-right">
               <div
-                className="header-element header-theme-mode hidden !items-center sm:block !py-[1rem] md:!px-[0.65rem] px-2"
+                className="header-element header-theme-mode hidden !items-center sm:block !py-[1rem] md:!px-[0.65rem] px-2 opacity-[0.8]"
                 onClick={() => ToggleDark()}
                 style={{
                   transform: isToggleHovered ? "scale(1.1)" : "scale(0.9)", // Increase size on hover
@@ -103,19 +103,19 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
               >
                 <Link
                   aria-label="anchor"
-                  className="hs-dark-mode-active:hidden flex hs-dark-mode group flex-shrink-0 justify-center items-center gap-2 rounded-full font-medium transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-[#8c9097] dark:text-white/50 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
+                  className="hs-dark-mode-active:hidden flex hs-dark-mode group flex-shrink-0 justify-center items-center gap-2 rounded-full font-medium text-defaulttextcolor transition-all text-xs dark:bg-bgdark dark:hover:bg-black/20 dark:text-white/80 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
                   to="#"
                   data-hs-theme-click-value="dark"
                 >
-                  <i className="bx bx-moon header-link-icon"></i>
+                  <i className="bx bx-moon header-link-icon text-defaulttextcolor dark:text-white/80 font-semibold"></i>
                 </Link>
                 <Link
                   aria-label="anchor"
-                  className="hs-dark-mode-active:flex hidden hs-dark-mode group flex-shrink-0 justify-center items-center gap-2 rounded-full font-medium text-defaulttextcolor transition-all text-xs dark:bg-bodybg dark:bg-bgdark dark:hover:bg-black/20 dark:text-[#8c9097] dark:text-white/50 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
+                  className="hs-dark-mode-active:flex hidden hs-dark-mode group flex-shrink-0 justify-center items-center gap-2 rounded-full font-medium text-defaulttextcolor transition-all text-xs dark:bg-bodybg dark:bg-bgdark dark:hover:bg-black/20 dark:text-white/80 dark:hover:text-white dark:focus:ring-white/10 dark:focus:ring-offset-white/10"
                   to="#"
                   data-hs-theme-click-value="light"
                 >
-                  <i className="bx bx-sun header-link-icon"></i>
+                  <i className="bx bx-sun header-link-icon text-defaulttextcolor dark:text-white/80 font-semibold"></i>
                 </Link>
               </div>
 
@@ -130,10 +130,10 @@ const Header: FC<HeaderProps> = ({ local_varaiable, ThemeChanger }: any) => {
                 onMouseLeave={() => setIsLogOutHovered(false)}
               >
                 <button
-                  className="w-full ti-dropdown-item !text-[0.8125rem] !p-[0.65rem] !gap-x-0 !inline-flex"
+                  className="w-full opsilion ti-dropdown-item !text-base !p-[0.65rem] !inline-flex items-center opacity-[0.8]"
                   onClick={handleLogout}
                 >
-                  <i className="ti ti-logout text-[1.125rem] me-2 opacity-[0.7]"></i>
+                  <i className="ti ti-logout text-defaulttextcolor dark:text-white/80 font-semibold me-2"></i>
                   Излизане
                 </button>
               </div>

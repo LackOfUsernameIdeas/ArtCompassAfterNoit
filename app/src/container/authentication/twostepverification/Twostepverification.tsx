@@ -1,17 +1,7 @@
 import { FC, Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Swiper, SwiperSlide } from "swiper/react";
-import logo from "../../../assets/images/brand-logos/logo-large.png";
-import logoPink from "../../../assets/images/brand-logos/logo-large-pink.png";
-
-// Импортиране на стиловете за Swiper
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
-
-// Импортиране на необходимите модули за Swiper
-import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Helmet } from "react-helmet-async";
+import SwiperComponent from "@/components/common/swiper/swiper";
 
 interface TwostepcoverProps {}
 
@@ -42,7 +32,7 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
       localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     if (token) {
       // Препраща към приложението, ако съществува токен
-      navigate(`${import.meta.env.BASE_URL}app/home/`);
+      navigate(`${import.meta.env.BASE_URL}app/recommendations`);
     }
   }, [navigate]);
 
@@ -73,6 +63,7 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
   );
 
   const handleVerification = async () => {
+    // Обединяване на въведените цифри от полетата в един код
     const verificationCode =
       inputRefs.one.current.value +
       inputRefs.two.current.value +
@@ -82,6 +73,7 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
       inputRefs.six.current.value;
 
     try {
+      // Изпращане на заявка за верификация на имейла
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/verify-email`,
         {
@@ -94,12 +86,15 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
       );
 
       if (!response.ok) {
+        // Ако верификацията е неуспешна, хвърляне на грешка
         const errorData = await response.json();
         throw new Error(errorData.error || "Неуспешна верификация!");
       }
 
+      // Извличане на отговора от сървъра
       const data = await response.json();
 
+      // Показване на съобщение за успешна верификация
       setAlerts([
         {
           message: data.message,
@@ -108,10 +103,12 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
         }
       ]);
 
+      // Пренасочване към страницата за вход след кратко изчакване
       setTimeout(() => {
         navigate(`${import.meta.env.BASE_URL}signin`);
       }, 1000);
     } catch (error: any) {
+      // Обработка на грешки и показване на съобщение
       setAlerts([
         {
           message: error.message,
@@ -191,7 +188,7 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
                     <div>{alert.message}</div>
                   </div>
                 ))}
-                <p className="font-semibold mb-2 text-xl">
+                <p className="font-semibold opsilion !text-3xl mb-2">
                   Потвърдете профила си!
                 </p>
                 <p className="mb-4 text-[#8c9097] dark:text-white/50 opacity-[0.7] font-normal">
@@ -292,7 +289,7 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
                             onClick={handleResendCode}
                             className="text-primary ms-2 inline-block"
                           >
-                            Изпращане отново
+                            Повторно изпращане
                           </button>
                         )}
                       </label>
@@ -301,7 +298,7 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
                   <div className="xl:col-span-12 col-span-12 grid">
                     <button
                       onClick={handleVerification}
-                      className="ti-btn ti-btn-lg bg-primary text-white !font-medium dark:border-defaultborder/10"
+                      className="ti-btn ti-btn-lg bg-primary text-white !text-lg opsilion !font-medium dark:border-defaultborder/10"
                     >
                       Потвърди
                     </button>
@@ -321,65 +318,7 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
           </div>
         </div>
         {/* Страничен панел с изображение или лого */}
-        <div className="xxl:col-span-5 xl:col-span-5 lg:col-span-5 col-span-12 xl:block hidden px-0">
-          <div className="authentication-cover ">
-            <div className="aunthentication-cover-content rounded">
-              <div className="swiper keyboard-control">
-                <Swiper
-                  spaceBetween={30}
-                  navigation={true}
-                  centeredSlides={true}
-                  autoplay={{ delay: 2500, disableOnInteraction: false }}
-                  pagination={{ clickable: true }}
-                  modules={[Pagination, Autoplay, Navigation]}
-                  className="mySwiper"
-                >
-                  {/* Слайд 1 */}
-                  <SwiperSlide>
-                    <div className="text-white text-center p-[3rem] flex items-center justify-center flex-col lg:space-y-8 md:space-y-4 sm:space-y-2 space-y-2">
-                      <div>
-                        {/* Лого за светъл режим */}
-                        <div className="mb-[6rem] dark:hidden">
-                          <img
-                            src={logoPink}
-                            className="authentication-image"
-                            alt="Logo"
-                            style={{ width: "100%", height: "auto" }}
-                          />
-                        </div>
-
-                        {/* Лого за тъмен режим */}
-                        <div className="mb-[4rem] hidden dark:block">
-                          <img
-                            src={logo}
-                            className="authentication-image"
-                            alt="Logo"
-                            style={{
-                              width: "100%",
-                              height: "auto"
-                            }}
-                          />
-                        </div>
-
-                        {/* Заглавие и описание на приложението */}
-                        <h6 className="font-semibold text-[1rem] lg:text-[1.325rem] sm:text-[1.325rem]">
-                          Добре дошли в Кино Компас!
-                        </h6>
-                        <p className="font-normal text-[0.875rem] opacity-[0.7] lg:mt-6 sm:text-[1rem] ">
-                          Това е вашият гид за откриване на филми и сериали за
-                          всяко настроение, анализирайки вашите предпочитания и
-                          предлагайки персонализирани препоръки с помощта на
-                          изкуствен интелект!
-                        </p>
-                      </div>
-                    </div>
-                  </SwiperSlide>
-                  {/* Допълнителни слайдове, ако е необходимо */}
-                </Swiper>
-              </div>
-            </div>
-          </div>
-        </div>
+        <SwiperComponent />
       </div>
     </Fragment>
   );

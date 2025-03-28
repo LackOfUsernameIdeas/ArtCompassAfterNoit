@@ -3,31 +3,38 @@ import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
 import { RecommendationCardProps } from "../moviesSeriesRecommendations-types";
 import { translate } from "../../../helper_functions_common";
+import { handleBookmarkClick } from "../helper_functions";
 
+// Кард за генериран филм/сериал спрямо потребителските предпочитания
 const RecommendationCard: FC<RecommendationCardProps> = ({
   recommendationList,
   currentIndex,
   openModal,
-  handleBookmarkClick,
+  setBookmarkedMovies,
+  setCurrentBookmarkStatus,
+  setAlertVisible,
   bookmarkedMovies
 }) => {
-  const [translatedDirectors, setTranslatedDirectors] = useState<string>("");
-  const [translatedWriters, setTranslatedWriters] = useState<string>("");
-  const [translatedActors, setTranslatedActors] = useState<string>("");
-  const [translatedAwards, setTranslatedAwards] = useState<string>("");
-  const [translatedGenres, setTranslatedGenres] = useState<string>("");
-  const plotPreviewLength = 150;
-
-  if (!recommendationList.length) {
-    return <div>No recommendations available.</div>;
-  }
-
-  const recommendation = recommendationList[currentIndex];
+  const [translatedDirectors, setTranslatedDirectors] = useState<string>(""); // Преведените режисьори
+  const [translatedWriters, setTranslatedWriters] = useState<string>(""); // Преведените сценаристи
+  const [translatedActors, setTranslatedActors] = useState<string>(""); // Преведените актьори
+  const [translatedAwards, setTranslatedAwards] = useState<string>(""); // Преведените награди
+  const [translatedGenres, setTranslatedGenres] = useState<string>(""); // Преведените жанрове
+  const [translatedPlot, setTranslatedPlot] = useState<string>(""); // Преведеното описание на сюжета
+  const [translatedCountry, setTranslatedCountry] = useState<string>(""); // Преведената страна
+  const [translatedLanguage, setTranslatedLanguage] = useState<string>(""); // Преведеният език
+  const plotPreviewLength = 150; // Дължина на прегледа на съдържанието (oписаниeто и сюжета)
+  const recommendation = recommendationList[currentIndex]; // Генерираният филм/сериал
+  // Времетраене (за филм - времетраеното на филма, за сериал - средното времетраене на един епизод)
+  const runtime = recommendation.runtimeGoogle || recommendation.runtime;
+  const isMovie = recommendation.type === "movie"; // Bool филм или не
+  // Рейтинг от Rotten Tomatoes, ако е наличен
   const rottenTomatoesRating =
     recommendation.ratings?.find(
       (rating) => rating.Source === "Rotten Tomatoes"
     )?.Value || "N/A";
 
+  // useEffect за превод на името на режисьора
   useEffect(() => {
     async function fetchDirectorTranslation() {
       const translated = await translate(recommendation.director);
@@ -37,6 +44,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
     fetchDirectorTranslation();
   }, [recommendation.director]);
 
+  // useEffect за превод на името на сценариста
   useEffect(() => {
     async function fetchWriterTranslation() {
       const translated = await translate(recommendation.writer);
@@ -46,6 +54,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
     fetchWriterTranslation();
   }, [recommendation.writer]);
 
+  // useEffect за превод на името на актьорите
   useEffect(() => {
     async function fetchActorsTranslation() {
       const translated = await translate(recommendation.actors);
@@ -55,6 +64,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
     fetchActorsTranslation();
   }, [recommendation.actors]);
 
+  // useEffect за превод на наградите на филма/сериала
   useEffect(() => {
     async function fetchAwardsTranslation() {
       const translated = await translate(recommendation.awards);
@@ -64,6 +74,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
     fetchAwardsTranslation();
   }, [recommendation.awards]);
 
+  // useEffect за превод на жанровете на филма/сериала
   useEffect(() => {
     async function fetchGenresTranslation() {
       const translated = await translate(recommendation.genre);
@@ -73,17 +84,57 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
     fetchGenresTranslation();
   }, [recommendation.genre]);
 
+  // useEffect за превод на сюжета на филма/сериала
+  useEffect(() => {
+    async function fetchPlotTranslation() {
+      const translated = await translate(recommendation.plot);
+      setTranslatedPlot(translated);
+    }
+
+    fetchPlotTranslation();
+  }, [recommendation.plot]);
+
+  // useEffect за превод на държавата на филма/сериала
+  useEffect(() => {
+    async function fetchCountryTranslation() {
+      const translated = await translate(recommendation.country);
+      setTranslatedCountry(translated);
+    }
+
+    fetchCountryTranslation();
+  }, [recommendation.country]);
+
+  // useEffect за превод на езика на филма/сериала
+  useEffect(() => {
+    async function fetchLanguageTranslation() {
+      const translated = await translate(recommendation.language);
+      setTranslatedLanguage(translated);
+    }
+
+    fetchLanguageTranslation();
+  }, [recommendation.language]);
+
+  console.log("recommendationList", recommendationList);
   return (
     <div className="recommendation-card">
-      <div className="flex w-full items-center">
-        <div className="relative flex-shrink-0 mr-8">
+      <div className="flex w-full items-center sm:items-start flex-col md:flex-row">
+        <div className="relative flex-shrink-0 mb-4 md:mb-0 md:mr-8 flex flex-col items-center">
+          {/* Постер */}
           <img
             src={recommendation.poster}
             alt={`${recommendation.bgName || "Movie"} Poster`}
             className="rounded-lg w-96 h-auto"
           />
+          {/* Бутон за добавяне/премахване от watchlist */}
           <button
-            onClick={() => handleBookmarkClick(recommendation)}
+            onClick={() =>
+              handleBookmarkClick(
+                recommendation,
+                setBookmarkedMovies,
+                setCurrentBookmarkStatus,
+                setAlertVisible
+              )
+            }
             className="absolute top-4 left-4 p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110"
           >
             <svg
@@ -106,83 +157,102 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
         </div>
 
         <div className="flex-grow">
-          <div className="sticky top-0 z-10 pb-4 mb-4">
-            <a href="#" className="block text-3xl font-bold mb-1">
+          {/* Главна информация */}
+          <div className="top-0 z-10">
+            <a href="#" className="block text-xl sm:text-3xl font-bold mb-1">
               {recommendation.bgName || "Заглавие не е налично"}
             </a>
             <a
               href="#"
-              className="block text-lg font-semibold text-opacity-60 italic mb-2"
+              className="block text-md sm:text-lg font-semibold text-opacity-60 italic mb-2"
             >
               {recommendation.title || "Заглавие на английски не е налично"}
             </a>
-            <p className="recommendation-small-details">
+            <p className="flex gap-1 recommendation-small-details text-sm italic text-defaulttextcolor/70">
               {translatedGenres || "Жанр неизвестен"} |{" "}
-              {recommendation.year || "Година неизвестна"} | Рейтинг:{" "}
+              {!isMovie &&
+                `Брой сезони: ${
+                  recommendation.totalSeasons || "Неизвестен"
+                } | `}
+              {runtime || "Неизвестно времетраене"}{" "}
+              {!isMovie && (
+                <p title="Средно аритметично времетраене на един епизод">
+                  (Ср. за 1 епизод)
+                </p>
+              )}
+              | {recommendation.year || "Година неизвестна"} | Рейтинг:{" "}
               {recommendation.rated || "N/A"}
             </p>
-            <div className="flex items-center space-x-8 mb-4">
+            {/* Рейтинги */}
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-8 py-2">
               <div
-                className="flex items-center space-x-2"
+                className="flex items-center space-x-2 dark:text-[#FFCC33] text-[#bf9413]"
                 title="IMDb рейтинг: Базиран на отзиви и оценки от потребители."
               >
-                <FaStar className="dark:text-[#FFCC33] text-[#bf9413] w-8 h-8" />
-                <span className="dark:text-[#FFCC33] text-[#bf9413] font-bold text-lg">
-                  {recommendation.imdbRating || "N/A"}
+                <span className="font-bold text-lg">IMDb: </span>
+                <FaStar className="w-8 h-8" />
+                <span className="font-bold text-lg">
+                  {recommendation.imdbRating || "N/A"} /{" "}
+                  {recommendation.imdbVotes || "N/A"} гласа
                 </span>
               </div>
-              <div
-                className="flex items-center space-x-2"
-                title="Метаскор: Средно претеглена оценка от критически рецензии за филма."
-              >
+              {isMovie && (
                 <div
-                  className={`flex items-center justify-center rounded-md text-white ${
-                    parseInt(recommendation.metascore) >= 60
-                      ? "bg-[#54A72A]"
-                      : parseInt(recommendation.metascore) >= 40
-                      ? "bg-[#FFCC33]"
-                      : "bg-[#FF0000]"
-                  }`}
-                  style={{ width: "2.2rem", height: "2.2rem" }}
+                  className="flex items-center space-x-2"
+                  title="Метаскор: Средно претеглена оценка от критически рецензии за филма."
                 >
-                  <span
-                    className={`${
-                      recommendation.metascore === "N/A" ||
-                      !recommendation.metascore
-                        ? "text-sm"
-                        : "text-xl"
+                  <div
+                    className={`flex items-center justify-center rounded-md text-white ${
+                      parseInt(recommendation.metascore) >= 60
+                        ? "bg-[#54A72A]"
+                        : parseInt(recommendation.metascore) >= 40
+                        ? "bg-[#FFCC33]"
+                        : "bg-[#FF0000]"
                     }`}
+                    style={{ width: "2.2rem", height: "2.2rem" }}
                   >
-                    {recommendation.metascore || "N/A"}
+                    <span
+                      className={`${
+                        recommendation.metascore === "N/A" ||
+                        !recommendation.metascore
+                          ? "text-sm"
+                          : "text-xl"
+                      }`}
+                    >
+                      {recommendation.metascore || "N/A"}
+                    </span>
+                  </div>
+                  <span className="font-semibold text-md sm:text-sm md:text-lg">
+                    Метаскор
                   </span>
                 </div>
-                <span className="font-semibold text-md sm:text-sm md:text-lg">
-                  Метаскор
-                </span>
-              </div>
-              <div
-                className="flex items-center space-x-2"
-                title="Rotten Tomatoes рейтинг: Процент положителни рецензии от професионални критици."
-              >
-                <SiRottentomatoes className="text-[#FF0000] w-8 h-8" />
-                <span className="text-red-400 font-semibold text-md sm:text-sm md:text-lg">
-                  {rottenTomatoesRating}
-                </span>
-              </div>
+              )}
+              {isMovie && (
+                <div
+                  className="flex items-center space-x-2"
+                  title="Rotten Tomatoes рейтинг: Процент положителни рецензии от професионални критици."
+                >
+                  <SiRottentomatoes className="text-[#FF0000] w-8 h-8" />
+                  <span className="text-red-400 font-semibold text-md sm:text-sm md:text-lg">
+                    {rottenTomatoesRating}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
-
+          {/* Причина за препоръчване */}
           {recommendation.reason && (
             <div className="mb-4">
               <h3 className="text-lg font-semibold mb-2">
-                Защо препоръчваме {recommendation.bgName}?
+                Защо препоръчваме{" "}
+                {recommendation.bgName || "Заглавие не е налично"}?
               </h3>
               <p className="text-opacity-80 italic">{recommendation.reason}</p>
             </div>
           )}
-
+          {/* Описание */}
           <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-2">Сюжет</h3>
+            <h3 className="text-lg font-semibold mb-2">Описание</h3>
             <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
               <p className="text-opacity-80 italic">
                 {recommendation.description.length > plotPreviewLength
@@ -193,20 +263,42 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                   : recommendation.description}
               </p>
             </div>
-
             {recommendation.description &&
               recommendation.description.length > plotPreviewLength && (
-                <button onClick={openModal} className="mt-2 underline">
-                  Пълен сюжет
+                <button
+                  onClick={openModal}
+                  className="mt-2 underline hover:scale-105 transition"
+                >
+                  Пълно описание
                 </button>
               )}
           </div>
+          {/* Сюжет */}
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold mb-2">Сюжет</h3>
+            <div className="overflow-hidden transition-all duration-500 ease-in-out max-h-[3rem] opacity-70">
+              <p className="text-opacity-80 italic">
+                {translatedPlot.length > plotPreviewLength
+                  ? `${translatedPlot.substring(0, plotPreviewLength)}...`
+                  : translatedPlot}
+              </p>
+            </div>
 
+            {translatedPlot && translatedPlot.length > plotPreviewLength && (
+              <button
+                onClick={openModal}
+                className="mt-2 underline hover:scale-105 transition"
+              >
+                Пълен сюжет
+              </button>
+            )}
+          </div>
+          {/* Допълнителна информация */}
           <div className="mb-4">
             <h3 className="text-lg font-semibold mb-2">
-              Допълнителна информация
+              Допълнителна информация:
             </h3>
-            <ul className="text-opacity-80 space-y-1">
+            <ul className="flex flex-wrap gap-x-4 text-opacity-80">
               <li>
                 <strong className="text-primary">Режисьор:</strong>{" "}
                 {translatedDirectors && translatedDirectors !== "N/A"
@@ -225,16 +317,54 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
                   ? translatedActors
                   : "Неизвестни"}
               </li>
+              {isMovie && (
+                <li>
+                  <strong className="text-primary">Продукция:</strong>{" "}
+                  {recommendation.production || "N/A"}
+                </li>
+              )}
+              <li>
+                <strong className="text-primary">Пуснат на:</strong>{" "}
+                {recommendation.released || "N/A"}
+              </li>
+              <li>
+                <strong className="text-primary">Език:</strong>{" "}
+                {translatedLanguage && translatedLanguage !== "N/A"
+                  ? translatedLanguage
+                  : "Неизвестен"}
+              </li>
+              <li>
+                <strong className="text-primary">Държава/-и:</strong>{" "}
+                {translatedCountry && translatedCountry !== "N/A"
+                  ? translatedCountry
+                  : "Неизвестна/-и"}
+              </li>
               <li>
                 <strong className="text-primary">Награди:</strong>{" "}
                 {translatedAwards && translatedAwards !== "N/A"
                   ? translatedAwards
                   : "Няма"}
               </li>
-              <li>
-                <strong className="text-primary">Боксофис:</strong>{" "}
-                {recommendation.boxOffice || "N/A"}
-              </li>
+              {isMovie && (
+                <li>
+                  <strong className="text-primary">Боксофис:</strong>{" "}
+                  {recommendation.boxOffice || "N/A"}
+                </li>
+              )}
+              {isMovie && (
+                <li>
+                  <strong className="text-primary">DVD:</strong>{" "}
+                  {recommendation.DVD !== "N/A" ? recommendation.DVD : "Няма"}
+                </li>
+              )}
+              {isMovie && (
+                <li>
+                  <strong className="text-primary">Уебсайт:</strong>{" "}
+                  {recommendation.website !== "N/A"
+                    ? recommendation.website
+                    : "Няма"}
+                </li>
+              )}
             </ul>
           </div>
         </div>

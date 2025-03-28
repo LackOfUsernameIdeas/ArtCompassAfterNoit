@@ -4,152 +4,184 @@ const dbOptsLocal = require("./config.js").dbOptsLocal;
 const hf = require("./helper_functions");
 require("dotenv").config();
 
-const db = mysql.createConnection(dbOptsLocal);
-// const db = mysql.createConnection(dbOpts);
+// const db = mysql.createConnection(dbOptsLocal);
+const db = mysql.createConnection(dbOpts);
 
 db.connect((err) => {
   if (err) throw err;
   console.log("MySQL Connected...");
 });
 
+/**
+ * Проверява дали даден имейл вече съществува в базата данни.
+ * @param {string} email - Имейл адресът, който трябва да бъде проверен.
+ * @param {function(Error, Object[]): void} callback - Функция за обратно извикване, която обработва резултатите.
+ */
 const checkEmailExists = (email, callback) => {
   const query = "SELECT * FROM users WHERE email = ?";
   db.query(query, [email], callback);
 };
 
+/**
+ * Създава нов потребител в базата данни.
+ * @param {string} firstName - Първо име на потребителя.
+ * @param {string} lastName - Фамилно име на потребителя.
+ * @param {string} email - Имейл адрес на потребителя.
+ * @param {string} hashedPassword - Хеширана парола на потребителя.
+ * @param {function(Error, Object): void} callback - Функция за обратно извикване, която обработва резултата от заявката.
+ */
 const createUser = (firstName, lastName, email, hashedPassword, callback) => {
   const query =
     "INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)";
   db.query(query, [firstName, lastName, email, hashedPassword], callback);
 };
 
+/**
+ * Намира потребител в базата данни по имейл.
+ * @param {string} email - Имейл адресът, който трябва да бъде намерен.
+ * @param {function(Error, Object[]): void} callback - Функция за обратно извикване, която обработва резултатите.
+ */
 const findUserByEmail = (email, callback) => {
   const query = "SELECT * FROM users WHERE email = ?";
   db.query(query, [email], callback);
 };
 
+/**
+ * Актуализира паролата на потребителя в базата данни.
+ * @param {number} userId - Уникален идентификатор на потребителя.
+ * @param {string} hashedPassword - Новата хеширана парола.
+ * @param {function(Error, Object): void} callback - Функция за обратно извикване, която обработва резултата от заявката.
+ */
 const updateUserPassword = (userId, hashedPassword, callback) => {
   const query = "UPDATE users SET password = ? WHERE id = ?";
   db.query(query, [hashedPassword, userId], callback);
 };
 
+/**
+ * Извлича информация за потребител по неговото ID.
+ * @param {number} userId - Уникален идентификатор на потребителя.
+ * @param {function(Error, Object[]): void} callback - Функция за обратно извикване, която обработва резултатите.
+ */
 const getUserById = (userId, callback) => {
   const query =
     "SELECT id, first_name, last_name, email FROM users WHERE id = ?";
   db.query(query, [userId], callback);
 };
 
-const saveMoviesSeriesRecommendation = (
-  userId,
-  imdbID,
-  title_en,
-  title_bg,
-  genre_en,
-  genre_bg,
-  reason,
-  description,
-  year,
-  rated,
-  released,
-  runtime,
-  director,
-  writer,
-  actors,
-  plot,
-  language,
-  country,
-  awards,
-  poster,
-  ratings,
-  metascore,
-  imdbRating,
-  imdbVotes,
-  type,
-  DVD,
-  boxOffice,
-  production,
-  website,
-  totalSeasons,
-  date,
-  callback
-) => {
+/**
+ * Запазва препоръчан филм или сериал в базата данни.
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {Object} data - Данни за препоръката.
+ * @param {Function} callback - Функция за обратно извикване след завършване на заявката.
+ */
+const saveMovieSeriesRecommendation = (userId, data, callback) => {
   const query = `INSERT INTO movies_series_recommendations (
-  user_id, imdbID, title_en, title_bg, genre_en, genre_bg, reason, description, year,
-  rated, released, runtime, director, writer, actors, plot, language, 
-  country, awards, poster, ratings, metascore, imdbRating, imdbVotes, 
-  type, DVD, boxOffice, production, website, totalSeasons, date
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+    user_id, imdbID, title_en, title_bg, genre_en, genre_bg, reason, description, year,
+    rated, released, runtime, director, writer, actors, plot, language, 
+    country, awards, poster, ratings, metascore, imdbRating, imdbVotes, 
+    type, DVD, boxOffice, production, website, totalSeasons, date
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
 
   const values = [
     userId,
-    imdbID,
-    title_en,
-    title_bg,
-    genre_en,
-    genre_bg,
-    reason,
-    description,
-    year,
-    rated,
-    released,
-    runtime,
-    director,
-    writer,
-    actors,
-    plot,
-    language,
-    country,
-    awards,
-    poster,
-    JSON.stringify(ratings),
-    metascore,
-    imdbRating,
-    imdbVotes,
-    type,
-    DVD,
-    boxOffice,
-    production,
-    website,
-    totalSeasons,
-    date
+    data.imdbID,
+    data.title_en,
+    data.title_bg,
+    data.genre_en,
+    data.genre_bg,
+    data.reason,
+    data.description,
+    data.year,
+    data.rated,
+    data.released,
+    data.runtime,
+    data.director,
+    data.writer,
+    data.actors,
+    data.plot,
+    data.language,
+    data.country,
+    data.awards,
+    data.poster,
+    JSON.stringify(data.ratings),
+    data.metascore,
+    data.imdbRating,
+    data.imdbVotes,
+    data.type,
+    data.DVD,
+    data.boxOffice,
+    data.production,
+    data.website,
+    data.totalSeasons,
+    data.date
   ];
 
   db.query(query, values, callback);
 };
 
-const saveToWatchlist = (
-  userId,
-  imdbID,
-  title_en,
-  title_bg,
-  genre_en,
-  genre_bg,
-  reason,
-  description,
-  year,
-  rated,
-  released,
-  runtime,
-  director,
-  writer,
-  actors,
-  plot,
-  language,
-  country,
-  awards,
-  poster,
-  ratings,
-  metascore,
-  imdbRating,
-  imdbVotes,
-  type,
-  DVD,
-  boxOffice,
-  production,
-  website,
-  totalSeasons,
-  callback
-) => {
+/**
+ * Запазва препоръчана книга в базата данни.
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {Object} data - Данни за книгата.
+ * @param {Function} callback - Функция за обратно извикване след завършване на заявката.
+ */
+const saveBookRecommendation = (userId, data, callback) => {
+  const query = `INSERT INTO books_recommendations (
+    user_id, google_books_id, goodreads_id, title_en, original_title, title_bg, real_edition_title, author, 
+    genre_en, genre_bg, description, language, origin, date_of_first_issue, 
+    date_of_issue, publisher, goodreads_rating, goodreads_ratings_count, goodreads_reviews_count, reason, adaptations, ISBN_10, ISBN_13, 
+    page_count, book_format, imageLink, literary_awards, setting, characters, series, date, source
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+
+  function conditionalStringify(data) {
+    return typeof data === "string" ? data : JSON.stringify(data);
+  }
+
+  const values = [
+    userId,
+    data.google_books_id || null,
+    data.goodreads_id || null,
+    data.title_en || null,
+    data.original_title || null,
+    data.title_bg || null,
+    data.real_edition_title || null,
+    data.author || null,
+    conditionalStringify(data.genre_en) || null,
+    conditionalStringify(data.genre_bg) || null,
+    data.description || null,
+    data.language || null,
+    data.origin || null,
+    data.date_of_first_issue || null,
+    data.date_of_issue || null,
+    data.publisher || null,
+    data.goodreads_rating || null,
+    data.goodreads_ratings_count || null,
+    data.goodreads_reviews_count || null,
+    data.reason || null,
+    data.adaptations || null,
+    data.ISBN_10 || null,
+    data.ISBN_13 || null,
+    data.page_count || null,
+    data.book_format || null,
+    data.imageLink || null,
+    data.literary_awards || null,
+    data.setting || null,
+    data.characters || null,
+    data.series || null,
+    data.date || null,
+    data.source || null
+  ];
+
+  db.query(query, values, callback);
+};
+
+/**
+ * Запазва филм или сериал в списъка за гледане на потребителя.
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {Object} data - Данни за филма или сериала.
+ * @param {Function} callback - Функция за обратно извикване след завършване на заявката.
+ */
+const saveToWatchlist = (userId, data, callback) => {
   const query = `INSERT INTO watchlist (
   user_id, imdbID, title_en, title_bg, genre_en, genre_bg, reason, description, year,
   rated, released, runtime, director, writer, actors, plot, language, 
@@ -159,40 +191,102 @@ const saveToWatchlist = (
 
   const values = [
     userId,
-    imdbID,
-    title_en,
-    title_bg,
-    genre_en,
-    genre_bg,
-    reason,
-    description,
-    year,
-    rated,
-    released,
-    runtime,
-    director,
-    writer,
-    actors,
-    plot,
-    language,
-    country,
-    awards,
-    poster,
-    JSON.stringify(ratings),
-    metascore,
-    imdbRating,
-    imdbVotes,
-    type,
-    DVD,
-    boxOffice,
-    production,
-    website,
-    totalSeasons
+    data.imdbID,
+    data.title_en,
+    data.title_bg,
+    data.genre_en,
+    data.genre_bg,
+    data.reason,
+    data.description,
+    data.year,
+    data.rated,
+    data.released,
+    data.runtime,
+    data.director,
+    data.writer,
+    data.actors,
+    data.plot,
+    data.language,
+    data.country,
+    data.awards,
+    data.poster,
+    JSON.stringify(data.ratings),
+    data.metascore,
+    data.imdbRating,
+    data.imdbVotes,
+    data.type,
+    data.DVD,
+    data.boxOffice,
+    data.production,
+    data.website,
+    data.totalSeasons
   ];
 
   db.query(query, values, callback);
 };
 
+/**
+ * Запазва книга в списъка за четене на потребителя.
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {Object} data - Данни за книгата.
+ * @param {Function} callback - Функция за обратно извикване след завършване на заявката.
+ */
+const saveToReadlist = (userId, data, callback) => {
+  const query = `INSERT INTO readlist (
+    user_id, google_books_id, goodreads_id, title_en, original_title, title_bg, real_edition_title, author, 
+    genre_en, genre_bg, description, language, origin, date_of_first_issue, 
+    date_of_issue, publisher, goodreads_rating, goodreads_ratings_count, goodreads_reviews_count, reason, adaptations, ISBN_10, ISBN_13, 
+    page_count, book_format, imageLink, literary_awards, setting, characters, series, source
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+
+  function conditionalStringify(data) {
+    return typeof data === "string" ? data : JSON.stringify(data);
+  }
+
+  const values = [
+    userId,
+    data.google_books_id || null,
+    data.goodreads_id || null,
+    data.title_en || null,
+    data.original_title || null,
+    data.title_bg || null,
+    data.real_edition_title || null,
+    data.author || null,
+    conditionalStringify(data.genre_en) || null,
+    conditionalStringify(data.genre_bg) || null,
+    data.description || null,
+    data.language || null,
+    data.origin || null,
+    data.date_of_first_issue || null,
+    data.date_of_issue || null,
+    data.publisher || null,
+    data.goodreads_rating || null,
+    data.goodreads_ratings_count || null,
+    data.goodreads_reviews_count || null,
+    data.reason || null,
+    data.adaptations || null,
+    data.ISBN_10 || null,
+    data.ISBN_13 || null,
+    data.page_count || null,
+    data.book_format || null,
+    data.imageLink || null,
+    data.literary_awards || null,
+    data.setting || null,
+    data.characters || null,
+    data.series || null,
+    data.source || null
+  ];
+
+  db.query(query, values, callback);
+};
+
+/**
+ * Премахва елемент от списъка за гледане на потребителя.
+ *
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {string} imdbID - Идентификатор на IMDb на филма/сериала.
+ * @param {function} callback - Функция, която ще бъде извикана след изпълнението на заявката.
+ */
 const removeFromWatchlist = (userId, imdbID, callback) => {
   const query = `DELETE FROM watchlist WHERE user_id = ? AND imdbID = ?;`;
   const values = [userId, imdbID];
@@ -200,48 +294,96 @@ const removeFromWatchlist = (userId, imdbID, callback) => {
   db.query(query, values, callback);
 };
 
+/**
+ * Премахва елемент от списъка за четене на потребителя.
+ *
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {string} source - Източникът на информацията за книгата ("GoogleBooks" или "Goodreads").
+ * @param {string} book_id - Идентификатор на книгата.
+ * @param {function} callback - Функция, която ще бъде извикана след изпълнението на заявката.
+ */
+const removeFromReadlist = (userId, source, book_id, callback) => {
+  const query = `DELETE FROM readlist WHERE user_id = ? AND ${
+    source === "GoogleBooks" ? "google_books_id = ?" : "	goodreads_id = ?"
+  };`;
+  const values = [userId, book_id];
+
+  db.query(query, values, callback);
+};
+
+/**
+ * Проверява дали препоръката съществува в списъка за гледане на потребителя.
+ *
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {string} imdbID - Идентификатор на IMDb на филма/сериала.
+ * @param {function} callback - Функция, която ще бъде извикана след изпълнението на заявката.
+ */
 const checkRecommendationExistsInWatchlist = (userId, imdbID, callback) => {
   const query = "SELECT * FROM watchlist WHERE user_id = ? AND imdbID = ?";
   db.query(query, [userId, imdbID], callback);
 };
 
-const saveMoviesSeriesUserPreferences = (
+/**
+ * Проверява дали препоръката съществува в списъка за четене на потребителя.
+ *
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {string} source - Източникът на информацията за книгата ("GoogleBooks" или "Goodreads").
+ * @param {string} book_id - Идентификатор на книгата.
+ * @param {function} callback - Функция, която ще бъде извикана след изпълнението на заявката.
+ */
+const checkRecommendationExistsInReadlist = (
   userId,
-  preferred_genres_en,
-  preferred_genres_bg,
-  mood,
-  timeAvailability,
-  preferred_age,
-  preferred_type,
-  preferred_actors,
-  preferred_directors,
-  preferred_countries,
-  preferred_pacing,
-  preferred_depth,
-  preferred_target_group,
-  interests,
-  date,
+  source,
+  book_id,
   callback
 ) => {
+  const query = `SELECT * FROM readlist WHERE user_id = ? AND ${
+    source === "GoogleBooks" ? "google_books_id = ?" : "	goodreads_id = ?"
+  }`;
+  db.query(query, [userId, book_id], callback);
+};
+
+/**
+ * Записва предпочитанията на потребителя за филми и сериали.
+ *
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {Object} preferences - Обект с предпочитанията на потребителя.
+ * @param {string[]} preferences.preferred_genres_en - Избрани жанрове на английски.
+ * @param {string[]} preferences.preferred_genres_bg - Избрани жанрове на български.
+ * @param {string} preferences.mood - Настроение на потребителя.
+ * @param {string} preferences.timeAvailability - Наличност на времето на потребителя.
+ * @param {string} preferences.preferred_age - Предпочитана възрастова група.
+ * @param {string} preferences.preferred_type - Предпочитан тип съдържание.
+ * @param {string[]} preferences.preferred_actors - Предпочитани актьори.
+ * @param {string[]} preferences.preferred_directors - Предпочитани режисьори.
+ * @param {string[]} preferences.preferred_countries - Предпочитани държави.
+ * @param {string} preferences.preferred_pacing - Предпочитан ритъм.
+ * @param {string} preferences.preferred_depth - Предпочитана дълбочина на съдържанието.
+ * @param {string} preferences.preferred_target_group - Предпочитана целева група.
+ * @param {string} preferences.interests - Интереси на потребителя.
+ * @param {string} preferences.date - Дата на създаване на предпочитанията.
+ * @param {function} callback - Функция, която ще бъде извикана след изпълнението на заявката.
+ */
+const saveMoviesSeriesUserPreferences = (userId, preferences, callback) => {
   const sql = `INSERT INTO movies_series_user_preferences (user_id, preferred_genres_en, preferred_genres_bg, mood, timeAvailability, preferred_age, preferred_type, preferred_actors, preferred_directors, preferred_countries, preferred_pacing, preferred_depth, preferred_target_group, interests, date)
                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   const values = [
     userId,
-    preferred_genres_en,
-    preferred_genres_bg,
-    mood,
-    timeAvailability,
-    preferred_age,
-    preferred_type,
-    preferred_actors,
-    preferred_directors,
-    preferred_countries,
-    preferred_pacing,
-    preferred_depth,
-    preferred_target_group,
-    interests,
-    date
+    preferences.preferred_genres_en,
+    preferences.preferred_genres_bg,
+    preferences.mood,
+    preferences.timeAvailability,
+    preferences.preferred_age,
+    preferences.preferred_type,
+    preferences.preferred_actors,
+    preferences.preferred_directors,
+    preferences.preferred_countries,
+    preferences.preferred_pacing,
+    preferences.preferred_depth,
+    preferences.preferred_target_group,
+    preferences.interests,
+    preferences.date
   ];
 
   db.query(sql, values, (err, result) => {
@@ -249,6 +391,51 @@ const saveMoviesSeriesUserPreferences = (
   });
 };
 
+/**
+ * Записва предпочитанията на потребителя за книги.
+ *
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {Object} preferences - Обект с предпочитанията на потребителя.
+ * @param {string[]} preferences.preferred_genres_en - Избрани жанрове на английски.
+ * @param {string[]} preferences.preferred_genres_bg - Избрани жанрове на български.
+ * @param {string} preferences.mood - Настроение на потребителя.
+ * @param {string[]} preferences.preferred_authors - Предпочитани автори.
+ * @param {string} preferences.preferred_origin - Предпочитано място на произход на книгите.
+ * @param {string} preferences.preferred_pacing - Предпочитан ритъм.
+ * @param {string} preferences.preferred_depth - Предпочитана дълбочина на съдържанието.
+ * @param {string} preferences.preferred_target_group - Предпочитана целева група.
+ * @param {string} preferences.interests - Интереси на потребителя.
+ * @param {string} preferences.date - Дата на създаване на предпочитанията.
+ * @param {function} callback - Функция, която ще бъде извикана след изпълнението на заявката.
+ */
+const saveBooksUserPreferences = (userId, preferences, callback) => {
+  const sql = `INSERT INTO books_user_preferences (user_id, preferred_genres_en, preferred_genres_bg, mood, preferred_authors, preferred_origin, preferred_pacing, preferred_depth, preferred_target_group, interests, date)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+  const values = [
+    userId,
+    preferences.preferred_genres_en,
+    preferences.preferred_genres_bg,
+    preferences.mood,
+    preferences.preferred_authors,
+    preferences.preferred_origin,
+    preferences.preferred_pacing,
+    preferences.preferred_depth,
+    preferences.preferred_target_group,
+    preferences.interests,
+    preferences.date
+  ];
+
+  db.query(sql, values, (err, result) => {
+    callback(err, result);
+  });
+};
+
+/**
+ * Връща броя на потребителите в базата данни.
+ *
+ * @param {function} callback - Функция, която ще бъде извикана след изпълнението на заявката.
+ */
 const getUsersCount = (callback) => {
   const query = `
     SELECT COUNT(*) AS user_count
@@ -257,6 +444,11 @@ const getUsersCount = (callback) => {
   db.query(query, callback);
 };
 
+/**
+ * Връща средната стойност на бокс офис приходите и оценките за филми и сериали.
+ *
+ * @param {function} callback - Функция, която ще бъде извикана след изпълнението на заявката.
+ */
 const getAverageBoxOfficeAndScores = (callback) => {
   const query = `
     SELECT 
@@ -282,6 +474,11 @@ const getAverageBoxOfficeAndScores = (callback) => {
   db.query(query, callback);
 };
 
+/**
+ * Връща топ препоръките за платформи.
+ *
+ * @param {function} callback - Функция, която ще бъде извикана след изпълнението на заявката.
+ */
 const getTopRecommendationsPlatform = (callback) => {
   const query = `
     SELECT 
@@ -336,6 +533,13 @@ const getTopRecommendationsPlatform = (callback) => {
   db.query(query, callback);
 };
 
+/**
+ * Извлича най-препоръчваните държави по брой и превежда имената им.
+ *
+ * @param {number} limit - Максимален брой държави за извличане.
+ * @param {function} callback - Функция за обратно повикване, която получава резултатите или грешка.
+ * @returns {void}
+ */
 const getTopCountries = (limit, callback) => {
   const query = `
     SELECT country, COUNT(*) AS count
@@ -376,6 +580,13 @@ const getTopCountries = (limit, callback) => {
   });
 };
 
+/**
+ * Извлича най-препоръчваните жанрове по брой.
+ *
+ * @param {number} limit - Максимален брой жанрове за извличане.
+ * @param {function} callback - Функция за обратно повикване, която получава резултатите.
+ * @returns {void}
+ */
 const getTopGenres = (limit, callback) => {
   const query = `
     SELECT genre_en, genre_bg, COUNT(*) AS count
@@ -398,6 +609,12 @@ const getTopGenres = (limit, callback) => {
   db.query(query, [limit], callback);
 };
 
+/**
+ * Извлича популярността на жанровете през времето, групирана по жанр и година.
+ *
+ * @param {function} callback - Функция за обратно повикване, която получава резултатите или грешка.
+ * @returns {void}
+ */
 const getGenrePopularityOverTime = (callback) => {
   const query = `
     SELECT 
@@ -450,6 +667,13 @@ const getGenrePopularityOverTime = (callback) => {
   });
 };
 
+/**
+ * Извлича най-препоръчваните актьори по брой и превежда имената им.
+ *
+ * @param {number} limit - Максимален брой актьори за извличане.
+ * @param {function} callback - Функция за обратно повикване, която получава резултатите или грешка.
+ * @returns {void}
+ */
 const getTopActors = (limit, callback) => {
   const query = `
   SELECT actor, COUNT(*) AS actor_count
@@ -492,6 +716,13 @@ const getTopActors = (limit, callback) => {
   });
 };
 
+/**
+ * Извлича най-препоръчваните режисьори по брой и превежда имената им.
+ *
+ * @param {number} limit - Максимален брой режисьори за извличане.
+ * @param {function} callback - Функция за обратно повикване, която получава резултатите или грешка.
+ * @returns {void}
+ */
 const getTopDirectors = (limit, callback) => {
   const query = `
   SELECT director, COUNT(*) AS director_count
@@ -534,6 +765,13 @@ const getTopDirectors = (limit, callback) => {
   });
 };
 
+/**
+ * Извлича най-препоръчваните сценаристи по брой и превежда имената им.
+ *
+ * @param {number} limit - Максимален брой сценаристи за извличане.
+ * @param {function} callback - Функция за обратно повикване, която получава резултатите или грешка.
+ * @returns {void}
+ */
 const getTopWriters = (limit, callback) => {
   const query = `
   SELECT writer, COUNT(*) AS writer_count
@@ -576,6 +814,11 @@ const getTopWriters = (limit, callback) => {
   });
 };
 
+/**
+ * Извлича данни за Оскарите, спечелени или номинирани от филми или сериали.
+ *
+ * @param {function} callback - Функция, която се извиква при завършване на заявката с резултатите.
+ */
 const getOscarsByMovie = (callback) => {
   const query = `
   SELECT 
@@ -614,6 +857,11 @@ const getOscarsByMovie = (callback) => {
   db.query(query, callback);
 };
 
+/**
+ * Извлича общия брой спечелени награди и номинации за всеки филм или сериал.
+ *
+ * @param {function} callback - Функция, която се извиква при завършване на заявката с резултатите.
+ */
 const getTotalAwardsByMovieOrSeries = (callback) => {
   const query = `
   SELECT  
@@ -646,6 +894,11 @@ const getTotalAwardsByMovieOrSeries = (callback) => {
   db.query(query, callback);
 };
 
+/**
+ * Изчислява общия брой награди и номинации от всички филми и сериали.
+ *
+ * @param {function} callback - Функция, която се извиква при завършване на заявката с резултатите.
+ */
 const getTotalAwardsCount = (callback) => {
   const query = `
   SELECT 
@@ -708,6 +961,11 @@ const getTotalAwardsCount = (callback) => {
   db.query(query, callback);
 };
 
+/**
+ * Извлича режисьорите спрямо просперитетът им, изчислена на база различни показатели.
+ *
+ * @param {function} callback - Функция, която се извиква при завършване на заявката с резултатите.
+ */
 const getSortedDirectorsByProsperity = (callback) => {
   const query = `
   WITH RECURSIVE DirectorSplit AS (
@@ -847,16 +1105,6 @@ const getSortedDirectorsByProsperity = (callback) => {
       })
     );
 
-    console.log(
-      Math.max(
-        ...results.map((director) => {
-          const totalBoxOffice =
-            parseFloat(director.total_box_office.replace(/[$,]/g, "")) || 0;
-          return totalBoxOffice;
-        })
-      )
-    );
-
     const directorsWithProsperity = results.map((director) => {
       const totalWins = director.total_wins || 0;
       const totalNominations = director.total_nominations || 0;
@@ -871,18 +1119,6 @@ const getSortedDirectorsByProsperity = (callback) => {
         ? parseFloat(director.avg_rotten_tomatoes.replace("%", "")) / 100
         : 0;
 
-      console.log(
-        "getSortedDirectorsByProsperity",
-        director.director,
-        totalWins,
-        totalNominations,
-        totalBoxOffice,
-        maxBoxOffice,
-        normalizedBoxOffice,
-        avgMetascore,
-        avgIMDbRating,
-        avgRottenTomatoes
-      );
       const prosperityScore =
         totalWins * weights.total_wins +
         totalNominations * weights.total_nominations +
@@ -913,6 +1149,11 @@ const getSortedDirectorsByProsperity = (callback) => {
   });
 };
 
+/**
+ * Извлича актьорите спрямо просперитетът им, изчислена на база различни показатели.
+ *
+ * @param {function} callback - Функция, която се извиква при завършване на заявката с резултатите.
+ */
 const getSortedActorsByProsperity = (callback) => {
   const query = `
   WITH RECURSIVE ActorSplit AS (
@@ -1093,6 +1334,11 @@ const getSortedActorsByProsperity = (callback) => {
   });
 };
 
+/**
+ * Извлича сценаристите спрямо просперитетът им, изчислена на база различни показатели.
+ *
+ * @param {function} callback - Функция, която се извиква при завършване на заявката с резултатите.
+ */
 const getSortedWritersByProsperity = (callback) => {
   const query = `  
   WITH RECURSIVE WriterSplit AS (
@@ -1275,6 +1521,11 @@ const getSortedWritersByProsperity = (callback) => {
   });
 };
 
+/**
+ * Извлича филмите спрямо просперитетът им, изчислена на база различни показатели.
+ *
+ * @param {function} callback - Функция, която се извиква при завършване на заявката с резултатите.
+ */
 const getSortedMoviesByProsperity = (callback) => {
   const query = `
   WITH RECURSIVE MovieSplit AS (
@@ -1455,6 +1706,16 @@ const getSortedMoviesByProsperity = (callback) => {
   });
 };
 
+/**
+ * Извлича най-препоръчваните филми и сериали по метаскор.
+ *
+ * Тази функция изпълнява SQL заявка за извличане на филми и сериали с най-висок метаскор
+ * от таблицата "movies_series_recommendations". Резултатите са подредени по метаскор
+ * в низходящ ред, като резултатите се ограничават до зададения лимит.
+ *
+ * @param {number} limit - Броят на записите, които да бъдат върнати от заявката.
+ * @param {function} callback - Функция за обратна връзка, която ще бъде извикана след изпълнението на заявката.
+ */
 const getTopMoviesAndSeriesByMetascore = (limit, callback) => {
   const query = `
   SELECT 
@@ -1489,6 +1750,17 @@ const getTopMoviesAndSeriesByMetascore = (limit, callback) => {
   `;
   db.query(query, [limit], callback);
 };
+
+/**
+ * Извлича най-препоръчваните филми и сериали по IMDb рейтинг.
+ *
+ * Тази функция изпълнява SQL заявка за извличане на филми и сериали с най-висок IMDb рейтинг
+ * от таблицата "movies_series_recommendations". Резултатите са подредени по IMDb рейтинг
+ * в низходящ ред, като резултатите се ограничават до зададения лимит.
+ *
+ * @param {number} limit - Броят на записите, които да бъдат върнати от заявката.
+ * @param {function} callback - Функция за обратна връзка, която ще бъде извикана след изпълнението на заявката.
+ */
 
 const getTopMoviesAndSeriesByIMDbRating = (limit, callback) => {
   const query = `
@@ -1525,6 +1797,16 @@ const getTopMoviesAndSeriesByIMDbRating = (limit, callback) => {
   db.query(query, [limit], callback);
 };
 
+/**
+ * Извлича най-препоръчваните филми и сериали по рейтинг на Rotten Tomatoes.
+ *
+ * Тази функция изпълнява SQL заявка за извличане на филми и сериали с най-висок рейтинг
+ * от Rotten Tomatoes от таблицата "movies_series_recommendations". Резултатите са подредени
+ * по рейтинг на Rotten Tomatoes в низходящ ред, като резултатите се ограничават до зададения лимит.
+ *
+ * @param {number} limit - Броят на записите, които да бъдат върнати от заявката.
+ * @param {function} callback - Функция за обратна връзка, която ще бъде извикана след изпълнението на заявката.
+ */
 const getTopMoviesAndSeriesByRottenTomatoesRating = (limit, callback) => {
   const query = `
   SELECT 
@@ -1575,6 +1857,17 @@ const getTopMoviesAndSeriesByRottenTomatoesRating = (limit, callback) => {
   db.query(query, [limit], callback);
 };
 
+/**
+ * Функция за извличане на най-добрите препоръки за потребител по неговото ID.
+ *
+ * @param {number} userId - ID на потребителя, за когото се извършва търсенето.
+ * @param {function} callback - Функция за обработка на резултатите от заявката.
+ *
+ * @callback callback
+ * @param {Error|null} err - Ако възникне грешка по време на заявката.
+ * @param {Object|null} results - Резултатите от заявката или съобщение за грешка.
+ * @returns {void}
+ */
 const getUsersTopRecommendations = (userId, callback) => {
   const query = `
     SELECT 
@@ -1724,6 +2017,17 @@ const getUsersTopRecommendations = (userId, callback) => {
   });
 };
 
+/**
+ * Функция за извличане на списъка за гледане на потребител по неговото ID.
+ *
+ * @param {number} userId - ID на потребителя, за когото се извършва търсенето.
+ * @param {function} callback - Функция за обработка на резултатите от заявката.
+ *
+ * @callback callback
+ * @param {Error|null} err - Ако възникне грешка по време на заявката.
+ * @param {Object|null} results - Резултатите от заявката или съобщение за грешка.
+ * @returns {void}
+ */
 const getUsersWatchlist = (userId, callback) => {
   const query = `
     SELECT 
@@ -1856,6 +2160,34 @@ const getUsersWatchlist = (userId, callback) => {
   });
 };
 
+/**
+ * Функция за извличане на списъка за четене на потребител по неговото ID.
+ *
+ * @param {number} userId - ID на потребителя, за когото се извършва търсенето.
+ * @param {function} callback - Функция за обработка на резултатите от заявката.
+ *
+ * @callback callback
+ * @param {Error|null} err - Ако възникне грешка по време на заявката.
+ * @param {Array} results - Массив с резултатите от заявката.
+ * @returns {void}
+ */
+const getUsersReadlist = (userId, callback) => {
+  const query = `
+    SELECT * FROM readlist
+    WHERE user_id = ?
+    ORDER BY title_en ASC;
+  `;
+
+  db.query(query, [userId], callback);
+};
+
+/**
+ * Извлича топ жанровете на потребителя от препоръките му.
+ *
+ * @param {number} userId - Идентификатор на потребителя, за когото ще се извлекат топ жанровете.
+ * @param {number} limit - Максимален брой жанрове, които да се върнат.
+ * @param {function} callback - Функция за обратно извикване, която получава резултатите или грешка.
+ */
 const getUsersTopGenres = (userId, limit, callback) => {
   const query = `
     SELECT genre_en, genre_bg, COUNT(*) AS count
@@ -1892,6 +2224,13 @@ const getUsersTopGenres = (userId, limit, callback) => {
   });
 };
 
+/**
+ * Извлича топ жанровете на потребителя от неговия watchlist.
+ *
+ * @param {number} userId - Идентификатор на потребителя, за когото ще се извлекат топ жанровете.
+ * @param {number} limit - Максимален брой жанрове, които да се върнат.
+ * @param {function} callback - Функция за обратно извикване, която получава резултатите или грешка.
+ */
 const getUsersTopGenresFromWatchlist = (userId, limit, callback) => {
   const query = `
     SELECT genre_en, genre_bg, COUNT(*) AS count
@@ -1930,6 +2269,13 @@ const getUsersTopGenresFromWatchlist = (userId, limit, callback) => {
   });
 };
 
+/**
+ * Извлича топ актьорите на потребителя от препоръките му.
+ *
+ * @param {number} userId - Идентификатор на потребителя, за когото ще се извлекат топ актьорите.
+ * @param {number} limit - Максимален брой жанрове, които да се върнат.
+ * @param {function} callback - Функция за обратно извикване, която получава резултатите или грешка.
+ */
 const getUsersTopActors = (userId, limit, callback) => {
   const query = `
     SELECT actor, COUNT(*) AS recommendations_count
@@ -1983,8 +2329,6 @@ const getUsersTopActors = (userId, limit, callback) => {
     const actors = translatedResults
       .map((actor) => `'${actor.actor_en.replace(/'/g, "''")}'`)
       .join(",");
-
-    console.log("actors: ", actors);
 
     const prosperityQuery = `
       WITH RECURSIVE ActorSplit AS (
@@ -2179,6 +2523,13 @@ const getUsersTopActors = (userId, limit, callback) => {
   });
 };
 
+/**
+ * Извлича топ актьорите на потребителя от неговия watchlist.
+ *
+ * @param {number} userId - Идентификатор на потребителя, за когото ще се извлекат топ актьорите.
+ * @param {number} limit - Максимален брой жанрове, които да се върнат.
+ * @param {function} callback - Функция за обратно извикване, която получава резултатите или грешка.
+ */
 const getUsersTopActorsFromWatchlist = (userId, limit, callback) => {
   const query = `
     SELECT actor, COUNT(*) AS saved_count
@@ -2232,8 +2583,6 @@ const getUsersTopActorsFromWatchlist = (userId, limit, callback) => {
     const actors = translatedResults
       .map((actor) => `'${actor.actor_en.replace(/'/g, "''")}'`)
       .join(",");
-
-    console.log("actors: ", actors);
 
     const prosperityQuery = `
       WITH RECURSIVE ActorSplit AS (
@@ -2428,6 +2777,13 @@ const getUsersTopActorsFromWatchlist = (userId, limit, callback) => {
   });
 };
 
+/**
+ * Извлича топ режисьорите на потребителя от препоръките му.
+ *
+ * @param {number} userId - Идентификатор на потребителя, за когото ще се извлекат топ режисьорите.
+ * @param {number} limit - Максимален брой жанрове, които да се върнат.
+ * @param {function} callback - Функция за обратно извикване, която получава резултатите или грешка.
+ */
 const getUsersTopDirectors = (userId, limit, callback) => {
   const query = `
     SELECT director, COUNT(*) AS recommendations_count
@@ -2599,14 +2955,6 @@ const getUsersTopDirectors = (userId, limit, callback) => {
         })
       );
 
-      console.log(
-        ...prosperityResults.map((director) => {
-          const totalBoxOffice =
-            parseFloat(director.total_box_office.replace(/[$,]/g, "")) || 0;
-          return totalBoxOffice;
-        })
-      );
-
       const weights = {
         total_wins: 0.3,
         total_nominations: 0.25,
@@ -2632,18 +2980,6 @@ const getUsersTopDirectors = (userId, limit, callback) => {
           ? parseFloat(director.avg_rotten_tomatoes.replace("%", "")) / 100
           : 0;
 
-        console.log(
-          "getUsersTopDirectors",
-          director.director,
-          totalWins,
-          totalNominations,
-          totalBoxOffice,
-          maxBoxOffice,
-          normalizedBoxOffice,
-          avgMetascore,
-          avgIMDbRating,
-          avgRottenTomatoes
-        );
         const prosperityScore =
           totalWins * weights.total_wins +
           totalNominations * weights.total_nominations +
@@ -2694,6 +3030,13 @@ const getUsersTopDirectors = (userId, limit, callback) => {
   });
 };
 
+/**
+ * Извлича топ режисьорите на потребителя от неговия watchlist.
+ *
+ * @param {number} userId - Идентификатор на потребителя, за когото ще се извлекат топ режисьорите.
+ * @param {number} limit - Максимален брой жанрове, които да се върнат.
+ * @param {function} callback - Функция за обратно извикване, която получава резултатите или грешка.
+ */
 const getUsersTopDirectorsFromWatchlist = (userId, limit, callback) => {
   const query = `
     SELECT director, COUNT(*) AS saved_count
@@ -2940,6 +3283,13 @@ const getUsersTopDirectorsFromWatchlist = (userId, limit, callback) => {
   });
 };
 
+/**
+ * Извлича топ сценаристите на потребителя от препоръките му.
+ *
+ * @param {number} userId - Идентификатор на потребителя, за когото ще се извлекат топ сценаристите.
+ * @param {number} limit - Максимален брой жанрове, които да се върнат.
+ * @param {function} callback - Функция за обратно извикване, която получава резултатите или грешка.
+ */
 const getUsersTopWriters = (userId, limit, callback) => {
   const query = `
     SELECT writer, COUNT(*) AS recommendations_count
@@ -3187,7 +3537,14 @@ const getUsersTopWriters = (userId, limit, callback) => {
   });
 };
 
-const getUsersTopWritersWatchlist = (userId, limit, callback) => {
+/**
+ * Извлича топ сценаристите на потребителя от неговия watchlist.
+ *
+ * @param {number} userId - Идентификатор на потребителя, за когото ще се извлекат топ сценаристите.
+ * @param {number} limit - Максимален брой жанрове, които да се върнат.
+ * @param {function} callback - Функция за обратно извикване, която получава резултатите или грешка.
+ */
+const getUsersTopWritersFromWatchlist = (userId, limit, callback) => {
   const query = `
     SELECT writer, COUNT(*) AS saved_count
     FROM (
@@ -3434,17 +3791,721 @@ const getUsersTopWritersWatchlist = (userId, limit, callback) => {
   });
 };
 
+/**
+ * Извлича всички уникални препоръки на потребителя по неговото ID.
+ *
+ * @param {number} userId - ID на потребителя, за когото се извършва заявката.
+ * @param {Function} callback - Функция, която ще бъде извикана след изпълнението на заявката.
+ *                            Получава два параметъра: грешка (или null) и резултати от заявката.
+ *
+ * @returns {void} Няма връщане на стойност, резултатите се подават през callback функцията.
+ */
+const getAllUsersDistinctRecommendations = (userId, callback) => {
+  const query = `
+    SELECT imdbID, genre_en, type, runtime, year, rated 
+    FROM movies_series_recommendations 
+    WHERE user_id = ? 
+    GROUP BY imdbID;
+  `;
+
+  db.query(query, [userId], (error, results) => {
+    if (error) {
+      return callback(error, null);
+    }
+
+    const totalCount = results.length; // Извлича общия брой уникални препоръки
+    callback(null, { total_count: totalCount, recommendations: results });
+  });
+};
+
+/**
+ * Извлича всички уникални препоръки за всички платформи.
+ *
+ * @param {Function} callback - Функция, която ще бъде извикана след изпълнението на заявката.
+ *                            Получава два параметъра: грешка (или null) и резултати от заявката.
+ *
+ * @returns {void} Няма връщане на стойност, резултатите се подават през callback функцията.
+ */
+const getAllPlatformDistinctRecommendations = (callback) => {
+  const query = `
+    SELECT imdbID, genre_en, type, runtime, year, rated 
+    FROM movies_series_recommendations 
+    GROUP BY imdbID;
+  `;
+
+  db.query(query, (error, results) => {
+    if (error) {
+      return callback(error, null);
+    }
+
+    const totalCount = results.length; // Извлича общия брой препоръки
+    callback(null, { total_count: totalCount, recommendations: results });
+  });
+};
+
+/**
+ * Извлича последните предпочитания на потребител по неговото потребителско ID.
+ *
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {function} callback - Функция за обратно извикване, която приема два аргумента: грешка (err) и резултати (results).
+ */
+const getLastUserPreferences = (userId, callback) => {
+  const query = `
+    SELECT * 
+    FROM movies_series_user_preferences 
+    WHERE user_id = ? 
+    AND (preferred_genres_en IS NOT NULL AND preferred_genres_en != '')
+    ORDER BY date DESC LIMIT 1
+  `;
+
+  db.query(query, [userId], (err, results) => {
+    if (err) return callback(err, null);
+    callback(null, results.length ? results[0] : null);
+  });
+};
+
+/**
+ * Извлича последните препоръки за филми и сериали за даден потребител на базата на дата.
+ *
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {string} date - Дата, на която са генерирани препоръките.
+ * @param {function} callback - Функция за обратно извикване, която приема два аргумента: грешка (err) и резултати (results).
+ */
+const getLastGeneratedMoviesSeriesRecommendations = (
+  userId,
+  date,
+  callback
+) => {
+  const query = `
+    SELECT * 
+    FROM movies_series_recommendations
+    WHERE user_id = ? 
+    AND date = ?;
+  `;
+
+  db.query(query, [userId, date], (err, results) => {
+    if (err) return callback(err, null);
+    callback(null, results);
+  });
+};
+
+/**
+ * Записва нови стойности за Precision за потребител, ако те са различни от последно запазените.
+ *
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {string} statsType - Тип на статистиката.
+ * @param {object} data - Обект, съдържащ новите стойности за Precision.
+ * @param {function} callback - Функция за обратно извикване, която приема два аргумента: грешка (err) и резултати (results).
+ */
+const savePrecision = (userId, statsType, data, callback) => {
+  // Запитване за последно запазените стойности на стойността на Precision за даден потребител и тип статистика
+  const checkQuery = `
+    SELECT precision_exact, precision_fixed, precision_percentage
+    FROM movies_series_recommendations_metrics
+    WHERE user_id = ? AND stats_type = ?
+    ORDER BY date DESC LIMIT 1
+  `;
+
+  const checkValues = [userId, statsType];
+
+  db.query(checkQuery, checkValues, (err, results) => {
+    if (err) {
+      console.error(
+        "Грешка при проверка на последните запазени статистики:",
+        err
+      );
+      return callback(err);
+    }
+
+    // Ако няма запис за този потребител или стойността на Precision е променена, записваме новите стойности
+    if (
+      results.length === 0 ||
+      parseFloat(results[0].precision_exact) !== data.precision_exact
+    ) {
+      // Записване на нови стойности за Precision
+      const saveQuery = `
+        INSERT INTO movies_series_recommendations_metrics (
+          user_id, stats_type,
+          precision_exact, precision_fixed, precision_percentage,
+          relevant_recommendations_count, total_recommendations_count
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+      `;
+
+      const values = [
+        userId,
+        statsType,
+        data.precision_exact || null,
+        data.precision_fixed || null,
+        data.precision_percentage || null,
+        data.relevant_recommendations_count || null,
+        data.total_recommendations_count || null
+      ];
+
+      db.query(saveQuery, values, callback);
+    } else {
+      callback(null, { message: "No new Precision data to save." });
+    }
+  });
+};
+
+/**
+ * Записва нови стойности за Recall за потребител, ако те са различни от последно запазените.
+ *
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {string} statsType - Тип на статистиката.
+ * @param {object} data - Обект, съдържащ новите стойности за Recall.
+ * @param {function} callback - Функция за обратно извикване, която приема два аргумента: грешка (err) и резултати (results).
+ */
+const saveRecall = (userId, statsType, data, callback) => {
+  // Запитване за последно запазените стойности на стойността на Recall за даден потребител и тип статистика
+  const checkQuery = `
+    SELECT recall_exact, recall_fixed, recall_percentage, 
+    relevant_platform_recommendations_count, 
+    total_platform_recommendations_count
+    FROM movies_series_recommendations_metrics
+    WHERE user_id = ? AND stats_type = ?
+    ORDER BY date DESC LIMIT 1
+  `;
+
+  const checkValues = [userId, statsType];
+
+  db.query(checkQuery, checkValues, (err, results) => {
+    if (err) {
+      console.error("Error checking last saved stats:", err);
+      return callback(err);
+    }
+
+    if (
+      // Ако стойността на recall_exact се е променила или relevant_platform_recommendations_count или total_platform_recommendations_count са се увеличили от последния път, нови данни се запазват
+      results.length === 0 ||
+      parseFloat(results[0].recall_exact) !== data.recall_exact ||
+      results[0].relevant_platform_recommendations_count !==
+        data.relevant_platform_recommendations_count ||
+      results[0].total_platform_recommendations_count !==
+        data.total_platform_recommendations_count
+    ) {
+      // Записване на нови стойности за Recall
+      const saveQuery = `
+        INSERT INTO movies_series_recommendations_metrics (
+          user_id, stats_type,
+          recall_exact, recall_fixed, recall_percentage,
+          relevant_user_recommendations_count, relevant_platform_recommendations_count,
+          total_user_recommendations_count, total_platform_recommendations_count
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+
+      const values = [
+        userId,
+        statsType,
+        data.recall_exact || null,
+        data.recall_fixed || null,
+        data.recall_percentage || null,
+        data.relevant_user_recommendations_count || null,
+        data.relevant_platform_recommendations_count || null,
+        data.total_user_recommendations_count || null,
+        data.total_platform_recommendations_count || null
+      ];
+
+      db.query(saveQuery, values, callback);
+    } else {
+      callback(null, { message: "No new recall data to save." });
+    }
+  });
+};
+
+/**
+ * Записва нови стойности за F1 Score за потребител, ако те са различни от последно запазените.
+ *
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {string} statsType - Тип на статистиката.
+ * @param {object} data - Обект, съдържащ новите стойности за F1 Score.
+ * @param {function} callback - Функция за обратно извикване, която приема два аргумента: грешка (err) и резултати (results).
+ */
+const saveF1Score = (userId, statsType, data, callback) => {
+  // Запитване за последно запазените стойности на стойността на F1 Score за даден потребител и тип статистика
+  const checkQuery = `
+    SELECT f1_score_exact, f1_score_fixed, f1_score_percentage
+    FROM movies_series_recommendations_metrics
+    WHERE user_id = ? AND stats_type = ?
+    ORDER BY date DESC LIMIT 1
+  `;
+
+  const checkValues = [userId, statsType];
+
+  db.query(checkQuery, checkValues, (err, results) => {
+    if (err) {
+      console.error(
+        "Грешка при проверка на последните запазени статистики:",
+        err
+      );
+      return callback(err);
+    }
+
+    // Ако няма запис за този потребител или стойността на F1 Score е променена, записваме новите стойности
+    if (
+      results.length === 0 ||
+      parseFloat(results[0].f1_score_exact) !== data.f1_score_exact
+    ) {
+      // Записване на нови стойности за F1 Score
+      const saveQuery = `
+        INSERT INTO movies_series_recommendations_metrics (
+          user_id, stats_type,
+          f1_score_exact, f1_score_fixed, f1_score_percentage
+        ) VALUES (?, ?, ?, ?, ?)
+      `;
+
+      const values = [
+        userId,
+        statsType,
+        data.f1_score_exact || null,
+        data.f1_score_fixed || null,
+        data.f1_score_percentage || null
+      ];
+
+      db.query(saveQuery, values, callback);
+    } else {
+      callback(null, { message: "No new F1 Score data to save." });
+    }
+  });
+};
+
+/**
+ * Записва анализа на потребителската активност в базата данни.
+ *
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {Object} data - Данни за анализа на препоръките.
+ * @param {number} data.relevantCount - Брой на релевантните препоръки.
+ * @param {number} data.totalCount - Общо количество препоръки.
+ * @param {number} data.precisionValue - Стойност на precision-а.
+ * @param {number} data.precisionPercentage - Процент на precision-а.
+ * @param {Array} data.relevantRecommendations - Списък с релевантни препоръки.
+ * @param {string} data.date - Дата на анализа.
+ * @param {function} callback - Функция за обратна връзка, която се извиква след успешното изпълнение на заявката.
+ */
+const saveAnalysis = (userId, data, callback) => {
+  const query = `
+    INSERT INTO movies_series_analysis (
+      user_id, relevant_count, total_count, 
+      precision_value, precision_percentage, relevant_recommendations, date
+    ) VALUES (?, ?, ?, ?, ?, ?, ?);
+  `;
+
+  const values = [
+    userId,
+    data.relevantCount,
+    data.totalCount,
+    data.precisionValue,
+    data.precisionPercentage,
+    JSON.stringify(data.relevantRecommendations),
+    data.date
+  ];
+
+  db.query(query, values, callback);
+};
+
+/**
+ * Изчислява средни стойности за precision, recall и F1 score от метриките на препоръките.
+ *
+ * @param {function} callback - Функция за обратна връзка, която се извиква след изчисляването на метриките.
+ * Връща обект с изчислените стойности и проценти.
+ */
+const calculateAverageMetrics = (callback) => {
+  // Query to retrieve average precision, recall, and F1 score from movies_series_recommendations_metrics
+  const queryMetrics = `
+    SELECT 
+      AVG(precision_exact) AS avg_precision, 
+      AVG(recall_exact) AS avg_recall, 
+      AVG(f1_score_exact) AS avg_f1_score
+    FROM movies_series_recommendations_metrics
+  `;
+
+  // Query to retrieve average precision from movies_series_analysis (last recorded values)
+  const queryAnalysis = `
+    SELECT 
+      AVG(precision_value) AS average_precision_last_round
+    FROM movies_series_analysis
+  `;
+
+  db.query(queryMetrics, (err, metricsResults) => {
+    if (err) {
+      console.error("Error calculating average metrics:", err);
+      return callback(err);
+    }
+
+    db.query(queryAnalysis, (err, analysisResults) => {
+      if (err) {
+        console.error(
+          "Error calculating average precision from analysis:",
+          err
+        );
+        return callback(err);
+      }
+
+      // Изчисляване на обикновените и процентните стойности (умножаване по 100)
+      const avgPrecision = metricsResults[0]?.avg_precision || 0;
+      const avgRecall = metricsResults[0]?.avg_recall || 0;
+      const avgF1Score = metricsResults[0]?.avg_f1_score || 0;
+      const avgPrecisionLastRound =
+        analysisResults[0]?.average_precision_last_round || 0;
+
+      callback(null, {
+        average_precision: avgPrecision,
+        average_precision_percentage: (avgPrecision * 100).toFixed(2),
+        average_precision_last_round: avgPrecisionLastRound,
+        average_precision_last_round_percentage: (
+          avgPrecisionLastRound * 100
+        ).toFixed(2),
+        average_recall: avgRecall,
+        average_recall_percentage: (avgRecall * 100).toFixed(2),
+        average_f1_score: avgF1Score,
+        average_f1_score_percentage: (avgF1Score * 100).toFixed(2)
+      });
+    });
+  });
+};
+
+/**
+ * Извлича историческите средни стойности за precision, recall и F1 score по дати.
+ *
+ * @param {function} callback - Функция за обратна връзка, която се извиква след успешното извличане на данни.
+ * Връща масив с историческите стойности по дати.
+ */
+const getHistoricalAverageMetrics = (callback) => {
+  // Заявка за получаване на кумулативни средни стойности за precision, recall и F1 score до всяка дата
+  const queryMetrics = `
+    SELECT 
+      DATE_FORMAT(DATE(date), '%d-%m-%Y') AS record_date,  -- Формат на датата променен на "DD-MM-YYYY"
+      (SELECT AVG(precision_exact) FROM movies_series_recommendations_metrics WHERE DATE(date) <= DATE(m.date)) AS avg_precision, 
+      (SELECT AVG(recall_exact) FROM movies_series_recommendations_metrics WHERE DATE(date) <= DATE(m.date)) AS avg_recall, 
+      (SELECT AVG(f1_score_exact) FROM movies_series_recommendations_metrics WHERE DATE(date) <= DATE(m.date)) AS avg_f1_score
+    FROM movies_series_recommendations_metrics m
+    GROUP BY record_date
+    ORDER BY record_date ASC;
+  `;
+
+  // Заявка за получаване на кумулативни средни стойности за precision от movies_series_analysis до всяка дата
+  const queryAnalysis = `
+    SELECT 
+      DATE_FORMAT(DATE(date), '%d-%m-%Y') AS record_date,  -- Формат на датата променен на "DD-MM-YYYY"
+      (SELECT AVG(precision_value) FROM movies_series_analysis WHERE DATE(date) <= DATE(a.date)) AS avg_precision_last_round
+    FROM movies_series_analysis a
+    GROUP BY record_date
+    ORDER BY record_date ASC;
+  `;
+
+  db.query(queryMetrics, (err, metricsResults) => {
+    if (err) {
+      console.error(
+        "Грешка при извличането на историческите средни стойности:",
+        err
+      );
+      return callback(err);
+    }
+
+    db.query(queryAnalysis, (err, analysisResults) => {
+      if (err) {
+        console.error(
+          "Грешка при извличането на историческите стойности за precision от анализа:",
+          err
+        );
+        return callback(err);
+      }
+
+      // Обединяваме резултатите от двете заявки според датата
+      const historyMap = new Map();
+
+      // Записваме резултатите за метриките в map (дата -> стойности)
+      metricsResults.forEach(
+        ({ record_date, avg_precision, avg_recall, avg_f1_score }) => {
+          historyMap.set(record_date, {
+            record_date,
+            average_precision: avg_precision || 0,
+            average_precision_percentage: ((avg_precision || 0) * 100).toFixed(
+              2
+            ),
+            average_recall: avg_recall || 0,
+            average_recall_percentage: ((avg_recall || 0) * 100).toFixed(2),
+            average_f1_score: avg_f1_score || 0,
+            average_f1_score_percentage: ((avg_f1_score || 0) * 100).toFixed(2),
+            average_precision_last_round: 0,
+            average_precision_last_round_percentage: "0.00"
+          });
+        }
+      );
+
+      // Записваме precision от movies_series_analysis в map
+      analysisResults.forEach(({ record_date, avg_precision_last_round }) => {
+        if (historyMap.has(record_date)) {
+          historyMap.get(record_date).average_precision_last_round =
+            avg_precision_last_round || 0;
+          historyMap.get(record_date).average_precision_last_round_percentage =
+            ((avg_precision_last_round || 0) * 100).toFixed(2);
+        } else {
+          historyMap.set(record_date, {
+            record_date,
+            average_precision: 0,
+            average_precision_percentage: "0.00",
+            average_recall: 0,
+            average_recall_percentage: "0.00",
+            average_f1_score: 0,
+            average_f1_score_percentage: "0.00",
+            average_precision_last_round: avg_precision_last_round || 0,
+            average_precision_last_round_percentage: (
+              (avg_precision_last_round || 0) * 100
+            ).toFixed(2)
+          });
+        }
+      });
+
+      const sortedResults = Array.from(historyMap.values()).sort(
+        (a, b) =>
+          new Date(a.record_date.split("-").reverse().join("-")) -
+          new Date(b.record_date.split("-").reverse().join("-"))
+      );
+
+      // Преобразуваме map в масив и го връщаме
+      callback(null, sortedResults);
+    });
+  });
+};
+
+/**
+ * Извлича историческите средни стойности за precision, recall и F1 score за конкретен потребител по дати.
+ *
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {function} callback - Функция за обратна връзка, която се извиква след успешното извличане на данни.
+ * Връща масив с историческите стойности по дати за конкретния потребител.
+ */
+const getHistoricalAverageMetricsForUser = (userId, callback) => {
+  // Заявка за получаване на кумулативни средни стойности за precision, recall и F1 score за конкретен потребител до всяка дата
+  const queryMetrics = `
+    SELECT 
+      DATE_FORMAT(DATE(date), '%d-%m-%Y') AS record_date,  -- Формат на датата променен на "DD-MM-YYYY"
+      (SELECT AVG(precision_exact) FROM movies_series_recommendations_metrics WHERE DATE(date) <= DATE(m.date) AND user_id = ?) AS avg_precision, 
+      (SELECT AVG(recall_exact) FROM movies_series_recommendations_metrics WHERE DATE(date) <= DATE(m.date) AND user_id = ?) AS avg_recall, 
+      (SELECT AVG(f1_score_exact) FROM movies_series_recommendations_metrics WHERE DATE(date) <= DATE(m.date) AND user_id = ?) AS avg_f1_score
+    FROM movies_series_recommendations_metrics m
+    WHERE m.user_id = ?
+    GROUP BY record_date
+    ORDER BY record_date ASC;
+  `;
+
+  // Заявка за получаване на кумулативни средни стойности за precision от movies_series_analysis за конкретен потребител до всяка дата
+  const queryAnalysis = `
+    SELECT 
+      DATE_FORMAT(DATE(date), '%d-%m-%Y') AS record_date,  -- Формат на датата променен на "DD-MM-YYYY"
+      (SELECT AVG(precision_value) FROM movies_series_analysis WHERE DATE(date) <= DATE(a.date) AND user_id = ?) AS avg_precision_last_round
+    FROM movies_series_analysis a
+    WHERE a.user_id = ?
+    GROUP BY record_date
+    ORDER BY record_date ASC;
+  `;
+
+  db.query(
+    queryMetrics,
+    [userId, userId, userId, userId],
+    (err, metricsResults) => {
+      if (err) {
+        console.error(
+          "Грешка при извличането на историческите средни стойности:",
+          err
+        );
+        return callback(err);
+      }
+
+      db.query(queryAnalysis, [userId, userId], (err, analysisResults) => {
+        if (err) {
+          console.error(
+            "Грешка при извличането на историческите стойности за precision от анализа:",
+            err
+          );
+          return callback(err);
+        }
+
+        // Обединяваме резултатите от двете заявки според датата
+        const historyMap = new Map();
+
+        // Записваме резултатите за метриките в map (дата -> стойности)
+        metricsResults.forEach(
+          ({ record_date, avg_precision, avg_recall, avg_f1_score }) => {
+            historyMap.set(record_date, {
+              record_date,
+              average_precision: avg_precision || 0,
+              average_precision_percentage: (
+                (avg_precision || 0) * 100
+              ).toFixed(2),
+              average_recall: avg_recall || 0,
+              average_recall_percentage: ((avg_recall || 0) * 100).toFixed(2),
+              average_f1_score: avg_f1_score || 0,
+              average_f1_score_percentage: ((avg_f1_score || 0) * 100).toFixed(
+                2
+              ),
+              average_precision_last_round: 0,
+              average_precision_last_round_percentage: "0.00"
+            });
+          }
+        );
+
+        // Записваме precision от movies_series_analysis в map
+        analysisResults.forEach(({ record_date, avg_precision_last_round }) => {
+          if (historyMap.has(record_date)) {
+            historyMap.get(record_date).average_precision_last_round =
+              avg_precision_last_round || 0;
+            historyMap.get(
+              record_date
+            ).average_precision_last_round_percentage = (
+              (avg_precision_last_round || 0) * 100
+            ).toFixed(2);
+          } else {
+            historyMap.set(record_date, {
+              record_date,
+              average_precision: 0,
+              average_precision_percentage: "0.00",
+              average_recall: 0,
+              average_recall_percentage: "0.00",
+              average_f1_score: 0,
+              average_f1_score_percentage: "0.00",
+              average_precision_last_round: avg_precision_last_round || 0,
+              average_precision_last_round_percentage: (
+                (avg_precision_last_round || 0) * 100
+              ).toFixed(2)
+            });
+          }
+        });
+
+        const sortedResults = Array.from(historyMap.values()).sort(
+          (a, b) =>
+            new Date(a.record_date.split("-").reverse().join("-")) -
+            new Date(b.record_date.split("-").reverse().join("-"))
+        );
+
+        // Преобразуваме map в масив и го връщаме
+        callback(null, sortedResults);
+      });
+    }
+  );
+};
+
+/**
+ * Изчислява броя на адаптациите на книги в препоръките за филми и сериали.
+ *
+ * @param {function} callback - Функция за обратна връзка, която връща броя на адаптациите.
+ * Връща два броя: за филми и за сериали.
+ */
+const countBookAdaptations = (callback) => {
+  const query = "SELECT adaptations FROM books_recommendations";
+
+  db.query(query, (error, results) => {
+    if (error) {
+      return callback(error, null);
+    }
+
+    let movieCount = 0;
+    let seriesCount = 0;
+
+    results.forEach((row) => {
+      if (row.adaptations) {
+        if (/Филм|Movie|film/i.test(row.adaptations)) {
+          movieCount++;
+        }
+        if (/Сериал|Series|TV|Телевизионен сериал/i.test(row.adaptations)) {
+          seriesCount++;
+        }
+      }
+    });
+
+    callback(null, {
+      movies: movieCount,
+      series: seriesCount,
+      all: movieCount + seriesCount
+    });
+  });
+};
+
+/**
+ * Запазва данни от устройството в базата данни.
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {Object} data - Данни от устройството.
+ * @param {string} date - Дата, на която са генерирани предпочитанията.
+ * @param {Function} callback - Функция за обратно извикване след завършване на заявката.
+ */
+const saveMoviesSeriesBrainAnalysis = (userId, data, date, callback) => {
+  const query = `INSERT INTO movies_series_brain_analysis (
+    user_id, time, data_type, attention, meditation, delta, theta, 
+    lowAlpha, highAlpha, lowBeta, highBeta, lowGamma, highGamma, raw_data, date
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+
+  const values = [
+    userId,
+    data.time,
+    data.data_type,
+    data.attention,
+    data.meditation,
+    data.delta,
+    data.theta,
+    data.lowAlpha,
+    data.highAlpha,
+    data.lowBeta,
+    data.highBeta,
+    data.lowGamma,
+    data.highGamma,
+    JSON.stringify(data.raw_data),
+    date
+  ];
+
+  db.query(query, values, callback);
+};
+
+/**
+ * Запазва данни от устройството в базата данни.
+ * @param {number} userId - Идентификатор на потребителя.
+ * @param {Object} data - Данни от устройството.
+ * @param {string} date - Дата, на която са генерирани предпочитанията.
+ * @param {Function} callback - Функция за обратно извикване след завършване на заявката.
+ */
+const saveBooksBrainAnalysis = (userId, data, date, callback) => {
+  const query = `INSERT INTO books_brain_analysis (
+    user_id, time, data_type, attention, meditation, delta, theta, 
+    lowAlpha, highAlpha, lowBeta, highBeta, lowGamma, highGamma, raw_data, date
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+
+  const values = [
+    userId,
+    data.time,
+    data.data_type,
+    data.attention,
+    data.meditation,
+    data.delta,
+    data.theta,
+    data.lowAlpha,
+    data.highAlpha,
+    data.lowBeta,
+    data.highBeta,
+    data.lowGamma,
+    data.highGamma,
+    JSON.stringify(data.raw_data),
+    date
+  ];
+
+  db.query(query, values, callback);
+};
+
 module.exports = {
   checkEmailExists,
   createUser,
   findUserByEmail,
   updateUserPassword,
   getUserById,
-  saveMoviesSeriesRecommendation,
+  saveMovieSeriesRecommendation,
+  saveBookRecommendation,
   saveToWatchlist,
+  saveToReadlist,
   removeFromWatchlist,
+  removeFromReadlist,
   checkRecommendationExistsInWatchlist,
+  checkRecommendationExistsInReadlist,
   saveMoviesSeriesUserPreferences,
+  saveBooksUserPreferences,
   getUsersCount,
   getAverageBoxOfficeAndScores,
   getTopRecommendationsPlatform,
@@ -3466,6 +4527,7 @@ module.exports = {
   getTopMoviesAndSeriesByRottenTomatoesRating,
   getUsersTopRecommendations,
   getUsersWatchlist,
+  getUsersReadlist,
   getUsersTopGenres,
   getUsersTopGenresFromWatchlist,
   getUsersTopActors,
@@ -3473,5 +4535,19 @@ module.exports = {
   getUsersTopDirectors,
   getUsersTopDirectorsFromWatchlist,
   getUsersTopWriters,
-  getUsersTopWritersWatchlist
+  getUsersTopWritersFromWatchlist,
+  getAllUsersDistinctRecommendations,
+  getAllPlatformDistinctRecommendations,
+  getLastUserPreferences,
+  getLastGeneratedMoviesSeriesRecommendations,
+  savePrecision,
+  saveRecall,
+  saveF1Score,
+  saveAnalysis,
+  calculateAverageMetrics,
+  getHistoricalAverageMetrics,
+  getHistoricalAverageMetricsForUser,
+  countBookAdaptations,
+  saveMoviesSeriesBrainAnalysis,
+  saveBooksBrainAnalysis
 };

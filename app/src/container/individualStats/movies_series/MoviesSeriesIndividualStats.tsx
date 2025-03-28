@@ -1,15 +1,12 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import { DataType } from "./MoviesSeriesIndividualStats-types";
+import { DataType } from "./moviesSeriesIndividualStats-types";
 import { fetchData } from "./helper_functions";
 import {
   checkRecommendationExistsInWatchlist,
-  removeFromWatchlist,
-  saveToWatchlist
+  validateToken
 } from "../../helper_functions_common";
-import { checkTokenValidity } from "../../helper_functions_common";
 import { useNavigate } from "react-router-dom";
 import FadeInWrapper from "../../../components/common/loader/fadeinwrapper";
-import { showNotification } from "../../helper_functions_common";
 import Notification from "../../../components/common/notification/Notification";
 import { NotificationState } from "../../types_common";
 import ActorsDirectorsWritersTable from "./Components/ActorsDirectorsWritersTable";
@@ -17,6 +14,8 @@ import MoviesAndSeriesRecommendationsTable from "./Components/MoviesAndSeriesRec
 import GenresBarChart from "./Components/GenresBarChart";
 import CountWidgets from "./Components/CountWidgets";
 import BookmarkAlert from "./Components/BookmarkAlert";
+import ErrorCard from "../../../components/common/error/error";
+import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
 
 interface IndividualStatsProps {}
 
@@ -59,6 +58,8 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const handleNotificationClose = () => {
     // Функция за затваряне на известията
     if (notification?.type === "error") {
@@ -69,20 +70,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
   };
 
   useEffect(() => {
-    const validateToken = async () => {
-      // Функция за проверка валидността на потребителския токен
-      const redirectUrl = await checkTokenValidity(); // Извикване на помощна функция за валидиране на токена
-      if (redirectUrl) {
-        // Ако токенът е невалиден, показване на известие
-        showNotification(
-          setNotification, // Функция за задаване на известие
-          "Вашата сесия е изтекла. Моля, влезте в профила Ви отново.", // Съобщение за известието
-          "error" // Типът на известието (грешка)
-        );
-      }
-    };
-
-    validateToken(); // Стартиране на проверката на токена при първоначално зареждане на компонента
+    validateToken(setNotification); // Стартиране на проверката на токена при първоначално зареждане на компонента
 
     const token =
       localStorage.getItem("authToken") || sessionStorage.getItem("authToken"); // Вземане на токен от localStorage или sessionStorage
@@ -124,42 +112,6 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
     loadBookmarkStatus();
   }, [data.topRecommendationsWatchlist.watchlist]);
 
-  const handleBookmarkClick = (movie: {
-    imdbID: string;
-    [key: string]: any;
-  }) => {
-    setBookmarkedMovies((prev) => {
-      const isBookmarked = !!prev[movie.imdbID];
-      const updatedBookmarks = { ...prev };
-      const token =
-        localStorage.getItem("authToken") ||
-        sessionStorage.getItem("authToken");
-
-      if (isBookmarked) {
-        // Remove the movie from bookmarks if it's already bookmarked
-        delete updatedBookmarks[movie.imdbID];
-
-        // Call removeFromWatchlist API
-        removeFromWatchlist(movie.imdbID, token).catch((error) => {
-          console.error("Error removing from watchlist:", error);
-        });
-      } else {
-        // Add the movie to bookmarks if it's not already bookmarked
-        updatedBookmarks[movie.imdbID] = movie;
-
-        // Call saveToWatchlist API
-        saveToWatchlist(movie, token).catch((error) => {
-          console.error("Error saving to watchlist:", error);
-        });
-      }
-
-      setCurrentBookmarkStatus(!isBookmarked); // Update the current bookmark status
-      setAlertVisible(true); // Show the alert
-
-      return updatedBookmarks; // Return the updated bookmarks object
-    });
-  };
-
   if (loading) {
     return (
       <FadeInWrapper loadingTimeout={30000}>
@@ -167,8 +119,6 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
       </FadeInWrapper>
     );
   }
-
-  console.log("data: ", data);
 
   if (
     !data.topRecommendations.recommendations ||
@@ -179,21 +129,24 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
     !data.sortedWritersByRecommendationCount.length
   ) {
     return (
-      <FadeInWrapper>
-        <div className="flex justify-center items-center bg-bodybg mt-[15rem] text-center p-6 rounded-lg shadow-xl">
-          <p className="text-2xl font-extrabold text-defaulttextcolor drop-shadow-lg">
-            🔍 За да можете да разгледате Вашите индивидуални статистики, моля,
-            първо генерирайте препоръки. Това ще ни позволи да съберем
-            необходимите данни и да Ви предоставим подробен анализ 📊, съобразен
-            с Вашите предпочитания. ⚙️
-          </p>
-        </div>
-      </FadeInWrapper>
+      <ErrorCard
+        message="🔍 За да можете да разгледате Вашите индивидуални статистики, моля, първо генерирайте филми или сериали. 
+        Това ще ни позволи да съберем необходимите данни и да Ви предоставим 
+        подробен анализ 📊 на вашата активност в платформата. ⚙️"
+        redirectUrl={`${
+          import.meta.env.BASE_URL
+        }app/recommendations/movies_series`}
+        redirectText="Генерирайте нови препоръки за филми/сериали"
+      />
     );
   }
 
   const handleDismiss = () => {
     setAlertVisible(false);
+  };
+
+  const handleModalToggle = () => {
+    setIsModalOpen(!isModalOpen);
   };
 
   return (
@@ -212,12 +165,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
         />
       )}
       <Fragment>
-        <div className="md:flex block items-center justify-between my-[1.5rem] page-header-breadcrumb">
-          <div>
-            <p className="font-semibold text-[1.125rem] text-defaulttextcolor dark:text-defaulttextcolor/70 !mb-0 "></p>
-          </div>
-        </div>
-        <div className="grid grid-cols-12 gap-6">
+        <div className="grid grid-cols-12 gap-6 my-[1.5rem]">
           <div className="xl:col-span-12 col-span-12">
             <div
               className="accordion accordionicon-left accordions-items-separate"
@@ -232,7 +180,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                   id="hs-basic-with-title-and-arrow-stretched-heading-one"
                 >
                   <button
-                    className="hs-accordion-toggle accordion-button hs-accordion-active:text-primary hs-accordion-active:pb-3 group py-0 inline-flex items-center justify-between gap-x-3 w-full font-semibold text-start text-gray-800 transition hover:text-secondary dark:hs-accordion-active:text-primary dark:text-gray-200 dark:hover:text-secondary"
+                    className="hs-accordion-toggle accordion-button hs-accordion-active:text-primary hs-accordion-active:pb-3 group py-0 inline-flex items-center justify-between gap-x-3 w-full font-semibold opsilion text-start transition hover:text-secondary dark:hs-accordion-active:text-primary dark:hover:text-secondary"
                     aria-controls="hs-basic-with-title-and-arrow-stretched-collapse-one"
                     type="button"
                   >
@@ -273,12 +221,48 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                     className="hs-accordion-content w-full overflow-hidden transition-[height] duration-300"
                     aria-labelledby="hs-basic-with-title-and-arrow-stretched-heading-one"
                   >
+                    <div className="text-center !text-lg box p-6 flex flex-col mt-5 ml-5 mr-5">
+                      <p className="leading-relaxed">
+                        В тази секция, можете да се натъкнете на информация за
+                        това кои са най-успешните{" "}
+                        <span className="font-bold text-primary">
+                          актьори, режисьори, сценаристи
+                        </span>
+                        , според авторската мерна единица -{" "}
+                        <span className="font-bold text-primary">
+                          „Просперитетен рейтинг“
+                        </span>
+                        <span
+                          className="text-gray-500 cursor-pointer hover:text-primary/80 transition-all duration-150"
+                          onClick={handleModalToggle}
+                        >
+                          {" <<Натиснете тук, за да научите повече>> "}
+                        </span>
+                        , сред най-често{" "}
+                        <span className="font-bold text-primary">
+                          препоръчваните
+                        </span>{" "}
+                        филми и сериали{" "}
+                        <span className="font-bold text-primary">
+                          специално за вас
+                        </span>
+                        . Също така, можете да видите кои са най-често
+                        препоръчваните ви жанрове и колко на{" "}
+                        <span className="font-bold text-primary">
+                          брой филми и сериали
+                        </span>{" "}
+                        са били препоръчвани на вас някога!
+                      </p>
+                    </div>
+
                     <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5">
                       <div className="xxl:col-span-6 col-span-12">
                         <MoviesAndSeriesRecommendationsTable
                           type="recommendations"
                           data={data.topRecommendations.recommendations}
-                          handleBookmarkClick={handleBookmarkClick}
+                          setBookmarkedMovies={setBookmarkedMovies}
+                          setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+                          setAlertVisible={setAlertVisible}
                           bookmarkedMovies={bookmarkedMovies}
                         />
                       </div>
@@ -317,7 +301,7 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                     id="hs-basic-with-title-and-arrow-stretched-heading-two"
                   >
                     <button
-                      className="hs-accordion-toggle accordion-button hs-accordion-active:text-primary hs-accordion-active:pb-3 group py-0 inline-flex items-center justify-between gap-x-3 w-full font-semibold text-start text-gray-800 transition hover:text-secondary dark:hs-accordion-active:text-primary dark:text-gray-200 dark:hover:text-secondary"
+                      className="hs-accordion-toggle accordion-button hs-accordion-active:text-primary hs-accordion-active:pb-3 group py-0 inline-flex items-center justify-between gap-x-3 w-full font-semibold opsilion text-start transition hover:text-secondary dark:hs-accordion-active:text-primary dark:hover:text-secondary"
                       aria-controls="hs-basic-with-title-and-arrow-stretched-collapse-two"
                       type="button"
                     >
@@ -358,21 +342,44 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
                       className="hs-accordion-content accordion-body hidden w-full overflow-hidden transition-[height] duration-300"
                       aria-labelledby="hs-basic-with-title-and-arrow-stretched-heading-two"
                     >
+                      <div className="text-center !text-lg box p-6 flex flex-col mt-3 ml-5 mr-5">
+                        <p className="leading-relaxed">
+                          В тази секци, можете да се натъкнете на информация за
+                          това кои са най-успешните{" "}
+                          <span className="font-bold text-primary">
+                            актьори, режисьори, сценаристи
+                          </span>
+                          , според авторската мерна единица -{" "}
+                          <span className="font-bold text-primary">
+                            „Просперитетен рейтинг“
+                          </span>
+                          <span
+                            className="text-gray-500 cursor-pointer hover:text-primary/80 transition-all duration-150"
+                            onClick={handleModalToggle}
+                          >
+                            {" <<Натиснете тук, за да научите повече>> "}
+                          </span>
+                          , сред вашите{" "}
+                          <span className="font-bold text-primary">
+                            запазвани
+                          </span>{" "}
+                          препоръки в списъка ви за гледане. Също така, можете
+                          да видите кои са{" "}
+                          <span className="font-bold text-primary">
+                            ВАШИТЕ топ жанрове
+                          </span>{" "}
+                          и колко на{" "}
+                          <span className="font-bold text-primary">
+                            брой филми и сериали
+                          </span>{" "}
+                          сте запазили!
+                        </p>
+                      </div>
                       <div className="grid grid-cols-12 gap-x-6 mt-5 ml-5 mr-5">
-                        <div className="xxl:col-span-6 col-span-12">
-                          <MoviesAndSeriesRecommendationsTable
-                            type="watchlist"
-                            data={data.topRecommendationsWatchlist.watchlist}
-                            handleBookmarkClick={handleBookmarkClick}
-                            bookmarkedMovies={bookmarkedMovies}
-                          />
-                        </div>
-                        <div className="xxl:col-span-6 col-span-12">
-                          <ActorsDirectorsWritersTable
-                            data={data}
-                            type="watchlist"
-                          />
-                        </div>
+                        <ActorsDirectorsWritersTable
+                          data={data}
+                          type="watchlist"
+                        />
                       </div>
                       <div className="grid grid-cols-12 gap-x-6 ml-5 mr-5">
                         <div className="xxl:col-span-6 col-span-12">
@@ -397,6 +404,35 @@ const IndividualStats: FC<IndividualStatsProps> = () => {
             </div>
           </div>
         </div>
+        <InfoboxModal
+          onClick={handleModalToggle}
+          isModalOpen={isModalOpen}
+          title="Просперитетен рейтинг"
+          description={
+            <>
+              <ul>
+                <li>
+                  <strong>Просперитетът</strong> се получава като се изчисли
+                  сборът на стойностите на няколко критерии.
+                </li>
+                <br />
+                <li>
+                  За всеки критерий се задава определено процентно отношение,
+                  което отразява неговата важност спрямо останалите:
+                </li>
+                <br />
+                <ul className="coollist pl-5">
+                  <li>30% за спечелени награди</li>
+                  <li>25% за номинации</li>
+                  <li>15% за приходите от боксофис</li>
+                  <li>10% за Метаскор</li>
+                  <li>10% за IMDb рейтинг</li>
+                  <li>10% за Rotten Tomatoes рейтинг</li>
+                </ul>
+              </ul>
+            </>
+          }
+        />
       </Fragment>
     </FadeInWrapper>
   );

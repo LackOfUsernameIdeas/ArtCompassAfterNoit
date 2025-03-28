@@ -1,21 +1,22 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useRef } from "react";
 import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
 import { PlotModal } from "./PlotModal";
-import { Rating, Recommendation } from "../booksIndividualStats-types";
-import { translate } from "../../../helper_functions_common";
-
-interface RecommendationCardAlertProps {
-  selectedItem: Recommendation | null;
-  onClose: () => void;
-  handleBookmarkClick: (movie: Recommendation) => void;
-  bookmarkedMovies: { [key: string]: Recommendation };
-}
+import {
+  Rating,
+  RecommendationCardAlertProps
+} from "../booksIndividualStats-types";
+import {
+  handleMovieSeriesBookmarkClick,
+  translate
+} from "../../../helper_functions_common";
 
 const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   selectedItem,
   onClose,
-  handleBookmarkClick,
+  setBookmarkedMovies,
+  setCurrentBookmarkStatus,
+  setAlertVisible,
   bookmarkedMovies
 }) => {
   const [translatedDirectors, setTranslatedDirectors] = useState<string>("");
@@ -26,6 +27,48 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   const [visible, setVisible] = useState(false);
   const [isPlotModalOpen, setIsPlotModalOpen] = useState(false); // State to handle PlotModal visibility
   const plotPreviewLength = 70;
+  const modalRef = useRef<HTMLDivElement>(null); // Референция към модалния контейнер за директна манипулация в DOM
+
+  const [position, setPosition] = useState<number>(0); // Държи текущата вертикална позиция на модала (Y)
+  const [dragging, setDragging] = useState<boolean>(false); // Флаг, който показва дали потребителят в момента влачи модала
+  const [lastY, setLastY] = useState<number>(0); // Запазва последната Y-координата на допир за плавно движение
+
+  // useEffect, който предотвратява скролването на фоновата страница, докато потребителят влачи модала
+  useEffect(() => {
+    const preventScroll = (e: TouchEvent) => {
+      if (dragging) e.preventDefault(); // Спира скролването на основната страница
+    };
+
+    document.addEventListener("touchmove", preventScroll, { passive: false });
+
+    return () => {
+      document.removeEventListener("touchmove", preventScroll); // Премахва слушателя при спиране на влаченето
+    };
+  }, [dragging]);
+
+  // Функция, която се изпълнява при докосване на модала
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setDragging(true); // Активира режима на влачене
+    setLastY(e.touches[0].clientY); // Запазва началната Y-координата
+  };
+
+  // Функция, която се изпълнява при движение на пръста по екрана
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!dragging) return; // Ако не влачим, прекратяваме функцията
+
+    const deltaY = e.touches[0].clientY - lastY; // Изчислява разликата в позицията
+    setLastY(e.touches[0].clientY); // Обновява последната Y-координата
+
+    // Използваме requestAnimationFrame за по-плавно движение
+    requestAnimationFrame(() => {
+      setPosition((prev) => prev + deltaY);
+    });
+  };
+
+  // Функция, която се изпълнява, когато потребителят вдигне пръста си от екрана
+  const handleTouchEnd = () => {
+    setDragging(false); // Деактивира режима на влачене
+  };
 
   useEffect(() => {
     if (selectedItem) {
@@ -112,12 +155,20 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
       }`}
     >
       <div
-        className={`p-6 rounded-lg shadow-lg bg-[rgb(var(--body-bg))] glow-effect border-2 dark:border-white border-secondary text-center max-w-full transform transition-transform duration-300 ${
+        ref={modalRef}
+        style={{
+          transform: `translateY(${position}px)`,
+          transition: dragging ? "none" : "transform 0.3s ease-out"
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        className={`m-2 sm:m-0 p-6 rounded-lg shadow-lg bg-[rgb(var(--body-bg))] glow-effect border-2 dark:border-white border-secondary text-center max-w-full transform transition-transform duration-300 ${
           visible ? "scale-100" : "scale-75"
-        } md:w-[75%] lg:w-[85%] xl:w-[70%] 2xl:w-[50%]`}
+        } w-full sm:w-[90%] md:w-[75%] lg:w-[85%] xl:w-[70%] 2xl:w-[50%]`}
       >
         <div className="recommendation-card">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center sm:items-start justify-between">
             <div className="relative flex-shrink-0 w-full md:w-1/3">
               <img
                 src={selectedItem.poster}
@@ -125,7 +176,14 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
                 className="rounded-lg w-full h-auto"
               />
               <button
-                onClick={() => handleBookmarkClick(selectedItem)}
+                onClick={() =>
+                  handleMovieSeriesBookmarkClick(
+                    selectedItem,
+                    setBookmarkedMovies,
+                    setCurrentBookmarkStatus,
+                    setAlertVisible
+                  )
+                }
                 className="absolute top-4 left-4 p-2 text-[#FFCC33] bg-black/50 bg-opacity-60 rounded-full transition-all duration-300 transform hover:scale-110 z-20"
               >
                 <svg
@@ -148,20 +206,14 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
             </div>
 
             <div className="flex-grow w-full md:w-2/3 text-left ml-8">
-              <div className="sticky top-0 z-10 pb-4 mb-4">
-                <a
-                  href="#"
-                  className="block text-2xl sm:text-xl md:text-2xl font-bold mb-1"
-                >
+              <div className="top-0 z-10 pb-4 mb-4">
+                <p className="block text-xl sm:text-3xl font-bold overflow-hidden mb-2 sm:mb-1">
                   {selectedItem.title_bg || "Заглавие не е налично"}
-                </a>
-                <a
-                  href="#"
-                  className="block text-md sm:text-sm md:text-lg font-semibold text-opacity-60 italic mb-2"
-                >
+                </p>
+                <p className="block text-md sm:text-lg font-semibold text-opacity-60 italic mb-2">
                   {selectedItem.title_en ||
                     "Заглавие на английски не е налично"}
-                </a>
+                </p>
                 <p className="recommendation-small-details text-sm sm:text-xs md:text-sm">
                   {translatedGenres} |{" "}
                   {selectedItem.year || "Година неизвестна"} | Рейтинг:{" "}

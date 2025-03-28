@@ -2,7 +2,7 @@ import { FC, Fragment } from "react";
 
 import gradientDark from "../../../assets/images/menu-bg-images/layered-peaks-haikei-dark.svg";
 import gradientLight from "../../../assets/images/menu-bg-images/layered-peaks-haikei-light.svg";
-import techStack from "../../../assets/images/brand-logos/tech_stack.png";
+import { Link } from "react-router-dom";
 
 const Footer: FC = () => (
   <Fragment>
@@ -25,13 +25,13 @@ const Footer: FC = () => (
           <div className="footer-content grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             <div className="footer-column">
               <div className="brand-name">
-                <span className="footer-brand-name-art dark:text-[#610000] text-[#AF0B48]">
-                  КИНО
+                <span className="footer-brand-name-art dark:text-[#AD0C48] text-[#9A110A]">
+                  АРТ
                 </span>
                 <span className="footer-brand-name-compass">КОМПАС</span>
               </div>
               <ul className="footer-links">
-                <li>НЕТИТ „Джон Атанасов” 2024</li>
+                <li>НОИТ 2025</li>
                 <li>Калоян Костадинов</li>
                 <li>Мария Малчева</li>
                 <li>
@@ -47,16 +47,36 @@ const Footer: FC = () => (
             </div>
 
             <div className="footer-column">
-              <h3 className="footer-title">Бързи Връзки</h3>
+              <h3 className="footer-title !text-[1.25rem] !max-sm:text-[1.1rem]">
+                Бързи Връзки
+              </h3>
               <ul className="footer-links">
                 <li>
-                  <a href="/app/recommendations">Нови Препоръки</a>
+                  <Link to="/app/recommendations">Нови Препоръки</Link>
+                </li>
+                <li>
+                  <Link to="/app/aiAnalysator">AI Анализатор</Link>
+                </li>
+                <li>
+                  <Link to="/app/saveLists/movies_series">
+                    Списък за гледане
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/app/saveLists/books">Списък за четене</Link>
+                </li>
+                <li>
+                  <Link to="/app/individualStats/movies_series">
+                    Индивидуални статистики
+                  </Link>
                 </li>
               </ul>
             </div>
 
             <div className="footer-column">
-              <h3 className="footer-title">Източници</h3>
+              <h3 className="footer-title !text-[1.25rem] !max-sm:text-[1.1rem]">
+                Източници
+              </h3>
               <ul className="footer-links">
                 <li>
                   <a
@@ -64,7 +84,10 @@ const Footer: FC = () => (
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    OpenAI API
+                    <div className="space-x-1">
+                      <i className="ti ti-brand-openai text-lg sm:text-xs"></i>
+                      <span>OpenAI API</span>
+                    </div>
                   </a>
                 </li>
                 <li>
@@ -73,7 +96,34 @@ const Footer: FC = () => (
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    OMDb API
+                    <div className="space-x-1">
+                      <i className="ti ti-api text-lg sm:text-xs"></i>
+                      <span>Gemini API</span>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.omdbapi.com/#top"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <div className="space-x-1">
+                      <i className="ti ti-api text-lg sm:text-xs"></i>
+                      <span>OMDb API</span>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.omdbapi.com/#top"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <div className="space-x-1">
+                      <i className="ti ti-brand-google text-lg sm:text-xs"></i>
+                      <span>Google Books API</span>
+                    </div>
                   </a>
                 </li>
                 <li>
@@ -82,18 +132,61 @@ const Footer: FC = () => (
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Google Custom Search JSON API
+                    <div className="space-x-1">
+                      <i className="ti ti-world-search text-lg sm:text-xs"></i>
+                      <span>Google Custom Search JSON API</span>
+                    </div>
                   </a>
                 </li>
               </ul>
             </div>
 
-            <div className="footer-column tech-stack">
-              <img
-                src={techStack}
-                alt="Основни технологии"
-                className="tech-stack-image"
-              />
+            <div className="footer-column">
+              <h3 className="footer-title !text-[1.25rem] !max-sm:text-[1.1rem]">
+                Използвани технологии
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 auto-rows-min footer-links">
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                  <i className="ti ti-brand-python text-xs"></i>
+                  <span className="whitespace-nowrap">Python</span>
+                </div>
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                  <i className="ti ti-brand-react text-lg sm:text-xs"></i>
+                  <span className="whitespace-nowrap">React</span>
+                </div>
+                <div className="flex items-center space-x-[0.40rem] md:ml-[2rem]">
+                  <i className="ti ti-brand-tailwind text-lg sm:text-xs"></i>
+                  <span className="whitespace-nowrap">Tailwind CSS</span>
+                </div>
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                  <i className="ti ti-brand-typescript text-lg sm:text-xs"></i>
+                  <span className="whitespace-nowrap">TypeScript</span>
+                </div>
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                  <i className="ti ti-brand-nodejs text-lg sm:text-xs"></i>
+                  <span className="whitespace-nowrap">NodeJS</span>
+                </div>
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                  <i className="ti ti-brand-vite text-lg sm:text-xs"></i>
+                  <span className="whitespace-nowrap">Vite</span>
+                </div>
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                  <i className="ti ti-brand-javascript text-lg sm:text-xs"></i>
+                  <span className="whitespace-nowrap">Express JS</span>
+                </div>
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                  <i className="ti ti-database text-lg sm:text-xs"></i>
+                  <span className="whitespace-nowrap">MySQL</span>
+                </div>
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                  <i className="ti ti-brand-adobe text-lg sm:text-xs"></i>
+                  <span className="whitespace-nowrap">Apex Charts</span>
+                </div>
+                <div className="flex items-center space-x-2 md:ml-[2rem]">
+                  <i className="ti ti-lock-open text-lg sm:text-xs"></i>
+                  <span className="whitespace-nowrap">JWT</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -8,10 +8,6 @@ import store from "../redux/store";
 import { Provider } from "react-redux";
 import { Outlet } from "react-router-dom";
 
-import "../../src/assets/fonts/EquilibristRegular.ttf";
-import "../../src/assets/fonts/EquilibristBold.ttf";
-import "../../src/assets/fonts/Opsilon.ttf";
-
 function App() {
   const [MyclassName, setMyClass] = useState("");
 
@@ -38,9 +34,9 @@ function App() {
             htmlAttributes={{
               lang: "en",
               dir: "ltr",
-              "data-menu-styles": "dark",
+              "data-menu-styles": `${import.meta.env.VITE_DEFAULT_THEME}`,
               class: "light",
-              "data-nav-layout": "vertical",
+              "data-nav-layout": "horizontal",
               "data-header-styles": "light",
               "data-vertical-style": "overlay",
               loader: "disable",

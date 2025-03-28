@@ -1,4 +1,9 @@
-import { ActorData, DirectorData, WriterData } from "../../types_common";
+import {
+  ActorData,
+  MovieSeriesRecommendation,
+  DirectorData,
+  WriterData
+} from "../../types_common";
 
 // Тип за данни, свързани с ролите (режисьори, актьори, писатели)
 export type RoleData = DirectorData[] | ActorData[] | WriterData[];
@@ -119,11 +124,11 @@ export type Count = {
 export type DataType = {
   topRecommendations: {
     recommendationsCount: Count;
-    recommendations: Recommendation[]; // Топ препоръки
+    recommendations: MovieSeriesRecommendation[]; // Топ препоръки
   };
   topRecommendationsWatchlist: {
     savedCount: Count;
-    watchlist: Recommendation[]; // Топ препоръки в списък за гледане
+    watchlist: MovieSeriesRecommendation[]; // Топ препоръки в списък за гледане
   };
   topGenres: TopGenres; // Топ жанрове
   topGenresWatchlist: TopGenres; // Топ жанрове в списък за гледане
@@ -133,40 +138,35 @@ export type DataType = {
 // Категории роли (актьори, режисьори, писатели)
 export type Category = "Actors" | "Directors" | "Writers"; // Роли: Актьори, Режисьори, Писатели
 
-// Данни за препоръки с подробности за филма/сериала
-export interface Recommendation {
-  id: number;
-  imdbID: string; // IMDb идентификатор
-  title_en: string; // Заглавие на английски
-  title_bg: string; // Заглавие на български
-  type: "movie" | "series"; // Тип на препоръката
-  awards: string; // Награди
-  recommendations: number; // Препоръки
-  poster: string; // URL за постера на филма/сериала
-  oscar_wins: string; // Спечелени Оскари
-  oscar_nominations: string; // Номинации за Оскар
-  total_wins: string; // Общо спечелени награди
-  total_nominations: string; // Общо номинации
-  ratings: Rating[]; // Рейтинги от различни източници
-  imdbRating: string; // Рейтинг в IMDb
-  metascore: string; // Метаскор
-  boxOffice: string; // Бокс офис
-  prosperityScore: number; // Индекс на просперитет
-  genre_en: string; // Жанр на английски
-  genre_bg: string; // Жанр на български
-  reason: string; // Причина за препоръката
-  description: string; // Описание на филма/сериала
-  year: string; // Година на издаване
-  rated: string; // Оценка за възрастови ограничения
-  released: string; // Дата на издаване
-  runtime: string; // Продължителност
-  director: string; // Режисьор
-  writer: string; // Сценаристи
-  actors: string; // Актьори
-  plot: string; // Сюжет
-}
-
 export type Rating = {
   Source: string;
   Value: string;
 };
+
+export interface MoviesAndSeriesRecommendationsTableProps {
+  data: MovieSeriesRecommendation[];
+  type: "recommendations" | "watchlist";
+  setBookmarkedMovies: React.Dispatch<
+    // Функция за обновяване на списъка с маркирани филми/сериали
+    React.SetStateAction<{
+      [key: string]: any; // Динамичен обект с маркирани филми/сериали
+    }>
+  >;
+  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
+  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
+  bookmarkedMovies: { [key: string]: MovieSeriesRecommendation };
+}
+
+export interface RecommendationCardAlertProps {
+  selectedItem: MovieSeriesRecommendation | null;
+  onClose: () => void;
+  setBookmarkedMovies: React.Dispatch<
+    // Функция за обновяване на списъка с маркирани филми/сериали
+    React.SetStateAction<{
+      [key: string]: any; // Динамичен обект с маркирани филми/сериали
+    }>
+  >;
+  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
+  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
+  bookmarkedMovies: { [key: string]: MovieSeriesRecommendation };
+}

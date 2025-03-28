@@ -70,7 +70,7 @@ const Contact: FC = () => {
       <div className="container mx-auto pt-20 pb-20">
         {/* Основен раздел с информация */}
         <div className="box mb-10 p-6 border-2 border-primary rounded-lg shadow">
-          <h2 className="box-title" style={{ fontSize: "1.5rem" }}>
+          <h2 className="box-title !text-3xl">
             В тази страница имате възможността да направите обратна връзка!
           </h2>
           <hr className="my-4 border-primary" />

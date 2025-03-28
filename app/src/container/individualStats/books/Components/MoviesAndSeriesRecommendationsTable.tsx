@@ -1,32 +1,37 @@
 import { FC, Fragment, useEffect, useState, useMemo, useCallback } from "react";
-import { Rating, Recommendation } from "../booksIndividualStats-types";
+import {
+  MoviesAndSeriesRecommendationsTableProps,
+  Rating
+} from "../booksIndividualStats-types";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import RecommendationCardAlert from "./RecommendationCardAlert";
 import Pagination from "../../../../components/common/pagination/pagination";
-
-interface MoviesAndSeriesRecommendationsTableProps {
-  data: Recommendation[];
-  type: "recommendations" | "watchlist";
-  handleBookmarkClick: (movie: Recommendation) => void;
-  bookmarkedMovies: { [key: string]: Recommendation };
-}
+import { MovieSeriesRecommendation } from "../../../types_common";
 
 const MoviesAndSeriesRecommendationsTable: FC<
   MoviesAndSeriesRecommendationsTableProps
-> = ({ data, type, handleBookmarkClick, bookmarkedMovies }) => {
+> = ({
+  data,
+  type,
+  bookmarkedMovies,
+  setBookmarkedMovies,
+  setCurrentBookmarkStatus,
+  setAlertVisible
+}) => {
   const [currentTablePage, setCurrentTablePage] = useState(1);
   const itemsPerTablePage = 5;
-  const [sortBy, setSortBy] = useState<keyof Recommendation | "default">(
-    "default"
-  );
+  const [sortBy, setSortBy] = useState<
+    keyof MovieSeriesRecommendation | "default"
+  >("default");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<Recommendation | null>(null);
+  const [selectedItem, setSelectedItem] =
+    useState<MovieSeriesRecommendation | null>(null);
 
   const [filteredTableData, setFilteredTableData] =
-    useState<Recommendation[]>(data);
+    useState<MovieSeriesRecommendation[]>(data);
 
   useEffect(() => {
     setFilteredTableData(data || []);
@@ -119,22 +124,28 @@ const MoviesAndSeriesRecommendationsTable: FC<
 
   const toggleSortMenu = () => setIsSortMenuOpen((prev) => !prev);
 
-  const handleSortOptionSelect = useCallback((value: keyof Recommendation) => {
-    setSortBy(value);
-    setIsSortMenuOpen(false);
-  }, []);
+  const handleSortOptionSelect = useCallback(
+    (value: keyof MovieSeriesRecommendation) => {
+      setSortBy(value);
+      setIsSortMenuOpen(false);
+    },
+    []
+  );
 
   const getTranslatedType = (type: string) =>
     type === "movie" ? "филм" : type === "series" ? "сериал" : type;
 
-  const handleRowClick = (item: Recommendation) => setSelectedItem(item);
+  const handleRowClick = (item: MovieSeriesRecommendation) =>
+    setSelectedItem(item);
 
   return (
     <Fragment>
       <RecommendationCardAlert
         selectedItem={selectedItem}
         onClose={() => setSelectedItem(null)}
-        handleBookmarkClick={handleBookmarkClick}
+        setBookmarkedMovies={setBookmarkedMovies}
+        setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+        setAlertVisible={setAlertVisible}
         bookmarkedMovies={bookmarkedMovies}
       />
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
@@ -199,11 +210,13 @@ const MoviesAndSeriesRecommendationsTable: FC<
                     <li key={value}>
                       <Link
                         onClick={() =>
-                          handleSortOptionSelect(value as keyof Recommendation)
+                          handleSortOptionSelect(
+                            value as keyof MovieSeriesRecommendation
+                          )
                         }
                         className={`ti-dropdown-item ${
                           sortBy === value ? "active" : ""
-                        }`}
+                        } opsilion`}
                         to="#"
                       >
                         {label}
@@ -235,7 +248,7 @@ const MoviesAndSeriesRecommendationsTable: FC<
             <div className="overflow-x-auto">
               <table className="table min-w-full whitespace-nowrap table-hover border table-bordered no-hover-text">
                 <thead>
-                  <tr className="border border-inherit">
+                  <tr className="border border-inherit border-solid dark:border-defaultborder/10 opsilion dark:bg-black/40 bg-gray-500/15">
                     <th>#</th>
                     <th>Заглавие</th>
                     <th>Тип</th>
@@ -257,7 +270,7 @@ const MoviesAndSeriesRecommendationsTable: FC<
                       className="border border-inherit border-solid hover:bg-primary/70 dark:border-defaultborder/10 dark:hover:bg-primary/50 cursor-pointer hover:text-white"
                       onClick={() => handleRowClick(item)}
                     >
-                      <td>
+                      <td className="opsilion dark:bg-black/40 bg-gray-500/15">
                         {(currentTablePage - 1) * itemsPerTablePage + index + 1}
                       </td>
                       <td>{item.title_bg}</td>

@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import App from "./pages/App.tsx";
 import Signincover from "./container/authentication/signin/Signin.tsx";
 import Authenticationlayout from "./pages/AuthenticationRoute.tsx";
@@ -12,19 +12,30 @@ import BooksRecommendations from "./container/recommendations/books/BooksRecomme
 import "./index.scss";
 import ResetRequest from "./container/authentication/resetpassword/Resetrequest.tsx";
 import PrivateRoute from "./pages/PrivateRoute.tsx";
-import Home from "./container/home/Home.tsx";
 import MoviesSeriesIndividualStats from "./container/individualStats/movies_series/MoviesSeriesIndividualStats.tsx";
 import BooksIndividualStats from "./container/individualStats/books/BooksIndividualStats.tsx";
+import Watchlist from "./container/saveLists/movies_series/Watchlist.tsx";
+import Readlist from "./container/saveLists/books/Readlist.tsx";
 import Contact from "./container/contact/Contact.tsx";
-import Test from "./container/test/test.tsx";
+import ChooseRecommendations from "./container/recommendations/choose/ChooseRecommendations.tsx";
+import MoviesByProsperityBubbleChart from "./container/platformStats/MoviesByProsperity/MoviesByProsperity.tsx";
+import ActorsDirectorsWritersTable from "./container/platformStats/ActorsDirectorsWritersTable/ActorsDirectorsWritersTable.tsx";
+import GenrePopularityOverTime from "./container/platformStats/GenrePopularityOverTime/GenrePopularityOverTime.tsx";
+import TopRecommendations from "./container/platformStats/TopRecommendations/TopRecommendations.tsx";
+import MoviesAndSeriesByRatings from "./container/platformStats/MoviesAndSeriesByRatings/MoviesAndSeriesByRatings.tsx";
+import TopCountries from "./container/platformStats/TopCountries/TopCountries.tsx";
+import AIAnalysator from "./container/aiAnalysator/AIAnalysator.tsx";
+import Landing from "./container/landing/Landing.tsx";
+import LandingLayout from "./pages/LandingLayout.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.Fragment>
     <BrowserRouter>
       <React.Suspense fallback={<div>Зареждане...</div>}>
         <Routes>
-          <Route path="/" element={<Navigate to="/signin" />} />
-
+          <Route path="/" element={<LandingLayout />}>
+            <Route path="/" element={<Landing />} />
+          </Route>
           <Route
             path="/app"
             element={
@@ -34,7 +45,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             }
           >
             {/* Default route */}
-            <Route index path="home" element={<Home />} />
+            <Route path="recommendations" element={<ChooseRecommendations />} />
             <Route
               path="recommendations/movies_series"
               element={<MoviesSeriesRecommendations />}
@@ -44,6 +55,37 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               element={<BooksRecommendations />}
             />
             <Route
+              index
+              path="platformStats/moviesByProsperityBubbleChart"
+              element={<MoviesByProsperityBubbleChart />}
+            />
+            <Route
+              index
+              path="platformStats/actorsDirectorsWritersTable"
+              element={<ActorsDirectorsWritersTable />}
+            />
+            <Route
+              index
+              path="platformStats/genrePopularityOverTime"
+              element={<GenrePopularityOverTime />}
+            />
+            <Route
+              index
+              path="platformStats/topRecommendations"
+              element={<TopRecommendations />}
+            />
+            <Route
+              index
+              path="platformStats/moviesAndSeriesByRatings"
+              element={<MoviesAndSeriesByRatings />}
+            />
+            <Route
+              index
+              path="platformStats/topCountries"
+              element={<TopCountries />}
+            />
+            <Route index path="aiAnalysator" element={<AIAnalysator />} />
+            <Route
               path="individualStats/movies_series"
               element={<MoviesSeriesIndividualStats />}
             />
@@ -51,7 +93,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               path="individualStats/books"
               element={<BooksIndividualStats />}
             />
-            <Route path="test" element={<Test />} />
+            <Route path="saveLists/movies_series" element={<Watchlist />} />
+            <Route path="saveLists/books" element={<Readlist />} />
             <Route path="contact" element={<Contact />} />
           </Route>
 

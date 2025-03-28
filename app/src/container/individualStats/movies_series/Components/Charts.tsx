@@ -1,7 +1,7 @@
 import { Component } from "react";
 import ReactApexChart from "react-apexcharts";
 import chroma from "chroma-js";
-import { TopGenres } from "../MoviesSeriesIndividualStats-types";
+import { TopGenres } from "../moviesSeriesIndividualStats-types";
 
 // Преобразува RGB цвят в HEX формат
 const rgbToHex = (rgb: string): string => {
@@ -24,51 +24,49 @@ const updatePrimaryColor = () => {
 };
 
 interface CategorybarProps {
-  data: TopGenres;
+  data: TopGenres; // Данни за топ жанровете, които ще бъдат визуализирани
 }
 
 interface State {
-  series: { name: string; data: number[] }[];
-  options: any;
+  series: { name: string; data: number[] }[]; // Серия от данни за графиката
+  options: any; // Опции за конфигуриране на графиката
 }
 
 export class Categorybar extends Component<CategorybarProps, State> {
-  observer: MutationObserver | null = null;
+  observer: MutationObserver | null = null; // Наблюдател за следене на промени в цветовете
 
   constructor(props: CategorybarProps) {
     super(props);
 
+    // Трансформиране на данните за използване в графиката
     const { categories, values } = this.transformData(props.data);
 
-    console.log(
-      "topGenres: ",
-      props.data,
-      "categories, values: ",
-      categories,
-      values
-    );
+    // Инициализиране на състоянието
     this.state = {
       series: [
         {
-          name: "Top Genres",
-          data: values
+          name: "Top Genres", // Име на серията
+          data: values // Стойности на жанровете
         }
       ],
-      options: this.generateOptions(categories, values)
+      options: this.generateOptions(categories, values) // Генериране на конфигурация за графиката
     };
   }
 
   componentDidUpdate(prevProps: CategorybarProps) {
+    // Проверка дали данните са се променили
     if (prevProps.data !== this.props.data) {
-      this.updateChart();
+      this.updateChart(); // Обновяване на графиката
     }
   }
 
   componentDidMount() {
+    // Създаване на наблюдател за проследяване на промени в цветовете
     this.observer = new MutationObserver(() => {
       this.updateChartColors();
     });
 
+    // Наблюдение на промени в атрибута "class" на <html> елемента
     this.observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"]
@@ -76,18 +74,21 @@ export class Categorybar extends Component<CategorybarProps, State> {
   }
 
   componentWillUnmount() {
+    // Спиране на наблюдателя при унищожаване на компонента
     if (this.observer) {
       this.observer.disconnect();
     }
   }
 
   transformData(data: TopGenres) {
-    const categories = data.map((genre) => genre.genre_bg);
-    const values = data.map((genre) => genre.count);
+    // Трансформиране на входните данни в категории и стойности
+    const categories = data.map((genre) => genre.genre_bg); // Извличане на имената на жанровете
+    const values = data.map((genre) => genre.count); // Извличане на броя им
     return { categories, values };
   }
 
-  generateOptions(categories: string[], values: number[]) {
+  generateOptions(categories: string[], _values: number[]) {
+    // Генериране на цветова скала
     const primaryHex = updatePrimaryColor();
     const colorScale = chroma
       .scale([
@@ -98,28 +99,23 @@ export class Categorybar extends Component<CategorybarProps, State> {
       .domain([0, categories.length - 1])
       .colors(categories.length);
 
+    // Връщане на конфигурация за графиката
     return {
       chart: {
-        toolbar: {
-          show: false
-        },
+        toolbar: { show: false },
         height: 320,
         type: "bar",
         events: {
           mounted: (chart: any) => {
-            chart.windowResizeHandler();
+            chart.windowResizeHandler(); // Автоматично преоразмеряване при промяна на прозореца
           }
         }
       },
-      grid: {
-        borderColor: "#f2f5f7"
-      },
+      grid: { borderColor: "#f2f5f7" },
       plotOptions: {
         bar: {
           borderRadius: 10,
-          dataLabels: {
-            position: "top"
-          }
+          dataLabels: { position: "top" }
         }
       },
       dataLabels: {
@@ -127,7 +123,8 @@ export class Categorybar extends Component<CategorybarProps, State> {
         formatter: (val: number) => `${val}`,
         offsetY: -20,
         style: {
-          fontSize: "12px",
+          fontFamily: "Equilibrist",
+          fontSize: "0.8rem",
           colors: ["#8c9097"]
         }
       },
@@ -135,93 +132,41 @@ export class Categorybar extends Component<CategorybarProps, State> {
       xaxis: {
         categories,
         position: "top",
-        axisBorder: {
-          show: false
-        },
-        axisTicks: {
-          show: false
-        },
-        crosshairs: {
-          fill: {
-            type: "gradient",
-            gradient: {
-              colorFrom: "#D8E3F0",
-              colorTo: "#BED1E6",
-              stops: [0, 100],
-              opacityFrom: 0.4,
-              opacityTo: 0.5
-            }
-          }
-        },
-        tooltip: {
-          enabled: false
-        },
-        labels: {
-          show: false,
-          style: {
-            colors: "#8c9097",
-            fontSize: "11px",
-            fontWeight: 600,
-            cssClass: "apexcharts-xaxis-label"
-          }
-        }
+        axisBorder: { show: false },
+        axisTicks: { show: false },
+        labels: { show: false }
       },
-      yaxis: {
-        axisBorder: {
-          show: false
-        },
-        axisTicks: {
-          show: false
-        },
-        labels: {
-          show: false
-        }
-      },
-      title: {
-        floating: true,
-        offsetY: 330,
-        align: "center",
-        style: {
-          color: "#444"
-        }
-      },
+      yaxis: { labels: { show: false } },
       tooltip: {
         theme: "dark",
-        x: {
-          show: false
+        style: {
+          fontFamily: "Opsilon",
+          fontSize: "0.8rem"
         },
         y: {
           title: {
-            formatter: (val: any, opts: any) => {
-              const genre = categories[opts.dataPointIndex];
-              return `${genre}:`;
+            formatter: (_val: any) => {
+              return "Брой:";
             }
           }
         }
       },
-      legend: {
-        show: false
-      }
+      legend: { show: false }
     };
   }
 
   updateChart() {
+    // Обновяване на графиката при промяна на данните
     const { categories, values } = this.transformData(this.props.data);
-
     this.setState({
-      series: [
-        {
-          name: "Top Genres",
-          data: values
-        }
-      ],
+      series: [{ name: "Top Genres", data: values }],
       options: this.generateOptions(categories, values)
     });
   }
 
   updateChartColors() {
+    // Обновяване на цветовете на графиката
     const { categories } = this.transformData(this.props.data);
-
     const primaryHex = updatePrimaryColor();
     const colorScale = chroma
       .scale([
@@ -233,10 +178,7 @@ export class Categorybar extends Component<CategorybarProps, State> {
       .colors(categories.length);
 
     this.setState((prevState) => ({
-      options: {
-        ...prevState.options,
-        colors: colorScale
-      }
+      options: { ...prevState.options, colors: colorScale }
     }));
   }
 

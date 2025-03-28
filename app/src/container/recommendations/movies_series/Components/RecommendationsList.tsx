@@ -3,13 +3,17 @@ import { CSSTransition } from "react-transition-group";
 import { RecommendationsProps } from "../moviesSeriesRecommendations-types";
 import RecommendationCard from "./RecommendationCard";
 import { PlotModal } from "./PlotModal";
+import ErrorCard from "../../../../components/common/error/error";
 
 export const RecommendationsList: FC<RecommendationsProps> = ({
   recommendationList,
-  handleBookmarkClick,
+  setBookmarkedMovies,
+  setCurrentBookmarkStatus,
+  currentIndex,
+  setCurrentIndex,
+  setAlertVisible,
   bookmarkedMovies
 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [inTransition, setInTransition] = useState(false);
   const [direction, setDirection] = useState<"left" | "right">("right");
   const [isExpanded, setIsExpanded] = useState(false);
@@ -17,7 +21,12 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
   const animationDuration = 500;
 
   if (!recommendationList.length) {
-    return <div>No recommendations available.</div>;
+    return (
+      <ErrorCard
+        message={`Няма налични препоръки :(\nМоля, опитайте отново. 🔄`}
+        mt={10}
+      />
+    );
   }
 
   const handleNext = () => {
@@ -65,7 +74,7 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
       >
         <svg
           onClick={handlePrevious}
-          className="absolute top-1/2 transform -translate-y-1/2 text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200 md:left-[-4rem] lg:left-[-4rem] xl:left-[-6rem] 2xl:left-[-10rem]"
+          className="absolute z-10 top-1/2 left-[-3rem] md:left-[-4rem] lg:left-[-4rem] xl:left-[-6rem] 2xl:left-[-10rem] transform -translate-y-1/2 text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="none"
@@ -74,8 +83,8 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
           strokeLinecap="round"
           strokeLinejoin="round"
           style={{
-            width: "5rem",
-            height: "5rem",
+            width: "4rem",
+            height: "4rem",
             filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.3))"
           }}
         >
@@ -95,7 +104,9 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
           currentIndex={currentIndex}
           isExpanded={isExpanded}
           openModal={openModal}
-          handleBookmarkClick={handleBookmarkClick}
+          setCurrentBookmarkStatus={setCurrentBookmarkStatus}
+          setAlertVisible={setAlertVisible}
+          setBookmarkedMovies={setBookmarkedMovies}
           bookmarkedMovies={bookmarkedMovies}
         />
       </CSSTransition>
@@ -109,7 +120,7 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
       >
         <svg
           onClick={handleNext}
-          className="absolute top-1/2 transform -translate-y-1/2 text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200 md:right-[-4rem] lg:right-[-4rem] xl:right-[-6rem] 2xl:right-[-10rem]"
+          className="absolute z-2 top-1/2 right-[-3rem] md:right-[-4rem] lg:right-[-4rem] xl:right-[-6rem] 2xl:right-[-10rem] transform -translate-y-1/2 text-6xl cursor-pointer hover:text-primary hover:scale-110 transition duration-200"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="none"
@@ -118,8 +129,8 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
           strokeLinecap="round"
           strokeLinejoin="round"
           style={{
-            width: "5rem",
-            height: "5rem",
+            width: "4rem",
+            height: "4rem",
             filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.3))"
           }}
         >

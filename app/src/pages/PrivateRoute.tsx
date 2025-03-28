@@ -6,7 +6,7 @@ interface PrivateRouteProps {
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  const [isValid, setIsValid] = useState<boolean>(true); // State to store token validation status
+  const [isValid, setIsValid] = useState<boolean>(true);
   const token =
     localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
 

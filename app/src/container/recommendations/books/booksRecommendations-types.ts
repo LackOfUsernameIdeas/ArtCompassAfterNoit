@@ -15,105 +15,114 @@ export interface Genre {
   bg: string; // Българско име на жанра
 }
 
-// Интерфейс за рейтинг на филм с източник и стойност.
+// Интерфейс за рейтинг на книга с източник и стойност.
 export interface Rating {
   Source: string; // Източник на рейтинга
   Value: string; // Стойност на рейтинга
 }
 
-// Интерфейс за въпрос с възможности и стойности.
-export interface Question {
-  question: string; // Текст на въпроса
-  options?: string[] | { en: string; bg: string }[]; // Падащо меню или множествен избор
-  isMultipleChoice?: boolean; // Флаг за множествен избор
-  isInput?: boolean; // Флаг за въпрос, изискващ текстов вход
-  value: any; // Стойност на отговора
-  setter: Dispatch<SetStateAction<any>>; // Сетър за стойността на отговора
-  placeholder?: string; // Плейсхолдър за въпроси с текстов вход
-  description?: string; // Допълнително описание на въпроса
+// Интерфейс за книга с всички основни данни за книгата.
+export interface Recommendation {
+  id: string; // ID на книгата
+  user_id: string; // ID на потребителя, свързан с книгата
+  google_books_id: string; // Google Books идентификатор
+  goodreads_id: string; // Goodreads идентификатор
+  title_en: string; // Английско заглавие на книгата
+  title_bg: string; // Българско заглавие на книгата
+  real_edition_title: string; // Реално заглавие на изданието
+  author: string | Promise<string>; // Име на автора (може да е обещание)
+  publisher: string; // Издателство
+  genre_en: string | Promise<string>; // Жанрове на английски (може да е обещание)
+  genre_bg: string | Promise<string>; // Жанрове на български (може да е обещание)
+  description: string | Promise<string>; // Описание на книгата (може да е обещание)
+  language: string | Promise<string>; // Езици на книгата (може да е обещание)
+  origin: string; // Страна на произход
+  literary_awards: string; // Награди на книгата
+  setting: string; // Мястото, в което се развива сюжета
+  characters: string; // Героите в сюжета
+  series: string; // Поредица
+  date_of_first_issue: string; // Дата на първо издание
+  date_of_issue: string; // Дата на издаване
+  goodreads_rating: number; // Goodreads рейтинг
+  goodreads_ratings_count: number; // Брой гласове в Goodreads
+  goodreads_reviews_count: number; // Брой ревюта в Goodreads
+  reason: string; // Причина за препоръката
+  adaptations: string; // Адаптации на книгата
+  ISBN_10: string; // ISBN-10
+  ISBN_13: string; // ISBN-13
+  page_count: string; // Брой страници
+  book_format: string; // Вид на книгата (тип корица, е-книги)
+  imageLink: string; // Линк към изображение на книгата
+  source: string; // Източник (напр. Google Books)
 }
 
-// Интерфейс за филм с всички основни данни за филма.
-export interface Movie {
-  id: string; // ID на филма
-  user_id: string; // ID на потребителя, свързан с филма
-  imdbID: string; // IMDb идентификатор
-  title: string; // Английско заглавие на филма
-  bgName: string; // Българско заглавие на филма
-  genre: string; // Жанрове на английски
-  reason: string; // Причина за препоръката на филма
-  description: string; // Описание на филма
-  year: string; // Година на издаване
-  rated: string; // Възрастова оценка
-  released: string; // Дата на излизане
-  runtime: string; // Времетраене в минути
-  director: string; // Име на режисьора
-  writer: string; // Име на сценариста
-  actors: string; // Списък с актьори
-  plot: string; // Сюжет на филма
-  language: string; // Езици на филма
-  country: string; // Страни, участващи в производството
-  awards: string; // Награди, спечелени от филма
-  poster: string; // URL на постера
-  ratings: { Source: string; Value: string }[]; // Масив с рейтингови източници и стойности
-  metascore: string; // Метаскор стойност
-  imdbRating: string; // IMDb рейтинг
-  imdbVotes: string; // Брой IMDb гласове
-  type: string; // Вид (например, филм)
-  DVD: string; // Информация за DVD издание (ако е налично)
-  boxOffice: string; // Приходи от бокс офиса
-  production: string; // Продуцентско студио (ако е налично)
-  website: string; // Официален уебсайт (ако е наличен)
-  totalSeasons: string | null; // Общо сезони (за сериали)
-  date: string; // Дата на въвеждане на данните
+// Enum за видовете книги
+export enum BookFormat {
+  "Paperback" = "Мека корица",
+  "Hardcover" = "Твърда корица",
+  "ebook" = "Е-книга",
+  "Kindle Edition" = "Kindle е-книга"
 }
-
 // Интерфейс за предпочитания на потребителя.
-export interface MoviesSeriesUserPreferences {
-  type: string; // Вид на предпочитанията
+export interface BooksUserPreferences {
   genres: { en: string; bg: string }[]; // Жанрове на английски и български
   moods: string[]; // Настроения
-  timeAvailability: string; // Наличност на време
-  age: string; // Възраст
-  actors: string; // Любими актьори
-  directors: string; // Любими режисьори
-  interests: string; // Интереси
-  countries: string; // Предпочитани държави
+  authors: string; // Любими актьори
+  origin: string; // Предпочитани държави
   pacing: string; // Пейсинг
   depth: string; // Дълбочина на историята
   targetGroup: string; // Целева група
+  interests: string; // Интереси
 }
 
-// Пропс за компонентата Quiz, свързана с маркирането на филми.
+// Пропс за компонентата Quiz, свързана с маркирането на книги.
 export interface QuizProps {
-  handleBookmarkClick: (movie: Movie) => void; // Функция за маркиране на филм
-  bookmarkedMovies: { [key: string]: Movie }; // Списък с маркирани филми
-  setBookmarkedMovies: React.Dispatch<
-    React.SetStateAction<{ [key: string]: any }>
-  >; // Функция за актуализиране на маркираните филми
+  setBookmarkedBooks: React.Dispatch<
+    // Функция за обновяване на списъка с маркирани книги
+    React.SetStateAction<{
+      [key: string]: any; // Динамичен обект с маркирани книги
+    }>
+  >;
+  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
+  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
+  bookmarkedBooks: { [key: string]: Recommendation }; // Списък с маркирани книги
 }
 
 // Пропс за компонентата Recommendations, отговорна за показване на препоръки.
 export interface RecommendationsProps {
-  recommendationList: Movie[]; // Списък с препоръчани филми
-  handleBookmarkClick: (movie: Movie) => void; // Функция за маркиране на филм
-  bookmarkedMovies: { [key: string]: Movie }; // Списък с маркирани филми
+  recommendationList: Recommendation[]; // Списък с препоръчани книги
+  setBookmarkedBooks: React.Dispatch<
+    // Функция за обновяване на списъка с маркирани книги
+    React.SetStateAction<{
+      [key: string]: any; // Динамичен обект с маркирани книги
+    }>
+  >;
+  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
+  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
+  bookmarkedBooks: { [key: string]: Recommendation }; // Списък с маркирани книги
 }
 
-// Пропс за компонентата RecommendationCard, която показва информация за филм.
+// Пропс за компонентата RecommendationCard, която показва информация за книга.
 export interface RecommendationCardProps {
-  recommendationList: Movie[]; // Списък с препоръчани филми
-  currentIndex: number; // Текущ индекс на филма
+  recommendationList: Recommendation[]; // Списък с препоръчани книги
+  currentIndex: number; // Текущ индекс на книга
   isExpanded: boolean; // Флаг дали картата е разширена
   openModal: () => void; // Функция за отваряне на модала
-  handleBookmarkClick: (movie: Movie) => void; // Функция за маркиране на филм
-  bookmarkedMovies: { [key: string]: Movie }; // Списък с маркирани филми
+  setBookmarkedBooks: React.Dispatch<
+    // Функция за обновяване на списъка с маркирани книги
+    React.SetStateAction<{
+      [key: string]: any; // Динамичен обект с маркирани книги
+    }>
+  >;
+  setCurrentBookmarkStatus: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на текущия статус на маркиране
+  setAlertVisible: React.Dispatch<React.SetStateAction<boolean>>; // Функция за показване на известие
+  bookmarkedBooks: { [key: string]: Recommendation }; // Списък с маркирани книги
 }
 
-// Пропс за компонентата PlotModal, показваща сюжетната линия на филма.
+// Пропс за компонентата PlotModal, показваща сюжетната линия на книга.
 export interface PlotModalProps {
-  recommendationList: Movie[]; // Списък с препоръчани филми
-  currentIndex: number; // Текущ индекс на филма
+  recommendationList: Recommendation[]; // Списък с препоръчани книги
+  currentIndex: number; // Текущ индекс на книга
   closeModal: () => void; // Функция за затваряне на модала
 }
 
@@ -121,14 +130,18 @@ export interface PlotModalProps {
 export interface QuizQuestionProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието за зареждане
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието за изпращане
+  submitted: boolean; // Състоянието за изпращане
   showViewRecommendations: boolean; // Флаг за показване на препоръките
   alreadyHasRecommendations: boolean; // Флаг за проверка дали вече има препоръки
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>; // Функция за задаване на списък с препоръки
-  setBookmarkedMovies: React.Dispatch<
+  setBookmarkedBooks: React.Dispatch<
     React.SetStateAction<{ [key: string]: any }>
-  >; // Функция за актуализиране на маркираните филми
+  >; // Функция за актуализиране на маркираните книги
+  setIsBrainAnalysisComplete: React.Dispatch<React.SetStateAction<boolean>>; // Функция за актуализиране състоянието на мозъчния анализ
+  isBrainAnalysisComplete: boolean; // Състоянието на мозъчния анализ
+  renderBrainAnalysis: boolean; // Флаг за управление на визуализирането на мозъчния анализ
+  setRenderBrainAnalysis: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието на мозъчния анализ
 }
-
 // Пропс за компонентата ViewRecommendations, която показва резултатите от препоръките.
 export interface ViewRecommendationsProps {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>; // Функция за задаване на състоянието за зареждане
@@ -145,16 +158,12 @@ export interface ConfirmationModalProps {
       type: "success" | "error" | "warning";
     } | null>
   >;
-
   // Функция за задаване на състоянието за зареждане
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-
   // Функция за задаване на състоянието за изпращане
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
-
   // Функция за задаване на състоянието за отваряне на модала
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-
   // Функция за обработка на изпращането на заявка
   handleSubmit: (
     setNotification: React.Dispatch<
@@ -167,14 +176,15 @@ export interface ConfirmationModalProps {
     setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
     setSubmitCount: React.Dispatch<React.SetStateAction<number>>,
     setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
-    setBookmarkedMovies: React.Dispatch<
+    setBookmarkedBooks: React.Dispatch<
       React.SetStateAction<{
         [key: string]: any;
       }>
     >,
-    moviesSeriesUserPreferences: MoviesSeriesUserPreferences,
     token: string | null,
-    submitCount: number
+    submitCount: number,
+    renderBrainAnalysis: boolean,
+    booksUserPreferences: BooksUserPreferences
   ) => Promise<void>;
 
   // Функция за задаване на броя на изпратените заявки
@@ -183,19 +193,27 @@ export interface ConfirmationModalProps {
   // Функция за задаване на списък с препоръки
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>;
 
-  // Функция за задаване на списък с любими филми
-  setBookmarkedMovies: React.Dispatch<
+  // Функция за задаване на списък с любими книги
+  setBookmarkedBooks: React.Dispatch<
     React.SetStateAction<{
       [key: string]: any;
     }>
   >;
 
   // Предпочитания на потребителя
-  moviesSeriesUserPreferences: MoviesSeriesUserPreferences;
+  booksUserPreferences: BooksUserPreferences;
 
   // Токен за автентикация на потребителя
   token: string | null;
 
   // Броят на изпратените заявки
   submitCount: number;
+}
+
+// Интерфейс за идентификаторите на ISBN
+export interface IndustryIdentifier {
+  // Тип на идентификатора, може да бъде ISBN_10 или ISBN_13
+  type: "ISBN_10" | "ISBN_13";
+  // Стойност на идентификатора (самият ISBN номер)
+  identifier: string;
 }

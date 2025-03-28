@@ -1,17 +1,7 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import logo from "../../../assets/images/brand-logos/logo-large.png";
-import logoPink from "../../../assets/images/brand-logos/logo-large-pink.png";
-
-// Импортиране на стиловете за Swiper
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
-
-// Импортиране на необходимите модули за Swiper
-import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import SwiperComponent from "@/components/common/swiper/swiper";
 
 interface SignincoverProps {}
 
@@ -60,7 +50,7 @@ const Signincover: FC<SignincoverProps> = () => {
           const result = await response.json();
 
           if (result.valid) {
-            navigate(`${import.meta.env.BASE_URL}app/home`);
+            navigate(`${import.meta.env.BASE_URL}app/recommendations`);
           } else {
             console.log("Invalid token");
             localStorage.removeItem("authToken");
@@ -97,17 +87,20 @@ const Signincover: FC<SignincoverProps> = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Предотвратяване на презареждането на страницата
 
+    // Проверка дали полетата за имейл и парола са празни
     const emptyEmail = !formData.email;
     const emptyPassword = !formData.password;
 
     if (emptyEmail || emptyPassword) {
+      // Запазване на състоянието за празните полета
       setEmptyFields({
         email: emptyEmail,
         password: emptyPassword
       });
 
+      // Показване на предупреждение, че всички полета са задължителни
       setAlerts([
         {
           message: "Всички полета са задължителни!",
@@ -119,6 +112,7 @@ const Signincover: FC<SignincoverProps> = () => {
     }
 
     try {
+      // Изпращане на заявка за вход в системата
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/signin`,
         {
@@ -126,17 +120,21 @@ const Signincover: FC<SignincoverProps> = () => {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ ...formData, rememberMe })
+          body: JSON.stringify({ ...formData, rememberMe }) // Изпращане на данните за вход
         }
       );
 
       if (!response.ok) {
+        // Ако отговорът не е успешен, обработване на грешката
         const errorData = await response.json();
         throw new Error(errorData.error || "Нещо се обърка! :(");
       }
 
+      // Ако заявката е успешна, извличане на данните от отговора
       const data = await response.json();
       console.log("response: ", data);
+
+      // Показване на съобщение за успешно влизане
       setAlerts([
         {
           message: "Успешно влизане!",
@@ -145,14 +143,17 @@ const Signincover: FC<SignincoverProps> = () => {
         }
       ]);
 
+      // Запазване на токена в localStorage или sessionStorage в зависимост от избора на потребителя
       if (rememberMe) {
         localStorage.setItem("authToken", data.token);
       } else {
         sessionStorage.setItem("authToken", data.token);
       }
 
-      navigate(`${import.meta.env.BASE_URL}app/home`);
+      // Пренасочване към страницата с препоръки
+      navigate(`${import.meta.env.BASE_URL}app/recommendations`);
     } catch (error: any) {
+      // Обработка на грешката и показване на съобщение за неуспешен вход
       setAlerts([
         {
           message: error.message,
@@ -179,9 +180,17 @@ const Signincover: FC<SignincoverProps> = () => {
             {/* Празна колона за подравняване */}
             <div className="xxl:col-span-3 xl:col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-2"></div>
             <div className="xxl:col-span-6 xl:col-span-6 lg:col-span-6 md:col-span-6 sm:col-span-8 col-span-12">
+              {/* Линк за връщане към началната страница */}
+              <p className="text-[0.75rem] text-[#8c9097] dark:text-white/50 ml-[1.5rem]">
+                <Link to={`${import.meta.env.BASE_URL}`}>
+                  {"<< Обратно към главната страница"}
+                </Link>
+              </p>
               <div className="p-[3rem]">
                 {/* Заглавие за вход */}
-                <p className="h5 font-semibold mb-2">Имате профил?</p>
+                <p className="h5 font-semibold opsilion !text-3xl mb-2">
+                  Имате профил?
+                </p>
                 {/* Инструкция за попълване на данни */}
                 <p className="mb-4 text-[#8c9097] dark:text-white/50 opacity-[0.7] font-normal">
                   Попълнете Вашите имейл и парола, за да влезете в профила си!
@@ -229,7 +238,7 @@ const Signincover: FC<SignincoverProps> = () => {
                       <div className="xl:col-span-12 col-span-12 mt-0">
                         <label
                           htmlFor="signin-email"
-                          className="form-label text-default"
+                          className="form-label text-default opsilion"
                         >
                           Имейл
                         </label>
@@ -249,13 +258,13 @@ const Signincover: FC<SignincoverProps> = () => {
                       <div className="xl:col-span-12 col-span-12 mb-4">
                         <label
                           htmlFor="signin-password"
-                          className="form-label text-default block"
+                          className="form-label text-default block opsilion"
                         >
                           Парола
                           {/* Линк за забравена парола */}
                           <Link
                             to={`${import.meta.env.BASE_URL}resetpassword`}
-                            className="ltr:float-right rtl:float-left text-danger"
+                            className="ltr:float-right rtl:float-left text-danger font-Equilibrist"
                           >
                             Забравена парола
                           </Link>
@@ -311,9 +320,9 @@ const Signincover: FC<SignincoverProps> = () => {
                       <div className="xl:col-span-12 col-span-12 grid mt-2">
                         <button
                           type="submit"
-                          className="ti-btn ti-btn-lg bg-primary text-white !font-medium dark:border-defaultborder/10"
+                          className="ti-btn ti-btn-lg bg-primary text-white !text-lg opsilion !font-medium dark:border-defaultborder/10"
                         >
-                          Влезни
+                          Влезте
                         </button>
                       </div>
                     </div>
@@ -340,65 +349,7 @@ const Signincover: FC<SignincoverProps> = () => {
         </div>
 
         {/* Страничен панел с изображение или лого */}
-        <div className="xxl:col-span-5 xl:col-span-5 lg:col-span-5 col-span-12 xl:block hidden px-0">
-          <div className="authentication-cover ">
-            <div className="aunthentication-cover-content rounded">
-              <div className="swiper keyboard-control">
-                <Swiper
-                  spaceBetween={30}
-                  navigation={true}
-                  centeredSlides={true}
-                  autoplay={{ delay: 2500, disableOnInteraction: false }}
-                  pagination={{ clickable: true }}
-                  modules={[Pagination, Autoplay, Navigation]}
-                  className="mySwiper"
-                >
-                  {/* Слайд 1 */}
-                  <SwiperSlide>
-                    <div className="text-white text-center p-[3rem] flex items-center justify-center flex-col lg:space-y-8 md:space-y-4 sm:space-y-2 space-y-2">
-                      <div>
-                        {/* Лого за светъл режим */}
-                        <div className="mb-[6rem] dark:hidden">
-                          <img
-                            src={logoPink}
-                            className="authentication-image"
-                            alt="Logo"
-                            style={{ width: "100%", height: "auto" }}
-                          />
-                        </div>
-
-                        {/* Лого за тъмен режим */}
-                        <div className="mb-[4rem] hidden dark:block">
-                          <img
-                            src={logo}
-                            className="authentication-image"
-                            alt="Logo"
-                            style={{
-                              width: "100%",
-                              height: "auto"
-                            }}
-                          />
-                        </div>
-
-                        {/* Заглавие и описание на приложението */}
-                        <h6 className="font-semibold text-[1rem] lg:text-[1.325rem] sm:text-[1.325rem]">
-                          Добре дошли в Кино Компас!
-                        </h6>
-                        <p className="font-normal text-[0.875rem] opacity-[0.7] lg:mt-6 sm:text-[1rem] ">
-                          Това е вашият гид за откриване на филми и сериали за
-                          всяко настроение, анализирайки вашите предпочитания и
-                          предлагайки персонализирани препоръки с помощта на
-                          изкуствен интелект!
-                        </p>
-                      </div>
-                    </div>
-                  </SwiperSlide>
-                  {/* Допълнителни слайдове, ако е необходимо */}
-                </Swiper>
-              </div>
-            </div>
-          </div>
-        </div>
+        <SwiperComponent />
       </div>
     </Fragment>
   );

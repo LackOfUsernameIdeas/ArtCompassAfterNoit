@@ -1,14 +1,29 @@
 import {
   Genre,
-  Question,
-  MoviesSeriesUserPreferences
+  MoviesSeriesUserPreferences,
+  Recommendation,
+  RecommendationsAnalysis
 } from "./moviesSeriesRecommendations-types";
-import { NotificationState } from "../../types_common";
-import { openAIKey } from "./moviesSeriesRecommendations-data";
-import { genreOptions } from "../../data_common";
 import {
+  Question,
+  BrainData,
+  FilteredBrainData,
+  NotificationState
+} from "../../types_common";
+import {
+  moviesSeriesBrainAnalysisPrompt,
+  moviesSeriesStandardPreferencesPrompt,
+  openAIKey
+} from "./moviesSeriesRecommendations-data";
+import { moviesSeriesGenreOptions } from "../../data_common";
+import {
+  analyzeRecommendations,
   checkRecommendationExistsInWatchlist,
-  showNotification
+  removeFromWatchlist,
+  saveBrainAnalysis,
+  saveToWatchlist,
+  showNotification,
+  validateToken
 } from "../../helper_functions_common";
 
 /**
@@ -25,25 +40,12 @@ import {
  */
 export const saveMoviesSeriesUserPreferences = async (
   date: string,
-  moviesSeriesUserPreferences: {
-    type: string;
-    genres: { en: string; bg: string }[];
-    moods: string[];
-    timeAvailability: string;
-    age: string;
-    actors: string;
-    directors: string;
-    interests: string;
-    countries: string;
-    pacing: string;
-    depth: string;
-    targetGroup: string;
-  },
+  moviesSeriesUserPreferences: MoviesSeriesUserPreferences,
   token: string | null
 ): Promise<void> => {
   try {
     const {
-      type,
+      recommendationType,
       genres,
       moods,
       timeAvailability,
@@ -62,14 +64,14 @@ export const saveMoviesSeriesUserPreferences = async (
     const preferredGenresBg =
       genres.length > 0 ? genres.map((g) => g.bg).join(", ") : null;
 
-    console.log("preferences: ", {
+    const formattedPreferences = {
       token: token,
       preferred_genres_en: preferredGenresEn,
       preferred_genres_bg: preferredGenresBg,
       mood: Array.isArray(moods) ? moods.join(", ") : null,
       timeAvailability,
       preferred_age: age,
-      preferred_type: type,
+      preferred_type: recommendationType,
       preferred_actors: actors,
       preferred_directors: directors,
       preferred_countries: countries,
@@ -78,33 +80,18 @@ export const saveMoviesSeriesUserPreferences = async (
       preferred_target_group: targetGroup,
       interests: interests || null,
       date: date
-    });
+    };
 
     const response = await fetch(
-      `${
-        import.meta.env.VITE_API_BASE_URL
-      }/save-movies-series-user-preferences`,
+      `${import.meta.env.VITE_API_BASE_URL}/save-preferences`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          token: token,
-          preferred_genres_en: preferredGenresEn,
-          preferred_genres_bg: preferredGenresBg,
-          mood: Array.isArray(moods) ? moods.join(", ") : null,
-          timeAvailability,
-          preferred_age: age,
-          preferred_type: type,
-          preferred_actors: actors,
-          preferred_directors: directors,
-          preferred_countries: countries,
-          preferred_pacing: pacing,
-          preferred_depth: depth,
-          preferred_target_group: targetGroup,
-          interests: interests || null,
-          date: date
+          preferencesType: "movies_series",
+          preferences: formattedPreferences
         })
       }
     );
@@ -125,12 +112,12 @@ export const saveMoviesSeriesUserPreferences = async (
  * Ако не успее да извлече данни от всички търсачки, хвърля грешка.
  *
  * @async
- * @function fetchIMDbDataWithFailover
+ * @function fetchIMDbIDWithFailover
  * @param {string} movieName - Името на филма, за който се извличат данни.
  * @returns {Promise<Object>} - Връща обект с данни от IMDb за филма.
  * @throws {Error} - Хвърля грешка, ако не успее да извлече данни от всички търсачки.
  */
-const fetchIMDbDataWithFailover = async (movieName: string) => {
+const fetchIMDbIDWithFailover = async (movieName: string) => {
   const engines = [
     { key: "AIzaSyAUOQzjNbBnGSBVvCZkWqHX7uebGZRY0lg", cx: "244222e4658f44b78" },
     { key: "AIzaSyArE48NFh1befjjDxpSrJ0eBgQh_OmQ7RA", cx: "27427e59e17b74763" },
@@ -144,23 +131,42 @@ const fetchIMDbDataWithFailover = async (movieName: string) => {
           engine.key
         }&cx=${engine.cx}&q=${encodeURIComponent(movieName)}`
       );
+
+      // Detailed error logging
+      if (!response.ok) {
+        console.warn(
+          `Engine ${engine.cx} returned non-OK status: ${response.status}`
+        );
+        continue;
+      }
+
       const data = await response.json();
 
-      if (response.ok && !data.error && data.items) {
-        console.log(
-          `Fetched IMDb data successfully using engine: ${engine.cx}`
-        );
-        return data;
-      } else {
-        console.log(`Engine ${engine.cx} failed. Trying next...`);
+      // Comprehensive data validation
+      if (data.error) {
+        console.warn(`Engine ${engine.cx} returned an error:`, data.error);
+        continue;
       }
+      if (!data.items || data.items.length === 0) {
+        console.warn(
+          `No items found for movie/series: "${movieName}" with engine ${engine.cx}`
+        );
+        continue;
+      }
+
+      console.log(
+        `Successfully fetched movie/series data for "${movieName}" using engine: ${engine.cx}`
+      );
+      return data;
     } catch (error) {
-      console.error(`Error fetching data with engine ${engine.cx}:`, error);
+      console.error(`Detailed error with engine ${engine.cx}:`, error);
+      // Log the full error for debugging
+      if (error instanceof Error) {
+        console.error(`Error message: ${error.message}`);
+        console.error(`Error stack: ${error.stack}`);
+      }
     }
   }
-  throw new Error(
-    `Failed to fetch IMDb data for "${movieName}" using all engines.`
-  );
 };
 
 /**
@@ -169,94 +175,69 @@ const fetchIMDbDataWithFailover = async (movieName: string) => {
  * Връща списък с препоръки в JSON формат.
  *
  * @async
- * @function generateMovieRecommendations
+ * @function generateMoviesSeriesRecommendations
  * @param {string} date - Датата на генерирането на препоръките.
- * @param {MoviesSeriesUserPreferences} moviesSeriesUserPreferences - Преференциите на потребителя за филми/сериали.
+ * @param {MoviesSeriesUserPreferences} moviesSeriesUserPreferences - Предпочитанията на потребителя за филми/сериали.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за задаване на препоръките в компонент.
+ * @param {React.Dispatch<React.SetStateAction<{relevantCount: number; totalCount: number;}>>} setRecommendationsAnalysis - Функция за задаване на анализ на препоръките.
  * @param {string | null} token - Токенът на потребителя, използван за аутентификация.
+ * @param {boolean} renderBrainAnalysis - параметър за генериране на препоръки, спрямо анализ на мозъчните вълни.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките.
  * @throws {Error} - Хвърля грешка, ако заявката за препоръки е неуспешна.
  */
-export const generateMovieRecommendations = async (
+export const generateMoviesSeriesRecommendations = async (
   date: string,
-  moviesSeriesUserPreferences: MoviesSeriesUserPreferences,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
+  setRecommendationsAnalysis: React.Dispatch<
+    React.SetStateAction<RecommendationsAnalysis>
+  >,
   setBookmarkedMovies: React.Dispatch<
     React.SetStateAction<{
       [key: string]: any;
     }>
   >,
-  token: string | null
+  token: string | null,
+  renderBrainAnalysis: boolean,
+  moviesSeriesUserPreferences?: MoviesSeriesUserPreferences,
+  brainData?: FilteredBrainData[]
 ) => {
-  const {
-    type,
-    genres,
-    moods,
-    timeAvailability,
-    age,
-    actors,
-    directors,
-    interests,
-    countries,
-    pacing,
-    depth,
-    targetGroup
-  } = moviesSeriesUserPreferences;
   try {
-    const typeText = type === "Филм" ? "филма" : "сериала";
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${openAIKey}`
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-2024-08-06",
-        messages: [
-          {
-            role: "system",
-            content: `You are an AI that recommends movies and series based on user preferences. Provide a list of movies and series, based on what the user has chosen to watch (movie or series), that match the user's taste and preferences, formatted in Bulgarian, with detailed justifications. Return the result in JSON format as instructed.`
-          },
-          {
-            role: "user",
-            content: `Препоръчай ми 5 ${typeText} за гледане, които ЗАДЪЛЖИТЕЛНО да съвпадат с моите вкусове и предпочитания, а именно:
-                  Любими жанрове: ${genres.map((genre) => genre.bg)}.
-                  Емоционално състояние в този момент: ${moods}.
-                  Разполагаемо свободно време за гледане: ${timeAvailability}.
-                  Възрастта на ${typeText} задължително да бъде: ${age}
-                  Любими актьори: ${actors}.
-                  Любими филмови режисьори: ${directors}.
-                  Теми, които ме интересуват: ${interests}.
-                  Филмите/сериалите могат да бъдат от следните страни: ${countries}.
-                  Темпото (бързината) на филмите/сериалите предпочитам да бъде: ${pacing}.
-                  Предпочитам филмите/сериалите да са: ${depth}.
-                  Целевата група е: ${targetGroup}.
-                  Дай информация за всеки отделен филм/сериал по отделно защо той е подходящ за мен.
-                  Задължително искам имената на филмите/сериалите да бъдат абсолютно точно както са официално на български език – така, както са известни сред публиката в България.
-                  Не се допуска буквален превод на заглавията от английски, ако официалното българско заглавие се различава от буквалния превод.
-                  Не препоръчвай 18+ филми/сериали.
-                  Форматирай своя response във валиден JSON формат по този начин:
-                  {
-                    'Официално име на ${typeText} на английски, както е прието да бъде': {
-                      'bgName': 'Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод',
-                      'description': 'Описание на ${typeText}',
-                      'reason': 'Защо този филм/сериал е подходящ за мен?'
-                    },
-                    'Официално име на ${typeText} на английски, както е прието да бъде': {
-                      'bgName': 'Официално име на ${typeText} на български, както е прието да бъде, а не буквален превод',
-                      'description': 'Описание на ${typeText}',
-                      'reason': 'Защо този филм/сериал е подходящ за мен?'
-                    },
-                    // ...additional movies
-                  }. Не добавяй излишни думи или скоби. Избягвай вложени двойни или единични кавички(кавички от един тип едно в друго, които да дават грешки на JSON.parse функцията). Увери се, че всички данни са правилно "escape-нати", за да не предизвикат грешки в JSON формата. 
-                  JSON формата трябва да е валиден за JavaScript JSON.parse() функцията.`
-          }
-        ]
-      })
+    console.log("brainData", brainData);
+
+    let requestBody;
+    if (renderBrainAnalysis && brainData) {
+      requestBody = moviesSeriesBrainAnalysisPrompt(brainData);
+    } else if (moviesSeriesUserPreferences) {
+      requestBody = moviesSeriesStandardPreferencesPrompt(
+        moviesSeriesUserPreferences
+      );
+    }
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/get-model-response`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          api_key: openAIKey,
+          provider: "openai",
+          modelOpenAI: requestBody?.model, // Use the model from the prompt function
+          messages: requestBody?.messages || []
+        })
+      }
+    );
+
+    console.log("body: ", {
+      api_key: openAIKey,
+      provider: "openai",
+      modelOpenAI: requestBody?.model, // Use the model from the prompt function
+      messages: requestBody?.messages || []
     });
 
     const responseData = await response.json();
-    const responseJson = responseData.choices[0].message.content;
+    const responseJson = responseData.response;
     const unescapedData = responseJson
       .replace(/^```json([\s\S]*?)```$/, "$1")
       .replace(/^```JSON([\s\S]*?)```$/, "$1")
@@ -264,120 +245,146 @@ export const generateMovieRecommendations = async (
       .replace(/^'|'$/g, "")
       .trim();
     console.log("unescapedData: ", unescapedData);
-    const decodedData = decodeURIComponent(unescapedData);
-    console.log("decodedData: ", decodedData);
-    const recommendations = JSON.parse(decodedData);
+    const recommendations = JSON.parse(unescapedData);
     console.log("recommendations: ", recommendations);
 
+    const recommendationsToAnalyze = [];
+
     for (const movieTitle in recommendations) {
-      const movieName = movieTitle;
+      let imdbData;
+      try {
+        imdbData = await fetchIMDbIDWithFailover(movieTitle);
+      } catch (error) {
+        console.error(
+          `Failed to fetch movie or series data for ${movieTitle}:`,
+          error
+        );
+        continue;
+      }
 
-      const imdbData = await fetchIMDbDataWithFailover(movieName);
+      const imdbItem = imdbData.items.find((item: { link: string }) =>
+        item.link.includes("imdb.com/title/")
+      );
 
-      if (Array.isArray(imdbData.items)) {
-        const imdbItem = imdbData.items.find((item: { link: string }) =>
-          item.link.includes("imdb.com/title/")
+      console.log(`imdbItem: ${imdbItem}`);
+
+      if (!imdbItem) {
+        console.warn(`No valid movie or series item found for: ${imdbItem}`);
+        continue; // Skip to the next movie or series
+      }
+
+      const imdbUrl = imdbItem.link;
+      const imdbId = imdbUrl.match(/title\/(tt\d+)\//)?.[1];
+
+      if (!imdbId) {
+        console.warn(`No valid imdb ID found for: ${movieTitle}`);
+        continue; // Skip to the next movie or series
+      }
+
+      const imdbRating = imdbItem.pagemap.metatags
+        ? imdbItem.pagemap.metatags[0]["twitter:title"]?.match(
+            /⭐ ([\d.]+)/
+          )?.[1]
+        : null;
+      const runtime = imdbItem.pagemap.metatags
+        ? imdbItem.pagemap.metatags[0]["og:description"]?.match(
+            /(\d{1,2}h \d{1,2}m|\d{1,2}h|\d{1,3}m)/
+          )?.[1]
+        : null;
+
+      const translatedRuntime = runtime
+        ? runtime.replace(/h/g, "ч").replace(/m/g, "м").replace(/s/g, "с")
+        : null;
+
+      const omdbResponse = await fetch(
+        `https://www.omdbapi.com/?apikey=89cbf31c&i=${imdbId}&plot=full`
+      );
+
+      if (!omdbResponse.ok) {
+        console.error(
+          `Failed to fetch OMDb data for ${movieTitle}. Status: ${omdbResponse.status}`
+        );
+        continue; // Skip to the next movie or series
+      }
+
+      const omdbData = await omdbResponse.json();
+
+      console.log(
+        `OMDb data for ${movieTitle}: ${JSON.stringify(omdbData, null, 2)}`
+      );
+
+      const recommendationData = {
+        title: omdbData.Title,
+        bgName: recommendations[movieTitle].bgName,
+        description: recommendations[movieTitle].description,
+        reason: recommendations[movieTitle].reason,
+        year: omdbData.Year,
+        rated: omdbData.Rated,
+        released: omdbData.Released,
+        runtime: omdbData.Runtime,
+        runtimeGoogle: translatedRuntime,
+        genre: omdbData.Genre,
+        director: omdbData.Director,
+        writer: omdbData.Writer,
+        actors: omdbData.Actors,
+        plot: omdbData.Plot,
+        language: omdbData.Language,
+        country: omdbData.Country,
+        awards: omdbData.Awards,
+        poster: omdbData.Poster,
+        ratings: omdbData.Ratings,
+        metascore: omdbData.Metascore,
+        imdbRating: omdbData.imdbRating,
+        imdbRatingGoogle: imdbRating,
+        imdbVotes: omdbData.imdbVotes,
+        imdbID: omdbData.imdbID,
+        type: omdbData.Type,
+        DVD: omdbData.DVD,
+        boxOffice: omdbData.BoxOffice,
+        production: omdbData.Production,
+        website: omdbData.Website,
+        totalSeasons: omdbData.totalSeasons
+      };
+
+      // Първо, задаваме списъка с препоръки
+      setRecommendationList((prevRecommendations) => [
+        ...prevRecommendations,
+        recommendationData
+      ]);
+
+      // След това изпълняваме проверката и записа паралелно, използвайки self-invoking функцията
+      (async () => {
+        // Проверяваме дали филмът съществува в таблицата за watchlist
+        const existsInWatchlist = await checkRecommendationExistsInWatchlist(
+          imdbId,
+          token
         );
 
-        if (imdbItem) {
-          const imdbUrl = imdbItem.link;
-          const imdbId = imdbUrl.match(/title\/(tt\d+)\//)?.[1];
-
-          const imdbRating = imdbItem.pagemap.metatags
-            ? imdbItem.pagemap.metatags[0]["twitter:title"]?.match(
-                /⭐ ([\d.]+)/
-              )?.[1]
-            : null;
-          const runtime = imdbItem.pagemap.metatags
-            ? imdbItem.pagemap.metatags[0]["og:description"]?.match(
-                /(\d{1,2}h \d{1,2}m|\d{1,2}h|\d{1,3}m)/
-              )?.[1]
-            : null;
-
-          const translatedRuntime = runtime
-            ? runtime.replace(/h/g, "ч").replace(/m/g, "м").replace(/s/g, "с")
-            : null;
-
-          if (imdbId) {
-            const omdbResponse = await fetch(
-              `https://www.omdbapi.com/?apikey=89cbf31c&i=${imdbId}&plot=full`
-            );
-            const omdbData = await omdbResponse.json();
-
-            console.log(
-              `OMDb data for ${movieName}: ${JSON.stringify(omdbData, null, 2)}`
-            );
-
-            const recommendationData = {
-              title: omdbData.Title,
-              bgName: recommendations[movieTitle].bgName,
-              description: recommendations[movieTitle].description,
-              reason: recommendations[movieTitle].reason,
-              year: omdbData.Year,
-              rated: omdbData.Rated,
-              released: omdbData.Released,
-              runtime: omdbData.Runtime,
-              runtimeGoogle: translatedRuntime,
-              genre: omdbData.Genre,
-              director: omdbData.Director,
-              writer: omdbData.Writer,
-              actors: omdbData.Actors,
-              plot: omdbData.Plot,
-              language: omdbData.Language,
-              country: omdbData.Country,
-              awards: omdbData.Awards,
-              poster: omdbData.Poster,
-              ratings: omdbData.Ratings,
-              metascore: omdbData.Metascore,
-              imdbRating: omdbData.imdbRating,
-              imdbRatingGoogle: imdbRating,
-              imdbVotes: omdbData.imdbVotes,
-              imdbID: omdbData.imdbID,
-              type: omdbData.Type,
-              DVD: omdbData.DVD,
-              boxOffice: omdbData.BoxOffice,
-              production: omdbData.Production,
-              website: omdbData.Website,
-              totalSeasons: omdbData.totalSeasons
+        // Ако филмът не съществува в watchlist, добавяме го към "bookmarkedMovies" с информация за ID и статус
+        if (existsInWatchlist) {
+          setBookmarkedMovies((prevMovies) => {
+            return {
+              ...prevMovies,
+              [recommendationData.imdbID]: recommendationData
             };
-
-            // Първо, задаваме списъка с препоръки
-            setRecommendationList((prevRecommendations) => [
-              ...prevRecommendations,
-              recommendationData
-            ]);
-
-            // След това изпълняваме проверката и записа паралелно, използвайки
-            const checkAndSaveMoviesSeriesRecommendation = async () => {
-              // Проверяваме дали филмът съществува в таблицата за watchlist
-              const existsInWatchlist =
-                await checkRecommendationExistsInWatchlist(imdbId, token);
-
-              // Ако филмът не съществува в watchlist, добавяме го към "bookmarkedMovies" с информация за ID и статус
-              if (existsInWatchlist) {
-                setBookmarkedMovies((prevMovies) => {
-                  return {
-                    ...prevMovies,
-                    [recommendationData.imdbID]: recommendationData
-                  };
-                });
-              }
-              // Записваме препоръката в базата данни
-              await saveMoviesSeriesRecommendation(
-                recommendationData,
-                date,
-                token
-              );
-            };
-
-            // Извикваме функцията, за да изпълним и двете операции
-            checkAndSaveMoviesSeriesRecommendation();
-          } else {
-            console.log(`IMDb ID not found for ${movieName}`);
-          }
+          });
         }
-      }
+        // Записваме препоръката в базата данни
+        await saveMoviesSeriesRecommendation(recommendationData, date, token);
+      })();
+
+      recommendationsToAnalyze.push(recommendationData);
     }
+
+    !renderBrainAnalysis &&
+      (await analyzeRecommendations(
+        moviesSeriesUserPreferences,
+        recommendationsToAnalyze,
+        setRecommendationsAnalysis,
+        true,
+        date,
+        token
+      )); // Извикване на функцията за анализ на предпочитанията и определяне на Precision
   } catch (error) {
     console.error("Error generating recommendations:", error);
   }
@@ -390,7 +397,7 @@ export const generateMovieRecommendations = async (
  *
  * @async
  * @function saveMoviesSeriesRecommendation
- * @param {any} recommendation - Обект, съдържащ данни за препоръчания филм или сериал.
+ * @param {Recommendation} recommendation - Обект, съдържащ данни за препоръчания филм или сериал.
  * @param {string} date - Дата на генерирането на препоръката.
  * @param {string | null} token - Токенът на потребителя за аутентификация.
  * @returns {Promise<void>} - Няма връщан резултат, но извършва записване на препоръката.
@@ -412,7 +419,7 @@ export const saveMoviesSeriesRecommendation = async (
       : null;
 
     const genresBg = genresEn.map((genre: string) => {
-      const matchedGenre = genreOptions.find(
+      const matchedGenre = moviesSeriesGenreOptions.find(
         (option) => option.en.trim() === genre.trim()
       );
       return matchedGenre ? matchedGenre.bg : null;
@@ -459,13 +466,16 @@ export const saveMoviesSeriesRecommendation = async (
     console.log("Formatted Recommendation:", formattedRecommendation);
 
     const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/save-movies-series-recommendation`,
+      `${import.meta.env.VITE_API_BASE_URL}/save-recommendation`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(formattedRecommendation)
+        body: JSON.stringify({
+          recommendationType: "movies_series",
+          recommendation: formattedRecommendation
+        })
       }
     );
 
@@ -480,6 +490,8 @@ export const saveMoviesSeriesRecommendation = async (
   }
 };
 
+let isOnCooldown = false;
+
 /**
  * Обработва изпращането на потребителски данни за генериране на препоръки.
  * Извършва валидация на полетата, изпраща заявка до сървъра и обновява списъка с препоръки.
@@ -490,9 +502,10 @@ export const saveMoviesSeriesRecommendation = async (
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitted - Функция за задаване на статус за подадена заявка.
  * @param {React.Dispatch<React.SetStateAction<number>>} setSubmitCount - Функция за актуализиране на броя на подадените заявки.
  * @param {React.Dispatch<React.SetStateAction<any[]>>} setRecommendationList - Функция за актуализиране на списъка с препоръки.
- * @param {MoviesSeriesUserPreferences} moviesSeriesUserPreferences - Преференции на потребителя за филми/сериали.
+ * @param {MoviesSeriesUserPreferences} moviesSeriesUserPreferences - Предпочитания на потребителя за филми/сериали.
  * @param {string | null} token - Токенът за аутентификация на потребителя.
  * @param {number} submitCount - Броят на подадените заявки.
+ * @param {boolean} [renderBrainAnalysis=false] - Опционален параметър за генериране на препоръки, спрямо анализ на мозъчните вълни.
  * @returns {Promise<void>} - Няма връщан резултат, но актуализира препоръките и записва данни.
  * @throws {Error} - Хвърля грешка, ако не може да се обработи заявката.
  */
@@ -504,15 +517,28 @@ export const handleSubmit = async (
   setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
   setSubmitCount: React.Dispatch<React.SetStateAction<number>>,
   setRecommendationList: React.Dispatch<React.SetStateAction<any[]>>,
+  setRecommendationsAnalysis: React.Dispatch<
+    React.SetStateAction<RecommendationsAnalysis>
+  >,
   setBookmarkedMovies: React.Dispatch<
     React.SetStateAction<{
       [key: string]: any;
     }>
   >,
-  moviesSeriesUserPreferences: MoviesSeriesUserPreferences,
   token: string | null,
-  submitCount: number
+  submitCount: number,
+  renderBrainAnalysis: boolean = false,
+  moviesSeriesUserPreferences?: MoviesSeriesUserPreferences,
+  brainData?: BrainData[],
+  analysisType?: "movies_series" | "books"
 ): Promise<void> => {
+  if (isOnCooldown) return;
+  isOnCooldown = true;
+  const isInvalidToken = await validateToken(setNotification); // Стартиране на проверката на токена при първоначално зареждане
+  if (isInvalidToken) {
+    return;
+  }
+
   if (submitCount >= 20) {
     showNotification(
       setNotification,
@@ -522,75 +548,144 @@ export const handleSubmit = async (
     return;
   }
 
-  const {
-    moods,
-    timeAvailability,
-    actors,
-    directors,
-    countries,
-    pacing,
-    depth,
-    targetGroup
-  } = moviesSeriesUserPreferences;
+  if (moviesSeriesUserPreferences) {
+    const {
+      moods,
+      timeAvailability,
+      actors,
+      directors,
+      countries,
+      pacing,
+      depth,
+      targetGroup
+    } = moviesSeriesUserPreferences;
 
-  if (
-    !moods ||
-    !timeAvailability ||
-    !actors ||
-    !directors ||
-    !countries ||
-    !pacing ||
-    !depth ||
-    !targetGroup
-  ) {
-    showNotification(
-      setNotification,
-      "Моля, попълнете всички задължителни полета!",
-      "warning"
-    );
-    return;
+    if (
+      !renderBrainAnalysis &&
+      (!moods ||
+        !timeAvailability ||
+        !actors ||
+        !directors ||
+        !countries ||
+        !pacing ||
+        !depth ||
+        !targetGroup)
+    ) {
+      showNotification(
+        setNotification,
+        "Моля, попълнете всички задължителни полета!",
+        "warning"
+      );
+      return;
+    }
   }
 
   setLoading(true);
-  setSubmitted(true);
+  if (!renderBrainAnalysis) setSubmitted(true);
 
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+    if (renderBrainAnalysis && analysisType && brainData) {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            type: "movies_series"
+          })
         }
+      );
+
+      const data = await response.json();
+
+      const date = new Date().toISOString();
+
+      if (response.status === 200) {
+        setRecommendationList([]);
+        if (
+          moviesSeriesUserPreferences &&
+          Object.keys(moviesSeriesUserPreferences).length > 0
+        ) {
+          await saveMoviesSeriesUserPreferences(
+            date,
+            moviesSeriesUserPreferences,
+            token
+          );
+          await saveBrainAnalysis(date, brainData, analysisType, token);
+          const filteredBrainData = brainData.map(
+            ({ blink_strength, raw_data, data_type, ...rest }) => rest
+          );
+
+          await generateMoviesSeriesRecommendations(
+            date,
+            setRecommendationList,
+            setRecommendationsAnalysis,
+            setBookmarkedMovies,
+            token,
+            true,
+            moviesSeriesUserPreferences,
+            filteredBrainData
+          );
+        }
+        setSubmitCount((prevCount) => prevCount + 1);
+      } else {
+        showNotification(
+          setNotification,
+          data.error || "Възникна проблем.",
+          "error"
+        );
       }
-    );
-
-    const data = await response.json();
-
-    const date = new Date().toISOString();
-
-    if (response.status === 200) {
-      setRecommendationList([]);
-      await saveMoviesSeriesUserPreferences(
-        date,
-        moviesSeriesUserPreferences,
-        token
-      );
-      await generateMovieRecommendations(
-        date,
-        moviesSeriesUserPreferences,
-        setRecommendationList,
-        setBookmarkedMovies,
-        token
-      );
-      setSubmitCount((prevCount) => prevCount + 1);
     } else {
-      showNotification(
-        setNotification,
-        data.error || "Възникна проблем.",
-        "error"
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            type: "movies_series"
+          })
+        }
       );
+
+      const data = await response.json();
+
+      const date = new Date().toISOString();
+
+      if (response.status === 200) {
+        setRecommendationList([]);
+        if (
+          moviesSeriesUserPreferences &&
+          Object.keys(moviesSeriesUserPreferences).length > 0
+        ) {
+          await saveMoviesSeriesUserPreferences(
+            date,
+            moviesSeriesUserPreferences,
+            token
+          );
+          await generateMoviesSeriesRecommendations(
+            date,
+            setRecommendationList,
+            setRecommendationsAnalysis,
+            setBookmarkedMovies,
+            token,
+            false,
+            moviesSeriesUserPreferences
+          );
+        }
+        setSubmitCount((prevCount) => prevCount + 1);
+      } else {
+        showNotification(
+          setNotification,
+          data.error || "Възникна проблем.",
+          "error"
+        );
+      }
     }
   } catch (error) {
     console.error("Error submitting the request:", error);
@@ -600,8 +695,62 @@ export const handleSubmit = async (
       "error"
     );
   } finally {
+    setTimeout(() => {
+      isOnCooldown = false;
+    }, 500);
     setLoading(false);
+    if (renderBrainAnalysis) setSubmitted(true);
   }
+};
+
+/**
+ * Добавя или премахва филм от списъка с любими на потребителя.
+ * Прикрепя състоянията на компонентите като параметри, за да актуализира състоянието.
+ *
+ * @param {object} movie - Филмът, който ще бъде добавен или премахнат.
+ * @param {string} movie.imdbID - Уникален идентификатор на филма (IMDb ID).
+ * @param {Function} setBookmarkedMovies - Функция за актуализиране на състоянието на отметките.
+ * @param {Function} setCurrentBookmarkStatus - Функция за актуализиране на текущия статус на отметката.
+ * @param {Function} setAlertVisible - Функция за показване на алармата.
+ * @returns {void} - Функцията не връща стойност.
+ */
+export const handleBookmarkClick = (
+  movie: Recommendation,
+  setBookmarkedMovies?: React.Dispatch<
+    React.SetStateAction<{ [key: string]: any }>
+  >,
+  setCurrentBookmarkStatus?: React.Dispatch<React.SetStateAction<boolean>>,
+  setAlertVisible?: React.Dispatch<React.SetStateAction<boolean>>
+) => {
+  setBookmarkedMovies &&
+    setBookmarkedMovies((prev) => {
+      const isBookmarked = !!prev[movie.imdbID];
+      const updatedBookmarks = { ...prev };
+      const token =
+        localStorage.getItem("authToken") ||
+        sessionStorage.getItem("authToken");
+
+      if (isBookmarked) {
+        // Remove the movie from bookmarks if it's already bookmarked
+        delete updatedBookmarks[movie.imdbID];
+
+        removeFromWatchlist(movie.imdbID, token).catch((error) => {
+          console.error("Error removing from watchlist:", error);
+        });
+      } else {
+        // Add the movie to bookmarks if it's not already bookmarked
+        updatedBookmarks[movie.imdbID] = movie;
+
+        saveToWatchlist(movie, token).catch((error) => {
+          console.error("Error saving to watchlist:", error);
+        });
+      }
+
+      setCurrentBookmarkStatus && setCurrentBookmarkStatus(!isBookmarked); // Update the current bookmark status
+      setAlertVisible && setAlertVisible(true); // Show the alert
+
+      return updatedBookmarks; // Return the updated bookmarks object
+    });
 };
 
 /**
@@ -662,7 +811,9 @@ export const handleAnswerClick = (
 ) => {
   if (currentQuestion.isMultipleChoice) {
     if (currentQuestion.setter === setGenres) {
-      const selectedGenre = genreOptions.find((genre) => genre.bg === answer);
+      const selectedGenre = moviesSeriesGenreOptions.find(
+        (genre) => genre.bg === answer
+      );
 
       if (selectedGenre) {
         toggleGenre(selectedGenre, setGenres);
@@ -685,38 +836,6 @@ export const handleAnswerClick = (
   } else {
     setter(answer);
     setSelectedAnswer([answer]);
-  }
-};
-
-/**
- * Връща CSS клас, който задава марж в зависимост от броя на опциите за текущия въпрос.
- *
- * @function getMarginClass
- * @param {Question} question - Текущият въпрос, съдържащ информация за опциите.
- * @returns {string} - Строка с CSS клас, който определя маржа за въпроса.
- */
-export const getMarginClass = (question: Question): string => {
-  if (question.isInput) {
-    return question.description ? "mt-[5rem]" : "mt-[9rem]";
-  }
-
-  const length = question.options?.length || 0;
-
-  switch (true) {
-    case length > 20:
-      return "mt-[1rem]";
-    case length > 15:
-      return "mt-[2rem]";
-    case length > 10:
-      return "mt-[1rem]";
-    case length >= 6:
-      return "mt-0"; // Zero margin remains unchanged
-    case length >= 4:
-      return "mt-[1.5rem]";
-    case length >= 3:
-      return "mt-[3rem]";
-    default:
-      return "mt-[9rem]";
   }
 };
 
@@ -777,11 +896,16 @@ export const handleNext = (
   setCurrentQuestionIndex: React.Dispatch<React.SetStateAction<number>>,
   questions: any[]
 ): void => {
+  if (isOnCooldown) return;
+  isOnCooldown = true;
   setSelectedAnswer(null);
   setShowQuestion(false);
   setTimeout(() => {
     setCurrentQuestionIndex((prev) => (prev + 1) % questions.length);
     setShowQuestion(true);
+    setTimeout(() => {
+      isOnCooldown = false;
+    }, 500);
   }, 300);
 };
 
@@ -818,15 +942,31 @@ export const handleBack = (
  * @function handleRetakeQuiz
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setLoading - Функцията за показване на индикатора за зареждане.
  * @param {React.Dispatch<React.SetStateAction<boolean>>} setSubmitted - Функцията за нулиране на състоянието на резултата.
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} setIsBrainAnalysisComplete - Функцията за нулиране на състоянието на завършен мозъчен анализ.
+ * @param {React.Dispatch<React.SetStateAction<number>>} setCurrentIndex - Функцията за нулиране на текущия индекс.
+ * @param {boolean} renderBrainAnalysis - Дали се използва мозъчен анализ.
  * @returns {void} - Няма връщан резултат, но актуализира състоянието на компонентите.
  */
 export const handleRetakeQuiz = (
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  setSubmitted: React.Dispatch<React.SetStateAction<boolean>>
+  setSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
+  setIsBrainAnalysisComplete?: React.Dispatch<React.SetStateAction<boolean>>,
+  setCurrentIndex?: React.Dispatch<React.SetStateAction<number>>,
+  renderBrainAnalysis?: boolean
 ): void => {
   setLoading(true);
   setTimeout(() => {
     setSubmitted(false);
     setLoading(false);
+
+    // Reset brain analysis state if in brain analysis mode
+    if (renderBrainAnalysis && setIsBrainAnalysisComplete) {
+      setIsBrainAnalysisComplete(false);
+    }
+
+    // Reset current index if provided
+    if (setCurrentIndex) {
+      setCurrentIndex(0);
+    }
   }, 500);
 };

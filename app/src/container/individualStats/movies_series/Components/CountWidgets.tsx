@@ -1,5 +1,5 @@
 import { FC, Fragment } from "react";
-import { Count } from "../MoviesSeriesIndividualStats-types";
+import { Count } from "../moviesSeriesIndividualStats-types";
 
 interface CountWidgetsProps {
   recommendationsCount: Count;
@@ -14,7 +14,7 @@ const CountWidgets: FC<CountWidgetsProps> = ({
     <Fragment>
       <div className="box custom-box">
         <div className="box-header justify-between">
-          <div className="box-title">
+          <div className="box-title opsilion">
             {type == "recommendations" ? "Брой Препоръчвани" : "Брой Запазвани"}
             :
           </div>
@@ -26,7 +26,7 @@ const CountWidgets: FC<CountWidgetsProps> = ({
                 <span className="avatar avatar-md bg-primary shadow-sm !rounded-full mb-2">
                   <i className="ri-movie-line text-[1rem]"></i>
                 </span>
-                <p className="text-[.875rem] font-semibold mb-2">Филми</p>
+                <p className="text-xl opsilion font-semibold my-2">Филми</p>
                 <div className="flex items-center justify-center flex-wrap">
                   <h5 className="mb-0 font-semibold">
                     {recommendationsCount.movies}
@@ -40,7 +40,7 @@ const CountWidgets: FC<CountWidgetsProps> = ({
                 <span className="avatar avatar-md bg-primary shadow-sm !rounded-full mb-2">
                   <i className="ri-movie-line text-[1rem]"></i>
                 </span>
-                <p className="text-[.875rem] font-semibold mb-2">Сериали</p>
+                <p className="text-xl opsilion font-semibold my-2">Сериали</p>
                 <div className="flex items-center justify-center flex-wrap">
                   <h5 className="mb-0 font-semibold">
                     {recommendationsCount.series}
@@ -54,7 +54,7 @@ const CountWidgets: FC<CountWidgetsProps> = ({
                 <span className="avatar avatar-md bg-primary shadow-sm !rounded-full mb-2">
                   <i className="ri-movie-2-line text-[1rem]"></i>
                 </span>
-                <p className="text-[.875rem] font-semibold mb-2">Общо</p>
+                <p className="text-xl opsilion font-semibold my-2">Общо</p>
                 <div className="flex items-center justify-center flex-wrap">
                   <h5 className="mb-0 font-semibold">
                     {recommendationsCount.movies + recommendationsCount.series}

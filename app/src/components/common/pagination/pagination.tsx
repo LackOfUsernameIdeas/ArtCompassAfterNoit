@@ -24,11 +24,7 @@ const Pagination: React.FC<PaginationProps> = ({
 }) => {
   return (
     <div className="sm:flex items-center">
-      <div
-        className={`text-defaulttextcolor dark:text-defaulttextcolor/70 text-[${
-          isSmallScreen ? "0.55rem" : "0.70rem"
-        }]`}
-      >
+      <div className="text-defaulttextcolor dark:text-defaulttextcolor/70 text-[0.65rem] sm:text-[0.55rem]">
         Показване на резултати от{" "}
         <b>{currentPage === 1 ? 1 : (currentPage - 1) * itemsPerPage + 1}</b> до{" "}
         <b>
@@ -37,8 +33,9 @@ const Pagination: React.FC<PaginationProps> = ({
             : currentPage * itemsPerPage}
         </b>{" "}
         от общо <b>{totalItems}</b>
-        <i className="bi bi-arrow-right ms-2 font-semibold"></i>
+        <i className="bi bi-arrow-right ms-2 font-semibold hidden sm:inline"></i>
       </div>
+
       <div className="ms-auto">
         <nav
           aria-label="Page navigation"

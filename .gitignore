@@ -13,6 +13,8 @@ dist
 dist-ssr
 *.local
 .venv
+build
+*.spec
 
 # Editor directories and files
 .vscode/*

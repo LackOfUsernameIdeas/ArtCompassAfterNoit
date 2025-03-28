@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 interface BookmarkAlertProps {
   isBookmarked: boolean;
@@ -47,8 +48,8 @@ const BookmarkAlert: React.FC<BookmarkAlertProps> = ({
             </svg>
             <span>
               {isBookmarked
-                ? "Добавено в списък за гледане"
-                : "Премахнато от списък за гледане"}
+                ? "Добавено в списък за четене"
+                : "Премахнато от списък за четене"}
             </span>
           </div>
           <button
@@ -77,8 +78,15 @@ const BookmarkAlert: React.FC<BookmarkAlertProps> = ({
         </div>
         <div className="pl-8 text-[0.75rem] opacity-[0.8] mb-1">
           {isBookmarked
-            ? "Вашият филм/сериал е запазен в списъка ви за гледане!"
-            : "Този филм/сериал е премахнат от списъка ви за гледане!"}
+            ? `Вашата книга е запазена в `
+            : `Тази книга е премахната от `}
+          <Link
+            to={`${import.meta.env.BASE_URL}app/saveLists/books`}
+            className="font-bold underline"
+          >
+            списъка ви за четене
+          </Link>
+          !
         </div>
       </div>
     </div>

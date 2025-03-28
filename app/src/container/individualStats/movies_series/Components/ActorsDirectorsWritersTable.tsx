@@ -3,7 +3,7 @@ import {
   Category,
   DataType,
   FilteredTableData
-} from "../MoviesSeriesIndividualStats-types";
+} from "../moviesSeriesIndividualStats-types";
 import { filterTableData } from "../helper_functions";
 import {
   isActor,
@@ -11,7 +11,7 @@ import {
   isWriter
 } from "../../../helper_functions_common";
 import { useMediaQuery } from "react-responsive";
-import { tableCategoryDisplayNames } from "../MoviesSeriesIndividualStats-data";
+import { tableCategoryDisplayNames } from "../moviesSeriesIndividualStats-data";
 import { Tooltip } from "react-tooltip";
 import Pagination from "../../../../components/common/pagination/pagination";
 
@@ -97,10 +97,10 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
   return (
     <Fragment>
       <div className="xxl:col-span-12 xl:col-span-12 col-span-12">
-        <div className="box custom-card h-[27.75rem]">
+        <div className="box custom-card sm:h-[27.75rem]">
           <div className="box-header justify-between">
             <div
-              className={`box-title whitespace-nowrap overflow-hidden text-ellipsis ${
+              className={`box-title whitespace-nowrap overflow-hidden text-ellipsis opsilion ${
                 is1399 ? "max-w-full" : is1630 ? "max-w-[15rem]" : "max-w-full"
               }`}
               data-tooltip-id="box-title-tooltip"
@@ -127,7 +127,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
             <Tooltip id="box-title-tooltip" />
             <div className="flex flex-wrap gap-2">
               <div
-                className="inline-flex rounded-md shadow-sm"
+                className="inline-flex rounded-md shadow-sm opsilion"
                 role="group"
                 aria-label="Sort By"
               >
@@ -135,10 +135,10 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                   <button
                     key={category}
                     type="button"
-                    className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 ${
+                    className={`ti-btn-group !border-0 !text-xs !py-2 !px-3 opsilion ${
                       category === recommendationCountSortCategory
                         ? "ti-btn-primary-full text-white"
-                        : "text-[#E74581] dark:text-[#CC3333] bg-[#AF0B48] dark:bg-[#9A110A] bg-opacity-10 dark:bg-opacity-10"
+                        : "text-[#CC3333] dark:text-[#E74581] bg-[#9A110A] dark:bg-[#AF0B48] bg-opacity-10 dark:bg-opacity-10"
                     } ${
                       index === 0
                         ? "rounded-l-md"
@@ -165,7 +165,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                 className="table min-w-full whitespace-nowrap table-hover border table-bordered"
               >
                 <thead>
-                  <tr className="border border-inherit border-solid dark:border-defaultborder/10">
+                  <tr className="border border-inherit border-solid dark:border-defaultborder/10 opsilion dark:bg-black/40 bg-gray-500/15">
                     <th
                       scope="col"
                       className="!text-start !text-[0.85rem] w-[40px]"
@@ -215,7 +215,9 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
                       key={index}
                       className="border border-inherit border-solid hover:bg-gray-100 dark:border-defaultborder/10 dark:hover:bg-light"
                     >
-                      <td>{(currentTablePage - 1) * 5 + index + 1}</td>
+                      <td className="opsilion dark:bg-black/40 bg-gray-500/15">
+                        {(currentTablePage - 1) * 5 + index + 1}
+                      </td>
                       <td>{getCategoryName(item)}</td>
                       <td>
                         {type === "recommendations"
@@ -236,7 +238,7 @@ const ActorsDirectorsWritersTable: FC<ActorsDirectorsWritersTableProps> = ({
               </table>
             </div>
           </div>
-          <div className="box-footer">
+          <div className={`box-footer`}>
             <Pagination
               currentPage={currentTablePage}
               totalItems={totalItems}

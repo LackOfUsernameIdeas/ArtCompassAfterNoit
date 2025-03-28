@@ -1,19 +1,9 @@
 import { FC, Fragment, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import logo from "../../../assets/images/brand-logos/logo-large.png";
-import logoPink from "../../../assets/images/brand-logos/logo-large-pink.png";
-
-// Импортиране на стиловете за Swiper
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
-
-// Импортиране на необходимите модули за Swiper
-import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
 import * as EmailValidator from "email-validator";
+import SwiperComponent from "@/components/common/swiper/swiper";
 
 interface ResetRequestProps {}
 
@@ -109,7 +99,7 @@ const ResetRequest: FC<ResetRequestProps> = () => {
           <div className="flex justify-center items-center h-full">
             <div className="p-[3rem]">
               {/* Заглавие и описание на страницата */}
-              <p className="h5 font-semibold mb-2">
+              <p className="h5 font-semibold opsilion !text-3xl mb-2">
                 Забравили сте паролата си?
               </p>
               <p className="mb-4 text-[#8c9097] dark:text-white/50 opacity-[0.7] font-normal">
@@ -154,7 +144,7 @@ const ResetRequest: FC<ResetRequestProps> = () => {
                 <div className="xl:col-span-12 col-span-12 mt-0">
                   <label
                     htmlFor="reset-email"
-                    className="form-label text-default"
+                    className="form-label text-default opsilion"
                   >
                     Имейл
                   </label>
@@ -173,7 +163,7 @@ const ResetRequest: FC<ResetRequestProps> = () => {
                 {/* Бутон за изпращане на заявка за смяна на парола */}
                 <div className="xl:col-span-12 col-span-12 grid mt-2">
                   <button
-                    className="ti-btn ti-btn-primary w-full py-2"
+                    className="ti-btn ti-btn-primary w-full py-2 !text-lg opsilion"
                     onClick={handlePasswordResetRequest}
                     disabled={isSubmitting}
                   >
@@ -190,7 +180,7 @@ const ResetRequest: FC<ResetRequestProps> = () => {
                     to={`${import.meta.env.BASE_URL}signin/`}
                     className="text-primary"
                   >
-                    Върни се към формата за влизане
+                    Върнете се към формата за влизане
                   </Link>
                 </p>
               </div>
@@ -199,65 +189,7 @@ const ResetRequest: FC<ResetRequestProps> = () => {
         </div>
 
         {/* Страничен панел с изображение или лого */}
-        <div className="xxl:col-span-5 xl:col-span-5 lg:col-span-5 col-span-12 xl:block hidden px-0">
-          <div className="authentication-cover ">
-            <div className="aunthentication-cover-content rounded">
-              <div className="swiper keyboard-control">
-                <Swiper
-                  spaceBetween={30}
-                  navigation={true}
-                  centeredSlides={true}
-                  autoplay={{ delay: 2500, disableOnInteraction: false }}
-                  pagination={{ clickable: true }}
-                  modules={[Pagination, Autoplay, Navigation]}
-                  className="mySwiper"
-                >
-                  {/* Слайд 1 */}
-                  <SwiperSlide>
-                    <div className="text-white text-center p-[3rem] flex items-center justify-center flex-col lg:space-y-8 md:space-y-4 sm:space-y-2 space-y-2">
-                      <div>
-                        {/* Лого за светъл режим */}
-                        <div className="mb-[6rem] dark:hidden">
-                          <img
-                            src={logoPink}
-                            className="authentication-image"
-                            alt="Logo"
-                            style={{ width: "100%", height: "auto" }}
-                          />
-                        </div>
-
-                        {/* Лого за тъмен режим */}
-                        <div className="mb-[4rem] hidden dark:block">
-                          <img
-                            src={logo}
-                            className="authentication-image"
-                            alt="Logo"
-                            style={{
-                              width: "100%",
-                              height: "auto"
-                            }}
-                          />
-                        </div>
-
-                        {/* Заглавие и описание на приложението */}
-                        <h6 className="font-semibold text-[1rem] lg:text-[1.325rem] sm:text-[1.325rem]">
-                          Добре дошли в Кино Компас!
-                        </h6>
-                        <p className="font-normal text-[0.875rem] opacity-[0.7] lg:mt-6 sm:text-[1rem] ">
-                          Това е вашият гид за откриване на филми и сериали за
-                          всяко настроение, анализирайки вашите предпочитания и
-                          предлагайки персонализирани препоръки с помощта на
-                          изкуствен интелект!
-                        </p>
-                      </div>
-                    </div>
-                  </SwiperSlide>
-                  {/* Допълнителни слайдове, ако е необходимо */}
-                </Swiper>
-              </div>
-            </div>
-          </div>
-        </div>
+        <SwiperComponent />
       </div>
     </Fragment>
   );
