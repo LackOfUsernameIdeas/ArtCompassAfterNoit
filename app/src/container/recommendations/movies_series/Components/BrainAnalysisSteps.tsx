@@ -292,17 +292,17 @@ export const BrainAnalysisSteps: FC<{
 
               {/* Показваме изображението за пример (като част от въпроса) */}
               <div className="border-2 border-primary rounded-lg p-4 bg-opacity-50 bg-bodybg text-white">
-                <CSSTransition
-                  in={showStep}
-                  timeout={500}
-                  classNames="fade"
-                  unmountOnExit
-                >
-                  <StepImages
-                    setSelectedImage={setSelectedImage}
-                    currentStep={currentStep}
-                  />
-                </CSSTransition>
+                <div className="flex flex-wrap justify-center gap-4">
+                  {currentStep.images?.map((imgSrc, index) => (
+                    <img
+                      key={index}
+                      src={imgSrc}
+                      alt={`Изображение ${index}`}
+                      className="h-32 cursor-pointer rounded-lg object-contain border-2 border-primary transition-transform hover:scale-105"
+                      onClick={() => setSelectedImage(imgSrc)}
+                    />
+                  ))}
+                </div>
                 {currentStep.fileName && (
                   <div className="flex justify-center py-2">
                     <DownloadButton fileName={currentStep.fileName} />
