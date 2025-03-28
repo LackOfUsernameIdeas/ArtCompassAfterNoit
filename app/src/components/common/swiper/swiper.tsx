@@ -1,8 +1,8 @@
 // Импортиране на необходимите модули за Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay, Navigation } from "swiper/modules";
-import logo from "../../../assets/images/brand-logos/logo-large.png";
-import logoPink from "../../../assets/images/brand-logos/logo-large-pink.png";
+import logo from "../../../assets/images/brand-logos/logo_large_head.png";
+import logoPink from "../../../assets/images/brand-logos/logo_large_head_pink.png";
 
 // Импортиране на стиловете за Swiper
 import "swiper/css";
@@ -25,9 +25,9 @@ const SwiperComponent: React.FC = () => {
               className="mySwiper"
             >
               <SwiperSlide>
-                <div className="text-white text-center p-[3rem] flex items-center justify-center flex-col lg:space-y-8 md:space-y-4 sm:space-y-2 space-y-2">
+                <div className="text-white text-center p-[2rem] flex items-center justify-center flex-col lg:space-y-8 md:space-y-4 sm:space-y-2 space-y-2">
                   <div>
-                    <div className="mb-[6rem] dark:hidden">
+                    <div className="mb-[5rem] dark:hidden">
                       <img
                         src={logo}
                         className="authentication-image"

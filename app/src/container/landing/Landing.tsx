@@ -14,8 +14,8 @@ import { DataType } from "./landing-types";
 import { fetchData } from "./helper_functions";
 import AIStatsWidgetCardsComponent from "./components/AIStatsWidgetCardsComponents";
 import { getAverageMetrics } from "../helper_functions_common";
-import logo from "../../assets/images/brand-logos/logo-large.png";
-import logoPink from "../../assets/images/brand-logos/logo-large-pink.png";
+import logo from "../../assets/images/brand-logos/logo_large_head.png";
+import logoPink from "../../assets/images/brand-logos/logo_large_head_pink.png";
 import BookAdaptations from "./components/BookAdaptations";
 
 interface LandingProps {}
@@ -193,7 +193,7 @@ const Landing: FC<LandingProps> = () => {
             <img
               src={logo}
               alt="Logo"
-              className="dark:hidden mb-[4rem]"
+              className="dark:hidden mb-[3rem] mt-[-0.5rem]"
               style={{ width: "50%", height: "auto" }}
             />
 
@@ -201,7 +201,7 @@ const Landing: FC<LandingProps> = () => {
             <img
               src={logoPink}
               alt="Logo"
-              className="hidden dark:block mb-[4rem]"
+              className="hidden dark:block mb-[3rem] mt-[-0.5rem]"
               style={{
                 width: "50%",
                 height: "auto"
