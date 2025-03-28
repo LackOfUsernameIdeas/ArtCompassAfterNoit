@@ -2083,53 +2083,6 @@ app.post("/save-brain-analysis", (req, res) => {
   });
 });
 
-// const DATA_FILE = path.join(__dirname, "session_data.json");
-
-// // Когато клиент се свърже със SocketIO сървъра
-// io.on("connection", (socket) => {
-//   console.log("Клиент се свърза");
-//   socket.emit("connectSignal");
-
-//   socket.on("hardwareData", (data) => {
-//     console.log("Получени хардуерни данни:", data);
-
-//     // Четене на JSON файла
-//     fs.readFile(DATA_FILE, "utf8", (err, fileData) => {
-//       if (err) {
-//         console.error("Грешка при четене на файла:", err);
-//         return;
-//       }
-
-//       let jsonData;
-//       try {
-//         jsonData = JSON.parse(fileData);
-//       } catch (parseErr) {
-//         console.error("Грешка при парсиране на JSON:", parseErr);
-//         return;
-//       }
-
-//       // Изпращане на данните един по един
-//       jsonData.forEach((item, index) => {
-//         setTimeout(() => {
-//           socket.broadcast.emit("hardwareDataResponse", item);
-//           if (index === jsonData.length - 1) {
-//             socket.broadcast.emit("dataDoneTransmittingSignal");
-//           }
-//         }, index * 500); // Интервал между съобщенията
-//       });
-//     });
-//   });
-
-//   socket.on("dataDoneTransmitting", (data) => {
-//     console.log("Получено съобщение за завършване на трансфер на данни:", data);
-//     socket.broadcast.emit("dataDoneTransmittingSignal");
-//   });
-
-//   socket.on("disconnect", () => {
-//     console.log("Клиентът прекъсна връзката");
-//   });
-// });
-
 // Когато клиент се свърже със SocketIO сървъра
 io.on("connection", (socket) => {
   console.log("Клиент се свърза");
