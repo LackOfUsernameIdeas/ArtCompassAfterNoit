@@ -16,6 +16,7 @@ dist-ssr
 build
 *.spec
 credentials.js
+config.js
 
 # Editor directories and files
 .vscode/*
