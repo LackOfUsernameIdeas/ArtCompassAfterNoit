@@ -15,6 +15,7 @@ dist-ssr
 .venv
 build
 *.spec
+credentials.js
 
 # Editor directories and files
 .vscode/*
