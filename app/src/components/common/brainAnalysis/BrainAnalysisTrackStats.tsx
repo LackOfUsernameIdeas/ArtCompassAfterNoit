@@ -14,6 +14,7 @@ interface BrainAnalysisTrackStatsProps {
     name: string;
     data: { x: string; y: number }[];
   }[];
+  handleInfoButtonClick: () => void;
 }
 
 const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
@@ -21,7 +22,8 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
   transmissionComplete,
   chartData,
   seriesData,
-  attentionMeditation
+  attentionMeditation,
+  handleInfoButtonClick
 }) => {
   const termsCardRef = useRef<HTMLButtonElement>(null);
   const [flash, setFlash] = useState(false);
@@ -73,7 +75,10 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
       <div className="relative mx-auto">
         {chartData && (
           <div className="space-y-4">
-            <BrainActivityCard data={chartData} />
+            <BrainActivityCard
+              data={chartData}
+              handleInfoButtonClick={handleInfoButtonClick}
+            />
             <div className="space-y-4">
               <AttentionMeditationChart
                 attentionMeditation={attentionMeditation}
