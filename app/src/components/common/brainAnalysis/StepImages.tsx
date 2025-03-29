@@ -9,12 +9,12 @@ const StepImages = ({
   currentStep: Step;
   setSelectedImage: React.Dispatch<React.SetStateAction<string | null>>;
 }) => {
-  // Use a ref to persist the loading state across renders
+  // Използваме useRef, за да запазим състоянието на зареждане на изображенията между рендерирането
   const loadingImagesRef = useRef<boolean[]>([]);
 
   useEffect(() => {
     if (currentStep.images?.length) {
-      // Initialize loading state only when images change
+      // Инициализираме състоянието на зареждане само когато изображенията се променят
       loadingImagesRef.current = new Array(currentStep.images.length).fill(
         true
       );
@@ -23,7 +23,7 @@ const StepImages = ({
 
   const handleImageLoad = (index: number) => {
     setTimeout(() => {
-      // Update the ref and force a re-render by using state if necessary
+      // Актуализираме референцията и ако е необходимо, предизвикваме ререндериране чрез state
       loadingImagesRef.current[index] = false;
     });
   };
@@ -32,6 +32,7 @@ const StepImages = ({
     <div className="flex flex-wrap justify-center gap-4">
       {currentStep.images?.map((imgSrc, index) => (
         <div key={index} className="relative">
+          {/* Анимация за показване на индикатор за зареждане */}
           <CSSTransition
             in={loadingImagesRef.current[index]}
             timeout={100}
@@ -43,6 +44,7 @@ const StepImages = ({
                 loadingImagesRef.current[index] ? "" : "hidden"
               }`}
             >
+              {/* SVG икона за индикатор на зареждане */}
               <svg
                 className="w-12 h-12 text-gray-400 dark:text-gray-500 animate-spin"
                 xmlns="http://www.w3.org/2000/svg"
@@ -66,6 +68,7 @@ const StepImages = ({
             </div>
           </CSSTransition>
 
+          {/* Анимация за показване на изображението след зареждане */}
           <CSSTransition
             in={!loadingImagesRef.current[index]}
             timeout={100}
