@@ -17,6 +17,8 @@ build
 *.spec
 credentials.js
 config.js
+session_data_*.json
+example_data_analysis.py
 
 # Editor directories and files
 .vscode/*
