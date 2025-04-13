@@ -2,15 +2,20 @@ import { useEffect, useRef, useState } from "react";
 import type React from "react";
 import type { BrainData } from "@/container/types_common";
 import AnimatedValue from "../animatedValue/AnimatedValue";
+import Infobox from "../infobox/infobox";
 
 interface BrainActivityCardProps {
   data: BrainData | null;
+  handleInfoButtonClick: () => void;
 }
 
-const BrainActivityCard: React.FC<BrainActivityCardProps> = ({ data }) => {
+const BrainActivityCard: React.FC<BrainActivityCardProps> = ({
+  data,
+  handleInfoButtonClick
+}) => {
   const prevValidData = useRef<BrainData | null>(null);
 
-  // State for tracking values and their animation keys
+  // Състояние за следене на стойностите и техните анимационни ключове
   const [currentAttention, setCurrentAttention] = useState<number>(0);
   const [attentionKey, setAttentionKey] = useState<number>(0);
   const [currentMeditation, setCurrentMeditation] = useState<number>(0);
@@ -19,7 +24,7 @@ const BrainActivityCard: React.FC<BrainActivityCardProps> = ({ data }) => {
     Record<string, { value: number; key: number }>
   >({});
 
-  // Brain wave config with color and key
+  // Конфигурация на мозъчните вълни с цветове и ключове
   const brainWaveConfig: Array<{
     key: keyof BrainData;
     title: string;
@@ -35,25 +40,25 @@ const BrainActivityCard: React.FC<BrainActivityCardProps> = ({ data }) => {
     { key: "highGamma", title: "High Gamma", color: "#FF8042" }
   ];
 
-  // Update values with animation key management
+  // Актуализиране на стойностите с управление на анимационните ключове
   useEffect(() => {
     if (!data) return;
 
-    // Attention value update
+    // Актуализиране на стойността за Attention
     const newAttention = Math.round(Number(data.attention) || 0);
     if (newAttention !== currentAttention) {
       setCurrentAttention(newAttention);
       setAttentionKey((prev) => prev + 1);
     }
 
-    // Meditation value update
+    // Актуализиране на стойността за Meditation
     const newMeditation = Math.round(Number(data.meditation) || 0);
     if (newMeditation !== currentMeditation) {
       setCurrentMeditation(newMeditation);
       setMeditationKey((prev) => prev + 1);
     }
 
-    // Brain wave values update
+    // Актуализиране на стойностите за мозъчните вълни
     const newBrainWaveValues = brainWaveConfig.reduce((acc, wave) => {
       const newValue = Math.round(Number(data[wave.key]) || 0);
       const existingValue = brainWaveValues[wave.key]?.value;
@@ -73,14 +78,9 @@ const BrainActivityCard: React.FC<BrainActivityCardProps> = ({ data }) => {
     setBrainWaveValues(newBrainWaveValues);
   }, [data]);
 
-  // Data validation and previous data logic
+  // Проверка за валидни данни
   const shouldKeepPreviousData =
     data && brainWaveConfig.every(({ key }) => data[key] === 0);
-
-  const displayData =
-    shouldKeepPreviousData && prevValidData.current
-      ? prevValidData.current
-      : data;
 
   if (!shouldKeepPreviousData && data) {
     prevValidData.current = data;
@@ -91,9 +91,15 @@ const BrainActivityCard: React.FC<BrainActivityCardProps> = ({ data }) => {
   return (
     <div className="bg-white dark:bg-black dark:bg-opacity-30 rounded-xl p-4 shadow-md dark:shadow-lg dark:backdrop-blur-sm border border-gray-200 dark:border-transparent">
       <h3 className="text-lg font-medium mb-3 flex items-center">
-        <i className="mr-2 text-xl text-primary ti ti-brain" />
-        <span>Вашата мозъчна активност в реално време</span>
+        <div className="flex items-center gap-2">
+          <i className="text-xl text-primary ti ti-brain" />
+          <span className="leading-none">
+            Вашата мозъчна активност в реално време
+          </span>
+          <Infobox onClick={handleInfoButtonClick} />
+        </div>
       </h3>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-gray-50 dark:bg-black dark:bg-opacity-30 rounded-lg p-3 border border-gray-200 dark:border-transparent">
           <div className="grid grid-cols-2 gap-4">

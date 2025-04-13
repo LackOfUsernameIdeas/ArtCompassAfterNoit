@@ -14,6 +14,7 @@ interface BrainAnalysisTrackStatsProps {
     name: string;
     data: { x: string; y: number }[];
   }[];
+  handleInfoButtonClick: () => void;
 }
 
 const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
@@ -21,11 +22,13 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
   transmissionComplete,
   chartData,
   seriesData,
-  attentionMeditation
+  attentionMeditation,
+  handleInfoButtonClick
 }) => {
   const termsCardRef = useRef<HTMLButtonElement>(null);
   const [flash, setFlash] = useState(false);
-  // Brain wave configuration with colors
+
+  // Конфигурация на мозъчните вълни с цветове
   const brainWaveConfig: Array<{
     key: keyof BrainData;
     title: string;
@@ -41,11 +44,13 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
     { key: "highGamma", title: "High Gamma", color: "#FF8042" }
   ];
 
+  // Обработва натискането на бутона за генериране на препоръки
   const handleSubmitClick = () => {
     if (!transmissionComplete || seriesData.length === 0) return;
     handleRecommendationsSubmit(seriesData);
   };
 
+  // Превърта изгледа до бутона и добавя мигащ ефект
   const handleScroll = () => {
     if (termsCardRef.current) {
       termsCardRef.current.scrollIntoView({
@@ -58,6 +63,7 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
     }
   };
 
+  // Изпълнява handleScroll при завършване на предаването на данни
   useEffect(() => {
     if (transmissionComplete) {
       handleScroll();
@@ -69,11 +75,15 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
       <div className="relative mx-auto">
         {chartData && (
           <div className="space-y-4">
-            <BrainActivityCard data={chartData} />
+            <BrainActivityCard
+              data={chartData}
+              handleInfoButtonClick={handleInfoButtonClick}
+            />
             <div className="space-y-4">
               <AttentionMeditationChart
                 attentionMeditation={attentionMeditation}
               />
+              {/* Показване на първите 4 вида мозъчни вълни */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                 {brainWaveConfig.slice(0, 4).map((wave) => (
                   <div key={wave.key}>
@@ -86,6 +96,7 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
                   </div>
                 ))}
               </div>
+              {/* Показване на останалите видове мозъчни вълни */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                 {brainWaveConfig.slice(4).map((wave) => (
                   <div key={wave.key}>
@@ -102,6 +113,7 @@ const BrainAnalysisTrackStats: React.FC<BrainAnalysisTrackStatsProps> = ({
           </div>
         )}
       </div>
+      {/* Бутон за генериране на препоръки */}
       {transmissionComplete && (
         <div className="flex justify-center mt-6">
           <button

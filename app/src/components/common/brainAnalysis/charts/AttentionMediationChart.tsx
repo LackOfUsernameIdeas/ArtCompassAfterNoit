@@ -66,7 +66,7 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
       },
       background: "transparent"
     },
-    colors: ["#FF5722", "#4CAF50"],
+    colors: ["#f59e0b", "#0ea5e9"],
     stroke: {
       curve: "smooth",
       width: 3
@@ -202,12 +202,12 @@ const AttentionMeditationChart: React.FC<AttentionMeditationChartProps> = ({
           <AnimatedValue
             key={`${valueKey}-attention`}
             value={attentionValue}
-            color="#FF5722"
+            color="#f59e0b"
           />
           <AnimatedValue
             key={`${valueKey}-meditation`}
             value={meditationValue}
-            color="#4CAF50"
+            color="#0ea5e9"
           />
         </div>
       </div>

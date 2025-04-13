@@ -17,6 +17,13 @@ import Loader from "@/components/common/loader/Loader";
 import { steps } from "@/container/data_common";
 import DownloadButton from "@/components/common/download/Download";
 import StepImages from "@/components/common/brainAnalysis/StepImages";
+import { InfoboxModal } from "../../../../components/common/infobox/InfoboxModal";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from "@/components/ui/accordion";
 
 // Компонент за въпросите по време на мозъчния анализ
 export const BrainAnalysisSteps: FC<{
@@ -68,7 +75,8 @@ export const BrainAnalysisSteps: FC<{
     { name: "Attention", data: [] },
     { name: "Meditation", data: [] }
   ]);
-
+  // State за отваряне/затваряне на InfoBox
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null); // Състояние за избраното изображение (за показване в пълен размер)
   const closeModal = () => setSelectedImage(null); // Функция за затваряне на прозорецa с изображението
 
@@ -218,6 +226,11 @@ export const BrainAnalysisSteps: FC<{
       brainData,
       "books"
     );
+  };
+
+  // Функция за отваряне/затваряне на InfoBox
+  const handleInfoButtonClick = () => {
+    setIsModalOpen((prev) => !prev);
   };
 
   return (
@@ -395,6 +408,361 @@ export const BrainAnalysisSteps: FC<{
                 seriesData={seriesData}
                 chartData={chartData}
                 attentionMeditation={attentionMeditation}
+                handleInfoButtonClick={handleInfoButtonClick}
+              />
+              <InfoboxModal
+                onClick={handleInfoButtonClick}
+                isModalOpen={isModalOpen}
+                title="Мозъчна активност"
+                description={
+                  <>
+                    <p>
+                      <span className="font-semibold">Мозъчните вълни</span> са
+                      електрически сигнали, генерирани от милиардите неврони в
+                      мозъка. Те се анализират чрез т.нар.{" "}
+                      <span className="font-semibold">
+                        спектрална плътност на мощността (Power Spectral Density
+                        или PSD)
+                      </span>
+                      , която показва как{" "}
+                      <span className="font-semibold">енергията (силата)</span>{" "}
+                      на вълните е разпределена в различни честотни диапазони.
+                      Всеки един от тях е кръстен с буква от гръцката азбука.
+                      Диапазоните могат да се разделят и на поддиапазони{" "}
+                      <span className="font-semibold">(Low и High)</span>. Освен
+                      мозъчните вълни, съществуват и специализирани алгоритми,
+                      разработени от{" "}
+                      <span className="font-semibold">NeuroSky</span>, които
+                      анализират мозъчната дейност и извличат полезни показатели
+                      -
+                      <span className="font-semibold">
+                        Attention (Измерване на вниманието)
+                      </span>{" "}
+                      и{" "}
+                      <span className="font-semibold">
+                        Mediation (Измерване на медитативното състояние)
+                      </span>
+                      .
+                    </p>
+                    <Accordion
+                      type="single"
+                      collapsible
+                      className="space-y-4 pt-5"
+                    >
+                      <AccordionItem value="delta">
+                        <AccordionTrigger>
+                          <div className="flex items-center gap-3 font-semibold">
+                            <span className="text-xl text-primary">Δ</span>{" "}
+                            Delta вълни (0-4 Hz)
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          Вълните с най-ниска честота са{" "}
+                          <span className="font-semibold">Делта δ (0-4Hz)</span>{" "}
+                          – когато имаме най-ниски нива на мозъчна активност.
+                          При по-високи стойности на проявление на Делта
+                          вълните, в сравнение с останалите, е характерно
+                          състояние, при което човек е{" "}
+                          <span className="font-semibold">
+                            изключително отпуснат или дори заспал
+                          </span>
+                          . Човешкият мозък увеличава делта вълните, за да
+                          намали съзнанието за физическия свят около него.
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="theta">
+                        <AccordionTrigger>
+                          <div className="flex items-center gap-3 font-semibold">
+                            <span className="text-xl text-primary">Θ</span>{" "}
+                            Theta вълни (4-7 Hz)
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <span className="font-semibold">Тета θ (4-7Hz)</span>{" "}
+                          вълните се проявяват при по-високи, но все още
+                          сравнително ниски нива на мозъчна активност. При
+                          по-високи стойности на Тета вълни, в сравнение с
+                          останалите, е характерно състояние, при което човек е{" "}
+                          <span className="font-semibold">по-отпуснат</span>.
+                          Освен това, тези вълни са силно свързани с
+                          креативността, интуицията и въображението – като цяло
+                          с{" "}
+                          <span className="font-semibold">
+                            вътрешна концентрация, медитация и духовно
+                            осъзнаване
+                          </span>{" "}
+                          –{" "}
+                          <span className="font-semibold">
+                            състояние между будността и съня (хипнагонично
+                            състояние)
+                          </span>
+                          .
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="low-alpha">
+                        <AccordionTrigger>
+                          <div className="flex items-center gap-3 font-semibold">
+                            <span className="text-xl text-primary">α</span> Low
+                            Alpha вълни (8-10 Hz)
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <span className="font-semibold">
+                            Ниските Алфа α вълни (8-10 Hz)
+                          </span>{" "}
+                          са характерни за преходни състояния между будност и
+                          сън,{" "}
+                          <span className="font-semibold">
+                            лека разсеяност или унесено състояние
+                          </span>
+                          , тъй като са на границата с Тета вълните.{" "}
+                          <span className="font-semibold">Алфа α (8-12Hz)</span>{" "}
+                          вълните се проявяват при умерени нива на мозъчна
+                          активност. При по-високи стойности на Алфа вълни, в
+                          сравнение с останалите, е характерно състояние, при
+                          което човек е{" "}
+                          <span className="font-semibold">
+                            спокоен, уравновесен, в добро настроение
+                          </span>{" "}
+                          – в{" "}
+                          <span className="font-semibold">
+                            нормално състояние
+                          </span>
+                          , при което има умствена координация и съзнателност.
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="high-alpha">
+                        <AccordionTrigger>
+                          <div className="flex items-center gap-3 font-semibold">
+                            <span className="text-xl text-primary">Α</span> High
+                            Alpha вълни (10-12 Hz)
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <span className="font-semibold">
+                            Високите Алфа α вълни (10-12 Hz)
+                          </span>{" "}
+                          са свързани с{" "}
+                          <span className="font-semibold">
+                            оптимално и релаксирано
+                          </span>
+                          , но същевременно{" "}
+                          <span className="font-semibold">концентрирано</span>{" "}
+                          състояние, тъй като са на границата с Бета вълните. Те
+                          се свързват с по-добра когнитивна ефективност, но без
+                          да преминават в напрегнато състояние.{" "}
+                          <span className="font-semibold">
+                            Алфа α (8-12Hz) вълните
+                          </span>{" "}
+                          се проявяват при умерени нива на мозъчна активност.
+                          При по-високи стойности на Алфа вълни, в сравнение с
+                          останалите, е характерно състояние, при което човек е{" "}
+                          <span className="font-semibold">
+                            спокоен, уравновесен, в добро настроение
+                          </span>{" "}
+                          – в{" "}
+                          <span className="font-semibold">
+                            нормално състояние
+                          </span>
+                          , при което има умствена координация и съзнателност.
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="low-beta">
+                        <AccordionTrigger>
+                          <div className="flex items-center gap-3 font-semibold">
+                            <span className="text-xl text-primary">β</span> Low
+                            Beta вълни (12-15 Hz)
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <span className="font-semibold">
+                            Ниски Бета β вълни (12-15 Hz)
+                          </span>{" "}
+                          – свързани са със{" "}
+                          <span className="font-semibold">
+                            спокойна концентрация
+                          </span>{" "}
+                          и устойчива{" "}
+                          <span className="font-semibold">бдителност</span>, тъй
+                          като са на границата с Алфа вълните. Те често се
+                          асоциират със{" "}
+                          <span className="font-semibold">
+                            сензомоторния ритъм (SMR)
+                          </span>{" "}
+                          – специфичен мозъчен ритъм в диапазона 12–15 Hz, който
+                          се генерира в сензомоторната кора.{" "}
+                          <span className="font-semibold">SMR</span> играе
+                          ключова роля в регулирането на двигателния контрол и е
+                          свързан със състояния на спокойна концентрация, при
+                          които тялото остава неподвижно, а умът е{" "}
+                          <span className="font-semibold">фокусиран</span>.
+                          Поддържането на стабилен SMR ритъм може да допринесе
+                          за подобряване на вниманието, когнитивната ефективност
+                          и самоконтрола, като същевременно намали
+                          импулсивността и хиперактивността.
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="high-beta">
+                        <AccordionTrigger>
+                          <div className="flex items-center gap-3 font-semibold">
+                            <span className="text-xl text-primary">Β</span> High
+                            Beta вълни (18-30 Hz)
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <span className="font-semibold">
+                            Високи Бета β вълни (18-30 Hz)
+                          </span>{" "}
+                          – асоциират се с{" "}
+                          <span className="font-semibold">
+                            когнитивна активност, стрес, тревожност и нервност
+                          </span>
+                          , тъй като мозъкът е в състояние на{" "}
+                          <span className="font-semibold">
+                            прекомерна активност и бдителност
+                          </span>
+                          .{" "}
+                          <span className="font-semibold">
+                            Бета β (12-30Hz) вълните
+                          </span>{" "}
+                          се проявяват при по-високи нива на мозъчна активност.
+                          Тези вълни са свързани с{" "}
+                          <span className="font-semibold">
+                            логическото мислене, критичния анализ и когнитивната
+                            обработка на информация
+                          </span>
+                          .
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="low-gamma">
+                        <AccordionTrigger>
+                          <div className="flex items-center gap-3 font-semibold">
+                            <span className="text-xl text-primary">γ</span> Low
+                            Gamma вълни (30-40 Hz)
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          Вълните, които притежават{" "}
+                          <span className="font-semibold">
+                            най-силна честота
+                          </span>{" "}
+                          (най-бързи) са{" "}
+                          <span className="font-semibold">
+                            Гама γ вълните (над 30Hz)
+                          </span>
+                          . Те се проявяват при{" "}
+                          <span className="font-semibold">интензивни</span> нива
+                          на мозъчна активност. Те играят ключова роля в
+                          синхронизирането на различните части на мозъка, което
+                          позволява едновременно обработване на информация от
+                          различни източници.{" "}
+                          <span className="font-semibold">
+                            Ниските Гама γ вълни (30-40 Hz)
+                          </span>{" "}
+                          са свързани с{" "}
+                          <span className="font-semibold">
+                            добра концентрация, ефективна обработка на
+                            информация и синхронизация между мозъчните региони
+                          </span>
+                          . Оптималните стойности в този диапазон подпомагат
+                          дългосрочната памет.
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="high-gamma">
+                        <AccordionTrigger>
+                          <div className="flex items-center gap-3 font-semibold">
+                            <span className="text-xl text-primary">Γ</span> High
+                            Gamma вълни (40+ Hz)
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          Вълните, които притежават{" "}
+                          <span className="font-semibold">
+                            най-силна честота
+                          </span>{" "}
+                          (най-бързи) са{" "}
+                          <span className="font-semibold">
+                            Гама γ вълните (над 30Hz)
+                          </span>
+                          . Те се проявяват при{" "}
+                          <span className="font-semibold">интензивни</span> нива
+                          на мозъчна активност. Те играят ключова роля в
+                          синхронизирането на различните части на мозъка, което
+                          позволява едновременно обработване на информация от
+                          различни източници.{" "}
+                          <span className="font-semibold">
+                            Високите Гама γ вълни (40+ Hz)
+                          </span>{" "}
+                          са асоциират с изключително{" "}
+                          <span className="font-semibold">
+                            висока невронна активност и интензивна когнитивна
+                            дейност
+                          </span>
+                          . При прекомерна активност в този диапазон, може да се
+                          наблюдават{" "}
+                          <span className="font-semibold">
+                            свръхвъзбуда, тревожност, когнитивно пренатоварване
+                            или дори свръхвисоки нива на стрес
+                          </span>
+                          .
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="attention">
+                        <AccordionTrigger>
+                          <div className="flex items-center gap-3 font-semibold">
+                            <i className="text-xl text-primary ti ti-message-report" />
+                            Attention
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <span className="font-semibold">
+                            Attention (Измерване на вниманието)
+                          </span>{" "}
+                          - измерва нивото на концентрация и интензивността на
+                          фокуса. Стойността му варира от{" "}
+                          <span className="font-semibold">0 до 100</span>.
+                          Високите стойности показват{" "}
+                          <span className="font-semibold">
+                            силна съсредоточеност
+                          </span>{" "}
+                          върху една мисъл или задача, а ниските стойности
+                          означават
+                          <span className="font-semibold">
+                            {" "}
+                            разсеяност или липса на концентрация
+                          </span>
+                          .
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="mediation">
+                        <AccordionTrigger>
+                          <div className="flex items-center gap-3 font-semibold">
+                            <i className="text-xl text-primary ti ti-chart-histogram" />
+                            Mediation
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <span className="font-semibold">
+                            Mediation (Измерване на медитативното състояние)
+                          </span>{" "}
+                          – измерва нивото на спокойствие и релаксация.
+                          Стойността му варира от{" "}
+                          <span className="font-semibold">0 до 100</span>.
+                          Високите стойности показват{" "}
+                          <span className="font-semibold">
+                            спокойствие, отпускане и баланс
+                          </span>
+                          . Ниските стойности сигнализират за
+                          <span className="font-semibold">
+                            {" "}
+                            напрежение, стрес или неспокойствие
+                          </span>
+                          .
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  </>
+                }
               />
             </div>
           </CSSTransition>
