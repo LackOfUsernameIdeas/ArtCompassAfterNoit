@@ -1,9 +1,14 @@
 import { FC, useState, useEffect } from "react";
 import { CSSTransition } from "react-transition-group";
-import { PlotModalProps } from "../readlist-types";
+import { PlotAndDescriptionModalProps } from "../watchlist-types";
 
-// Компонент за модал, който показва пълен сюжет
-export const PlotModal: FC<PlotModalProps> = ({ isOpen, onClose, plot }) => {
+// Компонент за модал, който показва пълен сюжет/пълно описание
+export const PlotAndDescriptionModal: FC<PlotAndDescriptionModalProps> = ({
+  isOpen,
+  onClose,
+  modalData,
+  modalType
+}) => {
   // Състояние за анимацията на модала (непрозрачност и скалиране)
   const [animationState, setAnimationState] = useState({
     opacity: 0,
@@ -32,8 +37,10 @@ export const PlotModal: FC<PlotModalProps> = ({ isOpen, onClose, plot }) => {
             transition: "opacity 300ms, transform 300ms"
           }}
         >
-          <h2 className="text-lg font-semibold">Пълно описание</h2>
-          <p className="text-sm">{plot}</p>
+          <h2 className="text-lg font-semibold">
+            {modalType === "description" ? "Пълно описание" : "Пълен сюжет"}
+          </h2>
+          <p className="text-sm">{modalData}</p>
           <div className="flex justify-end space-x-4">
             <button
               onClick={onClose} // Затваря модала

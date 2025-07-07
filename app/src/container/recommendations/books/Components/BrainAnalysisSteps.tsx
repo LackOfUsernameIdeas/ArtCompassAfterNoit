@@ -8,7 +8,6 @@ import { handleSubmit } from "../helper_functions";
 import { BrainData } from "@/container/types_common";
 import {
   connectSocketIO,
-  getMarginClass,
   MAX_DATA_POINTS,
   updateSeriesData
 } from "@/container/helper_functions_common";
@@ -16,7 +15,6 @@ import BrainAnalysisTrackStats from "@/components/common/brainAnalysis/BrainAnal
 import Loader from "@/components/common/loader/Loader";
 import { steps } from "@/container/data_common";
 import DownloadButton from "@/components/common/download/Download";
-import StepImages from "@/components/common/brainAnalysis/StepImages";
 import { InfoboxModal } from "../../../../components/common/infobox/InfoboxModal";
 import {
   Accordion,

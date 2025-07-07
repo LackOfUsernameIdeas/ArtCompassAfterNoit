@@ -1,7 +1,5 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
-import SwiperComponent from "@/components/common/swiper/swiper";
 
 interface SignincoverProps {}
 
@@ -166,168 +164,159 @@ const Signincover: FC<SignincoverProps> = () => {
 
   return (
     <Fragment>
-      {/* Заглавие на страницата за правилна SEO оптимизация */}
-      <Helmet>
-        <body className="bg-white dark:!bg-bodybg"></body>
-      </Helmet>
+      {/* Контейнер с центрирано съдържание */}
+      <div className="container">
+        <div className="flex justify-center authentication authentication-basic items-center h-full text-defaultsize text-defaulttextcolor">
+          {/* Колона за съдържание */}
+          <div className="xxl:col-span-4 xl:col-span-4 lg:col-span-4 md:col-span-6 sm:col-span-8 col-span-12">
+            {/* Линк за връщане към началната страница */}
+            <p className="text-[0.75rem] text-[#8c9097] dark:text-white/50 m-4">
+              <Link to={`${import.meta.env.BASE_URL}`}>
+                {"<< Обратно към главната страница"}
+              </Link>
+            </p>
 
-      {/* Основна структура на страницата с оформени колони */}
-      <div className="grid grid-cols-12 authentication mx-0 text-defaulttextcolor text-defaultsize">
-        {/* Колона за формата за вход */}
-        <div className="xxl:col-span-7 xl:col-span-7 lg:col-span-12 col-span-12">
-          {/* Центриране на съдържанието */}
-          <div className="flex justify-center items-center h-full">
-            {/* Празна колона за подравняване */}
-            <div className="xxl:col-span-3 xl:col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-2"></div>
-            <div className="xxl:col-span-6 xl:col-span-6 lg:col-span-6 md:col-span-6 sm:col-span-8 col-span-12">
-              {/* Линк за връщане към началната страница */}
-              <p className="text-[0.75rem] text-[#8c9097] dark:text-white/50 ml-[1.5rem]">
-                <Link to={`${import.meta.env.BASE_URL}`}>
-                  {"<< Обратно към главната страница"}
-                </Link>
-              </p>
-              <div className="p-[3rem]">
-                {/* Заглавие за вход */}
-                <p className="h5 font-semibold opsilion !text-3xl mb-2">
+            {/* Контейнер за формата */}
+            <div className="box">
+              <div className="box-body !px-[3rem] !py-[2rem]">
+                {/* Заглавие */}
+                <p className="h5 font-semibold opsilion mb-2 text-center">
                   Имате профил?
                 </p>
-                {/* Инструкция за попълване на данни */}
-                <p className="mb-4 text-[#8c9097] dark:text-white/50 opacity-[0.7] font-normal">
+                {/* Подзаглавие */}
+                <p className="mb-4 text-[#8c9097] dark:text-white/50 opacity-[0.7] font-normal text-center">
                   Попълнете Вашите имейл и парола, за да влезете в профила си!
                 </p>
 
-                {/* Формуляр за вход */}
-                <div className="form-wrapper max-w-lg mx-auto">
-                  {/* Известия за грешки или успех */}
-                  {alerts.map((alert, idx) => (
+                {/* Известия за грешки или успех */}
+                {alerts.map((alert, idx) => (
+                  <div
+                    className={`alert alert-${alert.color} flex items-center`}
+                    role="alert"
+                    key={idx}
+                    style={{
+                      maxWidth: "100%",
+                      height: "auto",
+                      marginBottom: "1rem",
+                      wordBreak: "break-word",
+                      padding: "0.75rem 1rem",
+                      minHeight: "auto",
+                      alignItems: "center"
+                    }}
+                  >
+                    {/* Икона за известие */}
                     <div
-                      className={`alert alert-${alert.color} flex items-center`}
-                      role="alert"
-                      key={idx}
                       style={{
-                        maxWidth: "100%",
-                        height: "auto",
-                        marginBottom: "1rem",
-                        wordBreak: "break-word",
-                        padding: "0.75rem 1rem",
-                        minHeight: "auto",
-                        alignItems: "center"
+                        marginRight: "0.5rem",
+                        fontSize: "1.25rem",
+                        lineHeight: "1"
                       }}
                     >
-                      {/* Икона за известие */}
-                      <div
-                        style={{
-                          marginRight: "0.5rem",
-                          fontSize: "1.25rem",
-                          lineHeight: "1"
-                        }}
-                      >
-                        {alert.icon}
-                      </div>
-                      {/* Текст на известието */}
-                      <div style={{ lineHeight: "1.2" }}>
-                        <b>{alert.message}</b>
-                      </div>
+                      {alert.icon}
                     </div>
-                  ))}
+                    {/* Текст на известието */}
+                    <div style={{ lineHeight: "1.2" }}>
+                      <b>{alert.message}</b>
+                    </div>
+                  </div>
+                ))}
 
-                  {/* Формуляр за въвеждане на данни */}
-                  <form onSubmit={handleSubmit}>
-                    <div className="grid grid-cols-12 gap-y-4">
-                      {/* Поле за имейл */}
-                      <div className="xl:col-span-12 col-span-12 mt-0">
-                        <label
-                          htmlFor="signin-email"
-                          className="form-label text-default opsilion"
+                {/* Формуляр за въвеждане на данни */}
+                <form onSubmit={handleSubmit}>
+                  <div className="grid grid-cols-12 gap-y-4">
+                    {/* Поле за имейл */}
+                    <div className="xl:col-span-12 col-span-12">
+                      <label
+                        htmlFor="signin-email"
+                        className="form-label text-default opsilion"
+                      >
+                        Имейл
+                      </label>
+                      <input
+                        type="email"
+                        className={`form-control form-control-lg w-full !rounded-md ${
+                          emptyFields.email ? "empty-field" : ""
+                        }`}
+                        id="email"
+                        placeholder="Въведете своя имейл"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+
+                    {/* Поле за парола */}
+                    <div className="xl:col-span-12 col-span-12">
+                      <label
+                        htmlFor="signin-password"
+                        className="form-label text-default block opsilion"
+                      >
+                        Парола
+                        {/* Линк за забравена парола */}
+                        <Link
+                          to={`${import.meta.env.BASE_URL}resetpassword`}
+                          className="ltr:float-right rtl:float-left text-danger font-Equilibrist"
                         >
-                          Имейл
-                        </label>
+                          Забравена парола
+                        </Link>
+                      </label>
+                      <div className="input-group">
                         <input
-                          type="email"
-                          className={`form-control form-control-lg w-full !rounded-md ${
-                            emptyFields.email ? "empty-field" : ""
+                          type={passwordShow ? "text" : "password"}
+                          className={`form-control form-control-lg !rounded-e-none ${
+                            emptyFields.password ? "empty-field" : ""
                           }`}
-                          id="email"
-                          placeholder="Въведете своя имейл"
-                          value={formData.email}
+                          id="password"
+                          placeholder="Въведете своята парола"
+                          value={formData.password}
                           onChange={handleInputChange}
                         />
-                      </div>
-
-                      {/* Поле за парола */}
-                      <div className="xl:col-span-12 col-span-12 mb-4">
-                        <label
-                          htmlFor="signin-password"
-                          className="form-label text-default block opsilion"
-                        >
-                          Парола
-                          {/* Линк за забравена парола */}
-                          <Link
-                            to={`${import.meta.env.BASE_URL}resetpassword`}
-                            className="ltr:float-right rtl:float-left text-danger font-Equilibrist"
-                          >
-                            Забравена парола
-                          </Link>
-                        </label>
-                        <div className="input-group">
-                          <input
-                            type={passwordShow ? "text" : "password"}
-                            className={`form-control form-control-lg !rounded-e-none ${
-                              emptyFields.password ? "empty-field" : ""
-                            }`}
-                            id="password"
-                            placeholder="Въведете своята парола"
-                            value={formData.password}
-                            onChange={handleInputChange}
-                          />
-                          {/* Бутон за показване или скриване на паролата */}
-                          <button
-                            aria-label="button"
-                            type="button"
-                            className="ti-btn ti-btn-light !rounded-s-none !mb-0"
-                            onClick={() => setpasswordShow(!passwordShow)}
-                            id="button-addon2"
-                          >
-                            <i
-                              className={`${
-                                passwordShow ? "ri-eye-line" : "ri-eye-off-line"
-                              } align-middle`}
-                            ></i>
-                          </button>
-                        </div>
-
-                        {/* Запомни паролата */}
-                        <div className="mt-2">
-                          <div className="form-check !ps-0">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="rememberMe"
-                              checked={rememberMe}
-                              onChange={handleCheckboxChange}
-                            />
-                            <label
-                              className="form-check-label text-[#8c9097] dark:text-white/50 font-normal"
-                              htmlFor="rememberMe"
-                            >
-                              Запомни паролата ми
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Бутон за вход */}
-                      <div className="xl:col-span-12 col-span-12 grid mt-2">
+                        {/* Бутон за показване или скриване на паролата */}
                         <button
-                          type="submit"
-                          className="ti-btn ti-btn-lg bg-primary text-white !text-lg opsilion !font-medium dark:border-defaultborder/10"
+                          aria-label="button"
+                          type="button"
+                          className="ti-btn ti-btn-light !rounded-s-none !mb-0"
+                          onClick={() => setpasswordShow(!passwordShow)}
+                          id="button-addon2"
                         >
-                          Влезте
+                          <i
+                            className={`${
+                              passwordShow ? "ri-eye-line" : "ri-eye-off-line"
+                            } align-middle`}
+                          ></i>
                         </button>
                       </div>
+
+                      {/* Запомни паролата */}
+                      <div className="mt-2">
+                        <div className="form-check !ps-0">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id="rememberMe"
+                            checked={rememberMe}
+                            onChange={handleCheckboxChange}
+                          />
+                          <label
+                            className="form-check-label text-[#8c9097] dark:text-white/50 font-normal"
+                            htmlFor="rememberMe"
+                          >
+                            Запомни паролата ми
+                          </label>
+                        </div>
+                      </div>
                     </div>
-                  </form>
-                </div>
+
+                    {/* Бутон за вход */}
+                    <div className="xl:col-span-12 col-span-12 grid">
+                      <button
+                        type="submit"
+                        className="ti-btn ti-btn-lg bg-primary text-white !text-lg opsilion !font-medium dark:border-defaultborder/10"
+                      >
+                        Влезте
+                      </button>
+                    </div>
+                  </div>
+                </form>
 
                 {/* Линк за създаване на нов профил */}
                 <div className="text-center">
@@ -343,13 +332,8 @@ const Signincover: FC<SignincoverProps> = () => {
                 </div>
               </div>
             </div>
-            {/* Празна колона за подравняване */}
-            <div className="xxl:col-span-3 xl:col-span-3 lg:col-span-3 md:col-span-3 sm:col-span-2"></div>
           </div>
         </div>
-
-        {/* Страничен панел с изображение или лого */}
-        <SwiperComponent />
       </div>
     </Fragment>
   );

@@ -561,7 +561,7 @@ Background Image
 
 /* Footer Styles */
 .footer {
-  @apply bg-bodybg p-12 shadow-md border-t-4 border-primary rounded-[2rem] mx-[4.5rem] mb-4;
+  @apply p-12 shadow-md border-t-4 border-primary rounded-[2rem] mx-[4.5rem] mb-4;
 }
 
 .footer .container {

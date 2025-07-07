@@ -5,6 +5,7 @@ import { QuizQuestions } from "./QuizQuestions";
 import { handleRetakeQuiz } from "../helper_functions";
 import Loader from "../../../../components/common/loader/Loader";
 import { QuizProps } from "../booksRecommendations-types";
+import { Card } from "@/components/ui/card";
 
 export const Quiz: FC<QuizProps> = ({
   setBookmarkedBooks,
@@ -93,6 +94,9 @@ export const Quiz: FC<QuizProps> = ({
             setBookmarkedBooks={setBookmarkedBooks}
             bookmarkedBooks={bookmarkedBooks}
           />
+          <Card className="dark:border-black/10 bg-bodybg font-semibold text-xl max-w-7xl p-4 rounded-lg shadow-lg dark:shadow-xl text-center mt-4">
+            <p className="text-base">Източник: Google Books / Goodreads 📖</p>
+          </Card>
         </div>
       </CSSTransition>
     </div>

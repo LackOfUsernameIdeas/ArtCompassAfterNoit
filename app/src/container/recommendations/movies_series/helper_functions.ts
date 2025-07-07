@@ -170,6 +170,47 @@ const fetchIMDbIDWithFailover = async (movieName: string) => {
 };
 
 /**
+ * Извлича YouTube URL за трейлър на даден филм.
+ *
+ * @async
+ * @function fetchYouTubeTrailer
+ * @param {string} recommendation - Заглавието на филма/сериала, за който се търси трейлър.
+ * @returns {Promise<string|null>} - Връща пълния YouTube URL или null, ако няма резултат.
+ */
+const fetchYouTubeEmbedTrailer = async (
+  recommendation: string
+): Promise<string | null> => {
+  const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
+  const query = `${recommendation} - official trailer`;
+
+  try {
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${encodeURIComponent(
+        query
+      )}&key=${apiKey}`
+    );
+
+    if (!response.ok) {
+      console.warn(
+        `YouTube API failed for "${recommendation}": ${response.status}`
+      );
+      return null;
+    }
+
+    const data = await response.json();
+    const videoId = data.items?.[0]?.id?.videoId;
+
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+  } catch (error) {
+    console.error(
+      `Error fetching YouTube trailer for "${recommendation}":`,
+      error
+    );
+    return null;
+  }
+};
+
+/**
  * Генерира препоръки за филми или сериали, базирани на предпочитанията на потребителя,
  * като използва OpenAI API за създаване на списък с препоръки.
  * Връща списък с препоръки в JSON формат.
@@ -203,41 +244,25 @@ export const generateMoviesSeriesRecommendations = async (
 ) => {
   try {
     console.log("brainData", brainData);
+    const requestBody =
+      renderBrainAnalysis && brainData
+        ? moviesSeriesBrainAnalysisPrompt(brainData)
+        : moviesSeriesUserPreferences &&
+          moviesSeriesStandardPreferencesPrompt(moviesSeriesUserPreferences);
 
-    let requestBody;
-    if (renderBrainAnalysis && brainData) {
-      requestBody = moviesSeriesBrainAnalysisPrompt(brainData);
-    } else if (moviesSeriesUserPreferences) {
-      requestBody = moviesSeriesStandardPreferencesPrompt(
-        moviesSeriesUserPreferences
-      );
-    }
-
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/get-model-response`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          api_key: openAIKey,
-          provider: "openai",
-          modelOpenAI: requestBody?.model, // Use the model from the prompt function
-          messages: requestBody?.messages || []
-        })
-      }
-    );
-
-    console.log("body: ", {
-      api_key: openAIKey,
-      provider: "openai",
-      modelOpenAI: requestBody?.model, // Use the model from the prompt function
-      messages: requestBody?.messages || []
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${openAIKey}`
+      },
+      body: JSON.stringify(requestBody)
     });
 
+    console.log("prompt: ", requestBody);
+
     const responseData = await response.json();
-    const responseJson = responseData.response;
+    const responseJson = responseData.choices[0].message.content;
     const unescapedData = responseJson
       .replace(/^```json([\s\S]*?)```$/, "$1")
       .replace(/^```JSON([\s\S]*?)```$/, "$1")
@@ -313,11 +338,14 @@ export const generateMoviesSeriesRecommendations = async (
         `OMDb data for ${movieTitle}: ${JSON.stringify(omdbData, null, 2)}`
       );
 
+      const youtubeTrailerUrl = await fetchYouTubeEmbedTrailer(movieTitle);
+
       const recommendationData = {
         title: omdbData.Title,
         bgName: recommendations[movieTitle].bgName,
         description: recommendations[movieTitle].description,
         reason: recommendations[movieTitle].reason,
+        youtubeTrailerUrl: youtubeTrailerUrl,
         year: omdbData.Year,
         rated: omdbData.Rated,
         released: omdbData.Released,
@@ -389,7 +417,6 @@ export const generateMoviesSeriesRecommendations = async (
     console.error("Error generating recommendations:", error);
   }
 };
-
 /**
  * Записва препоръка за филм или сериал в базата данни.
  * Препоръката съдържа подробности за филма/сериала като заглавие, жанр, рейтинг и други.
@@ -437,6 +464,7 @@ export const saveMoviesSeriesRecommendation = async (
       genre_en: genresEn.join(", "),
       genre_bg: genresBg.join(", "),
       reason: recommendation.reason || null,
+      youtubeTrailerUrl: recommendation.youtubeTrailerUrl || null,
       description: recommendation.description || null,
       year: recommendation.year || null,
       rated: recommendation.rated || null,

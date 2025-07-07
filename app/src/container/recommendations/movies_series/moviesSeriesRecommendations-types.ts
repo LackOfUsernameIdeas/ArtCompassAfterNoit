@@ -30,6 +30,7 @@ export interface Recommendation {
   bgName: string; // Българско заглавие на филма или сериала
   genre: string; // Жанрове на английски
   reason: string; // Причина за препоръката на филма или сериала
+  youtubeTrailerUrl: string; // URL на YouTube трейлъра
   description: string; // Описание на филма или сериала
   year: string; // Година на издаване
   rated: string; // Възрастова оценка
@@ -116,7 +117,7 @@ export interface RecommendationCardProps {
   recommendationList: Recommendation[]; // Списък с препоръчани филми
   currentIndex: number; // Текущ индекс на филма
   isExpanded: boolean; // Флаг дали картата е разширена
-  openModal: () => void; // Функция за отваряне на модала
+  openModal: (type: "description" | "plot") => void; // Функция за отваряне на модала
   setBookmarkedMovies: React.Dispatch<
     // Функция за маркиране на филм
     React.SetStateAction<{
@@ -133,6 +134,7 @@ export interface PlotModalProps {
   recommendationList: Recommendation[]; // Списък с препоръчани филми
   currentIndex: number; // Текущ индекс на филма
   closeModal: () => void; // Функция за затваряне на модала
+  modalType: "description" | "plot"; // Флаг за проверка дали е подаден сюжет или описание
 }
 
 // Пропс за компонентата QuizQuestion, която съдържа въпросите и опции.

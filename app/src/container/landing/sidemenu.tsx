@@ -68,31 +68,27 @@ const Navbar2 = () => {
       <ul className="main-menu">
         <li className="slide">
           <a className="side-menu__item active" href="#home">
-            <span className="side-menu__label active">Начало</span>{" "}
+            <span className="side-menu__label active">Начало</span>
           </a>
         </li>
         <li className="slide">
-          {" "}
           <a href="#description" className="side-menu__item">
-            <span className="side-menu__label">Описание</span>{" "}
-          </a>{" "}
-        </li>
-        <li className="slide">
-          {" "}
-          <a href="#aianalysis" className="side-menu__item">
-            <span className="side-menu__label">AI Анализ</span>{" "}
-          </a>{" "}
-        </li>
-        <li className="slide">
-          {" "}
-          <a href="#accordion" className="side-menu__item">
-            <span className="side-menu__label">Разяснения</span>{" "}
+            <span className="side-menu__label">Описание</span>
           </a>
         </li>
         <li className="slide">
-          {" "}
+          <a href="#aianalysis" className="side-menu__item">
+            <span className="side-menu__label">AI Анализ</span>
+          </a>
+        </li>
+        <li className="slide">
+          <a href="#accordion" className="side-menu__item">
+            <span className="side-menu__label">Разяснения</span>
+          </a>
+        </li>
+        <li className="slide">
           <a href="#additionalStats" className="side-menu__item">
-            <span className="side-menu__label">Други статистики</span>{" "}
+            <span className="side-menu__label">Други статистики</span>
           </a>
         </li>
       </ul>

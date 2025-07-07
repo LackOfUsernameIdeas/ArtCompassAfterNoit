@@ -4,6 +4,7 @@ import { SiRottentomatoes } from "react-icons/si";
 import { RecommendationCardProps } from "../moviesSeriesRecommendations-types";
 import { translate } from "../../../helper_functions_common";
 import { handleBookmarkClick } from "../helper_functions";
+import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
 
 // Кард за генериран филм/сериал спрямо потребителските предпочитания
 const RecommendationCard: FC<RecommendationCardProps> = ({
@@ -23,6 +24,13 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
   const [translatedPlot, setTranslatedPlot] = useState<string>(""); // Преведеното описание на сюжета
   const [translatedCountry, setTranslatedCountry] = useState<string>(""); // Преведената страна
   const [translatedLanguage, setTranslatedLanguage] = useState<string>(""); // Преведеният език
+
+  const [isTrailerModalOpen, setIsTrailerModalOpen] = useState(false); // Състояние за отваряне на модалния прозорец
+
+  const handleTrailerModalClick = () => {
+    setIsTrailerModalOpen((prev) => !prev);
+  }; // Функция за обработка на клик - модален прозорец
+
   const plotPreviewLength = 150; // Дължина на прегледа на съдържанието (oписаниeто и сюжета)
   const recommendation = recommendationList[currentIndex]; // Генерираният филм/сериал
   // Времетраене (за филм - времетраеното на филма, за сериал - средното времетраене на един епизод)
@@ -120,11 +128,48 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
       <div className="flex w-full items-center sm:items-start flex-col md:flex-row">
         <div className="relative flex-shrink-0 mb-4 md:mb-0 md:mr-8 flex flex-col items-center">
           {/* Постер */}
-          <img
-            src={recommendation.poster}
-            alt={`${recommendation.bgName || "Movie"} Poster`}
-            className="rounded-lg w-96 h-auto"
-          />
+          <div
+            className={`relative group ${
+              recommendation.youtubeTrailerUrl ? "cursor-pointer" : ""
+            } `}
+            onClick={handleTrailerModalClick}
+          >
+            <img
+              src={recommendation.poster}
+              alt={`${recommendation.bgName || "Movie"} Poster`}
+              className={`rounded-lg w-96 h-auto transition-all duration-300 ${
+                recommendation.youtubeTrailerUrl
+                  ? "group-hover:scale-102 group-hover:blur-sm"
+                  : ""
+              }`}
+            />
+
+            {/* Play button */}
+            {recommendation.youtubeTrailerUrl && (
+              <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300">
+                <div className="group relative">
+                  <div className="absolute inset-0 rounded-full bg-white/20 blur-xl scale-150 group-hover:scale-[1.7] transition-transform duration-500"></div>
+                  <div className="relative bg-white/10 backdrop-blur-md rounded-full p-6 border border-white/30 shadow-2xl transform transition-all duration-300 group-hover:scale-110 group-hover:bg-white/20 group-hover:border-white/50">
+                    <div className="absolute inset-2 rounded-full bg-gradient-to-br from-white/10 to-transparent"></div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="white"
+                      viewBox="0 0 24 24"
+                      className="size-16 text-white drop-shadow-lg relative z-10 transform transition-transform duration-300 group-hover:scale-105"
+                      style={{
+                        filter:
+                          "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))"
+                      }}
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                    <div className="absolute inset-0 rounded-full border-2 border-white/40 group-hover:animate-ping"></div>
+                  </div>
+                  <div className="absolute top-2 left-2 right-2 bottom-2 rounded-full bg-black/20 blur-lg -z-10"></div>
+                </div>
+              </div>
+            )}
+          </div>
           {/* Бутон за добавяне/премахване от watchlist */}
           <button
             onClick={() =>
@@ -266,7 +311,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
             {recommendation.description &&
               recommendation.description.length > plotPreviewLength && (
                 <button
-                  onClick={openModal}
+                  onClick={() => openModal("description")}
                   className="mt-2 underline hover:scale-105 transition"
                 >
                   Пълно описание
@@ -286,7 +331,7 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
 
             {translatedPlot && translatedPlot.length > plotPreviewLength && (
               <button
-                onClick={openModal}
+                onClick={() => openModal("plot")}
                 className="mt-2 underline hover:scale-105 transition"
               >
                 Пълен сюжет
@@ -369,6 +414,29 @@ const RecommendationCard: FC<RecommendationCardProps> = ({
           </div>
         </div>
       </div>
+      {recommendation.youtubeTrailerUrl && (
+        <InfoboxModal
+          onClick={handleTrailerModalClick}
+          isModalOpen={isTrailerModalOpen}
+          title={`Трейлър на ${recommendation.bgName} - ${recommendation.title}`}
+          description={
+            <div className="container text-center">
+              <div className="flex justify-center">
+                <div className="w-full max-w-4xl rounded-xl overflow-hidden shadow-lg">
+                  <div className="aspect-video">
+                    <iframe
+                      className="w-full h-full"
+                      src={recommendation.youtubeTrailerUrl}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        />
+      )}
     </div>
   );
 };

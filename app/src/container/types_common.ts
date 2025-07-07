@@ -107,6 +107,7 @@ export interface MovieSeriesRecommendation {
   genre_en: string; // Жанрове на английски език (като низ)
   genre_bg: string; // Жанрове на български език (като низ)
   reason: string; // Причина за препоръката
+  youtubeTrailerUrl: string; // URL на трейлъра в YouTube (ако е наличен)
   recommendations: string; // Препоръки, свързани със съдържанието
   description: string; // Описание на филма/сериала
   year: string; // Година на излизане

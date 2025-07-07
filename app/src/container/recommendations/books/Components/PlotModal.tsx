@@ -12,7 +12,7 @@ export const PlotModal: FC<PlotModalProps> = ({
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="fixed inset-0 bg-black bg-opacity-70 z-40"></div>
       <div className="modal">
-        <h2 className="text-lg font-semibold">Пълен сюжет</h2>
+        <h2 className="text-lg font-semibold">Пълно описание</h2>
         <p className="text-sm">
           {typeof book.description === "string" && book.description}
         </p>

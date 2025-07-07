@@ -18,6 +18,9 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
   const [direction, setDirection] = useState<"left" | "right">("right");
   const [isExpanded, setIsExpanded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<"description" | "plot">(
+    "description"
+  );
   const animationDuration = 500;
 
   if (!recommendationList.length) {
@@ -55,7 +58,8 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
     }, 500);
   };
 
-  const openModal = () => {
+  const openModal = (type: "description" | "plot") => {
+    setModalType(type);
     setIsModalOpen(true);
   };
 
@@ -148,6 +152,7 @@ export const RecommendationsList: FC<RecommendationsProps> = ({
           recommendationList={recommendationList}
           currentIndex={currentIndex}
           closeModal={closeModal}
+          modalType={modalType}
         />
       </CSSTransition>
     </div>

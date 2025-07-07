@@ -1,10 +1,11 @@
 import { MovieSeriesRecommendation } from "../../types_common";
 
 // Пропси за модала, показващ сюжета на филма/сериала
-export interface PlotModalProps {
+export interface PlotAndDescriptionModalProps {
   isOpen: boolean; // Статус на модала (отворен/затворен)
   onClose: () => void; // Функция за затваряне на модала
-  plot: string | undefined; // Сюжет на филма/сериала
+  modalData: string | undefined; // Сюжет на филма/сериала
+  modalType: "description" | "plot"; // Флаг за проверка дали е подаден сюжет или описание
 }
 
 // Основни данни за филм

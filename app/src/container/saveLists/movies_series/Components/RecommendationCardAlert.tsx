@@ -1,12 +1,13 @@
 import { FC, useState, useEffect, useRef } from "react";
 import { FaStar } from "react-icons/fa";
 import { SiRottentomatoes } from "react-icons/si";
-import { PlotModal } from "./PlotModal";
+import { PlotAndDescriptionModal } from "./PlotAndDescriptionModal";
 import { Rating, RecommendationCardAlertProps } from "../watchlist-types";
 import {
   handleMovieSeriesBookmarkClick,
   translate
 } from "../../../helper_functions_common";
+import { InfoboxModal } from "@/components/common/infobox/InfoboxModal";
 
 // Компонент за показване на избран филм/сериал като alert
 const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
@@ -26,6 +27,9 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   const [translatedLanguage, setTranslatedLanguage] = useState<string>(""); // Преведеният език
   const [visible, setVisible] = useState(false); // Показване на компонента
   const [isModalOpen, setIsModalOpen] = useState(false); // Статус на модалния прозорец
+  const [modalType, setModalType] = useState<"description" | "plot">(
+    "description"
+  );
   const [modalData, setModalData] = useState<string | undefined>(""); // Данни за съдържанието на модалния прозорец
   const previewLength = 70; // Дължина на прегледа на съдържанието (oписаниeто и сюжета)
   const modalRef = useRef<HTMLDivElement>(null); // Референция към модалния контейнер за директна манипулация в DOM
@@ -33,6 +37,12 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   const [position, setPosition] = useState<number>(0); // Държи текущата вертикална позиция на модала (Y)
   const [dragging, setDragging] = useState<boolean>(false); // Флаг, който показва дали потребителят в момента влачи модала
   const [lastY, setLastY] = useState<number>(0); // Запазва последната Y-координата на допир за плавно движение
+
+  const [isTrailerModalOpen, setIsTrailerModalOpen] = useState(false); // Състояние за отваряне на модалния прозорец
+
+  const handleTrailerModalClick = () => {
+    setIsTrailerModalOpen((prev) => !prev);
+  }; // Функция за обработка на клик - модален прозорец
 
   // useEffect, който предотвратява скролването на фоновата страница, докато потребителят влачи модала
   useEffect(() => {
@@ -87,10 +97,11 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
   };
 
   // Отваря modal-а
-  const openModal = (type: string) => {
-    type === "description"
-      ? setModalData(selectedItem?.description)
-      : setModalData(translatedPlot);
+  const openModal = (type: "description" | "plot") => {
+    setModalType(type);
+    setModalData(
+      type === "description" ? selectedItem?.description || "" : translatedPlot
+    );
     setIsModalOpen(true);
   };
 
@@ -225,13 +236,50 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
       >
         <div className="recommendation-card">
           <div className="flex w-full items-center flex-col md:flex-row">
-            <div className="relative flex-shrink-0 mb-4 md:mb-0 md:mr-8">
+            <div className="relative flex-shrink-0 mb-4 md:mb-0 md:mr-8 flex flex-col items-center">
               {/* Постер */}
-              <img
-                src={selectedItem.poster}
-                alt={`${selectedItem.title_bg || "Movie"} Poster`}
-                className="rounded-lg w-96 h-auto"
-              />
+              <div
+                className={`relative group ${
+                  selectedItem.youtubeTrailerUrl ? "cursor-pointer" : ""
+                } `}
+                onClick={handleTrailerModalClick}
+              >
+                <img
+                  src={selectedItem.poster}
+                  alt={`${selectedItem.title_bg || "Movie"} Poster`}
+                  className={`rounded-lg w-96 h-auto transition-all duration-300 ${
+                    selectedItem.youtubeTrailerUrl
+                      ? "group-hover:scale-102 group-hover:blur-sm"
+                      : ""
+                  }`}
+                />
+
+                {/* Play button */}
+                {selectedItem.youtubeTrailerUrl && (
+                  <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300">
+                    <div className="group relative">
+                      <div className="absolute inset-0 rounded-full bg-white/20 blur-xl scale-150 group-hover:scale-[1.7] transition-transform duration-500"></div>
+                      <div className="relative bg-white/10 backdrop-blur-md rounded-full p-6 border border-white/30 shadow-2xl transform transition-all duration-300 group-hover:scale-110 group-hover:bg-white/20 group-hover:border-white/50">
+                        <div className="absolute inset-2 rounded-full bg-gradient-to-br from-white/10 to-transparent"></div>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="white"
+                          viewBox="0 0 24 24"
+                          className="size-16 text-white drop-shadow-lg relative z-10 transform transition-transform duration-300 group-hover:scale-105"
+                          style={{
+                            filter:
+                              "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))"
+                          }}
+                        >
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                        <div className="absolute inset-0 rounded-full border-2 border-white/40 group-hover:animate-ping"></div>
+                      </div>
+                      <div className="absolute top-2 left-2 right-2 bottom-2 rounded-full bg-black/20 blur-lg -z-10"></div>
+                    </div>
+                  </div>
+                )}
+              </div>
               {/* Бутон за добавяне/премахване от watchlist */}
               <button
                 onClick={() =>
@@ -527,11 +575,35 @@ const RecommendationCardAlert: FC<RecommendationCardAlertProps> = ({
         </button>
       </div>
       {/*Modal за пълното описание/сюжет на филма/сериала*/}
-      <PlotModal
+      <PlotAndDescriptionModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        plot={modalData}
+        modalData={modalData}
+        modalType={modalType}
       />
+      {selectedItem.youtubeTrailerUrl && (
+        <InfoboxModal
+          onClick={handleTrailerModalClick}
+          isModalOpen={isTrailerModalOpen}
+          title={`Трейлър на ${selectedItem.title_bg} - ${selectedItem.title_en}`}
+          description={
+            <div className="container text-center">
+              <div className="flex justify-center">
+                <div className="w-full max-w-4xl rounded-xl overflow-hidden shadow-lg">
+                  <div className="aspect-video">
+                    <iframe
+                      className="w-full h-full"
+                      src={selectedItem.youtubeTrailerUrl}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        />
+      )}
     </div>
   );
 };

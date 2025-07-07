@@ -55,6 +55,7 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
   const [interests, setInterests] = useState("");
 
   const [submitCount, setSubmitCount] = useState(0);
+  const [marginClass, setMarginClass] = useState("");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [showQuestion, setShowQuestion] = useState(true);
@@ -186,7 +187,6 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
         "Мозъчен анализ - препоръките се дават на база анализ от устройство за измерване на мозъчни вълни"
       )
     ) {
-      // Set state to render BrainAnalysisSteps
       setRenderBrainAnalysis(true);
     } else {
       if (currentQuestionIndex === totalQuestions - 1) {
@@ -268,6 +268,18 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
     }
   }, [currentQuestion, selectedAnswer]);
 
+  useEffect(() => {
+    async function fetchMargin() {
+      const margin = await getBrainAnalysisMarginClass(
+        currentStepIndex,
+        isBrainAnalysisComplete
+      );
+      setMarginClass(margin);
+    }
+
+    fetchMargin();
+  }, [currentStepIndex, isBrainAnalysisComplete]);
+
   console.log("user preferences: ", booksUserPreferences);
   return (
     <div>
@@ -293,12 +305,12 @@ export const QuizQuestions: FC<QuizQuestionProps> = ({
       >
         <div
           className={`w-full ${
-            !isBrainAnalysisComplete ? "max-w-4xl py-0" : "py-8"
+            !isBrainAnalysisComplete ? "max-w-4xl py-0" : "py-2"
           } px-4 mb-[12rem] ${
             window.innerWidth >= 640 && !renderBrainAnalysis
               ? getMarginClass(currentQuestion)
               : window.innerWidth >= 640 && renderBrainAnalysis
-              ? getBrainAnalysisMarginClass(currentStepIndex)
+              ? marginClass
               : ""
           }`}
         >

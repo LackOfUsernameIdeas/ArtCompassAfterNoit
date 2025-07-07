@@ -320,44 +320,28 @@ export const generateBooksRecommendations = async (
   brainData?: FilteredBrainData[]
 ) => {
   try {
-    let requestBody;
-    if (renderBrainAnalysis && brainData) {
-      requestBody =
-        import.meta.env.VITE_BOOKS_SOURCE === "GoogleBooks"
+    const requestBody =
+      renderBrainAnalysis && brainData
+        ? import.meta.env.VITE_BOOKS_SOURCE === "GoogleBooks"
           ? googleBooksBrainAnalysisPrompt(brainData)
-          : goodreadsBrainAnalysisPrompt(brainData);
-    } else if (booksUserPreferences) {
-      requestBody =
-        import.meta.env.VITE_BOOKS_SOURCE === "GoogleBooks"
-          ? googleBooksPrompt(booksUserPreferences)
-          : goodreadsPrompt(booksUserPreferences);
-    }
+          : goodreadsBrainAnalysisPrompt(brainData)
+        : import.meta.env.VITE_BOOKS_SOURCE === "GoogleBooks"
+        ? googleBooksPrompt(booksUserPreferences)
+        : goodreadsPrompt(booksUserPreferences);
 
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/get-model-response`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          api_key: openAIKey,
-          provider: "openai",
-          modelOpenAI: requestBody?.model, // Use the model from the prompt function
-          messages: requestBody?.messages || []
-        })
-      }
-    );
-
-    console.log("body: ", {
-      api_key: openAIKey,
-      provider: "openai",
-      modelOpenAI: requestBody?.model, // Use the model from the prompt function
-      messages: requestBody?.messages || []
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${openAIKey}`
+      },
+      body: JSON.stringify(requestBody)
     });
 
+    console.log("prompt: ", requestBody);
+
     const responseData = await response.json();
-    const responseJson = responseData.response;
+    const responseJson = responseData.choices[0].message.content;
 
     // --- HARDCODED RESPONSE ЗА ТЕСТВАНЕ ---
     // const responseJson =

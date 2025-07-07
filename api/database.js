@@ -4,8 +4,8 @@ const dbOptsLocal = require("./config.js").dbOptsLocal;
 const hf = require("./helper_functions");
 require("dotenv").config();
 
-// const db = mysql.createConnection(dbOptsLocal);
-const db = mysql.createConnection(dbOpts);
+const db = mysql.createConnection(dbOptsLocal);
+// const db = mysql.createConnection(dbOpts);
 
 db.connect((err) => {
   if (err) throw err;
@@ -76,11 +76,11 @@ const getUserById = (userId, callback) => {
  */
 const saveMovieSeriesRecommendation = (userId, data, callback) => {
   const query = `INSERT INTO movies_series_recommendations (
-    user_id, imdbID, title_en, title_bg, genre_en, genre_bg, reason, description, year,
+    user_id, imdbID, title_en, title_bg, genre_en, genre_bg, reason, youtubeTrailerUrl, description, year,
     rated, released, runtime, director, writer, actors, plot, language, 
     country, awards, poster, ratings, metascore, imdbRating, imdbVotes, 
     type, DVD, boxOffice, production, website, totalSeasons, date
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
 
   const values = [
     userId,
@@ -90,6 +90,7 @@ const saveMovieSeriesRecommendation = (userId, data, callback) => {
     data.genre_en,
     data.genre_bg,
     data.reason,
+    data.youtubeTrailerUrl,
     data.description,
     data.year,
     data.rated,
@@ -183,11 +184,11 @@ const saveBookRecommendation = (userId, data, callback) => {
  */
 const saveToWatchlist = (userId, data, callback) => {
   const query = `INSERT INTO watchlist (
-  user_id, imdbID, title_en, title_bg, genre_en, genre_bg, reason, description, year,
+  user_id, imdbID, title_en, title_bg, genre_en, genre_bg, reason, youtubeTrailerUrl, description, year,
   rated, released, runtime, director, writer, actors, plot, language, 
   country, awards, poster, ratings, metascore, imdbRating, imdbVotes, 
   type, DVD, boxOffice, production, website, totalSeasons
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
 
   const values = [
     userId,
@@ -197,6 +198,7 @@ const saveToWatchlist = (userId, data, callback) => {
     data.genre_en,
     data.genre_bg,
     data.reason,
+    data.youtubeTrailerUrl,
     data.description,
     data.year,
     data.rated,

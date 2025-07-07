@@ -121,6 +121,15 @@ export async function translate(entry: string): Promise<string> {
       .map((item: [string]) => item[0])
       .join(" ");
 
+    // Check if the translated text contains URL-encoded sequences
+    const encodedPattern = /%[0-9A-Fa-f]{2}/;
+    if (encodedPattern.test(flattenedTranslation)) {
+      console.error(
+        `Invalid translation: Detected URL-encoded characters in response "${flattenedTranslation}"`
+      );
+      return entry;
+    }
+
     const mergedTranslation = flattenedTranslation.replace(/\s+/g, " ").trim();
     return mergedTranslation;
   } catch (error) {
@@ -209,7 +218,7 @@ export const checkRecommendationExistsInWatchlist = async (
  * Проверява дали препоръката вече съществува в списъка за четене на потребителя.
  *
  * @async
- * @function checkRecommendationExistsInWatchlist
+ * @function checkRecommendationExistsInReadlist
  * @param {string} book_id - google_books_id / goodreads_id на препоръката.
  * @param {string | null} token - Токен за автентикация на потребителя.
  * @param {string | null} source  - GoogleBooks или Goodreads.
@@ -323,6 +332,7 @@ export const saveToWatchlist = async (
       genre_en: genresEn,
       genre_bg: genresBg,
       reason: recommendation.reason || null,
+      youtubeTrailerUrl: recommendation.youtubeTrailerUrl || null,
       description: recommendation.description || null,
       year: recommendation.year || null,
       rated: recommendation.rated || null,
@@ -1209,13 +1219,29 @@ export const getMarginClass = (question: Question): string => {
 
 /**
  * Връща CSS клас, който задава марж в зависимост от текущата стъпка.
+ * Ако мозъчният анализ е завършен, след 300ms се прилага нулев марж.
  *
  * @function getBrainAnalysisMarginClass
- * @param {Question} i - Индекс на текущата стъпка.
- * @returns {string} - Строка с CSS клас, който определя маржа за стъпката.
+ * @param {number} i - Индекс на текущата стъпка.
+ * @param {boolean} isBrainAnalysisComplete - Флаг дали мозъчният анализ е завършен.
+ * @returns {Promise<string>} - Promise, който връща CSS клас след закъснение.
  */
-export const getBrainAnalysisMarginClass = (i: number): string => {
-  console.log("getBrainAnalysisMarginClass triggered with:", i);
+export const getBrainAnalysisMarginClass = async (
+  i: number,
+  isBrainAnalysisComplete: boolean
+): Promise<string> => {
+  console.log(
+    "getBrainAnalysisMarginClass triggered with:",
+    i,
+    "isBrainAnalysisComplete:",
+    isBrainAnalysisComplete
+  );
+
+  if (isBrainAnalysisComplete) {
+    return new Promise((resolve) => {
+      setTimeout(() => resolve("mt-0"), 500);
+    });
+  }
 
   switch (i) {
     case 6:
@@ -1225,9 +1251,9 @@ export const getBrainAnalysisMarginClass = (i: number): string => {
       return "mt-[5rem]";
     case 5:
       return "mt-[6rem]";
-    default:
-      return "mt-[7rem]";
     case 2:
       return "mt-[8rem]";
+    default:
+      return "mt-[7rem]";
   }
 };
