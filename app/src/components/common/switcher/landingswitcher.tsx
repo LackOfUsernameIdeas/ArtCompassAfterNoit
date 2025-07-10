@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import store from "../../../redux/store";
+import { storeLanding } from "../../../redux/store";
 import { ThemeChanger } from "../../../redux/action";
 import Themeprimarycolor, * as switcherdata from "./switcherdata/switcherdata";
 import { Link } from "react-router-dom";
@@ -11,7 +11,7 @@ const Landingswitcher = ({ local_varaiable, ThemeChanger }: any) => {
     switcherdata.LocalStorageBackup(ThemeChanger);
   }, []);
   useEffect(() => {
-    const theme = store.getState();
+    const theme = storeLanding.getState();
     ThemeChanger({
       ...theme,
       dataNavStyle: "menu-click",
