@@ -36,7 +36,7 @@ function App() {
               dir: "ltr",
               "data-menu-styles": `${import.meta.env.VITE_DEFAULT_THEME}`,
               class: "light",
-              "data-nav-layout": "vertical",
+              "data-nav-layout": "horizontal",
               "data-header-styles": "light",
               "data-vertical-style": "overlay",
               loader: "disable",
