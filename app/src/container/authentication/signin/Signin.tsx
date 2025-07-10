@@ -30,16 +30,13 @@ const Signincover: FC<SignincoverProps> = () => {
       if (token) {
         try {
           // Валидация на token-а със сървъра
-          const response = await fetch(
-            `${import.meta.env.VITE_API_BASE_URL}/token-validation`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({ token })
-            }
-          );
+          const response = await fetch(`/api/token-validation`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ token })
+          });
 
           if (!response.ok) {
             throw new Error("Token validation failed");
@@ -111,16 +108,13 @@ const Signincover: FC<SignincoverProps> = () => {
 
     try {
       // Изпращане на заявка за вход в системата
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/signin`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ ...formData, rememberMe }) // Изпращане на данните за вход
-        }
-      );
+      const response = await fetch(`/api/signin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ ...formData, rememberMe }) // Изпращане на данните за вход
+      });
 
       if (!response.ok) {
         // Ако отговорът не е успешен, обработване на грешката

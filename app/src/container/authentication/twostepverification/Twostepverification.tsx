@@ -72,16 +72,13 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
 
     try {
       // Изпращане на заявка за верификация на имейла
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/verify-email`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ email, verificationCode })
-        }
-      );
+      const response = await fetch(`/api/verify-email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, verificationCode })
+      });
 
       if (!response.ok) {
         // Ако верификацията е неуспешна, хвърляне на грешка
@@ -124,16 +121,13 @@ const Twostepcover: FC<TwostepcoverProps> = () => {
     console.log(email);
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/resend`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ email })
-        }
-      );
+      const response = await fetch(`/api/resend`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email })
+      });
 
       if (!response.ok) {
         const errorData = await response.json();

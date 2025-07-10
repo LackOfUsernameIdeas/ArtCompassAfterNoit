@@ -142,16 +142,13 @@ const Signupcover: FC<SignupcoverProps> = () => {
 
     try {
       // Изпращане на заявка за регистрация
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/signup`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(formData)
-        }
-      );
+      const response = await fetch(`/api/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
 
       if (!response.ok) {
         // Ако отговорът не е успешен, обработване на грешката

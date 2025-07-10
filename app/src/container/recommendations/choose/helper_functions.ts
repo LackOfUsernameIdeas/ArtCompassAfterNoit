@@ -42,7 +42,7 @@ export const fetchData = async (
 
     // Loop over each endpoint, fetch data, and update state independently
     endpoints.forEach(({ key, endpoint }) => {
-      fetch(`${import.meta.env.VITE_API_BASE_URL}${endpoint}`, {
+      fetch(`/api${endpoint}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json"

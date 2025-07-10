@@ -36,17 +36,14 @@ export const fetchData = async (
     const fetchPromises = endpoints.map(
       async ({ key, endpoint, method, body }) => {
         try {
-          const res = await fetch(
-            `${import.meta.env.VITE_API_BASE_URL}${endpoint}`,
-            {
-              method: method,
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-              },
-              body: method === "POST" ? JSON.stringify(body) : undefined
-            }
-          );
+          const res = await fetch(`/api${endpoint}`, {
+            method: method,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+            },
+            body: method === "POST" ? JSON.stringify(body) : undefined
+          });
           const data = await res.json();
           // Replace response with an empty array if it contains a `message` field
           const processedData =

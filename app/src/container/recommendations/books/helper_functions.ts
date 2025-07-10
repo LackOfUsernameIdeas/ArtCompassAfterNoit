@@ -82,19 +82,16 @@ export const saveBooksUserPreferences = async (
     };
     console.log("preferences: ", formattedPreferences);
 
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/save-preferences`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          preferencesType: "books",
-          preferences: formattedPreferences
-        })
-      }
-    );
+    const response = await fetch(`/api/save-preferences`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        preferencesType: "books",
+        preferences: formattedPreferences
+      })
+    });
 
     if (!response.ok) {
       throw new Error("Failed to save recommendation");
@@ -505,9 +502,7 @@ export const generateBooksRecommendations = async (
       } else {
         try {
           const goodreadsResponse = await fetch(
-            `${
-              import.meta.env.VITE_API_BASE_URL
-            }/get-goodreads-data-for-a-book?url=${bookUrl}`
+            `/api/get-goodreads-data-for-a-book?url=${bookUrl}`
           );
 
           if (!goodreadsResponse.ok) {
@@ -681,19 +676,16 @@ export const saveBookRecommendation = async (
 
     console.log("Formatted Recommendation:", formattedRecommendation);
 
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/save-recommendation`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          recommendationType: "books",
-          recommendation: formattedRecommendation
-        })
-      }
-    );
+    const response = await fetch(`/api/save-recommendation`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        recommendationType: "books",
+        recommendation: formattedRecommendation
+      })
+    });
 
     if (!response.ok) {
       throw new Error("Failed to save recommendation");
@@ -780,19 +772,16 @@ export const handleSubmit = async (
   if (!renderBrainAnalysis) setSubmitted(true);
   try {
     if (renderBrainAnalysis && analysisType && brainData) {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            type: "books"
-          })
-        }
-      );
+      const response = await fetch(`/api/handle-submit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          type: "books"
+        })
+      });
 
       const data = await response.json();
 
@@ -828,19 +817,16 @@ export const handleSubmit = async (
         );
       }
     } else {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            type: "books"
-          })
-        }
-      );
+      const response = await fetch(`/api/handle-submit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          type: "books"
+        })
+      });
 
       const data = await response.json();
 

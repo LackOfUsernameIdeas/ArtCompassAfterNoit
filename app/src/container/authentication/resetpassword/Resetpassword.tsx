@@ -28,16 +28,13 @@ const Resetcover: FC<ResetcoverProps> = () => {
   useEffect(() => {
     const validateToken = async () => {
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/token-validation`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ token })
-          }
-        );
+        const response = await fetch(`/api/token-validation`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ token })
+        });
 
         if (!response.ok) {
           throw new Error("Token validation failed");
@@ -88,19 +85,16 @@ const Resetcover: FC<ResetcoverProps> = () => {
 
     try {
       // Изпращане на новата парола към API-то
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/password-reset`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            token, // Токенът от URL
-            newPassword
-          })
-        }
-      );
+      const response = await fetch(`/api/password-reset`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          token, // Токенът от URL
+          newPassword
+        })
+      });
 
       const result = await response.json();
 

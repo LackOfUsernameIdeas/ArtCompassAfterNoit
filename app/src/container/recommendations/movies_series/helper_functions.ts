@@ -82,19 +82,16 @@ export const saveMoviesSeriesUserPreferences = async (
       date: date
     };
 
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/save-preferences`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          preferencesType: "movies_series",
-          preferences: formattedPreferences
-        })
-      }
-    );
+    const response = await fetch(`/api/save-preferences`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        preferencesType: "movies_series",
+        preferences: formattedPreferences
+      })
+    });
 
     if (!response.ok) {
       throw new Error("Failed to save recommendation");
@@ -493,19 +490,16 @@ export const saveMoviesSeriesRecommendation = async (
 
     console.log("Formatted Recommendation:", formattedRecommendation);
 
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/save-recommendation`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          recommendationType: "movies_series",
-          recommendation: formattedRecommendation
-        })
-      }
-    );
+    const response = await fetch(`/api/save-recommendation`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        recommendationType: "movies_series",
+        recommendation: formattedRecommendation
+      })
+    });
 
     if (!response.ok) {
       throw new Error("Failed to save recommendation");
@@ -613,19 +607,16 @@ export const handleSubmit = async (
 
   try {
     if (renderBrainAnalysis && analysisType && brainData) {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            type: "movies_series"
-          })
-        }
-      );
+      const response = await fetch(`/api/handle-submit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          type: "movies_series"
+        })
+      });
 
       const data = await response.json();
 
@@ -667,19 +658,16 @@ export const handleSubmit = async (
         );
       }
     } else {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/handle-submit`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            type: "movies_series"
-          })
-        }
-      );
+      const response = await fetch(`/api/handle-submit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          type: "movies_series"
+        })
+      });
 
       const data = await response.json();
 

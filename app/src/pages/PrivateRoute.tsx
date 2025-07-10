@@ -18,16 +18,13 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
       }
 
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/token-validation`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ token })
-          }
-        );
+        const response = await fetch(`/api/token-validation`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ token })
+        });
 
         if (!response.ok) {
           throw new Error("Token validation failed");

@@ -185,20 +185,17 @@ export const checkRecommendationExistsInWatchlist = async (
   token: string | null
 ): Promise<boolean> => {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/check-for-recommendation-in-list`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          token,
-          imdbID,
-          recommendationType: "movies_series"
-        })
-      }
-    );
+    const response = await fetch(`/api/check-for-recommendation-in-list`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        token,
+        imdbID,
+        recommendationType: "movies_series"
+      })
+    });
 
     if (response.status === 404) {
       throw new Error("Грешка при проверка на списъка за гледане.");
@@ -231,21 +228,18 @@ export const checkRecommendationExistsInReadlist = async (
   source: string
 ): Promise<boolean> => {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/check-for-recommendation-in-list`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          token,
-          source: source,
-          book_id,
-          recommendationType: "books"
-        })
-      }
-    );
+    const response = await fetch(`/api/check-for-recommendation-in-list`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        token,
+        source: source,
+        book_id,
+        recommendationType: "books"
+      })
+    });
 
     if (response.status === 404) {
       throw new Error("Грешка при проверка на списъка за четене.");
@@ -359,19 +353,16 @@ export const saveToWatchlist = async (
     };
 
     console.log("formattedRecommendation: ", formattedRecommendation);
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/save-to-list`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          recommendationType: "movies_series",
-          recommendation: formattedRecommendation
-        })
-      }
-    );
+    const response = await fetch(`/api/save-to-list`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        recommendationType: "movies_series",
+        recommendation: formattedRecommendation
+      })
+    });
 
     if (!response.ok) {
       throw new Error(
@@ -454,19 +445,16 @@ export const saveToReadlist = async (
       source: recommendation.source || null
     };
 
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/save-to-list`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          recommendationType: "books",
-          recommendation: formattedRecommendation
-        })
-      }
-    );
+    const response = await fetch(`/api/save-to-list`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        recommendationType: "books",
+        recommendation: formattedRecommendation
+      })
+    });
 
     if (!response.ok) {
       throw new Error(
@@ -501,20 +489,17 @@ export const removeFromWatchlist = async (
       return;
     }
 
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/remove-from-list`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          token,
-          imdbID,
-          recommendationType: "movies_series"
-        })
-      }
-    );
+    const response = await fetch(`/api/remove-from-list`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        token,
+        imdbID,
+        recommendationType: "movies_series"
+      })
+    });
 
     if (!response.ok) {
       throw new Error(
@@ -551,21 +536,18 @@ export const removeFromReadlist = async (
       return;
     }
 
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/remove-from-list`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          token,
-          source: source,
-          book_id,
-          recommendationType: "books"
-        })
-      }
-    );
+    const response = await fetch(`/api/remove-from-list`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        token,
+        source: source,
+        book_id,
+        recommendationType: "books"
+      })
+    });
 
     if (!response.ok) {
       throw new Error("Failed to remove the book from the readlist.");
@@ -599,16 +581,13 @@ export const checkTokenValidity = async (): Promise<string | null> => {
 
   try {
     // Изпращане на заявка за валидиране на токена
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/token-validation`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ token }) // Предаване на токена в тялото на заявката
-      }
-    );
+    const response = await fetch(`/api/token-validation`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ token }) // Предаване на токена в тялото на заявката
+    });
 
     const data = await response.json(); // Извличане на отговора като JSON
 
@@ -890,19 +869,16 @@ export const analyzeRecommendations = async (
 
   try {
     // Изпраща заявка с предпочитанията и целия списък от препоръки
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/check-relevance`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          userPreferences: formattedPreferencesForAnalysis,
-          recommendations: formattedRecommendations
-        })
-      }
-    );
+    const response = await fetch(`/api/check-relevance`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        userPreferences: formattedPreferencesForAnalysis,
+        recommendations: formattedRecommendations
+      })
+    });
 
     // Проверка за успешен отговор
     if (!response.ok) {
@@ -982,16 +958,13 @@ const saveAnalysisToDatabase = async (analysisData: {
   token: string;
 }): Promise<void> => {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/save-analysis`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(analysisData)
-      }
-    );
+    const response = await fetch(`/api/save-analysis`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(analysisData)
+    });
 
     if (!response.ok) {
       throw new Error(`Error saving analysis: ${response.statusText}`);
@@ -1012,15 +985,12 @@ const saveAnalysisToDatabase = async (analysisData: {
  */
 export const getAverageMetrics = async (): Promise<any> => {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/stats/platform/ai/average-metrics`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        }
+    const response = await fetch(`/api/stats/platform/ai/average-metrics`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
       }
-    );
+    });
 
     if (!response.ok) {
       throw new Error("Failed to retrieve average metrics.");
@@ -1136,16 +1106,13 @@ export const saveBrainAnalysis = async (
       date
     };
 
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/save-brain-analysis`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(requestBody)
-      }
-    );
+    const response = await fetch(`/api/save-brain-analysis`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(requestBody)
+    });
 
     if (!response.ok) {
       const errorData = await response.json();

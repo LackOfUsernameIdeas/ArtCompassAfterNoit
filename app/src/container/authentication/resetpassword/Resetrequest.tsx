@@ -39,16 +39,13 @@ const ResetRequest: FC<ResetRequestProps> = () => {
     }
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/password-reset-request`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ email })
-        }
-      );
+      const response = await fetch(`/api/password-reset-request`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email })
+      });
 
       const result = await response.json();
 

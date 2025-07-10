@@ -30,7 +30,7 @@ export const fetchData = async (
 ): Promise<void> => {
   try {
     // Извличане на потребителски данни независимо
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/user-data`, {
+    fetch(`/api/user-data`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -98,7 +98,7 @@ export const fetchData = async (
 
     // Извличане на избраните данни и актуализиране на състоянието
     filteredEndpoints.forEach(({ key, endpoint }) => {
-      fetch(`${import.meta.env.VITE_API_BASE_URL}${endpoint}`, {
+      fetch(`/api${endpoint}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

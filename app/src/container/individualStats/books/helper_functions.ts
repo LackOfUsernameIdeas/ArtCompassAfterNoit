@@ -85,7 +85,7 @@ export const fetchData = async (
 
     // Loop over each endpoint, fetch data, and update state independently
     const fetchPromises = endpoints.map(({ key, endpoint, method, body }) => {
-      return fetch(`${import.meta.env.VITE_API_BASE_URL}${endpoint}`, {
+      return fetch(`/api${endpoint}`, {
         method: method,
         headers: {
           "Content-Type": "application/json",

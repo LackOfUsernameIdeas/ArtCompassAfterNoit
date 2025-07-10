@@ -17,6 +17,7 @@ const EMAIL_USER = require("./credentials.js").EMAIL_USER;
 const EMAIL_PASS = require("./credentials.js").EMAIL_PASS;
 const fs = require("fs");
 const path = require("path");
+const { oculusIP } = require("./config.js");
 
 const app = express();
 const server = http.createServer(app);
@@ -27,7 +28,8 @@ const whitelist = [
   "http://localhost:5174",
   "http://localhost:5175",
   "https://artcompass.noit.eu",
-  "http://artcompass.noit.eu"
+  "http://artcompass.noit.eu",
+  oculusIP
 ];
 const corsOptions = {
   origin: function (origin, callback) {

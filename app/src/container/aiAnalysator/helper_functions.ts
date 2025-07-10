@@ -20,9 +20,7 @@ export const checkRelevanceForLastSavedRecommendations = async (
 ): Promise<RelevanceResponse> => {
   try {
     const response = await fetch(
-      `${
-        import.meta.env.VITE_API_BASE_URL
-      }/check-relevance-for-last-saved-recommendations`,
+      `/api/check-relevance-for-last-saved-recommendations`,
       {
         method: "POST",
         headers: {
@@ -62,18 +60,13 @@ export const getPrecisionTotal = async (
   userPreferences: MovieSeriesUserPreferencesAfterSaving
 ): Promise<PrecisionData> => {
   try {
-    const response = await fetch(
-      `${
-        import.meta.env.VITE_API_BASE_URL
-      }/stats/individual/ai/precision-total`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ token, userPreferences })
-      }
-    );
+    const response = await fetch(`/api/stats/individual/ai/precision-total`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ token, userPreferences })
+    });
 
     if (!response.ok) {
       throw new Error(`Error with request: ${response.statusText}`);
@@ -98,16 +91,13 @@ export const getRecallTotal = async (
   userPreferences: MovieSeriesUserPreferencesAfterSaving
 ): Promise<RecallData> => {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/stats/individual/ai/recall-total`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ token, userPreferences })
-      }
-    );
+    const response = await fetch(`/api/stats/individual/ai/recall-total`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ token, userPreferences })
+    });
 
     if (!response.ok) {
       throw new Error(`Error with request: ${response.statusText}`);
@@ -134,16 +124,13 @@ export const getF1Score = async (
   recall_exact: number
 ): Promise<F1ScoreData> => {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/stats/individual/ai/f1-score`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ token, precision_exact, recall_exact })
-      }
-    );
+    const response = await fetch(`/api/stats/individual/ai/f1-score`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ token, precision_exact, recall_exact })
+    });
 
     if (!response.ok) {
       throw new Error(`Error with request: ${response.statusText}`);
@@ -164,9 +151,7 @@ export const getF1Score = async (
 export const getHistoricalAverageMetrics = async () => {
   try {
     const response = await fetch(
-      `${
-        import.meta.env.VITE_API_BASE_URL
-      }/stats/platform/ai/historical-average-metrics`,
+      `/api/stats/platform/ai/historical-average-metrics`,
       {
         method: "GET",
         headers: {
@@ -197,9 +182,7 @@ export const getHistoricalAverageMetrics = async () => {
 export const getHistoricalAverageMetricsForUser = async (token: string) => {
   try {
     const response = await fetch(
-      `${
-        import.meta.env.VITE_API_BASE_URL
-      }/stats/individual/ai/historical-average-metrics`,
+      `/api/stats/individual/ai/historical-average-metrics`,
       {
         method: "POST",
         headers: {
@@ -254,16 +237,13 @@ export const getSecondaryMetricsData = async (
     ];
 
     const requests = endpoints.map(async (endpoint) => {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/stats/individual/ai/${endpoint}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ token, userPreferences })
-        }
-      );
+      const response = await fetch(`/api/stats/individual/ai/${endpoint}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ token, userPreferences })
+      });
 
       if (!response.ok) {
         throw new Error(
