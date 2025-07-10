@@ -67,7 +67,7 @@ const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
       overlayElement.classList.remove("active");
     }
     if (
-      theme.dataNavLayout == "horizontal" ||
+      theme.dataNavLayout == "vertical" ||
       theme.dataNavStyle == "menu-click" ||
       theme.dataNavStyle == "icon-click"
     ) {
@@ -299,7 +299,7 @@ const Sidebar: FC<SidebarProps> = ({ local_varaiable, ThemeChanger }: any) => {
       }
       if (
         element &&
-        theme.dataNavLayout == "horizontal" &&
+        theme.dataNavLayout == "vertical" &&
         (theme.dataNavStyle == "menu-click" ||
           theme.dataNavStyle == "icon-click")
       ) {

@@ -15,14 +15,14 @@ const Landingswitcher = ({ local_varaiable, ThemeChanger }: any) => {
     ThemeChanger({
       ...theme,
       dataNavStyle: "menu-click",
-      dataNavLayout: "horizontal",
+      dataNavLayout: "vertical",
       dataMenuStyles: "dark"
     });
     return () => {
       ThemeChanger({
         ...theme,
         dataNavStyle: "",
-        dataNavLayout: `${localStorage.ynexlayout == "horizontal"}`
+        dataNavLayout: `${localStorage.ynexlayout == "vertical"}`
       });
     };
   }, []);

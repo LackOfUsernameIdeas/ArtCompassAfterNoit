@@ -236,7 +236,7 @@ const Switcher: FC<SwitcherProps> = ({
                     name="navigation-style"
                     className="ti-form-radio"
                     id="switcher-horizontal"
-                    checked={local_varaiable.dataNavLayout == "horizontal"}
+                    checked={local_varaiable.dataNavLayout == "vertical"}
                     onChange={(_e) => {}}
                     onClick={() => switcherdata.HorizontalClick(ThemeChanger)}
                   />
