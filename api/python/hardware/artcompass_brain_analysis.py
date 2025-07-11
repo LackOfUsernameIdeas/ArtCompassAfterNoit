@@ -131,7 +131,7 @@ def start_session():
 
 # Създаване на основния прозорец на GUI
 root = tk.Tk()
-root.title("Мозъчен анализ - АртКомпас")
+root.title("Мозъчен анализ - MindReel")
 
 # Задаване на размер на прозореца
 root.geometry("500x200")  
