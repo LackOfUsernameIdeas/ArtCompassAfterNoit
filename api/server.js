@@ -98,10 +98,10 @@ app.post("/signup", (req, res) => {
     const mailOptions = {
       from: EMAIL_USER,
       to: email,
-      subject: "Шестцифрен код за потвърждение от АртКомпас",
+      subject: "Шестцифрен код за потвърждение от Лента на ума (MindReel)",
       html: `
         <div style="text-align: center; background-color: rgba(244, 211, 139, 0.5); margin: 2% 3%; padding: 3% 1%; border: 4px dotted rgb(178, 50, 0); border-radius: 20px">
-          <h2>Благодарим Ви за регистрацията в Арт Компас!</h2>
+          <h2>Благодарим Ви за регистрацията в Лента на ума (MindReel)!</h2>
           <hr style="border: 0.5px solid rgb(178, 50, 0); width: 18%; margin-top: 6%; margin-bottom: 4%"></hr>
           <p>Вашият шестцифрен код е <strong style="font-size: 20px; color: rgb(178, 50, 0)">${verificationCode}</strong>.</p>
         </div>
@@ -198,7 +198,7 @@ app.post("/resend", (req, res) => {
   const mailOptions = {
     from: EMAIL_USER,
     to: email,
-    subject: "Нов шестцифрен код за потвърждение от АртКомпас",
+    subject: "Нов шестцифрен код за потвърждение от Лента на ума (MindReel)",
     html: `
       <div style="text-align: center; background-color: rgba(244, 211, 139, 0.5); margin: 2% 3%; padding: 3% 1%; border: 4px dotted rgb(178, 50, 0); border-radius: 20px">
         <p>Вашият шестцифрен код е <strong style="font-size: 20px; color: rgb(178, 50, 0)">${verificationCode}</strong>.</p>
@@ -325,7 +325,7 @@ app.post("/password-reset-request", (req, res) => {
     const mailOptions = {
       from: EMAIL_USER,
       to: email,
-      subject: "Промяна на паролата за АртКомпас",
+      subject: "Промяна на паролата за Лента на ума (MindReel)",
       html: `<p>Натиснете <a href="${resetLink}">тук</a>, за да промените паролата си.</p>`
     };
 
@@ -2132,95 +2132,95 @@ app.post("/save-brain-analysis", (req, res) => {
   });
 });
 
-// // Основна логика при нова връзка
-// io.on("connection", (socket) => {
-//   console.log("Клиент се свърза");
-//   socket.emit("connectSignal");
-
-//   socket.on("hardwareData", (data) => {
-//     console.log("Получени хардуерни данни:", data);
-
-//     const useFileMode = data.useFileMode === true; // дали искаме да симулираме от файл
-
-//     if (useFileMode) {
-//       // ----------- FILE MODE: Симулация чрез JSON файл ----------- //
-//       const sessionId = data.sessionId || 1;
-//       if (sessionId < 1 || sessionId > 5) {
-//         console.error("Невалиден sessionId:", sessionId);
-//         return;
-//       }
-
-//       const sessionFile = path.join(
-//         __dirname,
-//         `session_data_${sessionId}.json`
-//       );
-//       fs.readFile(sessionFile, "utf8", (err, fileData) => {
-//         if (err) {
-//           console.error("Грешка при четене на файла:", err);
-//           return;
-//         }
-
-//         let jsonData;
-//         try {
-//           jsonData = JSON.parse(fileData);
-//         } catch (parseErr) {
-//           console.error("Грешка при парсиране на JSON:", parseErr);
-//           return;
-//         }
-
-//         jsonData.forEach((item, index) => {
-//           setTimeout(() => {
-//             socket.broadcast.emit("hardwareDataResponse", item);
-//             if (index === jsonData.length - 1) {
-//               socket.broadcast.emit("dataDoneTransmittingSignal");
-//             }
-//           }, index * 1000); // можеш да смениш интервала според реална скорост
-//         });
-//       });
-//     } else {
-//       // ----------- REAL MODE: Работа с реален хардуер ----------- //
-//       // директно препращаме данните
-//       socket.broadcast.emit("hardwareDataResponse", data);
-//     }
-//   });
-
-//   socket.on("dataDoneTransmitting", (data) => {
-//     console.log("Получено съобщение за завършване на трансфер на данни:", data);
-//     socket.broadcast.emit("dataDoneTransmittingSignal");
-//   });
-
-//   socket.on("disconnect", () => {
-//     console.log("Клиентът прекъсна връзката");
-//   });
-// });
-
-// Когато клиент се свърже със SocketIO сървъра
+// Основна логика при нова връзка
 io.on("connection", (socket) => {
   console.log("Клиент се свърза");
-
-  // Това ще изпрати първоначален сигнал на клиента, който се свързва.
   socket.emit("connectSignal");
 
-  // Слушане на събитието 'hardwareData' от изпращащото приложение (python app)
   socket.on("hardwareData", (data) => {
     console.log("Получени хардуерни данни:", data);
 
-    // Изпращане на данните към всички свързани клиенти, освен към изпращащия (защото е безсмислено)
-    socket.broadcast.emit("hardwareDataResponse", data);
+    const useFileMode = data.useFileMode === true; // дали искаме да симулираме от файл
+
+    if (useFileMode) {
+      // ----------- FILE MODE: Симулация чрез JSON файл ----------- //
+      const sessionId = data.sessionId || 1;
+      if (sessionId < 1 || sessionId > 5) {
+        console.error("Невалиден sessionId:", sessionId);
+        return;
+      }
+
+      const sessionFile = path.join(
+        __dirname,
+        `session_data_${sessionId}.json`
+      );
+      fs.readFile(sessionFile, "utf8", (err, fileData) => {
+        if (err) {
+          console.error("Грешка при четене на файла:", err);
+          return;
+        }
+
+        let jsonData;
+        try {
+          jsonData = JSON.parse(fileData);
+        } catch (parseErr) {
+          console.error("Грешка при парсиране на JSON:", parseErr);
+          return;
+        }
+
+        jsonData.forEach((item, index) => {
+          setTimeout(() => {
+            socket.broadcast.emit("hardwareDataResponse", item);
+            if (index === jsonData.length - 1) {
+              socket.broadcast.emit("dataDoneTransmittingSignal");
+            }
+          }, index * 1000); // можеш да смениш интервала според реална скорост
+        });
+      });
+    } else {
+      // ----------- REAL MODE: Работа с реален хардуер ----------- //
+      // директно препращаме данните
+      socket.broadcast.emit("hardwareDataResponse", data);
+    }
   });
 
-  // Слушане на събитието 'dataDoneTransmitting' от клиента
   socket.on("dataDoneTransmitting", (data) => {
     console.log("Получено съобщение за завършване на трансфер на данни:", data);
-    // Изпращане на сигнал до останалите клиенти, че изпращащото приложение (python app) е спряло потока от данни.
     socket.broadcast.emit("dataDoneTransmittingSignal");
   });
 
-  // Слушане за прекъсване на връзката от клиент
   socket.on("disconnect", () => {
     console.log("Клиентът прекъсна връзката");
   });
 });
+
+// // Когато клиент се свърже със SocketIO сървъра
+// io.on("connection", (socket) => {
+//   console.log("Клиент се свърза");
+
+//   // Това ще изпрати първоначален сигнал на клиента, който се свързва.
+//   socket.emit("connectSignal");
+
+//   // Слушане на събитието 'hardwareData' от изпращащото приложение (python app)
+//   socket.on("hardwareData", (data) => {
+//     console.log("Получени хардуерни данни:", data);
+
+//     // Изпращане на данните към всички свързани клиенти, освен към изпращащия (защото е безсмислено)
+//     socket.broadcast.emit("hardwareDataResponse", data);
+//   });
+
+//   // Слушане на събитието 'dataDoneTransmitting' от клиента
+//   socket.on("dataDoneTransmitting", (data) => {
+//     console.log("Получено съобщение за завършване на трансфер на данни:", data);
+//     // Изпращане на сигнал до останалите клиенти, че изпращащото приложение (python app) е спряло потока от данни.
+//     socket.broadcast.emit("dataDoneTransmittingSignal");
+//   });
+
+//   // Слушане за прекъсване на връзката от клиент
+//   socket.on("disconnect", () => {
+//     console.log("Клиентът прекъсна връзката");
+//   });
+// });
 
 // Стартиране на сървъра
 server.listen(5000, () => {
