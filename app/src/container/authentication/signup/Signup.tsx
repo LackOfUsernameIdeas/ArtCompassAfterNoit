@@ -210,7 +210,7 @@ const Signupcover: FC<SignupcoverProps> = () => {
                 </p>
                 {/* Подзаглавие */}
                 <p className="mb-4 text-[#8c9097] dark:text-white/50 opacity-[0.7] font-normal text-center">
-                  Присъединете се към (име на проекта) и създайте профил!
+                  Присъединете се към Лента на ума (MindReel) и създайте профил!
                 </p>
 
                 {/* Известия за грешки или успех */}
