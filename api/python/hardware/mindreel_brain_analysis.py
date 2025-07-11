@@ -44,7 +44,7 @@ session = None
 def start_session():
     global session
     # Свързване със Socket.IO сървъра (заменете URL-а с вашия сървър)
-    sio.connect('ws://artcompass-api.noit.eu')
+    sio.connect('ws://mindreel-api.noit.eu')
 
     if success:  # Ако слушалката е успешно свързана
         # Създаване на конфигурация за сесията
@@ -144,8 +144,8 @@ root.configure(bg="white")  # Запазване на неутрален фон
 button_style = {
     "font": ("Arial", 16, "bold"),  # По-голям шрифт
     "fg": "white",  # Бял текст
-    "bg": "#b00404",  # Основен червен цвят
-    "activebackground": "#8a0303",  # По-тъмен червен при натискане
+    "bg": "#14746F",  # Основен цвят
+    "activebackground": "#0F5753",  # По-тъмен цвят при натискане
     "activeforeground": "white",  # Запазване на белия текст
     "relief": "flat",  # Премахване на стандартния бордюр
     "borderwidth": 0,  # Без бордюр
@@ -164,10 +164,10 @@ connect_button.place(relx=0.5, rely=0.5, anchor="center")
 
 # Добавяне на ефект при посочване с мишката (увеличаване на размера)
 def on_enter(e):
-    connect_button.config(font=("Arial", 18, "bold"), padx=25, pady=15, bg="#8a0303")  # Увеличаване и потъмняване
+    connect_button.config(font=("Arial", 18, "bold"), padx=25, pady=15, bg="#0F5753")  # Увеличаване и потъмняване
 
 def on_leave(e):
-    connect_button.config(font=("Arial", 16, "bold"), padx=20, pady=10, bg="#b00404")  # Възстановяване на оригиналния стил
+    connect_button.config(font=("Arial", 16, "bold"), padx=20, pady=10, bg="#14746F")  # Възстановяване на оригиналния стил
 
 connect_button.bind("<Enter>", on_enter)
 connect_button.bind("<Leave>", on_leave)
