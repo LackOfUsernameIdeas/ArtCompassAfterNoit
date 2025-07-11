@@ -178,7 +178,7 @@ export const steps: Step[] = [
     description:
       "След сваляне на архива го разархивирате и отваряте. Трябва да виждате .exe файла за свързване.",
     images: [img5],
-    fileName: "artcompass_brain_analysis.zip"
+    fileName: "mindreel_brain_analysis.zip"
   },
   {
     step: "6. Същинско свързване",

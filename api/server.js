@@ -26,8 +26,8 @@ app.use(express.json());
 const whitelist = [
   "http://localhost:5174",
   "http://localhost:5175",
-  "https://artcompass.noit.eu",
-  "http://artcompass.noit.eu"
+  "https://mindreel.noit.eu",
+  "http://mindreel.noit.eu"
 ];
 const corsOptions = {
   origin: function (origin, callback) {
@@ -320,7 +320,7 @@ app.post("/password-reset-request", (req, res) => {
     });
 
     // Create a reset link
-    const resetLink = `https://artcompass.noit.eu/resetpassword/resetcover/${token}`;
+    const resetLink = `https://mindreel.noit.eu/resetpassword/resetcover/${token}`;
 
     const mailOptions = {
       from: EMAIL_USER,
